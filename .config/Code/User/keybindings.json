@@ -154,4 +154,9 @@
         "when": "neovim.mode == insert && editorTextFocus",
         "args": "k"
     },
+    {
+        "command": "workbench.action.terminal.kill",
+        "key": "ctrl+w",
+        "when": "terminalFocus"
+    }
 ]
