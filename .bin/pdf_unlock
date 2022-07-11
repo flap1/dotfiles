@@ -1,4 +1,0 @@
-#!/bin/bash
-
-# pdf_unlock ファイル名 パスワード
-qpdf --password=$2 --decrypt $1 "_$1"
