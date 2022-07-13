@@ -361,8 +361,7 @@ shell:
   args:
     - -l
     - -c
-    - "tmux -2 new-session"
-      #- "tmux -2 attach || tmux -2 new-session"
+    - "tmux -2 attach || tmux -2 new-session"
 
 # Startup directory
 #
