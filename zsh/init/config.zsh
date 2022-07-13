@@ -53,13 +53,13 @@ zstyle ':completion:*' list-colors $LS_COLORS
 # --------------------------------------------------------------------------
 
 # コマンド履歴検索 ctrl+r
-function peco-history-selection() {
-  BUFFER=`history -n 1 | tac  | awk '!a[$0]++' | peco`
-  CURSOR=$#BUFFER
-  zle reset-prompt
-}
-zle -N peco-history-selection
-bindkey '^R' peco-history-selection
+#function peco-history-selection() {
+#  BUFFER=`history -n 1 | tac  | awk '!a[$0]++' | peco`
+#  CURSOR=$#BUFFER
+#  zle reset-prompt
+#}
+#zle -N peco-history-selection
+#bindkey '^R' peco-history-selection
 
 # コマンド履歴からディレクトリ検索・移動 ctrl+e
 if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
@@ -114,3 +114,6 @@ setopt no_flow_control
 # スペルミス訂正
 setopt correct
 
+# zmv
+autoload -Uz zmv
+alias zmv='noglob zmv -W'

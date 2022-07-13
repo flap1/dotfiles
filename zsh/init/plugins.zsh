@@ -10,5 +10,7 @@ zinit ice wait lucid
 zinit light chrissicool/zsh-256color
 zinit ice wait lucid
 zinit light b4b4r07/enhancd
+zinit ice lucid wait"0a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)"' 
+zinit light cantino/mcfly
 zinit ice depth=1
 zinit light romkatv/powerlevel10k

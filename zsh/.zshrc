@@ -1,0 +1,1 @@
+/home/flap1/dotfiles/.zshrc

@@ -35,9 +35,19 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-SCRIPT_DIR=$HOME/dotfiles/zsh
+SCRIPT_DIR=$HOME/dotfiles
 
 while read -r f; do
   source $f
-done  < <(find $SCRIPT_DIR -mindepth 1 -maxdepth 1)
+done  < <(find $SCRIPT_DIR/zsh/init -mindepth 1 -maxdepth 1)
+
+fpath+=$SCRIPT_DIR/zsh/.zsh_functions
+
+source $SCRIPT_DIR/bin/check_update_dotfiles
+
+# navi
+eval "$(navi widget zsh)"
+
+# To customize prompt, run `p10k configure` or edit ~/dotfiles/zsh/.zshrc.p10k.
+[[ ! -f ~/dotfiles/zsh/.zshrc.p10k ]] || source ~/dotfiles/zsh/.zshrc.p10k
 
