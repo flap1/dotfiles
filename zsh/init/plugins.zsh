@@ -8,8 +8,8 @@ zinit ice wait lucid
 zinit light zdharma/fast-syntax-highlighting # コマンドに色を付けて強調
 zinit ice wait lucid
 zinit light chrissicool/zsh-256color
-zinit ice wait lucid
-zinit light b4b4r07/enhancd
+# zinit ice wait lucid
+#zinit light b4b4r07/enhancd
 zinit ice lucid wait"0a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)"' 
 zinit light cantino/mcfly
 zinit ice depth=1
