@@ -45,6 +45,8 @@ fpath+=$SCRIPT_DIR/zsh/.zsh_functions
 
 source $SCRIPT_DIR/bin/check_update_dotfiles
 
+KEYTIMEOUT=1
+
 # navi
 eval "$(navi widget zsh)"
 

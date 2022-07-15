@@ -23,7 +23,7 @@ alias su="su -l"
 alias ps='ps --sort=start_time'
 
 alias ..='cd ..'
-alias mkdir="mkdir -p"
+alias mkdir='mkdir -p'
 
 alias rm='rm -i'
 alias mv='mv -i'

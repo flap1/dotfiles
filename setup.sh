@@ -18,10 +18,14 @@ if [[ ! -d ~/dotfiles ]]; then
 fi
 
 # tmux
-ln -sf ${DOTENV_HOME}/.tmux.conf ~/.tmux.conf
+ln -sf ${DOTENV_HOME}/tmux/.tmux.conf ~/.tmux.conf
+ln -sf ${DOTENV_HOME}/tmux/.tmux.conf.local  ~/.tmux.conf.local
 
 # alacritty
 ln -sf ${DOTENV_HOME}/.alacritty.yml ~/.alacritty.yml
+
+# neovim
+ln -sf ${DOTENV_HOME}/nvim ~/.config/nvim
 
 # change default shell
 sudo chsh -s "$(which zsh)" $USER
