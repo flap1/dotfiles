@@ -7,7 +7,7 @@ require("neo-tree").setup {
     container = {
       enable_character_fade = true,
     },
-    indent = {
+
       indent_size = 2,
       padding = 1, -- extra padding on left hand side
       with_markers = true,
@@ -107,11 +107,13 @@ require("neo-tree").setup {
         ["D"] = "fuzzy_finder_directory",
         ["f"] = "filter_on_submit",
         ["<c-x>"] = "clear_filter",
-        ["a"] = "add",
         ["d"] = "delete",
-        ["r"] = "rename",
-        ["c"] = "copy_to_clipboard",
         ["y"] = "copy_to_clipboard",
+        ["a"] = {"add", config = {show_path = "absolute"}},
+        ["A"] = {"add_directory", config = {show_path = "absolute"}},
+        ["r"] = "rename",
+        ["c"] = {"copy", config = {show_path = "absolute"}},
+        ["m"] = {"move", config = {show_path = "absolute"}},
         ["x"] = "cut_to_clipboard",
         ["p"] = "paste_from_clipboard",
         ["m"] = "move", -- takes text input for destination
@@ -126,15 +128,18 @@ require("neo-tree").setup {
       mappings = {
         ["<2-LeftMouse>"] = "open",
         ["<cr>"] = "open",
+        ["a"] = {"add", config = {show_path = "absolute"}},
+        ["A"] = {"add_directory", config = {show_path = "absolute"}},
+        ["c"] = {"copy", config = {show_path = "absolute"}},
+        ["m"] = {"move", config = {show_path = "absolute"}},
+        ["r"] = "rename",
         ["S"] = "open_split",
         ["s"] = "open_vsplit",
         ["<bs>"] = "navigate_up",
         ["."] = "set_root",
         ["R"] = "refresh",
-        ["a"] = "add",
         ["d"] = "delete",
-        ["r"] = "rename",
-        ["c"] = "copy_to_clipboard",
+        ["y"] = "copy_to_clipboard",
         ["x"] = "cut_to_clipboard",
         ["p"] = "paste_from_clipboard",
         ["bd"] = "buffer_delete",
