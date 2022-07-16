@@ -3,7 +3,8 @@ if vim.fn.empty(vim.fn.glob(install_path)) == 1 then
   vim.api.nvim_command("silent !git clone https://github.com/wbthomason/packer.nvim " .. install_path)
 end
 
-vim.cmd([[packadd packer.nvim]])
+vim.cmd([[ packadd packer.nvim ]])
+require "plugins/packer"
 
 return require("packer").startup(function()
   use {'wbthomason/packer.nvim', opt = true}
@@ -26,13 +27,13 @@ return require("packer").startup(function()
     "folke/tokyonight.nvim",
     event = { "VimEnter", "ColorSchemePre" },
     config = function ()
-      require("plugins/config/tokyonight")
+      require "plugins/config/tokyonight"
     end,
   }
 
   -- Font Library ---------------------------------
   if not os.getenv("DISABLE_DEVICONS") or os.getenv("DISABLE_DEVICONS") == "false" then
-    use({ "kyazdani42/nvim-web-devicons", after = colorscheme })
+    use { "kyazdani42/nvim-web-devicons", after = colorscheme }
   end
 
   -- LSP & Completion ----------------------------
@@ -52,31 +53,25 @@ return require("packer").startup(function()
     "onsails/lspkind-nvim",
     module = "lspkind",
     config = function()
-      require("plugins/config/lspkind-nvim")
+      require "plugins/config/lspkind-nvim"
     end,
   }
-  use({ "hrsh7th/cmp-nvim-lsp", module = "cmp_nvim_lsp" })
-  use({ "hrsh7th/cmp-buffer", after = "nvim-cmp" })
-  use({ "hrsh7th/cmp-path", after = "nvim-cmp" })
-  use({ "hrsh7th/cmp-cmdline", after = "nvim-cmp" })
-  use({ "hrsh7th/cmp-nvim-lua", after = "nvim-cmp" })
-  use({ "hrsh7th/cmp-emoji", after = "nvim-cmp" })
-  use({ "hrsh7th/cmp-calc", after = "nvim-cmp" })
-  use({ "f3fora/cmp-spell", after = "nvim-cmp" })
-  use({ "yutkat/cmp-mocword", after = "nvim-cmp" })
-  use({
-    "uga-rosa/cmp-dictionary",
-    after = "nvim-cmp",
-    config = function()
-      require("plugins/config/cmp-dictionary")
-    end,
-  })
-  use({ "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" })
-  use({
+  use { "hrsh7th/cmp-nvim-lsp", module = "cmp_nvim_lsp" }
+  use { "hrsh7th/cmp-buffer", after = "nvim-cmp" }
+  use { "hrsh7th/cmp-path", after = "nvim-cmp" }
+  use { "hrsh7th/cmp-cmdline", after = "nvim-cmp" }
+  use { "hrsh7th/cmp-nvim-lua", after = "nvim-cmp" }
+  use { "hrsh7th/cmp-emoji", after = "nvim-cmp" }
+  use { "hrsh7th/cmp-calc", after = "nvim-cmp" }
+  use { "f3fora/cmp-spell", after = "nvim-cmp" }
+  use { "yutkat/cmp-mocword", after = "nvim-cmp" }
+  use { "uga-rosa/cmp-dictionary", after = "nvim-cmp", config = function() require "plugins/config/cmp-dictionary" end }
+  use { "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" }
+  use{
     "tzachar/cmp-tabnine",
     run = "./install.sh",
     after = "nvim-cmp",
-  })
+  }
   use({ "ray-x/cmp-treesitter", after = "nvim-cmp" })
   use({ "lukas-reineke/cmp-rg", after = "nvim-cmp" })
   use({ "lukas-reineke/cmp-under-comparator", module = "cmp-under-comparator" })
@@ -140,7 +135,7 @@ return require("packer").startup(function()
     "t9md/vim-quickhl",
     event = "VimEnter",
     config = function()
-      vim.cmd("source ~/.config/nvim/vim/plugins/vim-quickhl.vim")
+      vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-quickhl.vim")
     end,
   }
 
@@ -254,7 +249,7 @@ return require("packer").startup(function()
     "haya14busa/vim-asterisk",
     event = "VimEnter",
     config = function()
-      vim.cmd("source ~/.config/nvim/vim/plugins/vim-asterisk.vim")
+      vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-asterisk.vim")
     end,
   })
 
@@ -304,7 +299,7 @@ return require("packer").startup(function()
   use {
     "mg979/vim-visual-multi",
     config = function()
-      vim.cmd("source ~/.config/nvim/vim/plugins/vim-visual-multi.vim")
+      vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-visual-multi.vim")
     end,
   }
 
@@ -340,7 +335,7 @@ return require("packer").startup(function()
     "thinca/vim-ref",
     event = "VimEnter",
     config = function()
-      vim.cmd("source ~/.config/nvim/vim/plugins/vim-ref.vim")
+      vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-ref.vim")
     end,
   }
   use {
