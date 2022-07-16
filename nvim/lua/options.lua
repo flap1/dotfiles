@@ -26,7 +26,7 @@ vim.o.completeopt = "menuone,noselect,noinsert" -- option of input completion
 vim.o.history = 10000 -- default: 50, max: 10000, Number of stored history of commands and previously used search patterns
 
 vim.o.timeout = true -- enable time limit for suggested searches(ms)
-vim.o.timeoutlen = 500 -- default: 1000ms, Time to wait for key code or mapped key sequence to complete
+vim.o.timeoutlen = 750 -- default: 1000ms, Time to wait for key code or mapped key sequence to complete
 vim.o.ttimeoutlen = 10 -- default: 100ms, Time to wait for only mapped key sequence to complete
 vim.o.updatetime = 2000 -- default: 4000ms, If this many milliseconds nothing is typed the swap file will be written to disk
 

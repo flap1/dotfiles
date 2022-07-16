@@ -16,12 +16,27 @@
 local opts = { noremap = true, silent = true }
 local optsexpr = {noremap = true, expr = true, silent = true}
 
--- jk to esc
+-- header -----------------------------------------
+vim.keymap.set("n", "<LocalLeader>-", function()
+  local linenum = 50
+  local margin = vim.fn.col("$") - 1 > 0 and " " or "--"
+  return "A"..margin..string.rep("-", linenum - vim.fn.col("$")).."<Esc>"
+end, optsexpr)
+
+-- jk to esc 
 vim.keymap.set("i", "jk", "<Esc>", opts)
+
+-- [lsp]
+vim.keymap.set("n", ";", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("n", "[lsp]", "<Nop>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", ";", "[lsp]", {})
 
 -- w/q
 vim.keymap.set("n", "<Leader>w", "<Cmd>w<CR>", opts)
 vim.keymap.set("n", "<Leader>q", "<Cmd>q<CR>", opts)
+
+-- hop
+vim.keymap.set({ "n", "x" }, "S", "<Nop>", opts)
 
 -- switch buffer
 vim.keymap.set("n", "H", "<Nop>", opts)
@@ -55,6 +70,11 @@ vim.keymap.set("n", "<C-j>", "<Nop>", opts)
 vim.keymap.set("n", "<C-k>", "<Nop>", opts)
 vim.keymap.set("n", "<C-l>", "<Nop>", opts)
 
+-- git, use
+vim.keymap.set("n", "G", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("n", "GG", "G", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "G", "[git]", {})
+
 -- not use
 vim.keymap.set("n", "Q", "<Nop>", opts)
 vim.keymap.set("n", "=", "<Nop>", opts)
@@ -66,10 +86,10 @@ vim.keymap.set("n", "<C-h>", "<C-w>h", opts)
 vim.keymap.set("n", "<C-j>", "<C-w>j", opts)
 vim.keymap.set("n", "<C-k>", "<C-w>k", opts)
 vim.keymap.set("n", "<C-l>", "<C-w>l", opts)
-vim.keymap.set("n", "H", "5h", opts)
-vim.keymap.set("n", "J", "5j", opts)
-vim.keymap.set("n", "K", "5k", opts)
-vim.keymap.set("n", "L", "5l", opts)
+vim.keymap.set({ "n", "x" }, "H", "5h", opts)
+vim.keymap.set({ "n", "x" }, "J", "5j", opts)
+vim.keymap.set({ "n", "x" }, "K", "5k", opts)
+vim.keymap.set({ "n", "x" }, "L", "5l", opts)
 vim.keymap.set({ "n", "x" }, "j", function() return vim.v.count > 0 and "j" or "gj" end, optsexpr)
 vim.keymap.set({ "n", "x" }, "k", function() return vim.v.count > 0 and "k" or "gk" end, optsexpr)
 
@@ -161,6 +181,10 @@ vim.keymap.set("n", "[T", ":tabfirst<CR>", opts)
 vim.keymap.set("n", "]T", ":tablast<CR>", opts)
 vim.keymap.set("n", "[;", "g;zz", opts)
 vim.keymap.set("n", "];", "g,zz", opts)
+
+-- Delete buffer
+-- vim.keymap.set("n", "<LocalLeader>bd", "<Cmd>bdelete<CR>", { noremap = true, silent = true })
+-- vim.keymap.set("n", "<C-x>", "<Cmd>bdelete<CR>", { noremap = true, silent = true })
 
 -- switch quickfix/location list
 vim.keymap.set("n", "<LocalLeader>q", "<Cmd>copen<CR>", opts)
@@ -257,11 +281,6 @@ vim.keymap.set("n", "c<LocalLeader>]", "vi]o``c", opts)
 -- vim.keymap.set({ "n", "x" }, "[SubLeader]", "<Nop>", { noremap = true, silent = true })
 -- vim.api.nvim_set_keymap("n", ",", "[SubLeader]", {})
 -- vim.api.nvim_set_keymap("x", ",", "[SubLeader]", {})
---
--- [lsp]
--- vim.keymap.set("n", ";", "<Nop>", { noremap = true, silent = true })
--- vim.keymap.set("n", "[lsp]", "<Nop>", { noremap = true, silent = true })
--- vim.api.nvim_set_keymap("n", ";", "[lsp]", {})
 --
 -- [ts]
 -- vim.keymap.set("n", "[ts]", "<Nop>", { noremap = true, silent = true })
