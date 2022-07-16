@@ -69,6 +69,12 @@ end
 time([[try_loadstring definition]], false)
 time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
+  ["AutoSave.nvim"] = {
+    config = { "\27LJ\2\n7\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\28plugins/config/AutoSave\frequire\0" },
+    loaded = true,
+    path = "/home/flap1/.local/share/nvim/site/pack/packer/start/AutoSave.nvim",
+    url = "https://github.com/Pocco81/AutoSave.nvim"
+  },
   ["Comment.nvim"] = {
     after_files = { "/home/flap1/.local/share/nvim/site/pack/packer/opt/Comment.nvim/after/plugin/Comment.lua" },
     config = { "\27LJ\2\n6\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\27plugins/config/Comment\frequire\0" },
@@ -354,6 +360,16 @@ _G.packer_plugins = {
     path = "/home/flap1/.local/share/nvim/site/pack/packer/opt/nui.nvim",
     url = "https://github.com/MunifTanjim/nui.nvim"
   },
+  ["null-ls.nvim"] = {
+    config = { "\27LJ\2\n6\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\27plugins/config/null-ls\frequire\0" },
+    load_after = {
+      ["nvim-lsp-installer"] = true
+    },
+    loaded = false,
+    needs_bufread = false,
+    path = "/home/flap1/.local/share/nvim/site/pack/packer/opt/null-ls.nvim",
+    url = "https://github.com/jose-elias-alvarez/null-ls.nvim"
+  },
   ["nvim-autopairs"] = {
     after = { "nvim-cmp" },
     config = { "\27LJ\2\n=\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\"plugins/config/nvim-autopairs\frequire\0" },
@@ -364,7 +380,7 @@ _G.packer_plugins = {
     url = "https://github.com/windwp/nvim-autopairs"
   },
   ["nvim-cmp"] = {
-    after = { "cmp-treesitter", "cmp-calc", "cmp-cmdline", "cmp-dictionary", "cmp-buffer", "cmp-emoji", "cmp-rg", "cmp-mocword", "cmp-spell", "cmp-tabnine", "cmp-nvim-lua", "cmp-path", "cmp_luasnip" },
+    after = { "cmp-spell", "cmp-tabnine", "cmp-treesitter", "cmp_luasnip", "cmp-dictionary", "cmp-buffer", "cmp-rg", "cmp-calc", "cmp-cmdline", "cmp-nvim-lua", "cmp-path", "cmp-mocword", "cmp-emoji" },
     config = { "\27LJ\2\n7\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\28plugins/config/nvim-cmp\frequire\0" },
     load_after = {
       LuaSnip = true,
@@ -403,7 +419,7 @@ _G.packer_plugins = {
     url = "https://github.com/kevinhwang91/nvim-hlslens"
   },
   ["nvim-lsp-installer"] = {
-    after = { "fidget.nvim", "trouble.nvim", "lspsaga.nvim" },
+    after = { "trouble.nvim", "fidget.nvim", "lspsaga.nvim", "null-ls.nvim" },
     config = { "\27LJ\2\nA\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0&plugins/config/nvim-lsp-installer\frequire\0" },
     load_after = {
       ["cmp-nvim-lsp"] = true,
@@ -508,7 +524,7 @@ _G.packer_plugins = {
     url = "https://github.com/nvim-telescope/telescope.nvim"
   },
   ["tokyonight.nvim"] = {
-    after = { "nvim-treesitter", "nvim-web-devicons", "bufferline.nvim", "lualine.nvim", "nvim-cursorword", "nvim-scrollbar", "telescope.nvim" },
+    after = { "nvim-cursorword", "nvim-scrollbar", "bufferline.nvim", "nvim-treesitter", "nvim-web-devicons", "lualine.nvim", "telescope.nvim" },
     config = { "\27LJ\2\n9\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\30plugins/config/tokyonight\frequire\0" },
     loaded = false,
     needs_bufread = false,
@@ -613,14 +629,18 @@ end
 time([[Setup for lightspeed.nvim]], true)
 try_loadstring('\27LJ\2\n?\0\0\2\0\3\0\0056\0\0\0009\0\1\0+\1\2\0=\1\2\0K\0\1\0"lightspeed_no_default_keymaps\6g\bvim\0', "setup", "lightspeed.nvim")
 time([[Setup for lightspeed.nvim]], false)
--- Config for: vim-visual-multi
-time([[Config for vim-visual-multi]], true)
-try_loadstring("\27LJ\2\nZ\0\0\3\0\3\0\0056\0\0\0009\0\1\0'\2\2\0B\0\2\1K\0\1\0;source ~/.config/nvim/vim/plugins/vim-visual-multi.vim\bcmd\bvim\0", "config", "vim-visual-multi")
-time([[Config for vim-visual-multi]], false)
 -- Config for: neo-tree.nvim
 time([[Config for neo-tree.nvim]], true)
 try_loadstring("\27LJ\2\n7\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\28plugins/config/neo-tree\frequire\0", "config", "neo-tree.nvim")
 time([[Config for neo-tree.nvim]], false)
+-- Config for: AutoSave.nvim
+time([[Config for AutoSave.nvim]], true)
+try_loadstring("\27LJ\2\n7\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\28plugins/config/AutoSave\frequire\0", "config", "AutoSave.nvim")
+time([[Config for AutoSave.nvim]], false)
+-- Config for: vim-visual-multi
+time([[Config for vim-visual-multi]], true)
+try_loadstring("\27LJ\2\nZ\0\0\3\0\3\0\0056\0\0\0009\0\1\0'\2\2\0B\0\2\1K\0\1\0;source ~/.config/nvim/vim/plugins/vim-visual-multi.vim\bcmd\bvim\0", "config", "vim-visual-multi")
+time([[Config for vim-visual-multi]], false)
 -- Config for: alpha-nvim
 time([[Config for alpha-nvim]], true)
 try_loadstring("\27LJ\2\n9\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\30plugins/config/alpha-nvim\frequire\0", "config", "alpha-nvim")
@@ -629,8 +649,8 @@ vim.cmd [[augroup packer_load_aucmds]]
 vim.cmd [[au!]]
   -- Event lazy-loads
 time([[Defining lazy-load event autocommands]], true)
-vim.cmd [[au VimEnter * ++once lua require("packer.load")({'Comment.nvim', 'eyeliner.nvim', 'nvim-treesitter', 'nvim-hlslens', 'hop.nvim', 'tokyonight.nvim', 'LuaSnip', 'nvim-autopairs', 'vim-repeat', 'vim-asterisk', 'nvim-colorizer.lua', 'vim-quickhl', 'vim-ref', 'dial.nvim', 'nvim-lspconfig', 'bufdelete.nvim', 'lightspeed.nvim', 'which-key.nvim'}, { event = "VimEnter *" }, _G.packer_plugins)]]
 vim.cmd [[au ColorSchemePre * ++once lua require("packer.load")({'tokyonight.nvim'}, { event = "ColorSchemePre *" }, _G.packer_plugins)]]
+vim.cmd [[au VimEnter * ++once lua require("packer.load")({'LuaSnip', 'nvim-autopairs', 'nvim-colorizer.lua', 'nvim-hlslens', 'bufdelete.nvim', 'dial.nvim', 'eyeliner.nvim', 'vim-ref', 'vim-repeat', 'hop.nvim', 'nvim-lspconfig', 'lightspeed.nvim', 'nvim-treesitter', 'vim-quickhl', 'Comment.nvim', 'vim-asterisk', 'tokyonight.nvim', 'which-key.nvim'}, { event = "VimEnter *" }, _G.packer_plugins)]]
 time([[Defining lazy-load event autocommands]], false)
 vim.cmd("augroup END")
 if should_profile then save_profiles() end

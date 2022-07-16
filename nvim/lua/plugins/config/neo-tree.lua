@@ -7,7 +7,7 @@ require("neo-tree").setup {
     container = {
       enable_character_fade = true,
     },
-
+    indent = {
       indent_size = 2,
       padding = 1, -- extra padding on left hand side
       with_markers = true,

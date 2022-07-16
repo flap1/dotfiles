@@ -144,6 +144,16 @@ return require("packer").startup(function()
     end,
   }
 
+  -- Lint ----------------------------------------
+  use {
+    "jose-elias-alvarez/null-ls.nvim",
+    after = "nvim-lsp-installer",
+    config = function()
+      require("plugins/config/null-ls")
+    end,
+  }
+
+
   -- Comment Library ------------------------------
   use {
     "numToStr/Comment.nvim",
@@ -281,6 +291,14 @@ return require("packer").startup(function()
     end,
   }
   use { "rafamadriz/friendly-snippets", opt = true }
+
+  -- AutoSave ------------------------------------
+  use { 
+    "Pocco81/AutoSave.nvim",
+    config = function()
+      require("plugins/config/AutoSave")
+    end,
+  }
 
   -- MultiCursor ---------------------------------
   use {
