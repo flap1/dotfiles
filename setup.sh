@@ -1,31 +1,50 @@
-#!/usr/bin bash
+#!/bin bash
 
-set -x # debug output
+ZSHRC="zsh/.zshrc"
+TMUXCONF="tmux/.tmux.conf"
+TMUXCONF_LOCAL="tmux/.tmux.conf.local"
+GIT_CONFIG="git/.gitconfig"
+ALACRITTY="alacritty/.alacritty.yml"
+PECO="peco"
+NVIM="nvim"
+
+DOT_FILES=( $ZSHRC $TMUXCONF $TMUXCONF_LOCAL $GIT_CONFIG $ALACRITTY $PECO $NVIM )
+
+__prepare() {
+  file=$1
+  target=$2
+
+  echo ""
+  echo "-- Create symbolic link: $target"
+
+  if [[ -L $target ]]; then
+    unlink $target
+    echo "Unlink $target"
+  fi
+
+  if [[ -e $target ]]; then
+    backupFile=$target.`date "+%Y%m%d%H%M%S"` # backup
+    mv -f $target $backupFile
+    echo "Create backup: $backupFile"
+  fi
+}
+
+for file in ${DOT_FILES[@]}
+do
+  if [[ ! -e $file ]]; then
+    echo "$file does not exist"
+    continue
+  fi
+  if [[ -d $file ]]; then
+    target=$HOME/.config/$file
+  else
+    target=$HOME/`basename ${file}`
+  fi
+  __prepare $file $target
+  ln -s `pwd`/${file} $target 
+done
 
 cd `dirname $0`
-
-export DOTENV_HOME=$(pwd)
-
-# zsh
-ln -sf ${DOTENV_HOME}/zsh/.zshrc ~/.zshrc
-
-# git
-mkdir -p ~/.config/git
-ln -sf ${DOTENV_HOME}/.gitconfig ~/.gitconfig
-
-if [[ ! -d ~/dotfiles ]]; then
-  ln -s $DOTENV_HOME/.. ~/dotfiles
-fi
-
-# tmux
-ln -sf ${DOTENV_HOME}/tmux/.tmux.conf ~/.tmux.conf
-ln -sf ${DOTENV_HOME}/tmux/.tmux.conf.local  ~/.tmux.conf.local
-
-# alacritty
-ln -sf ${DOTENV_HOME}/.alacritty.yml ~/.alacritty.yml
-
-# neovim
-ln -sf ${DOTENV_HOME}/nvim ~/.config/nvim
 
 # change default shell
 sudo chsh -s "$(which zsh)" $USER
