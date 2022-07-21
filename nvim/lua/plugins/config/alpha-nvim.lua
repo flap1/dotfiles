@@ -9,6 +9,7 @@ dashboard.section.buttons.val = {
   dashboard.button("SPC f o", "  Recent File  ", ":Telescope oldfiles<CR>"),
   dashboard.button("SPC f w", "  Find Word  ", ":Telescope live_grep<CR>"),
   dashboard.button("SPC b m", "  Bookmarks  ", ":Telescope marks<CR>"),
+  dashboard.button("CTRL n", "  Toggle Sidebar  ", ":NeoTreeRevealToggle<CR>"),
   dashboard.button("e", "  New file", ":enew<CR>"),
   dashboard.button("p", "  Update plugins", ":PackerSync<CR>"),
   dashboard.button("s", "  Settings", ":e $MYVIMRC | :cd %:p:h <CR>"),

@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  dotfiles:
+    container_name: dotfiles
+    build: .
+    hostname: flap1-dotfiles
+    tty: true
+    stdin_open: true
+
