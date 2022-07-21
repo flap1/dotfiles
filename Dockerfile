@@ -5,7 +5,7 @@ ARG USERNAME=flap1
 RUN apt-get update \
   && apt-get update -y \
   && apt-get install -y --no-install-recommends \
-    sudo git zsh
+    sudo git zsh ca-certificates 
 
 # adduser ${USERNAME}:${USERNAME} with password '${USERNAME}'
 RUN groupadd -g 1000 ${USERNAME} \
@@ -15,7 +15,7 @@ RUN groupadd -g 1000 ${USERNAME} \
 RUN echo "Defaults visiblepw" >> /etc/sudoers
 RUN echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-RUN git clone https://gitlab.com/flap1/dotfiles.git /home/${USERNAME} \ 
+RUN git clone https://gitlab.com/flap1/dotfiles /home/${USERNAME}/dotfiles \ 
   && bash /home/${USERNAME}/dotfiles/setup.sh
 
 USER ${USERNAME}
