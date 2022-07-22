@@ -65,7 +65,12 @@ return require("packer").startup(function()
   use { "hrsh7th/cmp-calc", after = "nvim-cmp" }
   use { "f3fora/cmp-spell", after = "nvim-cmp" }
   use { "yutkat/cmp-mocword", after = "nvim-cmp" }
-  use { "uga-rosa/cmp-dictionary", after = "nvim-cmp", config = function() require "plugins/config/cmp-dictionary" end }
+  use { "uga-rosa/cmp-dictionary",
+    after = "nvim-cmp",
+    config = function()
+      require "plugins/config/cmp-dictionary"
+    end,
+  }
   use { "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" }
   use{
     "tzachar/cmp-tabnine",
@@ -136,6 +141,15 @@ return require("packer").startup(function()
     event = "VimEnter",
     config = function()
       vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-quickhl.vim")
+    end,
+  }
+  
+  -- Git -----------------------------------------
+  use {
+    "TimUntersberger/neogit",
+    event = "VimEnter",
+    config = function()
+      require("plugins/config/neogit")
     end,
   }
 

@@ -29,6 +29,8 @@ __prepare() {
   fi
 }
 
+mkdir -p $HOME/.config
+
 for file in ${DOT_FILES[@]}
 do
   if [[ ! -e $file ]]; then
