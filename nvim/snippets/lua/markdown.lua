@@ -20,17 +20,17 @@ local types = require("luasnip.util.types")
 local conds = require("luasnip.extras.expand_conditions")
 
 return {
-	s("badge_link", {
-		t({ "- [" }),
-		i(1, { "repo/name" }),
-		f(function(args, snip)
-			return string.format(
-				"](https://github.com/%s) ![](https://img.shields.io/github/stars/%s) ![](https://img.shields.io/github/last-commit/%s) ![](https://img.shields.io/github/commit-activity/y/%s)",
-				args[1][1],
-				args[1][1],
-				args[1][1],
-				args[1][1]
-			)
-		end, { 1 }),
-	}),
+  s("badge_link", {
+    t({ "- [" }),
+    i(1, { "repo/name" }),
+    f(function(args, snip)
+      return string.format(
+        "](https://github.com/%s) ![](https://img.shields.io/github/stars/%s) ![](https://img.shields.io/github/last-commit/%s) ![](https://img.shields.io/github/commit-activity/y/%s)",
+        args[1][1],
+        args[1][1],
+        args[1][1],
+        args[1][1]
+      )
+    end, { 1 }),
+  }),
 }

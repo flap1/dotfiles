@@ -3,6 +3,7 @@ require("options")
 require("display")
 require("plugins")
 require("mappings")
+require("autocmd")
 if vim.g.vscode then
   require("vscode-neovim/mappings")
 end

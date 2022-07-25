@@ -27,19 +27,19 @@ end
 
 -- Make sure to not pass an invalid command, as io.popen() may write over nvim-text.
 local function bash(_, _, command)
-	local file = io.popen(command, "r")
-	local res = {}
-	for line in file:lines() do
-		table.insert(res, line)
-	end
-	return res
+  local file = io.popen(command, "r")
+  local res = {}
+  for line in file:lines() do
+    table.insert(res, line)
+  end
+  return res
 end
 
 -- Returns a snippet_node wrapped around an insert_node whose initial
 -- text value is set to the current date in the desired format.
 local date_input = function(args, state, format)
-	local n_fmt = format or "%Y-%m-%d"
-	return sn(nil, i(1, os.date(n_fmt)))
+  local n_fmt = format or "%Y-%m-%d"
+  return sn(nil, i(1, os.date(n_fmt)))
 end
 
 return {

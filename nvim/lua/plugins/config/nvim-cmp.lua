@@ -24,7 +24,6 @@ cmp.setup({
         copilot = "[Copilot]",
         luasnip = "[LuaSnip]",
         nvim_lua = "[NeovimLua]",
-        latex_symbols = "[LaTeX]",
         path = "[Path]",
         omni = "[Omni]",
         spell = "[Spell]",
@@ -156,7 +155,7 @@ cmp.setup({
   -- LuaFormatter on
 })
 
-cmp.setup.filetype({ "gitcommit", "markdown" }, {
+cmp.setup.filetype({ "gitcommit", "markdown"}, {
   sources = cmp.config.sources({
     { name = "copilot", priority = 90 }, -- For luasnip users.
     { name = "nvim_lsp", priority = 100 },

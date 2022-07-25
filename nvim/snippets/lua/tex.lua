@@ -22,18 +22,36 @@ local conds = require("luasnip.extras.expand_conditions")
 -- 'recursive' dynamic snippet. Expands to some text followed by itself.
 local rec_ls
 rec_ls = function()
-	return sn(
-		nil,
-		c(1, {
-			-- Order is important, sn(...) first would cause infinite loop of expansion.
-			t(""),
-			sn(nil, { t({ "", "\t\\item " }), i(1), d(2, rec_ls, {}) }),
-		})
-	)
+  return sn(
+    nil,
+    c(1, {
+      -- Order is important, sn(...) first would cause infinite loop of expansion.
+      t(""),
+      sn(nil, { t({ "", "\t\\item " }), i(1), d(2, rec_ls, {}) }),
+    })
+  )
 end
 
 return {
-	-- rec_ls is self-referencing. That makes this snippet 'infinite' eg. have as many
-	-- \item as necessary by utilizing a choiceNode.
-	s("ls", { t({ "\\begin{itemize}", "\t\\item " }), i(1), d(2, rec_ls, {}), t({ "", "\\end{itemize}" }) }),
+  s("ls", {
+    t({"\\begin{itemize}",
+    "\t\\item "}), i(1), d(2, rec_ls, {}),
+    t({"", "\\end{itemize}"}), i(0)
+  }),
+  s({trig = "ul", dscr = "Itemize with endless items"}, {
+    t({ "\\begin{itemize}", "\t\\item " }),
+    i(1),
+    d(2, rec_ls, {}),
+    t({ "", "\\end{itemize}" }),
+  }),
+  s({trig = "ol", dscr = "Enumerate with endless items"}, {
+    t({ "\\begin{enumerate}", "\t\\item " }),
+    i(1),
+    d(2, rec_ls, {}),
+    t({ "", "\\end{enumerate}" }),
+  }),
+  s({trig = "bf", dscr = "textbf"}, { t({"\\textbf{"}), i(1), t({"}"}), i(0) }),
+  s({trig = "it", dscr = "textit"}, { t({"\\textit{"}), i(1), t({"}"}), i(0) }),
+  s({trig = "rm", dscr = "textrm"}, { t({"\\textrm{"}), i(1), t({"}"}), i(0) }),
+  s({trig = "verb", dscr = "verb"}, { t({"\\verb|"}), i(1), t({"|"}), i(0) }),
 }

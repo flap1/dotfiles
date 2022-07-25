@@ -24,6 +24,10 @@
       {
         "language": "shellscript",
         "path": "./shellscript.json"
+      },
+      {
+        "language": "tex",
+        "path": "./tex.json"
       }
     ]
   }

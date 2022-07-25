@@ -39,5 +39,44 @@
         "body": [
             "<!-- markdownlint-disable MD013 MD034 -->"
         ]
+    },
+    "link": {
+        "prefix": "link",
+        "body": "[$1]($2){:target=_blank}",
+        "description": "外部リンク"
+    },
+    "exlink": {
+        "prefix": "exlink",
+        "body": "{:target=_blank}"
+    },
+    "import": {
+        "prefix": "import",
+        "body": "--8<-- '$1'",
+        "description": "ファイルのインポート(MKdocs)"
+    },
+    "code": {
+        "prefix": "code",
+        "body": "```$1 title='$2'\n$3```",
+        "description": "コードブロック"
+    },
+    "bash": {
+        "prefix": "bash",
+        "body": "```bash\n$1\n```",
+        "description": "コードブロック"
+    },
+    "py": {
+        "prefix": "py",
+        "body": "```py\n$1\n```",
+        "description": "コードブロック"
+    },
+    "ipy": {
+        "prefix": "ipy",
+        "body": "`#!py $1`",
+        "description": "Pythonのインラインコードブロック"
+    },
+    "icode": {
+        "prefix": "icode",
+        "body": "`$1`",
+        "description": "インラインコードブロック"
     }
 }
