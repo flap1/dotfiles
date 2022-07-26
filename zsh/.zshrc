@@ -53,4 +53,3 @@ eval "$(navi widget zsh)"
 # To customize prompt, run `p10k configure` or edit ~/dotfiles/zsh/.zshrc.p10k.
 [[ ! -f ~/dotfiles/zsh/.zshrc.p10k ]] || source ~/dotfiles/zsh/.zshrc.p10k
 
-
