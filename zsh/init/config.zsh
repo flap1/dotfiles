@@ -61,35 +61,48 @@ zstyle ':completion:*' list-colors $LS_COLORS
 #zle -N peco-history-selection
 #bindkey '^R' peco-history-selection
 
-# コマンド履歴からディレクトリ検索・移動 ctrl+e
-if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
-  autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-  add-zsh-hook chpwd chpwd_recent_dirs
-  zstyle ':completion:*' recent-dirs-insert both
-  zstyle ':chpwd:*' recent-dirs-default true
-  zstyle ':chpwd:*' recent-dirs-max 1000
-  zstyle ':chpwd:*' recent-dirs-file "$HOME/.cache/chpwd-recent-dirs"
-fi
-function peco-cdr () {
-  local selected_dir="$(cdr -l | sed 's/^[0-9]* *//' | peco)"
-  if [ -n "$selected_dir" ]; then
-    BUFFER="cd ${selected_dir}"
-    zle accept-line
-  fi
+# lsみながらcdrする
+function select_cdr(){
+    local selected_dir=$(cdr -l | awk '{ print $2 }' | \
+      fzf --preview 'f() { sh -c "ls -hFGl $1" }; f {}')
+    if [ -n "$selected_dir" ]; then
+        BUFFER="cd ${selected_dir}"
+        zle accept-line
+    fi
+    zle clear-screen
 }
-zle -N peco-cdr
-bindkey '^E' peco-cdr
+zle -N select_cdr
+bindkey '^@' select_cdr
+
+# コマンド履歴からディレクトリ検索・移動 ctrl+e
+# if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
+#   autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+#   add-zsh-hook chpwd chpwd_recent_dirs
+#   zstyle ':completion:*' recent-dirs-insert both
+#   zstyle ':chpwd:*' recent-dirs-default true
+#   zstyle ':chpwd:*' recent-dirs-max 1000
+#   zstyle ':chpwd:*' recent-dirs-file "$HOME/.cache/chpwd-recent-dirs"
+# fi
+# function peco-cdr () {
+#   local selected_dir="$(cdr -l | sed 's/^[0-9]* *//' | peco)"
+#   if [ -n "$selected_dir" ]; then
+#     BUFFER="cd ${selected_dir}"
+#     zle accept-line
+#   fi
+# }
+# zle -N peco-cdr
+# bindkey '^E' peco-cdr
 
 # カレントディレクトリ以下のディレクトリ検索・移動 ctrl+x
-function find_cd() {
-  local selected_dir=$(find . -type d | peco)
-  if [ -n "$selected_dir" ]; then
-    BUFFER="cd ${selected_dir}"
-    zle accept-line
-  fi
-}
-zle -N find_cd
-bindkey '^X' find_cd
+# function find_cd() {
+#   local selected_dir=$(find . -type d | peco)
+#   if [ -n "$selected_dir" ]; then
+#     BUFFER="cd ${selected_dir}"
+#     zle accept-line
+#   fi
+# }
+# zle -N find_cd
+# bindkey '^X' find_cd
 
 
 # --------------------------------------------------------------------------
@@ -117,3 +130,5 @@ setopt correct
 # zmv
 autoload -Uz zmv
 alias zmv='noglob zmv -W'
+
+
