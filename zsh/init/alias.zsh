@@ -35,7 +35,8 @@ alias v='nvim'
 alias fd='fd -E gdrive'
 
 # c
-alias make='make -j16'
+JOBS=$[$(grep cpu.cores /proc/cpuinfo | sort -u | sed 's/[^0-9]//g') + 1]
+alias make='make -j${JOBS}'
 
 # python
 alias python='python3'
