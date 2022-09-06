@@ -33,23 +33,28 @@ zinit light-mode for \
     zdharma-continuum/zinit-annex-patch-dl \
     zdharma-continuum/zinit-annex-rust
 
-### End of Zinit's installer chunk
+# -------------------------------------------------------------------------
+# End of Zinit's installer chunk
+# -------------------------------------------------------------------------
 
+# -------------------------------------------------------------------------
+# Custom Settings
+# -------------------------------------------------------------------------
+
+# dotfiles directory
 SCRIPT_DIR=$HOME/dotfiles
 
+# load setting files ($SCRIPT_DIR/zsh/init/*)
 while read -r f; do
   source $f
 done  < <(find $SCRIPT_DIR/zsh/init -mindepth 1 -maxdepth 1)
 
-fpath+=$SCRIPT_DIR/zsh/.zsh_functions
-
-source $SCRIPT_DIR/bin/check_update_dotfiles
-
-KEYTIMEOUT=1
-
-# navi
+# initialize navi 
 eval "$(navi widget zsh)"
 
 # To customize prompt, run `p10k configure` or edit ~/dotfiles/zsh/.zshrc.p10k.
-[[ ! -f ~/dotfiles/zsh/.zshrc.p10k ]] || source ~/dotfiles/zsh/.zshrc.p10k
+[[ ! -f $SCRIPT_DIR/zsh/.zshrc.p10k ]] || source $SCRIPT_DIR/zsh/.zshrc.p10k
+
+# check dotfiles
+source $SCRIPT_DIR/bin/check_update_dotfiles
 

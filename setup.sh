@@ -7,8 +7,9 @@ GIT_CONFIG="git/.gitconfig"
 ALACRITTY="alacritty/.alacritty.yml"
 PECO="peco"
 NVIM="nvim"
+WEZTERM="wezterm"
 
-DOT_FILES=( $ZSHRC $TMUXCONF $TMUXCONF_LOCAL $GIT_CONFIG $ALACRITTY $PECO $NVIM )
+DOT_FILES=( $ZSHRC $TMUXCONF $TMUXCONF_LOCAL $GIT_CONFIG $ALACRITTY $PECO $NVIM $WEZTERM )
 
 __prepare() {
   file=$1

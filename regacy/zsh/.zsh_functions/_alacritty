@@ -125,3 +125,4 @@ _alacritty__msg_commands() {
 }
 
 _alacritty "$@"
+

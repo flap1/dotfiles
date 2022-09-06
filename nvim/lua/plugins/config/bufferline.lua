@@ -11,7 +11,7 @@ require('bufferline').setup {
     -- NOTE: this plugin is designed with this icon in mind,
     -- and so changing this is NOT recommended, this is intended
     -- as an escape hatch for people who cannot bear it for whatever reason
-    indicator_icon = '▎',
+    -- indicator_icon = '▎',
     buffer_close_icon = '',
     modified_icon = '●',
     close_icon = '',
@@ -71,8 +71,8 @@ require('bufferline').setup {
 }
 
 vim.keymap.set("n", "<Leader>b", "<Cmd>BufferLinePick<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "H", "<Cmd>BufferLineCyclePrev<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "L", "<Cmd>BufferLineCycleNext<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>h", "<Cmd>BufferLineCyclePrev<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>l", "<Cmd>BufferLineCycleNext<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "@", "<Cmd>BufferLineMovePrev<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "#", "<Cmd>BufferLineMoveNext<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<C-S-h>", "<Cmd>BufferLineMovePrev<CR>", { noremap = true, silent = true })

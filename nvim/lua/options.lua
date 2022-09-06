@@ -7,6 +7,8 @@
 -- https://vim-jp.org/vimdoc-ja/options.html
 -- https://neovim.io/doc/user/options.html
 
+vim.opt.guifont = { "UDEV Gothic 35NFLG" }
+
 vim.g.mapleader = " " -- set mapleader(<Leader>)
 vim.g.maplocalleader = "," -- set maplocalleader(<LocalLeader>)
 

@@ -8,6 +8,7 @@ alias -g GI='| grep -ri'
 alias cat='bat'
 alias ls='lsd'
 alias l='ls -l'
+alias ll='ls -l'
 alias la='ls -a'
 alias lla='ls -la'
 alias lt='ls --tree'
@@ -17,8 +18,8 @@ alias lt='ls --tree'
 #alias lt='ls -tAlh --color=auto'
 #alias la='ls -CAh --color=auto'
 
-alias du="du -Th"
-alias df="df -Th"
+alias du="du -sh"
+alias df="df -sh"
 alias su="su -l"
 alias ps='ps --sort=start_time'
 

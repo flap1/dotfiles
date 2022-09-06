@@ -30,6 +30,14 @@ return require("packer").startup(function()
       require "plugins/config/tokyonight"
     end,
   }
+  -- local colorscheme = "nightfox.nvim"
+  -- use { 
+  --   "EdenEast/nightfox.nvim",
+  --   event = { "VimEnter", "ColorSchemePre" },
+  --   config = function ()
+  --     require "plugins/config/nightfox"
+  --   end,
+  -- }
 
   -- Font Library ---------------------------------
   if not os.getenv("DISABLE_DEVICONS") or os.getenv("DISABLE_DEVICONS") == "false" then

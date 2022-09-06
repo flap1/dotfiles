@@ -131,4 +131,3 @@ setopt correct
 autoload -Uz zmv
 alias zmv='noglob zmv -W'
 
-
