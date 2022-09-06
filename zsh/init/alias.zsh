@@ -1,39 +1,38 @@
 # global alias
-alias -g L='| less'
+alias -g L='| bat --style=plain'
 alias -g H='| head'
-alias -g G='| grep'
-alias -g GI='| grep -ri'
+alias -g G='| rg -S'
+alias -g A='| awk'
+alias -g C='| tee >(pbcopy)'
+alias -g X='| xargs'
 
 # basics
-alias cat='bat'
-alias ls='lsd'
-alias l='ls -l'
-alias ll='ls -l'
-alias la='ls -a'
-alias lla='ls -la'
-alias lt='ls --tree'
-#alias l='ls'
-#alias ls='ls -GXh --color=auto'
-#alias ll='ls -Alh --show-control-chars --color=auto'
-#alias lt='ls -tAlh --color=auto'
-#alias la='ls -CAh --color=auto'
-
-alias du="du -sh"
-alias df="df -sh"
-alias su="su -l"
-alias ps='ps --sort=start_time'
-
 alias ..='cd ..'
+alias .2='cd ../..'
+alias .3='cd ../../..'
+alias .4='cd ../../../..'
+alias .5='cd ../../../../..'
 alias mkdir='mkdir -p'
-
+alias cat='bat'
+alias less='bat'
+alias ls='lsd -A --group-dirs=last'
+alias l='lsd -Ahl --total-size --group-dirs=last'
+alias ll='lsd -Ahl --total-size --group-dirs=last'
+alias lt='lsd -Ahl --total-size --tree --group-dirs=last'
+alias tree='lsd -A --tree --group-dirs=last'
+alias du="dust" # alias du="du -sh"
+alias df="df -h"
+alias su="su -l"
+alias ps='procs --tree'
+alias grep='rg -S'
+alias find='fd'
+alias fd='fd -E gdrive'
+alias diff='delta'
 alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
-
 alias vim='nvim'
 alias v='nvim'
-
-alias fd='fd -E gdrive'
 
 # c
 JOBS=$[$(grep cpu.cores /proc/cpuinfo | sort -u | sed 's/[^0-9]//g') + 1]
@@ -49,8 +48,8 @@ alias gc='git commit -m'
 alias gp='git push'
 alias gl='git pull'
 alias gpo='git push -u origin HEAD'
-alias glom='git pull origin master'
-alias gloms='git pull origin master && git submodule update --init --recursive'
+alias glom='git pull origin main'
+alias gloms='git pull origin main && git submodule update --init --recursive'
 alias gll='git log --oneline'
 
 # docker
@@ -61,5 +60,4 @@ alias dcb="docker-compose build"
 alias dcu="docker-compose up"
 alias dcd="docker-compose down"
 alias dps='docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"'
-## 停止コンテナ、タグ無しイメージ、未使用ボリューム、未使用ネットワーク一括削除
 alias drm="docker system prune"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function cdr() {
+function cd() {
     if [[ "$#" != 0 ]]; then
         builtin cd "$@";
         return
@@ -20,5 +20,5 @@ function cdr() {
     done
 }
 
-cdr $@
+cd $@
 

@@ -31,6 +31,7 @@ M.keys = {
   { key = "l", mods = "ALT|CTRL", action = act({ MoveTabRelative = 1 }) },
   { key = "t", mods = "CTRL", action = act({ SpawnTab = "CurrentPaneDomain" }) },
   { key = "t", mods = "ALT", action = act({ SpawnTab = "DefaultDomain" }) },
+  { key = "w", mods = "CTRL", action = act({ CloseCurrentTab = { confirm = true } }) },
 
   -- Pane
   { key = "-", mods = "ALT", action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
@@ -54,6 +55,7 @@ M.keys = {
   { key = "v", mods = "CTRL|SHIFT", action = act({ PasteFrom = "Clipboard" }) },
 
   -- CopyMode
+  { key = "c", mods = "ALT", action = act.ActivateCopyMode },
   { key = "x", mods = "CTRL|SHIFT", action = act.ActivateCopyMode },
   { key = "Enter", mods = "CTRL|SHIFT", action = act.ActivateCopyMode },
 
@@ -178,7 +180,7 @@ M.key_tables = {
     { key = "p", mods = "CTRL", action = act.CopyMode("PriorMatch") },
     { key = "n", mods = "CTRL", action = act.CopyMode("NextMatch") },
     { key = "r", mods = "CTRL", action = act.CopyMode("CycleMatchType") },
-    { key = "/", mods = "NONE", action = act.CopyMode("ClearPattern") },
+    -- { key = "/", mods = "NONE", action = act.CopyMode("ClearPattern") },
     { key = "u", mods = "CTRL", action = act.CopyMode("ClearPattern") },
   },
 }

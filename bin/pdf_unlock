@@ -1,4 +1,20 @@
 #!/bin/bash
 
-# pdf_unlock ファイル名 パスワード
-qpdf --password=$2 --decrypt $1 "_$1"
+function usage {
+    cat <<EOF
+Usage:
+    $(basename ${0}) [path/to/pdf] [password]
+
+Options:
+    --help, -h        print this
+EOF
+}
+
+case $1 in
+    help|--help|-h)
+        usage
+    ;;
+    *)
+        qpdf --password=$2 --decrypt $1 "_$1"
+    ;;
+esac

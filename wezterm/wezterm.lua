@@ -2,7 +2,13 @@
 local wezterm = require("wezterm")
 local bindings= require("bindings")
 local scheme = wezterm.get_builtin_color_schemes()["nightfox"]
-require("on")
+local mux = wezterm.mux
+
+-- Always open window in full screen
+wezterm.on("gui-startup", function(cmd)
+  local tab, pane, window = mux.spawn_window(cmd or {})
+  window:gui_window():maximize()
+end)
 
 return {
   -- font

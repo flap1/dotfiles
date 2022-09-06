@@ -1,15 +1,15 @@
-#!/bin bash
+#!/bin/bash
 
 ZSHRC="zsh/.zshrc"
-TMUXCONF="tmux/.tmux.conf"
-TMUXCONF_LOCAL="tmux/.tmux.conf.local"
 GIT_CONFIG="git/.gitconfig"
-ALACRITTY="alacritty/.alacritty.yml"
 PECO="peco"
 NVIM="nvim"
 WEZTERM="wezterm"
+# TMUXCONF="tmux/.tmux.conf"
+# TMUXCONF_LOCAL="tmux/.tmux.conf.local"
+# ALACRITTY="alacritty/.alacritty.yml"
 
-DOT_FILES=( $ZSHRC $TMUXCONF $TMUXCONF_LOCAL $GIT_CONFIG $ALACRITTY $PECO $NVIM $WEZTERM )
+DOT_FILES=( $ZSHRC $GIT_CONFIG $PECO $NVIM $WEZTERM )
 
 __prepare() {
   file=$1
