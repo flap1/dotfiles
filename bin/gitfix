@@ -1,0 +1,11 @@
+#!/bin/bash
+
+git add -A
+git commit -m "git fix"
+git checkout -b tmp
+git checkout main
+git fetch origin master
+git reset --hard origin/main
+git merge tmp
+git branch -d tmp
+
