@@ -36,7 +36,7 @@ vim.keymap.set("n", "<Leader>w", "<Cmd>w<CR>", opts)
 vim.keymap.set("n", "<Leader>q", "<Cmd>q<CR>", opts)
 
 -- hop
-vim.keymap.set({ "n", "x" }, "S", "<Nop>", opts)
+-- vim.keymap.set({ "n", "x" }, "S", "<Nop>", opts)
 
 -- switch buffer
 vim.keymap.set("n", "H", "<Nop>", opts)
@@ -62,6 +62,7 @@ vim.keymap.set("n", "^", "<Nop>", opts)
 vim.keymap.set("n", "&", "<Nop>", opts)
 
 -- buffer close
+vim.keymap.set("n", "<C-s>", "<C-x>", opts)
 vim.keymap.set("n", "<C-x>", "<Nop>", opts)
 
 -- switch window
