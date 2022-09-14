@@ -36,8 +36,8 @@ vim.o.mousescroll = "ver:0,hor:0" -- default: ver:3,hor:6, disable mouse scrolli
 -- "hor" controls horizontal scrolling and "ver" controls vertical scrolling
 
 -- Tab
-vim.o.tabstop = 4 -- default: 8, Number of spaces that a <Tab> in the file counts for
-vim.o.shiftwidth = 4 -- default: 8, Number of spaces to use for each step of (auto)indent used for 'cindent', >>, <<, etc
+vim.o.tabstop = 2 -- default: 8, Number of spaces that a <Tab> in the file counts for
+vim.o.shiftwidth = 2 -- default: 8, Number of spaces to use for each step of (auto)indent used for 'cindent', >>, <<, etc
 vim.o.softtabstop = 0 -- default: 0, Number of spaces that a <Tab> counts for while performing editing operations. It also affects <BS>
 vim.o.expandtab = true -- Convert tabs to spaces
 -- vim.o.autoindent = "smartindent"  -- default: false, autoindent

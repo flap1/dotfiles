@@ -6,4 +6,5 @@ require("nvim-treesitter.configs").setup {
     enable = true,
     use_languagetree = true,
   },
+  yati = { enable = true },
 }

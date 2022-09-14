@@ -147,46 +147,20 @@ return require("packer").startup(function()
   use { "TimUntersberger/neogit", event = "VimEnter", config = function() require("plugins/config/neogit") end }
 
   -- Lint ----------------------------------------
-  use { "jose-elias-alvarez/null-ls.nvim", after = "nvim-lsp-installer", config = function() require("plugins/config/null-ls") end }
+  -- use { "jose-elias-alvarez/null-ls.nvim", after = "nvim-lsp-installer", config = function() require("plugins/config/null-ls") end }
 
 
   -- Comment Library ------------------------------
-  use {
-    "numToStr/Comment.nvim",
-    event = "VimEnter",
-    config = function()
-      require("plugins/config/Comment")
-    end,
-  }
+  use { "numToStr/Comment.nvim", event = "VimEnter", config = function() require("plugins/config/Comment") end }
 
   -- FuzzyFinder Library --------------------------
-  use {
-    "nvim-telescope/telescope.nvim",
-    requires = { { 'nvim-lua/plenary.nvim', opt = true } },
-    after = { colorscheme },
-    config = function()
-      require("plugins/config/telescope")
-    end,
-  }
-  use {
-    "nvim-telescope/telescope-frecency.nvim",
-    requires = { "kkharji/sqlite.lua" },
-    after = { "telescope.nvim" },
-    config = function()
-      require("telescope").load_extension("frecency")
-    end,
-  }
+  use { "nvim-telescope/telescope.nvim", requires = { { 'nvim-lua/plenary.nvim', opt = true } }, after = { colorscheme }, config = function() require("plugins/config/telescope") end }
+  use { "nvim-telescope/telescope-frecency.nvim", requires = { "kkharji/sqlite.lua" }, after = { "telescope.nvim" }, config = function() require("telescope").load_extension("frecency") end }
+  use { "nvim-telescope/telescope-packer.nvim", requires = { "wbthomason/packer.nvim" }, after = { "telescope.nvim" }, config = function() require("telescope").load_extension("packer") end }
 
   -- Treesitter ----------------------------------
-  use {
-    "nvim-treesitter/nvim-treesitter",
-    after = { colorscheme },
-    event = "VimEnter",
-    run = ":TSUpdate",
-    config = function()
-      require("plugins/config/nvim-treesitter")
-    end,
-  }
+  use { "nvim-treesitter/nvim-treesitter", after = { colorscheme }, event = "VimEnter", run = ":TSUpdate", config = function() require("plugins/config/nvim-treesitter") end }
+  use { "yioneko/nvim-yati", requires = "nvim-treesitter/nvim-treesitter" }
 
   -- Appearance ----------------------------------
   ---- Statusline
@@ -364,13 +338,6 @@ return require("packer").startup(function()
 
   -- markdown -------------------------------------
   -- use { "iamcco/markdown-preview.nvim", ft = { "markdown" }, run = ":call mkdp#util#install()" }
-  use {
-    "dhruvasagar/vim-table-mode",
-    event = "VimEnter",
-    cmd = { "TableModeEnable" },
-    config = function()
-        vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-table-mode.vim")
-    end,
-  }
+  use { "dhruvasagar/vim-table-mode", event = "VimEnter", cmd = { "TableModeEnable" }, config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-table-mode.vim") end }
 
 end)
