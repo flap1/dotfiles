@@ -26,7 +26,6 @@ vim.o.completeopt = "menuone,noselect,noinsert" -- option of input completion
 -- noinsert: Any matching text will not be inserted unless the user selects it from the menu
 
 vim.o.history = 10000 -- default: 50, max: 10000, Number of stored history of commands and previously used search patterns
-
 vim.o.timeout = true -- enable time limit for suggested searches(ms)
 vim.o.timeoutlen = 750 -- default: 1000ms, Time to wait for key code or mapped key sequence to complete
 vim.o.ttimeoutlen = 10 -- default: 100ms, Time to wait for only mapped key sequence to complete
@@ -37,11 +36,11 @@ vim.o.mousescroll = "ver:0,hor:0" -- default: ver:3,hor:6, disable mouse scrolli
 -- "hor" controls horizontal scrolling and "ver" controls vertical scrolling
 
 -- Tab
-vim.o.tabstop = 2 -- default: 8, Number of spaces that a <Tab> in the file counts for
-vim.o.shiftwidth = 2 -- default: 8, Number of spaces to use for each step of (auto)indent used for 'cindent', >>, <<, etc
+vim.o.tabstop = 4 -- default: 8, Number of spaces that a <Tab> in the file counts for
+vim.o.shiftwidth = 4 -- default: 8, Number of spaces to use for each step of (auto)indent used for 'cindent', >>, <<, etc
 vim.o.softtabstop = 0 -- default: 0, Number of spaces that a <Tab> counts for while performing editing operations. It also affects <BS>
 vim.o.expandtab = true -- Convert tabs to spaces
--- vim.o.autoindent = smartindent  -- default: false, autoindent
+-- vim.o.autoindent = "smartindent"  -- default: false, autoindent
 vim.o.list = true -- default: false, list mode: display tab char
 vim.o.listchars = "tab:» " --  -- Characters used for display in 'list mode' and :list command
 
@@ -119,7 +118,7 @@ vim.opt.tags = "./tags," .. vim.go.tags
 vim.o.sessionoptions = "buffers,curdir,tabpages,winsize,globals"
 -- buffers: hidden and unloaded buffers, not just those in windows
 -- curdir: the current directory
-  -- tabpages: all tab pages; without this only the current tab page is restored, so that you can make a session for each tab page separately
+-- tabpages: all tab pages; without this only the current tab page is restored, so that you can make a session for each tab page separately
 
 -- quickfix
 vim.o.switchbuf = "useopen,uselast"

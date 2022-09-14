@@ -13,8 +13,25 @@
 -- tmap / tnoremap  |    -   |   -    |    -    |   -    |   -    |    -     |    @     |    -     |
 -- lmap / lnoremap  |    -   |   @    |    @    |   -    |   -    |    -     |    -     |    @     |
 ---------------------------------------------------------------------------------------------------+
+
 local opts = { noremap = true, silent = true }
-local optsexpr = {noremap = true, expr = true, silent = true}
+local optsexpr = { noremap = true, expr = true, silent = true}
+
+vim.api.nvim_set_keymap("n", "<leader><CR>", "<Cmd>luafile %<CR>", opts) -- reload config
+
+-- tmp
+-- [lsp]
+-- vim.keymap.set("n", ";", "<Nop>", { noremap = true, silent = true })
+-- vim.keymap.set("n", "[lsp]", "<Nop>", { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap("n", ";", "[lsp]", {})
+
+-- <C-x>
+-- vim.keymap.set("n", "_", "<Nop>", opts)
+
+-- git, use
+vim.keymap.set("n", "G", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("n", "GG", "G", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "G", "[git]", {})
 
 -- header -----------------------------------------
 vim.keymap.set("n", "<LocalLeader>-", function()
@@ -23,80 +40,94 @@ vim.keymap.set("n", "<LocalLeader>-", function()
   return "A"..margin..string.rep("-", linenum - vim.fn.col("$")).."<Esc>"
 end, optsexpr)
 
--- jk to esc 
-vim.keymap.set("i", "jk", "<Esc>", opts)
+-- Plugins ----------------------------------------
+-- hop
+vim.keymap.set({ "n", "x" }, "S", "<Nop>", opts)
 
--- [lsp]
-vim.keymap.set("n", ";", "<Nop>", { noremap = true, silent = true })
-vim.keymap.set("n", "[lsp]", "<Nop>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", ";", "[lsp]", {})
+-- lightspeed
+vim.keymap.set("n", "t", "<Nop>", opts)
+vim.keymap.set("n", "T", "<Nop>", opts)
+
+-- not used --------------------------------------
+vim.keymap.set("n", "ZZ", "<Nop>", opts)
+vim.keymap.set("n", "ZQ", "<Nop>", opts)
+vim.keymap.set("n", "Q", "<Nop>", opts)
+vim.keymap.set("n", "=", "<Nop>", opts)
+vim.keymap.set('n', '<C-c>', '<Nop>', opts)
+
+-- Change current directory
+vim.keymap.set("n", "<LocalLeader>cd", "<Cmd>lcd %:p:h<CR>:pwd<CR>", { noremap = true, silent = true })
+
+-- insert mode
+vim.keymap.set("i", "jk", "<Esc>", { noremap = true, silent = false }) -- jk to Esc
+vim.keymap.set("i", "<C-t>", '<Esc><Left>"zx"zpa', { noremap = true, silent = false }) -- 直前2つ入れ替え
 
 -- w/q
 vim.keymap.set("n", "<Leader>w", "<Cmd>w<CR>", opts)
 vim.keymap.set("n", "<Leader>q", "<Cmd>q<CR>", opts)
 
--- hop
--- vim.keymap.set({ "n", "x" }, "S", "<Nop>", opts)
+-- Move up and down the line
+vim.keymap.set("i", "<C-Up>", '<Esc>"zdd<Up>"zPi', opts)
+vim.keymap.set("i", "<C-Down>", '<Esc>"zdd"zpi', opts)
+vim.keymap.set("n", "<C-Up>", '"zdd<Up>"zP', opts)
+vim.keymap.set("n", "<C-Down>", '"zdd"zp', opts)
+vim.keymap.set("x", "<C-Up>", '"zx<Up>"zP`[V`]', opts)
+vim.keymap.set("x", "<C-Down>", '"zx"zp`[V`]', opts)
 
--- switch buffer
-vim.keymap.set("n", "H", "<Nop>", opts)
-vim.keymap.set("n", "L", "<Nop>", opts)
-vim.keymap.set("n", "J", "<Nop>", opts)
-vim.keymap.set("n", "K", "<Nop>", opts)
-vim.keymap.set("n", "gK", "K", opts)
-vim.keymap.set({ "n", "x" }, "gJ", "J", opts)
-
--- quit
-vim.keymap.set("n", "ZZ", "<Nop>", opts)
-vim.keymap.set("n", "ZQ", "<Nop>", opts)
-
--- clever-f
-vim.keymap.set("n", "t", "<Nop>", opts)
-vim.keymap.set("n", "T", "<Nop>", opts)
-
--- <C-x>
-vim.keymap.set("n", "_", "<Nop>", opts)
-
--- g; g,
-vim.keymap.set("n", "^", "<Nop>", opts)
-vim.keymap.set("n", "&", "<Nop>", opts)
-
--- buffer close
-vim.keymap.set("n", "<C-s>", "<C-x>", opts)
-vim.keymap.set("n", "<C-x>", "<Nop>", opts)
+-- buffer
+vim.keymap.set("n", "[b", ":bprevious<CR>", opts)
+vim.keymap.set("n", "]b", ":bnext<CR>", opts)
+vim.keymap.set("n", "[B", ":bfirst<CR>", opts)
+vim.keymap.set("n", "]B", ":blast<CR>", opts)
+-- see also bufferline.lua
 
 -- switch window
-vim.keymap.set("n", "<C-h>", "<Nop>", opts)
-vim.keymap.set("n", "<C-j>", "<Nop>", opts)
-vim.keymap.set("n", "<C-k>", "<Nop>", opts)
-vim.keymap.set("n", "<C-l>", "<Nop>", opts)
-
--- git, use
-vim.keymap.set("n", "G", "<Nop>", { noremap = true, silent = true })
-vim.keymap.set("n", "GG", "G", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "G", "[git]", {})
-
--- not use
-vim.keymap.set("n", "Q", "<Nop>", opts)
-vim.keymap.set("n", "=", "<Nop>", opts)
-vim.keymap.set("n", "<C-q>", "<Nop>", opts)
-vim.keymap.set('n', '<C-c>', '<Nop>', opts)
-
--- move cursor
 vim.keymap.set("n", "<C-h>", "<C-w>h", opts)
 vim.keymap.set("n", "<C-j>", "<C-w>j", opts)
 vim.keymap.set("n", "<C-k>", "<C-w>k", opts)
 vim.keymap.set("n", "<C-l>", "<C-w>l", opts)
+
+-- switch tab
+vim.keymap.set("n", "<Leader>t1", "1gt", opts)
+vim.keymap.set("n", "<Leader>t2", "2gt", opts)
+vim.keymap.set("n", "<Leader>t3", "3gt", opts)
+vim.keymap.set("n", "<Leader>t4", "4gt", opts)
+vim.keymap.set("n", "<Leader>t5", "5gt", opts)
+vim.keymap.set("n", "<Leader>t6", "6gt", opts)
+vim.keymap.set("n", "<Leader>t7", "7gt", opts)
+vim.keymap.set("n", "<Leader>t8", "8gt", opts)
+vim.keymap.set("n", "<Leader>t9", "9gt", opts)
+vim.keymap.set("n", "<Leader>tJ", "<Cmd>-tabm<CR>", opts)
+vim.keymap.set("n", "<Leader>tK", "<Cmd>+tabm<CR>", opts)
+vim.keymap.set("n", "<Leader>th", "<Cmd>tabfirst<CR>", opts)
+vim.keymap.set("n", "<Leader>tl", "<Cmd>tablast<CR>", opts)
+vim.keymap.set("n", "<Leader>tj", "<Cmd>tabprevious<CR>", opts)
+vim.keymap.set("n", "<Leader>tk", "<Cmd>tabnext<CR>", opts)
+vim.keymap.set("n", "<Leader>td", "<Cmd>tabclose<CR>", opts)
+vim.keymap.set("n", "[t", "<Cmd>tabprevious<CR>", opts)
+vim.keymap.set("n", "]t", "<Cmd>tabnext<CR>", opts)
+vim.keymap.set("n", "[T", "<Cmd>tabfirst<CR>", opts)
+vim.keymap.set("n", "]T", "<Cmd>tablast<CR>", opts)
+
+-- move cursor
+vim.keymap.set("n", "H", "<Nop>", opts)
+vim.keymap.set("n", "L", "<Nop>", opts)
+vim.keymap.set("n", "J", "<Nop>", opts)
+vim.keymap.set("n", "K", "<Nop>", opts)
+vim.keymap.set({ "n", "x" }, "gJ", "J", opts)
 vim.keymap.set({ "n", "x" }, "H", "5h", opts)
 vim.keymap.set({ "n", "x" }, "J", "5j", opts)
 vim.keymap.set({ "n", "x" }, "K", "5k", opts)
 vim.keymap.set({ "n", "x" }, "L", "5l", opts)
 vim.keymap.set({ "n", "x" }, "j", function() return vim.v.count > 0 and "j" or "gj" end, optsexpr)
 vim.keymap.set({ "n", "x" }, "k", function() return vim.v.count > 0 and "k" or "gk" end, optsexpr)
+vim.keymap.set("n", "gH", "H", opts)
+vim.keymap.set("n", "gM", "M", opts)
+vim.keymap.set("n", "gL", "L", opts)
 
 -- jump cursor
-vim.keymap.set('n', '<Tab>', function() return vim.v.count and '0<Bar>' or '10l' end, optsexpr)
-vim.keymap.set('n', '<CR>', function() return vim.o.buftype == 'quickfix' and "<CR>" or vim.v.count and '0jzz' or '10jzz' end, optsexpr)
+vim.keymap.set('n', '<Tab>', function() return vim.v.count > 0 and '0<Bar>' or '10l' end, optsexpr)
+vim.keymap.set('n', '<CR>', function() return vim.o.buftype == 'quickfix' and "<CR>" or vim.v.count > 0 and '0jzz' or '10jzz' end, optsexpr)
 
 -- Automatically indent with i and A
 vim.keymap.set("n", "i", function() return vim.fn.len(vim.fn.getline(".")) ~= 0 and "i" or '"_cc' end, optsexpr)
@@ -116,6 +147,8 @@ vim.keymap.set("c", "<C-b>", "<left>", { noremap = true, silent = false })
 vim.keymap.set("c", "<C-d>", "<DEL>", { noremap = true, silent = false })
 vim.keymap.set('c', '<C-h>', '<BS>', {noremap = true, silent = true})
 vim.keymap.set("c", "<C-s>", "<BS>", { noremap = true, silent = false })
+vim.keymap.set("i", "<C-d>", "<Del>", { noremap = true, silent = false })
+vim.keymap.set("i", "<C-s>", "<BS>", { noremap = true, silent = false })
 vim.keymap.set("i", "<C-a>", "<Home>", { noremap = true, silent = false })
 vim.keymap.set("i", "<C-e>", "<End>", { noremap = true, silent = false })
 vim.keymap.set("i", "<C-f>", "<right>", { noremap = true, silent = false })
@@ -124,11 +157,6 @@ vim.keymap.set("i", "<C-h>", "<left>", { noremap = true, silent = false })
 vim.keymap.set("i", "<C-l>", "<right>", { noremap = true, silent = false })
 vim.keymap.set("i", "<C-k>", "<up>", { noremap = true, silent = false })
 vim.keymap.set("i", "<C-j>", "<down>", { noremap = true, silent = false })
-
--- remap H M L
-vim.keymap.set("n", "gH", "H", opts)
-vim.keymap.set("n", "gM", "M", opts)
-vim.keymap.set("n", "gL", "L", opts)
 
 -- function key
 vim.keymap.set({ "i", "c", "t" }, "<F1>", "<Esc><F1>", opts)
@@ -144,62 +172,69 @@ vim.keymap.set({ "i", "c", "t" }, "<F10>", "<Esc><F10>", opts)
 vim.keymap.set({ "i", "c", "t" }, "<F11>", "<Esc><F11>", opts)
 vim.keymap.set({ "i", "c", "t" }, "<F12>", "<Esc><F12>", opts)
 
--- highlight off
+-- Turn off highlight when searching
 vim.keymap.set("n", "gq", "<Cmd>nohlsearch<CR>", opts)
 vim.keymap.set("n", "<Esc>", "<Cmd>nohlsearch<CR><C-L><Esc>", opts)
 
--- yank
+-- iw to space
 vim.keymap.set("n", "d<Space>", "diw", opts)
 vim.keymap.set("n", "c<Space>", "ciw", opts)
 vim.keymap.set("n", "y<Space>", "yiw", opts)
 vim.keymap.set({ "n", "x" }, "gy", "y`>", opts)
 
+-- yank
+vim.keymap.set({ "n", "x" }, "<LocalLeader>y", '"+y', { noremap = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<LocalLeader>d", '"+d', { noremap = true, silent = true })
+vim.keymap.set("x", "p", '"_xP', opts) -- Visual Modeペースト時にyankしない
+
 -- paste
-vim.keymap.set({ "n", "x" }, "p", "]p", opts)
-vim.keymap.set({ "n", "x" }, "gp", "p", opts)
-vim.keymap.set({ "n", "x" }, "gP", "P", opts)
+vim.keymap.set({ "n", "x" }, "<LocalLeader>p", '"+p', { noremap = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<LocalLeader>P", '"+P', { noremap = true, silent = true })
+
+-- dot not yank
+vim.keymap.set({ "n", "x" }, "<LocalLeader>x", '"_x', { noremap = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<LocalLeader>d", '"_d', { noremap = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<LocalLeader>D", '"_D', { noremap = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<LocalLeader>c", '"_c', { noremap = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<LocalLeader>C", '"_C', { noremap = true, silent = true })
 
 -- move changes
+vim.keymap.set("n", "^", "<Nop>", opts)
+vim.keymap.set("n", "&", "<Nop>", opts)
 vim.keymap.set("n", "^", "g;zz", opts)
 vim.keymap.set("n", "&", "g,zz", opts)
 
+-- paragraph
+vim.keymap.set("n", "(", "{zz", opts)
+vim.keymap.set("n", ")", "}zz", opts)
+vim.keymap.set("n", "]]", "]]zz", opts)
+vim.keymap.set("n", "[[", "[[zz", opts)
+vim.keymap.set("n", "[]", "[]zz", opts)
+vim.keymap.set("n", "][", "][zz", opts)
+
 -- [, ]
+-- error list (quickfix list)
 vim.keymap.set("n", "[q", ":cprevious<CR>", opts)
 vim.keymap.set("n", "]q", ":cnext<CR>", opts)
 vim.keymap.set("n", "[Q", ":cfirst<CR>", opts)
 vim.keymap.set("n", "]Q", ":clast<CR>", opts)
+-- error list (current window list)
 vim.keymap.set("n", "[l", ":lprevious<CR>", opts)
 vim.keymap.set("n", "]l", ":lnext<CR>", opts)
 vim.keymap.set("n", "[L", ":lfirst<CR>", opts)
 vim.keymap.set("n", "]L", ":llast<CR>", opts)
-vim.keymap.set("n", "[b", ":bprevious<CR>", opts)
-vim.keymap.set("n", "]b", ":bnext<CR>", opts)
-vim.keymap.set("n", "[B", ":bfirst<CR>", opts)
-vim.keymap.set("n", "]B", ":blast<CR>", opts)
-vim.keymap.set("n", "[t", ":tabprevious<CR>", opts)
-vim.keymap.set("n", "]t", ":tabnext<CR>", opts)
-vim.keymap.set("n", "[T", ":tabfirst<CR>", opts)
-vim.keymap.set("n", "]T", ":tablast<CR>", opts)
-vim.keymap.set("n", "[;", "g;zz", opts)
-vim.keymap.set("n", "];", "g,zz", opts)
-
--- Delete buffer
--- vim.keymap.set("n", "<LocalLeader>bd", "<Cmd>bdelete<CR>", { noremap = true, silent = true })
--- vim.keymap.set("n", "<C-x>", "<Cmd>bdelete<CR>", { noremap = true, silent = true })
 
 -- switch quickfix/location list
 vim.keymap.set("n", "<LocalLeader>q", "<Cmd>copen<CR>", opts)
 vim.keymap.set("n", "<LocalLeader>l", "<Cmd>lopen<CR>", opts)
 
 -- For search
-vim.keymap.set("n", "g/", "/\\v", { noremap = true, silent = false })
+vim.keymap.set("n", "g/", "/\\v", { noremap = true, silent = false }) -- 正規表現(very magic)
+vim.keymap.set({ "n", "x" }, "g*", "*", opts)
+vim.keymap.set({ "n", "x" }, "g#", "#", opts)
 vim.keymap.set("n", "*", "g*N", opts)
 vim.keymap.set("n", "#", "g*N", opts)
 vim.keymap.set("x", "*", 'y/<C-R>"<CR>N', opts)
-
--- noremap # g#n
-vim.keymap.set({ "n", "x" }, "g*", "*", opts)
-vim.keymap.set({ "n", "x" }, "g#", "#", opts)
 vim.keymap.set("x", "/", "<ESC>/\\%V", { noremap = true, silent = false }) -- \%V: Match inside the Visual area
 vim.keymap.set("x", "?", "<ESC>?\\%V", { noremap = true, silent = false })
 
@@ -215,7 +250,7 @@ vim.keymap.set("n", "<LocalLeader>ej", "<Cmd>e ++enc=iso-2022-jp<CR>", opts)
 
 -- split
 vim.keymap.set("n", "-", "<Cmd>split<CR>", opts)
-vim.keymap.set("n", "<Bar>", "<Cmd>vsplit<CR>", opts)
+vim.keymap.set("n", "\\", "<Cmd>vsplit<CR>", opts)
 
 -- useful search
 vim.keymap.set("n", "n", "'Nn'[v:searchforward]", { noremap = true, silent = true, expr = true })
@@ -223,66 +258,21 @@ vim.keymap.set("n", "N", "'nN'[v:searchforward]", { noremap = true, silent = tru
 vim.keymap.set("c", "<C-s>", "<HOME><Bslash><lt><END><Bslash>>", { noremap = true, silent = false })
 vim.keymap.set("c", "<C-d>", "<HOME><Del><Del><END><BS><BS>", { noremap = true, silent = false })
 
--- indent
-vim.keymap.set("x", "<", "<gv", opts)
-vim.keymap.set("x", ">", ">gv", opts)
-vim.keymap.set("n", "(", "{", opts)
-vim.keymap.set("n", ")", "}", opts)
-vim.keymap.set("n", "[[", "[m", opts)
-vim.keymap.set("n", "]]", "]m", opts)
-
 -- command mode
 vim.keymap.set("c", "<C-x>", "<C-r>=expand('%:p:h')<CR>/", { noremap = true, silent = false }) -- expand path
 vim.keymap.set("c", "<C-z>", "<C-r>=expand('%:p:r')<CR>", { noremap = true, silent = false }) -- expand file (not ext)
-vim.keymap.set("c", "<C-p>", "<Up>", { noremap = true, silent = false })
-vim.keymap.set("c", "<C-n>", "<Down>", { noremap = true, silent = false })
+vim.keymap.set("c", "<C-p>", "<Up>", { noremap = true, silent = false }) -- previous
+vim.keymap.set("c", "<C-n>", "<Down>", { noremap = true, silent = false }) -- next
 vim.keymap.set("c", "<Up>", "<C-p>", { noremap = true, silent = false })
 vim.keymap.set("c", "<Down>", "<C-n>", { noremap = true, silent = false })
-vim.o.cedit = "<C-c>" -- command window
+vim.o.cedit = "<C-c>" -- command window @ command mode
 
 -- operator
 vim.keymap.set("o", "<Space>", "iw", opts)
 vim.keymap.set("o", 'a"', '2i"', opts)
 vim.keymap.set("o", "a'", "2i'", opts)
 vim.keymap.set("o", "a`", "2i`", opts)
--- -> In double-quote, you can't delete with ]} and ])
-vim.keymap.set("o", "{", "[{i{<Esc>", opts)
-vim.keymap.set("o", "(", "[(i(<Esc>", opts)
-vim.keymap.set("o", "[", "T[", opts)
-vim.keymap.set("o", "<", "T<", opts)
-vim.keymap.set("n", "<<", "<<", opts)
-vim.keymap.set("o", "}", "]}", opts)
-vim.keymap.set("o", ")", "])", opts)
-vim.keymap.set("o", "]", "t]", opts)
-vim.keymap.set("o", ">", "t>", opts)
-vim.keymap.set("n", ">>", ">>", opts)
-vim.keymap.set("o", '"', 't"', opts)
-vim.keymap.set("o", "'", "t'", opts)
-vim.keymap.set("o", "`", "t`", opts)
-vim.keymap.set("o", "_", "t_", opts)
-vim.keymap.set("o", "-", "t-", opts)
 
-vim.keymap.set("n", "<LocalLeader>)", "])", opts)
-vim.keymap.set("n", "<LocalLeader>}", "]}", opts)
-vim.keymap.set("x", "<LocalLeader>]", "i]o``", opts)
-vim.keymap.set("x", "<LocalLeader>(", "i)``", opts)
-vim.keymap.set("x", "<LocalLeader>{", "i}``", opts)
-vim.keymap.set("x", "<LocalLeader>[", "i]``", opts)
-vim.keymap.set("n", "d<LocalLeader>]", "vi]o``d", opts)
-vim.keymap.set("n", "d<LocalLeader>(", "vi)o``d", opts)
-vim.keymap.set("n", "d<LocalLeader>{", "vi}o``d", opts)
-vim.keymap.set("n", "d<LocalLeader>[", "vi]o``d", opts)
-vim.keymap.set("n", "c<LocalLeader>(", "vi)o``c", opts)
-vim.keymap.set("n", "c<LocalLeader>{", "vi}o``c", opts)
-vim.keymap.set("n", "c<LocalLeader>[", "vi]o``c", opts)
-vim.keymap.set("n", "c<LocalLeader>]", "vi]o``c", opts)
-
--- Archived
--- custom leader
--- vim.keymap.set({ "n", "x" }, "[SubLeader]", "<Nop>", { noremap = true, silent = true })
--- vim.api.nvim_set_keymap("n", ",", "[SubLeader]", {})
--- vim.api.nvim_set_keymap("x", ",", "[SubLeader]", {})
---
 -- [ts]
 -- vim.keymap.set("n", "[ts]", "<Nop>", { noremap = true, silent = true })
 -- vim.api.nvim_set_keymap("n", "'", "[ts]", {})
@@ -342,15 +332,6 @@ vim.keymap.set("n", "c<LocalLeader>]", "vi]o``c", opts)
 
 -- vim-operator-convert-case
 -- vim.keymap.set("n", "~", "<Nop>", { noremap = true, silent = true })
-
--- not use
--- vim.keymap.set("n", "Q", "<Nop>", { noremap = true, silent = true })
--- vim.keymap.set("n", "C", "<Nop>", { noremap = true, silent = true })
--- vim.keymap.set("n", "D", "<Nop>", { noremap = true, silent = true })
--- vim.keymap.set("n", "Y", "<Nop>", { noremap = true, silent = true })
--- vim.keymap.set("n", "=", "<Nop>", { noremap = true, silent = true })
--- vim.keymap.set("n", "<C-q>", "<Nop>", { noremap = true, silent = true })
--- vim.keymap.set('n', '<C-c>', '<Nop>',  {noremap=true, silent = true})
 
 -- nnoremap <C-m> <Nop> " = <CR>
 -- noremap <CR> <Nop> " use quickfix
@@ -421,43 +402,6 @@ vim.keymap.set("n", "c<LocalLeader>]", "vi]o``c", opts)
 -- nnoremap u g-
 -- nnoremap <C-r> g+
 
--- undo behavior
--- vim.keymap.set("i", "<BS>", "<C-g>u<BS>", { noremap = true, silent = false })
--- vim.keymap.set("i", "<CR>", "<C-g>u<CR>", { noremap = true, silent = false })
--- vim.keymap.set("i", "<DEL>", "<C-g>u<DEL>", { noremap = true, silent = false })
--- vim.keymap.set("i", "<C-w>", "<C-g>u<C-w>", { noremap = true, silent = false })
-
--- function key
--- vim.keymap.set({ "n", "x" }, "<F13>", "<S-F1>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F14>", "<S-F2>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F15>", "<S-F3>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F16>", "<S-F4>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F17>", "<S-F5>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F18>", "<S-F6>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F19>", "<S-F7>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F20>", "<S-F8>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F21>", "<S-F9>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F22>", "<S-F10>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F23>", "<S-F11>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F24>", "<S-F12>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F25>", "<C-F1>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F26>", "<C-F2>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F27>", "<C-F3>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F28>", "<C-F4>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F29>", "<C-F5>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F30>", "<C-F6>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F31>", "<C-F7>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F32>", "<C-F8>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F33>", "<C-F9>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F34>", "<C-F10>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F35>", "<C-F11>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F36>", "<C-F12>", { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<F37>", "<C-S-F1>", { noremap = true, silent = true })
-
--- yank
--- vim.keymap.set({ "n", "x" }, "<LocalLeader>y", '"+y', { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<LocalLeader>d", '"+d', { noremap = true, silent = true })
-
 -- lambdalisue's yank for slack
 -- vim.keymap.set("x", "[SubLeader]y", function()
 -- 	vim.cmd([[ normal! y ]])
@@ -475,29 +419,6 @@ vim.keymap.set("n", "c<LocalLeader>]", "vi]o``c", opts)
 -- 	vim.fn.setreg(vim.v.register, content_new, vim.fn.getregtype(vim.v.register))
 -- end, { noremap = true, silent = true })
 
--- paste
--- vim.keymap.set({ "n", "x" }, "<LocalLeader>p", '"+p', { noremap = true, silent = true })
--- vim.keymap.set({ "n", "x" }, "<LocalLeader>P", '"+P', { noremap = true, silent = true })
-
--- x,dはレジスタに登録しない
--- vim.keymap.set({ "n", "x" }, "x", '"_x', { noremap = true, silent = true })
--- vim.keymap.set("n", "[SubLeader]d", '"_d', { noremap = true, silent = true })
--- vim.keymap.set("n", "[SubLeader]D", '"_D', { noremap = true, silent = true })
-
--- move changes
--- vim.keymap.set("n", "<C-F2>", "g;zz", { noremap = true, silent = true })
--- vim.keymap.set("n", "<C-F3>", "g,zz", { noremap = true, silent = true })
-
--- refresh Use <F5> to clear the highlighting of :set hlsearch.
--- if vim.fn.maparg("<F5>", "n") == "" then
--- 	vim.keymap.set(
--- 		"n",
--- 		"<F5>",
--- 		":<C-u>nohlsearch<C-r>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-l>",
--- 		{ noremap = true, silent = true }
--- 	)
--- end
-
 -- local function is_normal_buffer()
 -- 	if
 -- 		vim.o.ft == "qf"
@@ -514,86 +435,6 @@ vim.keymap.set("n", "c<LocalLeader>]", "vi]o``c", opts)
 -- 	return true
 -- end
 
--- move buffer
--- vim.keymap.set("n", "<F2>", function()
--- 	if is_normal_buffer() then
--- 		vim.cmd([[execute "bprev"]])
--- 	end
--- end, { noremap = true, silent = true })
--- vim.keymap.set("n", "<F3>", function()
--- 	if is_normal_buffer() then
--- 		vim.cmd([[execute "bnext"]])
--- 	end
--- end, { noremap = true, silent = true })
--- vim.keymap.set("n", "H", function()
--- 	if is_normal_buffer() then
--- 		vim.cmd([[execute "bprev"]])
--- 	end
--- end, { noremap = true, silent = true })
--- vim.keymap.set("n", "L", function()
--- 	if is_normal_buffer() then
--- 		vim.cmd([[execute "bnext"]])
--- 	end
--- end, { noremap = true, silent = true })
--- vim.keymap.set("n", "<C-S-Left>", function()
--- 	if is_normal_buffer() then
--- 		vim.cmd([[execute "bprev"]])
--- 	end
--- end, { noremap = true, silent = true })
--- vim.keymap.set("n", "<C-S-Right>", function()
--- 	if is_normal_buffer() then
--- 		vim.cmd([[execute "bnext"]])
--- 	end
--- end, { noremap = true, silent = true })
-
--- Go to tab by number
--- nnoremap <Leader>1 1gt
--- nnoremap <Leader>2 2gt
--- nnoremap <Leader>3 3gt
--- nnoremap <Leader>4 4gt
--- nnoremap <Leader>5 5gt
--- nnoremap <Leader>6 6gt
--- nnoremap <Leader>7 7gt
--- nnoremap <Leader>8 8gt
--- nnoremap <Leader>9 9gt
--- nnoremap <Leader>0 :tablast<CR>
---
--- Tab move(alt-left/right)
--- nnoremap <S-PageUp> <Cmd>execute 'silent! tabmove ' . (tabpagenr()-2)<CR>
--- nnoremap <S-PageDown> <Cmd>execute 'silent! tabmove ' . (tabpagenr()+1)<CR>
-
--- move tab
--- nnoremap <S-F2> gT
--- nnoremap <S-F3> gt
-
--- change paragraph
--- nnoremap (  {zz
--- nnoremap )  }zz
--- nnoremap ]] ]]zz
--- nnoremap [[ [[zz
--- nnoremap [] []zz
--- nnoremap ][ ][zz
-
--- For replace
--- vim.keymap.set("n", "gr", "gd[{V%::s/<C-R>///gc<left><left><left>", { noremap = true, silent = false })
--- vim.keymap.set("n", "gR", "gD:%s/<C-R>///gc<left><left><left>", { noremap = true, silent = false })
-
--- Undoable<C-w> <C-u>
--- vim.keymap.set("i", "<C-w>", "<C-g>u<C-w>", { noremap = true, silent = true })
--- vim.keymap.set("i", "<C-u>", "<C-g>u<C-u>", { noremap = true, silent = true })
--- vim.keymap.set("i", "<Space>", "<C-g>u<Space>", { noremap = true, silent = true })
-
--- Change current directory
--- vim.keymap.set("n", "<LocalLeader>cd", "<Cmd>lcd %:p:h<CR>:pwd<CR>", { noremap = true, silent = true })
-
--- Delete buffer
--- vim.keymap.set("n", "<LocalLeader>bd", "<Cmd>bdelete<CR>", { noremap = true, silent = true })
--- vim.keymap.set("n", "<C-x>", "<Cmd>bdelete<CR>", { noremap = true, silent = true })
--- vim.keymap.set("n", "<S-F4>", "<Cmd>edit #<CR>", { noremap = true, silent = true })
-
--- Delete all marks
--- vim.keymap.set("n", "[SubLeader]md", "<Cmd>delmarks!<CR>", { noremap = true, silent = true })
-
 -- tags jump
 -- vim.keymap.set("n", "<C-]>", "g<C-]>", { noremap = true, silent = true })
 
@@ -609,18 +450,6 @@ vim.keymap.set("n", "c<LocalLeader>]", "vi]o``c", opts)
 -- vim.keymap.set("n", "<Bar>gf", "<Cmd>vsplit<CR>gF", { noremap = true, silent = true })
 -- vim.keymap.set("n", "-<C-]>", "<Cmd>split<CR>g<C-]>", { noremap = true, silent = true })
 -- vim.keymap.set("n", "<Bar><C-]>", "<Cmd>vsplit<CR>g<C-]>", { noremap = true, silent = true })
-
--- split
--- vim.keymap.set("n", "--", "<Cmd>split<CR>", { noremap = true, silent = true })
--- vim.keymap.set("n", "<Bar><Bar>", "<Cmd>vsplit<CR>", { noremap = true, silent = true })
-
--- Edit macro
--- vim.keymap.set(
--- 	"n",
--- 	"[SubLeader]me",
--- 	":<C-r><C-r>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-f><left>",
--- 	{ noremap = true, silent = true }
--- )
 
 -- terminal mode
 -- vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = false })

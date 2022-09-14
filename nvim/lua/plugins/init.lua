@@ -23,21 +23,12 @@ return require("packer").startup(function()
 
   -- Colorschme Library ---------------------------
   local colorscheme = "tokyonight.nvim"
-  use { 
-    "folke/tokyonight.nvim",
-    event = { "VimEnter", "ColorSchemePre" },
-    config = function ()
-      require "plugins/config/tokyonight"
-    end,
-  }
+  use { "folke/tokyonight.nvim", event = { "VimEnter", "ColorSchemePre" }, config = function () require "plugins/config/tokyonight" end }
   -- local colorscheme = "nightfox.nvim"
-  -- use { 
-  --   "EdenEast/nightfox.nvim",
-  --   event = { "VimEnter", "ColorSchemePre" },
-  --   config = function ()
-  --     require "plugins/config/nightfox"
-  --   end,
-  -- }
+  -- use { "EdenEast/nightfox.nvim", event = { "VimEnter", "ColorSchemePre" }, config = function () require "plugins/config/nightfox" end }
+
+  -- Speedup -------------------------------------
+  use 'lewis6991/impatient.nvim' -- https://github.com/lewis6991/impatient.nvim
 
   -- Font Library ---------------------------------
   if not os.getenv("DISABLE_DEVICONS") or os.getenv("DISABLE_DEVICONS") == "false" then
@@ -153,22 +144,10 @@ return require("packer").startup(function()
   }
   
   -- Git -----------------------------------------
-  use {
-    "TimUntersberger/neogit",
-    event = "VimEnter",
-    config = function()
-      require("plugins/config/neogit")
-    end,
-  }
+  use { "TimUntersberger/neogit", event = "VimEnter", config = function() require("plugins/config/neogit") end }
 
   -- Lint ----------------------------------------
-  use {
-    "jose-elias-alvarez/null-ls.nvim",
-    after = "nvim-lsp-installer",
-    config = function()
-      require("plugins/config/null-ls")
-    end,
-  }
+  use { "jose-elias-alvarez/null-ls.nvim", after = "nvim-lsp-installer", config = function() require("plugins/config/null-ls") end }
 
 
   -- Comment Library ------------------------------
@@ -292,6 +271,12 @@ return require("packer").startup(function()
 
   -- Buffer --------------------------------------
   use {
+    'kazhala/close-buffers.nvim',
+    config = function()
+      require("plugins/config/close-buffers")
+    end,
+  }-- https://github.com/kazhala/close-buffers.nvim
+  use {
     "famiu/bufdelete.nvim",
     event = "VimEnter",
     config = function()
@@ -311,9 +296,9 @@ return require("packer").startup(function()
 
   -- AutoSave ------------------------------------
   use { 
-    "Pocco81/AutoSave.nvim",
+    "Pocco81/auto-save.nvim",
     config = function()
-      require("plugins/config/AutoSave")
+      require("plugins/config/auto-save")
     end,
   }
 
@@ -376,5 +361,16 @@ return require("packer").startup(function()
       require("plugins/config/nvim-autopairs")
     end,
   } 
+
+  -- markdown -------------------------------------
+  -- use { "iamcco/markdown-preview.nvim", ft = { "markdown" }, run = ":call mkdp#util#install()" }
+  use {
+    "dhruvasagar/vim-table-mode",
+    event = "VimEnter",
+    cmd = { "TableModeEnable" },
+    config = function()
+        vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-table-mode.vim")
+    end,
+  }
 
 end)

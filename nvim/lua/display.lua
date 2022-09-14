@@ -31,9 +31,9 @@ vim.o.pumheight = 10 -- Determines the maximum number of items to show in the po
 
 -- folding
 -- vim.o.foldmethod="marker"
-vim.o.foldmethod = "manual" --  The kind of folding used for the current window
-vim.o.foldlevel = 1 --  Sets the fold level: Folds with a higher level will be closed
-vim.o.foldlevelstart = 99 -- Sets 'foldlevel' when starting to edit another buffer in a window. Always start editing with no folds closed(99)
+vim.o.foldmethod = "manual" -- 折り畳みは手動で設定
+vim.o.foldlevel = 1 -- 折り畳みの深さ
+vim.o.foldlevelstart = 99 -- 編集開始時に常に全ての折り畳みを開いておく
 vim.w.foldcolumn = "0:"
 
 -- Cursor style
@@ -44,16 +44,5 @@ vim.o.cursorlineopt = "number" -- Comma-separated list of settings for how 'curs
 -- ステータスライン関連
 -- vim.o.laststatus = 2 -- The value of this option influences when the last window will have a status line
 vim.o.shortmess = "aItToOF" -- This option helps to avoid all the hit-enter prompts caused by file messages
-vim.opt.fillchars = { -- Characters to fill the statuslines, vertical separators and special lines in the window.
-	horiz = "━",
-	horizup = "┻",
-	horizdown = "┳",
-	vert = "┃",
-	vertleft = "┫",
-	vertright = "┣",
-	verthoriz = "╋",
-}
 
 vim.o.cmdheight = 0 -- default: 1, Number of screen lines to use for the command-line
-
--- vim.o.statusline: usep plugin

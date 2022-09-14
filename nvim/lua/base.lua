@@ -1,60 +1,64 @@
--- set $LANG
+local env = vim.env
+local g = vim.g
+local o = vim.o
+local cmd = vim.cmd
+
+-- Language
 if vim.fn.has("unix") == 1 then
-	vim.env.LANG = "en_US.UTF-8"
+	env.LANG = "en_US.UTF-8"
 else
-	vim.env.LANG = "en"
+	env.LANG = "en"
 end
-vim.cmd([[ "language " .. os.getenv("LANG") ]])
-vim.o.langmenu = os.getenv("LANG")
+cmd([[ "language " .. os.getenv("LANG") ]])
+o.langmenu = os.getenv("LANG")
 
--- set vim's internal char encoding
-vim.o.encoding = "utf-8"
--- automatic identification of file encoding
-vim.o.fileencodings = "ucs-bom,utf-8,euc-jp,iso-2022-jp,cp932,sjis,latin1"
--- automatic recognition of line feed codes
-vim.o.fileformats = "unix,dos,mac"
+-- Encoding
+o.encoding = "utf-8" -- set vim's internal char encoding
+o.fileencodings = "ucs-bom,utf-8,euc-jp,iso-2022-jp,cp932,sjis,latin1" -- automatic identification of file encoding
+o.fileformats = "unix,dos,mac" -- automatic recognition of line feed codes
 
--- disable standard plugins
-vim.g.loaded_2html_plugin = 1
-vim.g.loaded_getscript = 1
-vim.g.loaded_getscriptPlugin = 1
-vim.g.loaded_gzip = 1
-vim.g.loaded_logiPat = 1
-vim.g.loaded_man = 1
-vim.g.loaded_matchit = 1
-vim.g.loaded_matchparen = 1
-vim.g.loaded_netrwFileHandlers = 1
-vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_netrwSettings = 1
-vim.g.loaded_remote_plugins = 1
-vim.g.loaded_rplugin = 1
-vim.g.loaded_rrhelper = 1
-vim.g.loaded_shada_plugin = 1
-vim.g.loaded_shada_plugin = 1
-vim.g.loaded_spec = 1
-vim.g.loaded_spellfile_plugin = 1
-vim.g.loaded_spellfile_plugin = 1
-vim.g.loaded_tar = 1
-vim.g.loaded_tarPlugin = 1
-vim.g.loaded_tutor_mode_plugin = 1
-vim.g.loaded_vimball = 1
-vim.g.loaded_vimballPlugin = 1
-vim.g.loaded_zip = 1
-vim.g.loaded_zipPlugin = 1
+-- Skip some remote provider loading
+g.loaded_node_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_python_provider = 0
+g.loaded_pythonx_provider = 0
+g.loaded_ruby_provider = 0
 
-vim.g.load_black = 1 -- improve plugin performance 
-vim.g.loaded_fzf = 1
-vim.g.loaded_gtags = 1
-vim.g.loaded_gtags_cscope = 1
+-- Improve plugin performance 
+g.load_black = 1 
 
-vim.g.loaded_node_provider = 0
-vim.g.loaded_perl_provider = 0
-vim.g.loaded_python3_provider = 0
-vim.g.loaded_python_provider = 0
-vim.g.loaded_pythonx_provider = 0
-vim.g.loaded_ruby_provider = 0
+-- Disable built-in plugins
+local disabled_built_ins = {
+    '2html_plugin',
+    'fzf',
+    'getscript',
+    'getscriptPlugin',
+    'gtags',
+    'gtags_cscope',
+    'gzip',
+    'logiPat',
+    'man',
+    'matchit',
+    'matchparen',
+    'netrwFileHandlers',
+    'netrwPlugin',
+    'netrwSettings',
+    'remote_plugins',
+    'rplugin',
+    'rrhelper',
+    'shada_plugin',
+    'spec',
+    'spellfile_plugin',
+    'tar',
+    'tarPlugin',
+    'tutor_mode_plugin',
+    'vimball',
+    'vimballPlugin',
+    'zip',
+    'zipPlugin'
+}
+for i = 1, #disabled_built_ins do
+  g['loaded_' .. disabled_built_ins[i]] = 1
+end
 
--- remove from runtimepath
-vim.opt.runtimepath:remove("/etc/xdg/nvim")
-vim.opt.runtimepath:remove("/etc/xdg/nvim/after")
-vim.opt.runtimepath:remove("/usr/share/vim/vimfiles")

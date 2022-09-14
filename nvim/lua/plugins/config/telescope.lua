@@ -18,12 +18,11 @@ vim.keymap.set("n", "<Leader>fw", "<Cmd>Telescope live_grep<CR>", opts )
 vim.keymap.set("n", "<Leader>fb", "<Cmd>Telescope buffers<CR>", opts )
 vim.keymap.set("n", "<Leader>fh", "<Cmd>Telescope help_tags<CR>", opts )
 vim.keymap.set("n", "<Leader>fo", "<Cmd>Telescope oldfiles<CR>", opts )
-vim.keymap.set("n", "<Leader>tk", "<Cmd>Telescope keymaps<CR>", opts )
-vim.keymap.set("n", "<Leader>tk", "<Cmd>Telescope keymaps<CR>", opts )
+vim.keymap.set("n", "<Leader>fk", "<Cmd>Telescope keymaps<CR>", opts )
+vim.keymap.set("n", "<Leader>fm", "<Cmd>Telescope marks<CR>", opts )
+vim.keymap.set("n", "<Leader>fs", "<Cmd>Telescope search_history<CR>", opts )
+vim.keymap.set("n", "<Leader>fr", "<Cmd>Telescope registers<CR>", opts )
 -- git -------------------------------------------
 vim.keymap.set("n", "<Leader>cm", "<Cmd>Telescope git_commits<CR>", opts )
 vim.keymap.set("n", "<Leader>gt", "<Cmd>Telescope git_status<CR>", opts )
--- pick a hidden term ----------------------------
-vim.keymap.set("n", "<Leader>pt", "<Cmd>Telescope terms<CR>", opts )
--- theme switcher --------------------------------
-vim.keymap.set("n", "<Leader>th", "<Cmd>Telescope themes<CR>", opts )
+

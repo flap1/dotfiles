@@ -18,8 +18,8 @@ require("which-key").setup {
   triggers = { "<Leader>" }, -- or specify a list manually
 }
 
-vim.keymap.set("n", "<Leader><CR>", "<Cmd>WhichKey <Leader><CR>", { noremap = true })
-vim.keymap.set("n", "<LocalLeader><CR>", "<Cmd>WhichKey <LocalLeader><CR>", { noremap = true })
+-- vim.keymap.set("n", "<Leader><CR>", "<Cmd>WhichKey <Leader><CR>", { noremap = true })
+-- vim.keymap.set("n", "<LocalLeader><CR>", "<Cmd>WhichKey <LocalLeader><CR>", { noremap = true })
 vim.keymap.set("n", "g<CR>", "<Cmd>WhichKey g<CR>", { noremap = true })
 vim.keymap.set("n", "[<CR>", "<Cmd>WhichKey [<CR>", { noremap = true })
 vim.keymap.set("n", "]<CR>", "<Cmd>WhichKey ]<CR>", { noremap = true })
