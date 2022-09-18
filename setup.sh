@@ -1,15 +1,16 @@
 #!/bin/bash
 
-ZSHRC="zsh/.zshrc"
-GIT_CONFIG="git/.gitconfig"
-PECO="peco"
-NVIM="nvim"
-WEZTERM="wezterm"
-# TMUXCONF="tmux/.tmux.conf"
-# TMUXCONF_LOCAL="tmux/.tmux.conf.local"
-# ALACRITTY="alacritty/.alacritty.yml"
-
-DOT_FILES=( $ZSHRC $GIT_CONFIG $PECO $NVIM $WEZTERM )
+DOT_FILES=( 
+  ".config/zsh/.zshrc" \
+  ".config/git/.gitconfig" \
+  ".stylua.toml" \
+  ".config/nvim" \
+  ".config/wezterm" \
+  # ".config/peco" \
+  # "tmux/.tmux.conf" \
+  # "tmux/.tmux.conf.local" \
+  # "alacritty/.alacritty.yml"
+)
 
 __prepare() {
   file=$1
@@ -30,7 +31,7 @@ __prepare() {
   fi
 }
 
-mkdir -p $HOME/.config
+mkdir -p $HOME
 
 for file in ${DOT_FILES[@]}
 do
@@ -39,7 +40,7 @@ do
     continue
   fi
   if [[ -d $file ]]; then
-    target=$HOME/.config/$file
+    target=$HOME/$file
   else
     target=$HOME/`basename ${file}`
   fi
