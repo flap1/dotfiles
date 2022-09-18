@@ -7,7 +7,7 @@ dashboard.section.header.opts.hl = "Question"
 dashboard.section.buttons.val = {
   dashboard.button("l", "  Open last session", ":PossessionLoadCurrent<CR>"),
   dashboard.button("SPC f f", "  Find File  ", ":Telescope find_files<CR>"),
-  dashboard.button("SPC f q", "  Everyday File  ", ":Telescope frecency<CR>"),
+  dashboard.button("SPC f e", "  Everyday File  ", ":Telescope frecency<CR>"),
   dashboard.button("SPC f o", "  Recent File  ", ":Telescope oldfiles<CR>"),
   dashboard.button("SPC f w", "  Find Word  ", ":Telescope live_grep<CR>"),
   dashboard.button("SPC f m", "  Bookmarks  ", ":Telescope marks<CR>"),

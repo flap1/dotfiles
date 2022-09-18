@@ -40,9 +40,9 @@ vim.keymap.set("n", "[ff]r", "<Cmd>Telescope registers<CR>", opts)
 vim.keymap.set("n", "[ff]q", "<Cmd>Telescope quickfix<CR>", opts)
 vim.keymap.set("n", "[ff]p", "<Cmd>Telescope packer<CR>", opts) -- telescope-packer
 vim.keymap.set("n", "[ff]l", "<Cmd>Telescope loclist<CR>", opts)
+vim.keymap.set("n", "[ff];", "<Cmd>Telescope git_files<CR>", opts)
 
 -- git -------------------------------------------
-vim.keymap.set("n", "<Leader>;", "<Cmd>Telescope git_files<CR>", opts)
 vim.keymap.set("n", "<Leader>gc", "<Cmd>Telescope git_commits<CR>", opts)
 vim.keymap.set("n", "<Leader>gs", "<Cmd>Telescope git_status<CR>", opts)
 vim.keymap.set("n", "<Leader>gC", "<Cmd>Telescope git_bcommits<CR>", opts)

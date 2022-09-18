@@ -18,7 +18,7 @@ local opts = { noremap = true, silent = true }
 local optsexpr = { noremap = true, expr = true, silent = true}
 
 vim.keymap.set("n", "<Leader><CR>", "<Cmd>luafile %<CR>", opts) -- reload config
-vim.keymap.set("n", "<Leader><Leader><CR>", "<Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>", opts) -- reload config
+vim.keymap.set("n", "<Leader><Leader><CR>", "<Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>", opts) -- reload config
 
 -- lsp
 vim.keymap.set("n", ";", "<Nop>", { noremap = true, silent = true })
@@ -52,6 +52,9 @@ end, optsexpr)
 -- Plugins ----------------------------------------
 -- hop
 vim.keymap.set({ "n", "x" }, "S", "<Nop>", opts)
+
+-- iswap
+vim.keymap.set("n", "<Leader>s", "<Nop>", opts)
 
 -- lightspeed
 vim.keymap.set("n", "t", "<Nop>", opts)
@@ -97,10 +100,10 @@ vim.keymap.set("n", "]B", ":blast<CR>", opts)
 -- see also bufferline.lua
 
 -- switch window
-vim.keymap.set("n", "<C-h>", "<C-w>h", opts)
-vim.keymap.set("n", "<C-j>", "<C-w>j", opts)
-vim.keymap.set("n", "<C-k>", "<C-w>k", opts)
-vim.keymap.set("n", "<C-l>", "<C-w>l", opts)
+vim.keymap.set("n", "<Leader>h", "<C-w>h", opts)
+vim.keymap.set("n", "<Leader>j", "<C-w>j", opts)
+vim.keymap.set("n", "<Leader>k", "<C-w>k", opts)
+vim.keymap.set("n", "<Leader>l", "<C-w>l", opts)
 
 -- switch tab
 vim.keymap.set("n", "[tab]1", "1gt", opts)
@@ -131,6 +134,7 @@ vim.keymap.set("n", "L", "<Nop>", opts)
 vim.keymap.set("n", "J", "<Nop>", opts)
 vim.keymap.set("n", "K", "<Nop>", opts)
 vim.keymap.set({ "n", "x" }, "gJ", "J", opts)
+vim.keymap.set({ "n", "x" }, "gj", "J", opts)
 vim.keymap.set({ "n", "x" }, "H", "5h", opts)
 vim.keymap.set({ "n", "x" }, "J", "5j", opts)
 vim.keymap.set({ "n", "x" }, "K", "5k", opts)
