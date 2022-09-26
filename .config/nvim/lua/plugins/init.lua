@@ -42,7 +42,10 @@ return require("packer").startup(function(use)
 
   -- LSP & Completion ----------------------------
   ---- Auto Completion
-  use { "hrsh7th/nvim-cmp", requires = { { "L3MON4D3/LuaSnip", opt = true, event = "VimEnter" }, { "windwp/nvim-autopairs", opt = true, event = "VimEnter" } }, after = { "LuaSnip", "nvim-autopairs" }, config = function() require("plugins/config/nvim-cmp") end }
+  use { "hrsh7th/nvim-cmp", event = "VimEnter", wants = { "LuaSnip" }, requires = {
+    { "L3MON4D3/LuaSnip", opt = true }, 
+    { "windwp/nvim-autopairs", config = function() require("plugins/config/nvim-autopairs") end} },
+      config = function() require("plugins/config/nvim-cmp") end }
   use { "onsails/lspkind-nvim", module = "lspkind", config = function() require "plugins/config/lspkind-nvim" end } -- show icon
   use { "hrsh7th/cmp-buffer", after = "nvim-cmp" } -- buffer completion
   use { "hrsh7th/cmp-path", after = "nvim-cmp" } -- path completion
@@ -156,7 +159,7 @@ return require("packer").startup(function(use)
 
   -- File ----------------------------------------
   ---- Filer
-  use { "nvim-neo-tree/neo-tree.nvim", branch = "v2.x", requires = { "nvim-lua/plenary.nvim", "kyazdani42/nvim-web-devicons", "MunifTanjim/nui.nvim" }, config = function() require("plugins/config/neo-tree") end }
+  use { "nvim-neo-tree/neo-tree.nvim", event = "VimEnter" ,branch = "v2.x", requires = { "nvim-lua/plenary.nvim", "kyazdani42/nvim-web-devicons", "MunifTanjim/nui.nvim" }, config = function() require("plugins/config/neo-tree") end }
 
   ---- Buffer
   use { "kazhala/close-buffers.nvim", config = function() require("plugins/config/close-buffers") end } -- https://github.com/kazhala/close-buffers.nvim
@@ -186,19 +189,27 @@ return require("packer").startup(function(use)
   -- use { "akinsho/toggleterm.nvim", after = { colorscheme }, event = "VimEnter", config = function() require("rc/pluginconfig/toggleterm") end }
 
   -- Other ---------------------------------------
-  -- Translate -- TODO
+  ---- Translate -- TODO
   -- use { "uga-rosa/translate.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/translate") end }
 
-  -- Popup Info -- TODO
+  ---- Popup Info -- TODO
   -- use { "lewis6991/hover.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/hover") end }
 
-  -- Memo -- TODO
+  ---- Memo -- TODO
   -- use { "renerocksai/telekasten.nvim", after = { "telescope.nvim" }, require = { "renerocksai/calendar-vim" }, config = function() require("rc/pluginconfig/telekasten") end }
+  -- use { "romgrk/todoist.nvim", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/todoist.vim") end } -- TODO
+  use { "flap1/nvim-todoist.lua", event = "VimEnter", config = function() require('nvim-todoist').neovim_stuff.use_defaults() end }
+  -- use { "stevearc/gkeep.nvim", run = ':UpdateRemotePlugins' }
 
-  -- Template -- TODO
+  ---- Template -- TODO
   -- use { "glepnir/template.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/template") end }
 
-  -- Analytics -- TODO
+  ---- Performance Improvement
+  use { "tweekmonster/startuptime.vim" } -- :StartupTime, https://github.com/tweekmonster/startuptime.vim
+  use { "lewis6991/impatient.nvim", config = function() require('impatient') require('impatient').enable_profile() end }
+  use { "nathom/filetype.nvim", config = function() require("plugins/config/filetype") end } -- earlier then Neovim 0.8.0
+
+  ---- Analytics -- TODO
   -- if not os.getenv("DISABLE_WAKATIME") or os.getenv("DISABLE_WAKATIME") == "true" then
   --   if vim.fn.filereadable(vim.fn.expand("~/.wakatime.cfg")) == 1 then
   --     use { "wakatime/vim-wakatime", event = "VimEnter" }
@@ -222,7 +233,6 @@ return require("packer").startup(function(use)
 
   ---- Brackets
   -- use { "andymass/vim-matchup", after = { "nvim-treesitter" }, config = function() vim.cmd("source ~/.config/nvim/rc/pluginconfig/vim-matchup.vim") end } -- TODO
-  use { "windwp/nvim-autopairs", event = "VimEnter", config = function() require("plugins/config/nvim-autopairs") end }
 
   ---- Endwise -- TODO
   -- use { "RRethy/nvim-treesitter-endwise", requires = { { "nvim-treesitter/nvim-treesitter", opt = true } }, after = { "nvim-treesitter" } }
@@ -239,15 +249,15 @@ return require("packer").startup(function(use)
   -- use { "stevearc/aerial.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/aerial") end }
 
   ---- Snippet
-  use { "L3MON4D3/LuaSnip", event = "VimEnter", config = function() require("plugins/config/LuaSnip") end }
+  use { "L3MON4D3/LuaSnip", wants = "friendly-snippets", config = function() require("plugins/config/LuaSnip") end }
   use { "benfowler/telescope-luasnip.nvim", after = { "telescope.nvim", "LuaSnip" }, config = function() require("telescope").load_extension("luasnip") end } -- TODO
-  use { "rafamadriz/friendly-snippets", opt = true } -- snippets collection
+  use "rafamadriz/friendly-snippets" -- snippets collection
 
   ---- Project -- TODO
   -- use { "ahmedkhalf/project.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/project") end }
 
   ---- Git -- TODO
-  use { "TimUntersberger/neogit", event = "VimEnter", config = function() require("plugins/config/neogit") end }
+  use { "TimUntersberger/neogit", config = function() require("plugins/config/neogit") end }
   -- use { "akinsho/git-conflict.nvim", event = "VimEnter", config = function() require("git-conflict").setup() end }
   -- use { "lewis6991/gitsigns.nvim", requires = { "nvim-lua/plenary.nvim" }, event = "VimEnter", config = function() require("rc/pluginconfig/gitsigns") end }
   -- use { "sindrets/diffview.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/diffview") end }
@@ -271,7 +281,7 @@ return require("packer").startup(function(use)
   -- use { "SidOfc/mkdx", ft = { "markdown" }, setup = function() vim.cmd("source ~/.config/nvim/rc/pluginsetup/mkdx.vim") end } -- TODO
   use { "dhruvasagar/vim-table-mode", event = "VimEnter", cmd = { "TableModeEnable" }, config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-table-mode.vim") end } -- markdownでテーブルを綺麗に表示
 
-  -- CSV -- TODO
+  ---- CSV -- TODO
   -- use { "chen244/csv-tools.lua", ft = { "csv" }, config = function() require("rc/pluginconfig/csv-tools") end, }
 
   ---- Lua
@@ -280,11 +290,13 @@ return require("packer").startup(function(use)
   ---- Rust 
   use { "simrat39/rust-tools.nvim", module = "rust-tools" }
 
+  ---- LaTeX
+  use { "lervag/vimtex", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vimtex.vim") end }
+
   -- Paper writing
   -- Zotcite -- https://github.com/latex-lsp/texlab
   -- texlab -- https://github.com/latex-lsp/texlab, https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/texlab.lua
   -- vimtex -- https://github.com/lervag/vimtex
   -- vim-latex-live-preview -- https://github.com/xuhdev/vim-latex-live-preview
-
 
 end)

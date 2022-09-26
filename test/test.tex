@@ -1,0 +1,63 @@
+\documentclass[]{jsarticle}
+
+% 数式
+\usepackage{amsmath,amsfonts}
+\usepackage{bm}
+% 画像
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{color}
+% 表
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{float}
+% ソースコード
+\usepackage{color}
+\usepackage{listings,jlisting}
+
+\usepackage{otf}
+\usepackage{wrapfig}
+\usepackage{siunitx}
+\usepackage[a4paper]{geometry}
+% 分割ファイルのinput時に\document外を無視する
+\usepackage{docmute}
+
+\lstset{
+language={python},
+backgroundcolor={\color[gray]{.90}},
+basicstyle={\small},
+identifierstyle={\small},
+commentstyle={\small\ttfamily \color[rgb]{0,0.5,0}},
+keywordstyle={\small\bfseries \color[rgb]{1,0,0}},
+ndkeywordstyle={\small},
+stringstyle={\small\ttfamily \color[rgb]{0,0,1}},
+frame={tb},
+breaklines=true,
+columns=[l]{fullflexible},
+numbers=left,
+xrightmargin=0zw,
+xleftmargin=3zw,
+numberstyle={\scriptsize},
+stepnumber=1,
+numbersep=1zw,
+morecomment=[l]{//}
+}
+
+
+\setlength{\topmargin}{-0.5in}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\evensidemargin}{0pt}
+\setlength{\textheight}{40\baselineskip}
+\setlength{\textwidth}{47zw}
+
+\begin{document}
+
+\title{hai}
+\author{}
+\date{\today}
+\maketitle
+\setcounter{tocdepth}{3}
+\tableofcontents
+\clearpage
+
+\end{document}
+

@@ -1,4 +1,10 @@
 # -------------------------------------------------------------------------
+# profile init
+# -------------------------------------------------------------------------
+
+# zmodload zsh/zprof && zprof
+
+# -------------------------------------------------------------------------
 # Enable Powerlevel10k
 # -------------------------------------------------------------------------
 
@@ -42,19 +48,26 @@ zinit light-mode for \
 # -------------------------------------------------------------------------
 
 # dotfiles directory
-SCRIPT_DIR=$HOME/dotfiles
+DOTFILES=$HOME/dotfiles
 
-# load setting files ($SCRIPT_DIR/zsh/init/*)
+# load setting files ($DOTFILES/zsh/init/*)
 while read -r f; do
   source $f
-done  < <(find $SCRIPT_DIR/.config/zsh/init -mindepth 1 -maxdepth 1)
+done  < <(find $DOTFILES/.config/zsh/init -mindepth 1 -maxdepth 1)
 
 # initialize navi 
 eval "$(navi widget zsh)"
 
 # To customize prompt, run `p10k configure` or edit ~/dotfiles/zsh/.zshrc.p10k.
-[[ ! -f $SCRIPT_DIR/.config/zsh/.zshrc.p10k ]] || source $SCRIPT_DIR/.config/zsh/.zshrc.p10k
+[[ ! -f $DOTFILES/.config/zsh/.zshrc.p10k ]] || source $DOTFILES/.config/zsh/.zshrc.p10k
 
 # check dotfiles
-source $SCRIPT_DIR/bin/check_update_dotfiles
+# source $DOTFILES/bin/check_update_dotfiles
 
+# -------------------------------------------------------------------------
+# profile end
+# -------------------------------------------------------------------------
+
+# if (which zprof > /dev/null 2>&1) ;then
+#   zprof
+# fi

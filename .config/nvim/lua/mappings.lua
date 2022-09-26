@@ -100,10 +100,10 @@ vim.keymap.set("n", "]B", ":blast<CR>", opts)
 -- see also bufferline.lua
 
 -- switch window
-vim.keymap.set("n", "<Leader>h", "<C-w>h", opts)
-vim.keymap.set("n", "<Leader>j", "<C-w>j", opts)
-vim.keymap.set("n", "<Leader>k", "<C-w>k", opts)
-vim.keymap.set("n", "<Leader>l", "<C-w>l", opts)
+vim.keymap.set("n", "<C-h>", "<C-w>h", opts)
+vim.keymap.set("n", "<C-j>", "<C-w>j", opts)
+vim.keymap.set("n", "<C-k>", "<C-w>k", opts)
+vim.keymap.set("n", "<C-l>", "<C-w>l", opts)
 
 -- switch tab
 vim.keymap.set("n", "[tab]1", "1gt", opts)
@@ -245,8 +245,8 @@ vim.keymap.set("n", "[L", ":lfirst<CR>", opts)
 vim.keymap.set("n", "]L", ":llast<CR>", opts)
 
 -- switch quickfix/location list
-vim.keymap.set("n", "<LocalLeader>q", "<Cmd>copen<CR>", opts)
-vim.keymap.set("n", "<LocalLeader>l", "<Cmd>lopen<CR>", opts)
+-- vim.keymap.set("n", "<LocalLeader>q", "<Cmd>copen<CR>", opts)
+-- vim.keymap.set("n", "<LocalLeader>l", "<Cmd>lopen<CR>", opts)
 
 -- For search
 vim.keymap.set("n", "g/", "/\\v", { noremap = true, silent = false }) -- 正規表現(very magic)

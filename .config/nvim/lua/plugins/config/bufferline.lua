@@ -71,12 +71,12 @@ require('bufferline').setup {
 }
 
 -- vim.keymap.set("n", "<Leader>b", "<Cmd>BufferLinePick<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<C-h>", "<Cmd>BufferLineGoToBuffer 1<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<C-l>", "<Cmd>BufferLineGoToBuffer -1<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<C-j>", "<Cmd>BufferLineCyclePrev<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<C-k>", "<Cmd>BufferLineCycleNext<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<C-J>", "<Cmd>BufferLineMovePrev<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<C-K>", "<Cmd>BufferLineMoveNext<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>h", "<Cmd>BufferLineGoToBuffer 1<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>l", "<Cmd>BufferLineGoToBuffer -1<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>j", "<Cmd>BufferLineCyclePrev<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>k", "<Cmd>BufferLineCycleNext<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader><S-j>", "<Cmd>BufferLineMovePrev<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader><S-k>", "<Cmd>BufferLineMoveNext<CR>", { noremap = true, silent = true })
 
 vim.keymap.set("n", "<Leader>1", "<Cmd>BufferLineGoToBuffer 1<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>2", "<Cmd>BufferLineGoToBuffer 2<CR>", { noremap = true, silent = true })

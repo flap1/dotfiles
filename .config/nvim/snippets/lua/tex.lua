@@ -34,24 +34,24 @@ end
 
 return {
   s("ls", {
-    t({"\\begin{itemize}",
-    "\t\\item "}), i(1), d(2, rec_ls, {}),
-    t({"", "\\end{itemize}"}), i(0)
+    t({ "\\begin{itemize}",
+      "\t\\item " }), i(1), d(2, rec_ls, {}),
+    t({ "", "\\end{itemize}" }), i(0)
   }),
-  s({trig = "ul", dscr = "Itemize with endless items"}, {
+  s({ trig = "ul", dscr = "Itemize with endless items" }, {
     t({ "\\begin{itemize}", "\t\\item " }),
     i(1),
     d(2, rec_ls, {}),
     t({ "", "\\end{itemize}" }),
   }),
-  s({trig = "ol", dscr = "Enumerate with endless items"}, {
+  s({ trig = "ol", dscr = "Enumerate with endless items" }, {
     t({ "\\begin{enumerate}", "\t\\item " }),
     i(1),
     d(2, rec_ls, {}),
     t({ "", "\\end{enumerate}" }),
   }),
-  s({trig = "bf", dscr = "textbf"}, { t({"\\textbf{"}), i(1), t({"}"}), i(0) }),
-  s({trig = "it", dscr = "textit"}, { t({"\\textit{"}), i(1), t({"}"}), i(0) }),
-  s({trig = "rm", dscr = "textrm"}, { t({"\\textrm{"}), i(1), t({"}"}), i(0) }),
-  s({trig = "verb", dscr = "verb"}, { t({"\\verb|"}), i(1), t({"|"}), i(0) }),
+  s({ trig = "bf", dscr = "textbf" }, { t({ "\\textbf{" }), i(1), t({ "}" }), i(0) }),
+  s({ trig = "it", dscr = "textit" }, { t({ "\\textit{" }), i(1), t({ "}" }), i(0) }),
+  s({ trig = "rm", dscr = "textrm" }, { t({ "\\textrm{" }), i(1), t({ "}" }), i(0) }),
+  s({ trig = "verb", dscr = "verb" }, { t({ "\\verb|" }), i(1), t({ "|" }), i(0) }),
 }

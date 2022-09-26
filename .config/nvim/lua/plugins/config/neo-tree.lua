@@ -195,6 +195,7 @@ require("neo-tree").setup {
     },
   },
 }
-vim.keymap.set("n", "<C-n>", "<Cmd>NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "G,", "<Cmd>NeoTreeFloatToggle git_status<CR>", { noremap = true, silent = true })
+
+vim.keymap.set("n", "<C-n>", ":NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "G,", ":NeoTreeFloatToggle git_status<CR>", { noremap = true, silent = true })
 

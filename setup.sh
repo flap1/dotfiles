@@ -6,6 +6,7 @@ DOT_FILES=(
   ".stylua.toml" \
   ".config/nvim" \
   ".config/wezterm" \
+  ".latexmkrc" \
   # ".config/peco" \
   # "tmux/.tmux.conf" \
   # "tmux/.tmux.conf.local" \

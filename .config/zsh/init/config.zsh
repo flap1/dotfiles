@@ -22,7 +22,7 @@ setopt SHARE_HISTORY              # 他のセッションの履歴をリアル�
 # --------------------------------------------------------------------------
 
 # enable completion
-autoload -Uz compinit && compinit
+autoload -Uz compinit && compinit -C
 
 # 補完候補をそのまま探す -> 小文字を大文字に変えて探す -> 大文字を小文字に変えて探す
 zstyle ':completion:*' matcher-list '' 'm:{[:lower:]}={[:upper:]}' '+m:{[:upper:]}={[:lower:]}'

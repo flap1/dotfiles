@@ -5,9 +5,9 @@ local cmd = vim.cmd
 
 -- Language
 if vim.fn.has("unix") == 1 then
-	env.LANG = "en_US.UTF-8"
+    env.LANG = "en_US.UTF-8"
 else
-	env.LANG = "en"
+    env.LANG = "en"
 end
 cmd([[ "language " .. os.getenv("LANG") ]])
 o.langmenu = os.getenv("LANG")
@@ -18,15 +18,16 @@ o.fileencodings = "ucs-bom,utf-8,euc-jp,iso-2022-jp,cp932,sjis,latin1" -- automa
 o.fileformats = "unix,dos,mac" -- automatic recognition of line feed codes
 
 -- Skip some remote provider loading
-g.loaded_node_provider = 0
+-- g.loaded_node_provider = 0
 g.loaded_perl_provider = 0
-g.loaded_python3_provider = 0
+-- g.loaded_python3_provider = 0
 g.loaded_python_provider = 0
 g.loaded_pythonx_provider = 0
 g.loaded_ruby_provider = 0
+-- g.loaded_remote_plugins = os.getenv("HOME") .. "/.local/share/nvim/rplugin.vim"
 
--- Improve plugin performance 
-g.load_black = 1 
+-- Improve plugin performance
+g.load_black = 1
 
 -- Disable built-in plugins
 local disabled_built_ins = {
@@ -44,8 +45,6 @@ local disabled_built_ins = {
     'netrwFileHandlers',
     'netrwPlugin',
     'netrwSettings',
-    'remote_plugins',
-    'rplugin',
     'rrhelper',
     'shada_plugin',
     'spec',
@@ -59,6 +58,6 @@ local disabled_built_ins = {
     'zipPlugin'
 }
 for i = 1, #disabled_built_ins do
-  g['loaded_' .. disabled_built_ins[i]] = 1
+    g['loaded_' .. disabled_built_ins[i]] = 1
 end
 
