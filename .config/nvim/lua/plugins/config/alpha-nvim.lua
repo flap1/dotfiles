@@ -5,13 +5,16 @@ dashboard.section.header.val = vim.fn.readfile(vim.fn.expand("~/.config/nvim/lua
 dashboard.section.footer.val = "Total plugins: " .. require("plugins/packer").count_plugins()
 dashboard.section.header.opts.hl = "Question"
 dashboard.section.buttons.val = {
-  dashboard.button("l", "  Open last session", ":PossessionLoadCurrent<CR>"),
-  dashboard.button("SPC f f", "  Find File  ", ":Telescope find_files<CR>"),
-  dashboard.button("SPC f e", "  Everyday File  ", ":Telescope frecency<CR>"),
+  dashboard.button("l", "  Open Last Session", ":PossessionLoadCurrent<CR>"),
+  dashboard.button("SPC f f", "  Find File  ", ":Telescope find_files follow=true no_ignore=true hidden=true<CR>"),
+  dashboard.button("SPC f e", "  Everyday File  ", ":Telescope frecency<CR>"),
   dashboard.button("SPC f o", "  Recent File  ", ":Telescope oldfiles<CR>"),
   dashboard.button("SPC f w", "  Find Word  ", ":Telescope live_grep<CR>"),
   dashboard.button("SPC f m", "  Bookmarks  ", ":Telescope marks<CR>"),
-  dashboard.button("CTRL n", "  Toggle Sidebar  ", ":NeoTreeRevealToggle<CR>"),
+  dashboard.button("SPC t", "  Terminal  ", ':execute v:count1 . "ToggleTerm"<CR>'),
+  dashboard.button("SPC g", "  Lazygit  ", ':lua _lazygit_toggle()<CR>'),
+  dashboard.button("CTRL n", "  Toggle Tree  ", ":NeoTreeRevealToggle<CR>"),
+  dashboard.button("CTRL s", "  Toggle Sidebar  ", ":SidebarNvimToggle<CR>"),
   dashboard.button("e", "  New file", ":enew<CR>"),
   dashboard.button("p", "  Update plugins", ":PackerSync<CR>"),
   dashboard.button("s", "  Settings", ":e $MYVIMRC | :cd %:p:h <CR>"),
@@ -19,6 +22,7 @@ dashboard.section.buttons.val = {
 }
 alpha.setup(dashboard.config)
 
+-- Display Alpha when all buffers are deleted
 local function get_listed_buffers()
   local buffers = {}
   local len = 0
@@ -31,8 +35,6 @@ local function get_listed_buffers()
 
   return buffers
 end
-
--- Display Alpha when all buffers are deleted
 vim.api.nvim_create_augroup('alpha_on_empty', { clear = true })
 vim.api.nvim_create_autocmd('User', {
   pattern = 'BDeletePre',

@@ -19,17 +19,14 @@ local fmta = require("luasnip.extras.fmt").fmta
 local types = require("luasnip.util.types")
 local conds = require("luasnip.extras.expand_conditions")
 
--- 'recursive' dynamic snippet. Expands to some text followed by itself.
 local rec_ls
 rec_ls = function()
-  return sn(
-    nil,
+  return sn(nil, {
     c(1, {
-      -- Order is important, sn(...) first would cause infinite loop of expansion.
-      t(""),
+      t({ "" }),
       sn(nil, { t({ "", "\t\\item " }), i(1), d(2, rec_ls, {}) }),
     })
-  )
+  })
 end
 
 return {

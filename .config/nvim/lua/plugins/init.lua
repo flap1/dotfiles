@@ -42,30 +42,30 @@ return require("packer").startup(function(use)
 
   -- LSP & Completion ----------------------------
   ---- Auto Completion
-  use { "hrsh7th/nvim-cmp", event = "VimEnter", wants = { "LuaSnip" }, requires = {
-    { "L3MON4D3/LuaSnip", opt = true }, 
-    { "windwp/nvim-autopairs", config = function() require("plugins/config/nvim-autopairs") end} },
+  use { "hrsh7th/nvim-cmp", wants = { "LuaSnip" }, requires = {
+    { "L3MON4D3/LuaSnip" },
+    { "windwp/nvim-autopairs", config = function() require("plugins/config/nvim-autopairs") end},
+    { "hrsh7th/cmp-buffer" },
+    { "hrsh7th/cmp-path" }, -- path completion
+    { "hrsh7th/cmp-cmdline" }, -- cmdline completion
+    { "dmitmel/cmp-cmdline-history" }, -- cmdline history copletion
+    { "hrsh7th/cmp-nvim-lua" }, -- lua completion
+    { "hrsh7th/cmp-nvim-lsp", module = "cmp_nvim_lsp" }, -- lsp completion
+    { "hrsh7th/cmp-nvim-lsp-signature-help" }, -- display function signatures with the current parameter emphasized
+    { "hrsh7th/cmp-nvim-lsp-document-symbol" }, -- customize `/` search
+    { "hrsh7th/cmp-emoji" }, -- emoji completion
+    { "hrsh7th/cmp-calc" }, -- simple calc
+    { "saadparwaiz1/cmp_luasnip" }, -- luasnip completion
+    { "f3fora/cmp-spell" }, -- vim's spell suggests
+    { "yutkat/cmp-mocword" }, -- mocward(predict next word) completion
+    { "uga-rosa/cmp-dictionary", config = function() require "plugins/config/cmp-dictionary" end }, -- dictionary completion
+    { "tzachar/cmp-tabnine", run = "./install.sh" },  -- AI completion
+    { "ray-x/cmp-treesitter" }, -- treesitter node completion
+    { "lukas-reineke/cmp-rg" }, -- ripgrep completion, `sudo apt-get install ripgrep`
+    { "lukas-reineke/cmp-under-comparator", module = "cmp-under-comparator" } -- better sort completion
+    },
       config = function() require("plugins/config/nvim-cmp") end }
   use { "onsails/lspkind-nvim", module = "lspkind", config = function() require "plugins/config/lspkind-nvim" end } -- show icon
-  use { "hrsh7th/cmp-buffer", after = "nvim-cmp" } -- buffer completion
-  use { "hrsh7th/cmp-path", after = "nvim-cmp" } -- path completion
-  use { "hrsh7th/cmp-cmdline", after = "nvim-cmp" } -- cmdline completion
-  use { "dmitmel/cmp-cmdline-history", after = "nvim-cmp" } -- cmdline history copletion
-  use { "hrsh7th/cmp-nvim-lua", after = "nvim-cmp" } -- lua completion
-  use { "hrsh7th/cmp-nvim-lsp", module = "cmp_nvim_lsp" } -- lsp completion
-  use { "hrsh7th/cmp-nvim-lsp-signature-help", after = "nvim-cmp" } -- display function signatures with the current parameter emphasized
-  use { "hrsh7th/cmp-nvim-lsp-document-symbol", after = "nvim-cmp" } -- customize `/` search
-  use { "hrsh7th/cmp-emoji", after = "nvim-cmp" } -- emoji completion
-  use { "hrsh7th/cmp-calc", after = "nvim-cmp" } -- simple calc
-  use { "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" } -- luasnip completion
-  use { "f3fora/cmp-spell", after = "nvim-cmp" } -- vim's spell suggests
-  use { "yutkat/cmp-mocword", after = "nvim-cmp" } -- mocward(predict next word) completion
-  use { "uga-rosa/cmp-dictionary", after = "nvim-cmp", config = function() require "plugins/config/cmp-dictionary" end } -- dictionary completion
-
-  use { "tzachar/cmp-tabnine", run = "./install.sh", after = "nvim-cmp" } -- AI completion
-  use { "ray-x/cmp-treesitter", after = "nvim-cmp" } -- treesitter node completion
-  use { "lukas-reineke/cmp-rg", after = "nvim-cmp" } -- ripgrep completion, `sudo apt-get install ripgrep`
-  use { "lukas-reineke/cmp-under-comparator", module = "cmp-under-comparator" } -- better sort completion
 
   ---- Language Server Protocol(LSP)
   use { "neovim/nvim-lspconfig", event = "VimEnter", config = function() require("plugins/config/nvim-lspconfig") end }
@@ -83,14 +83,16 @@ return require("packer").startup(function(use)
   use { "nvim-telescope/telescope-frecency.nvim", requires = { "kkharji/sqlite.lua" }, after = "telescope.nvim", config = function() require("telescope").load_extension("frecency") end } -- :Telescope frecency
   use { "nvim-telescope/telescope-packer.nvim", requires = { "wbthomason/packer.nvim" }, after = "telescope.nvim", config = function() require("telescope").load_extension("packer") end } -- :Telescope packer
   use { "nvim-telescope/telescope-github.nvim", after = { "telescope.nvim" }, config = function() require("telescope").load_extension("gh") end } -- :Telescope gh
+  use { "nvim-telescope/telescope-bibtex.nvim", after = 'telescope.nvim', config = function () require("telescope").load_extension("bibtex") end }
+  use { "nvim-telescope/telescope-symbols.nvim", after = 'telescope.nvim' }
 
   -- Treesitter ----------------------------------
   use { "nvim-treesitter/nvim-treesitter", after = colorscheme, event = "VimEnter", run = ":TSUpdate", config = function() require("plugins/config/nvim-treesitter") end }
   use { "yioneko/nvim-yati", requires = "nvim-treesitter/nvim-treesitter", opt = true} -- Adjust indent
   use { "mfussenegger/nvim-treehopper", after = { "nvim-treesitter" }, config = function() require("plugins/config/nvim-treehopper") end }
   use { "David-Kunz/treesitter-unit", after = { "nvim-treesitter" }, config = function() require("plugins/config/treesitter-unit") end }
-  use { "nvim-treesitter/nvim-treesitter-textobjects", after = { "nvim-treesitter" } } 
-  use { "mizlan/iswap.nvim", after = { "nvim-treesitter" }, config = function() require("plugins/config/iswap") end } 
+  use { "nvim-treesitter/nvim-treesitter-textobjects", after = { "nvim-treesitter" } }
+  use { "mizlan/iswap.nvim", after = { "nvim-treesitter" }, config = function() require("plugins/config/iswap") end }
 
   -- Appearance ----------------------------------
   ---- Statusline
@@ -185,8 +187,8 @@ return require("packer").startup(function(use)
   ---- Command
   use { "jghauser/mkdir.nvim", event = "VimEnter", config = function() require("mkdir") end }
 
-  ---- Terminal -- TODO
-  -- use { "akinsho/toggleterm.nvim", after = { colorscheme }, event = "VimEnter", config = function() require("rc/pluginconfig/toggleterm") end }
+  ---- Terminal
+  use { "akinsho/toggleterm.nvim", after = { colorscheme }, config = function() require("plugins/config/toggleterm") end }
 
   -- Other ---------------------------------------
   ---- Translate -- TODO
@@ -257,13 +259,13 @@ return require("packer").startup(function(use)
   -- use { "ahmedkhalf/project.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/project") end }
 
   ---- Git -- TODO
-  use { "TimUntersberger/neogit", config = function() require("plugins/config/neogit") end }
+  -- use { "TimUntersberger/neogit", config = function() require("plugins/config/neogit") end }
   -- use { "akinsho/git-conflict.nvim", event = "VimEnter", config = function() require("git-conflict").setup() end }
   -- use { "lewis6991/gitsigns.nvim", requires = { "nvim-lua/plenary.nvim" }, event = "VimEnter", config = function() require("rc/pluginconfig/gitsigns") end }
   -- use { "sindrets/diffview.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/diffview") end }
-  use { "rhysd/committia.vim" }
-  use { "hotwatermorning/auto-git-diff", ft = { "gitrebase" } }
-  use { "pwntester/octo.nvim", cmd = { "Octo" } } -- GitHub
+  -- use { "rhysd/committia.vim" }
+  -- use { "hotwatermorning/auto-git-diff", ft = { "gitrebase" } }
+  -- use { "pwntester/octo.nvim", cmd = { "Octo" } } -- GitHub
 
   ---- Debugger -- TODO
   -- use { "mfussenegger/nvim-dap", event = "VimEnter", config = function() require("rc/pluginconfig/nvim-dap") end }
@@ -279,7 +281,7 @@ return require("packer").startup(function(use)
   ---- Markdown
   use { "iamcco/markdown-preview.nvim", ft = { "markdown" }, run = ":call mkdp#util#install()" }
   -- use { "SidOfc/mkdx", ft = { "markdown" }, setup = function() vim.cmd("source ~/.config/nvim/rc/pluginsetup/mkdx.vim") end } -- TODO
-  use { "dhruvasagar/vim-table-mode", event = "VimEnter", cmd = { "TableModeEnable" }, config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-table-mode.vim") end } -- markdownでテーブルを綺麗に表示
+  use { "dhruvasagar/vim-table-mode", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-table-mode.vim") end } -- markdownでテーブルを綺麗に表示
 
   ---- CSV -- TODO
   -- use { "chen244/csv-tools.lua", ft = { "csv" }, config = function() require("rc/pluginconfig/csv-tools") end, }

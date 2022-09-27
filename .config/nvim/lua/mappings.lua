@@ -38,9 +38,9 @@ vim.api.nvim_set_keymap("n", "<Leader>f", "[ff]", {})
 vim.api.nvim_set_keymap("v", "<Leader>f", "[ff]", {})
 
 -- tab
-vim.keymap.set("n", "<Leader>t", "<Nop>", opts)
-vim.keymap.set("n", "[tab]", "<Nop>", opts)
-vim.api.nvim_set_keymap("n", "<Leader>t", "[tab]", {})
+-- vim.keymap.set("n", "<Leader>t", "<Nop>", opts)
+-- vim.keymap.set("n", "[tab]", "<Nop>", opts)
+-- vim.api.nvim_set_keymap("n", "<Leader>t", "[tab]", {})
 
 -- header -----------------------------------------
 vim.keymap.set("n", "<LocalLeader>-", function()

@@ -79,3 +79,5 @@ ls.filetype_extend("all", { "_" })
 -- vim.api.nvim_set_keymap("i", "<C-Down>", "<Plug>luasnip-next-choice", {})
 -- vim.api.nvim_set_keymap("s", "<C-Down>", "<Plug>luasnip-next-choice", {})
 
+-- local ls = require("luasnip")
+

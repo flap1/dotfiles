@@ -30,8 +30,9 @@ M.keys = {
   { key = "Tab", mods= "CTRL|SHIFT", action= act {ActivateTabRelative = -1 }},
   { key = "h", mods = "ALT|CTRL", action = act { MoveTabRelative = -1 }},
   { key = "l", mods = "ALT|CTRL", action = act { MoveTabRelative = 1 }},
+  { key = "j", mods = "ALT|CTRL", action = act { ActivateTabRelative = -1 }},
+  { key = "k", mods = "ALT|CTRL", action = act { ActivateTabRelative = 1 }},
   { key = "t", mods = "CTRL", action = act { SpawnTab = "DefaultDomain" }},
-  { key = "q", mods = "CTRL", action = act { CloseCurrentTab = { confirm = true }}},
 
   -- Pane
   { key = "-", mods = "ALT", action = act { SplitVertical = { domain = "CurrentPaneDomain" }}},
@@ -59,8 +60,7 @@ M.keys = {
   { key = "Enter", mods = "CTRL|ALT", action = act.ActivateCopyMode },
 
   -- Close
-  { key = "q", mods = "ALT", action = act { CloseCurrentPane = { confirm = false }}},
-  { key = "x", mods = "ALT", action = act { CloseCurrentPane = { confirm = false }}},
+  { key = "q", mods = "CTRL", action = act { CloseCurrentPane = { confirm = true }}},
 }
 
 M.key_tables = {
