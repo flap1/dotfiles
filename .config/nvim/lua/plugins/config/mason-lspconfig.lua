@@ -33,6 +33,13 @@ require('mason-lspconfig').setup_handlers({
     lspconfig[server_name].setup(opts)
   end,
 
+  -- markdown
+  ['marksman'] = function()
+    lspconfig.marksman.setup{
+      settings = {}
+    }
+  end,
+
   -- rust
   ['rust_analyzer'] = function()
     local has_rust_tools, rust_tools = pcall(require, 'rust-tools')

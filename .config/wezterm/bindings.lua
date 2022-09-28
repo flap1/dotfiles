@@ -17,22 +17,22 @@ M.keys = {
   { key = "-", mods = "CTRL", action = "DecreaseFontSize" },
 
   -- Tab
-  { key = "1", mods = "CTRL", action = act { ActivateTab = 0 }},
-  { key = "2", mods = "CTRL", action = act { ActivateTab = 1 }},
-  { key = "3", mods = "CTRL", action = act { ActivateTab = 2 }},
-  { key = "4", mods = "CTRL", action = act { ActivateTab = 3 }},
-  { key = "5", mods = "CTRL", action = act { ActivateTab = 4 }},
-  { key = "6", mods = "CTRL", action = act { ActivateTab = 5 }},
-  { key = "7", mods = "CTRL", action = act { ActivateTab = 6 }},
-  { key = "8", mods = "CTRL", action = act { ActivateTab = 7 }},
-  { key = "9", mods = "CTRL", action = act { ActivateTab = 8 }},
+  { key = "1", mods = "ALT", action = act { ActivateTab = 0 }},
+  { key = "2", mods = "ALT", action = act { ActivateTab = 1 }},
+  { key = "3", mods = "ALT", action = act { ActivateTab = 2 }},
+  { key = "4", mods = "ALT", action = act { ActivateTab = 3 }},
+  { key = "5", mods = "ALT", action = act { ActivateTab = 4 }},
+  { key = "6", mods = "ALT", action = act { ActivateTab = 5 }},
+  { key = "7", mods = "ALT", action = act { ActivateTab = 6 }},
+  { key = "8", mods = "ALT", action = act { ActivateTab = 7 }},
+  { key = "9", mods = "ALT", action = act { ActivateTab = 8 }},
   { key = "Tab", mods= "CTRL", action= act { ActivateTabRelative = 1 }},
   { key = "Tab", mods= "CTRL|SHIFT", action= act {ActivateTabRelative = -1 }},
   { key = "h", mods = "ALT|CTRL", action = act { MoveTabRelative = -1 }},
   { key = "l", mods = "ALT|CTRL", action = act { MoveTabRelative = 1 }},
   { key = "j", mods = "ALT|CTRL", action = act { ActivateTabRelative = -1 }},
   { key = "k", mods = "ALT|CTRL", action = act { ActivateTabRelative = 1 }},
-  { key = "t", mods = "CTRL", action = act { SpawnTab = "DefaultDomain" }},
+  { key = "t", mods = "ALT", action = act { SpawnTab = "DefaultDomain" }},
 
   -- Pane
   { key = "-", mods = "ALT", action = act { SplitVertical = { domain = "CurrentPaneDomain" }}},
@@ -60,7 +60,7 @@ M.keys = {
   { key = "Enter", mods = "CTRL|ALT", action = act.ActivateCopyMode },
 
   -- Close
-  { key = "q", mods = "CTRL", action = act { CloseCurrentPane = { confirm = true }}},
+  { key = "q", mods = "ALT", action = act { CloseCurrentPane = { confirm = true }}},
 }
 
 M.key_tables = {

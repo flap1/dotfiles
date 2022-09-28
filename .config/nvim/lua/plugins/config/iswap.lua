@@ -1,2 +1,2 @@
-vim.keymap.set("n", "<Leader>s", "<cmd>ISwapWith<cr>", { noremap = true })
+vim.keymap.set("n", "<LocalLeader>s", "<cmd>ISwapWith<cr>", { noremap = true })
 

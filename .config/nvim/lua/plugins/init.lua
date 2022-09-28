@@ -24,16 +24,22 @@ return require("packer").startup(function(use)
   use { "rcarriga/nvim-notify", module = "notify" }
 
   -- Colorschme Library ---------------------------
-  ---- tokyonight
+  ---- Colorscheme switcher
+  use { "propet/colorscheme-persist.nvim", after = { "telescope.nvim", colorscheme }, requires = "nvim-telescope/telescope-dap.nvim", config = function() require "plugins/config/colorscheme-persist" end }
+
+  ---- Colorscheme
   local colorscheme = "tokyonight.nvim"
-  use { "folke/tokyonight.nvim", event = { "VimEnter", "ColorSchemePre" }, config = function() require "plugins/config/tokyonight" end }
-  ---- nightfox
-  -- local colorscheme = "nightfox.nvim"
-  -- use { "EdenEast/nightfox.nvim", event = { "VimEnter", "ColorSchemePre" }, config = function () require "plugins/config/nightfox" end }
+  use { "folke/tokyonight.nvim", event = { "VimEnter", "ColorSchemePre" }, config = function() require "plugins/config/tokyonight" end } ---- tokyonight
+  use { "EdenEast/nightfox.nvim" } ---- nightfox
+  use { "Th3Whit3Wolf/space-nvim" }
+  use { "luisiacc/gruvbox-baby" }
+  use { "bluz71/vim-moonfly-colors" }
+  use { "shaeinst/roshnivim-cs" }
+  use { "sainnhe/sonokai" }
+  use { "sainnhe/everforest" }
 
   -- UI Library ----------------------------------
   use { "stevearc/dressing.nvim", event = "VimEnter" }
-
 
   -- Devicons ---------------------------------
   if not os.getenv("DISABLE_DEVICONS") or os.getenv("DISABLE_DEVICONS") == "false" then
@@ -79,12 +85,14 @@ return require("packer").startup(function(use)
   use { "j-hui/fidget.nvim", after = "mason.nvim", config = function() require("plugins/config/fidget") end } -- Standalone UI for nvim-lsp progress
 
   -- FuzzyFinder Library --------------------------
-  use { "nvim-telescope/telescope.nvim", requires = { { 'nvim-lua/plenary.nvim', opt = true } }, after = colorscheme, config = function() require("plugins/config/telescope") end }
+  use { "nvim-telescope/telescope.nvim", requires = { 'nvim-lua/plenary.nvim' }, after = colorscheme, config = function() require("plugins/config/telescope") end }
+  use { "nvim-telescope/telescope-dap.nvim", requires = { 'telescope.nvim', 'nvim-dap' }, after = "telescope.nvim", config = function() require("telescope").load_extension("dap") end }
   use { "nvim-telescope/telescope-frecency.nvim", requires = { "kkharji/sqlite.lua" }, after = "telescope.nvim", config = function() require("telescope").load_extension("frecency") end } -- :Telescope frecency
   use { "nvim-telescope/telescope-packer.nvim", requires = { "wbthomason/packer.nvim" }, after = "telescope.nvim", config = function() require("telescope").load_extension("packer") end } -- :Telescope packer
-  use { "nvim-telescope/telescope-github.nvim", after = { "telescope.nvim" }, config = function() require("telescope").load_extension("gh") end } -- :Telescope gh
+  use { "nvim-telescope/telescope-github.nvim", after = "telescope.nvim", config = function() require("telescope").load_extension("gh") end } -- :Telescope gh
   use { "nvim-telescope/telescope-bibtex.nvim", after = 'telescope.nvim', config = function () require("telescope").load_extension("bibtex") end }
   use { "nvim-telescope/telescope-symbols.nvim", after = 'telescope.nvim' }
+  use { "nvim-telescope/telescope-file-browser.nvim", after = 'telescope.nvim', config = function () require("telescope").load_extension "file_browser" end }
 
   -- Treesitter ----------------------------------
   use { "nvim-treesitter/nvim-treesitter", after = colorscheme, event = "VimEnter", run = ":TSUpdate", config = function() require("plugins/config/nvim-treesitter") end }
@@ -101,7 +109,7 @@ return require("packer").startup(function(use)
 
   ---- Bufferline
   if not vim.g.vscode then
-    use { "akinsho/bufferline.nvim", after = colorscheme, requires = { 'kyazdani42/nvim-web-devicons' }, config = function() require("plugins/config/bufferline") end }
+    use { "akinsho/bufferline.nvim", after = "colorscheme-persist.nvim", requires = 'kyazdani42/nvim-web-devicons', config = function() require("plugins/config/bufferline") end }
   end
 
   ---- Syntax
@@ -116,7 +124,7 @@ return require("packer").startup(function(use)
   use { "goolord/alpha-nvim", config = function() require("plugins/config/alpha-nvim") end } -- トップページ
 
   ---- Scrollbar
-  use { "petertriho/nvim-scrollbar", requires = { { "kevinhwang91/nvim-hlslens", opt = true } }, after = { colorscheme, "nvim-hlslens" }, config = function() require("plugins/config/nvim-scrollbar") end }
+  use { "petertriho/nvim-scrollbar", requires = { "kevinhwang91/nvim-hlslens", opt = true }, after = { colorscheme, "nvim-hlslens" }, config = function() require("plugins/config/nvim-scrollbar") end }
 
   -- Editing -------------------------------------
   ---- AutoSave
@@ -131,11 +139,11 @@ return require("packer").startup(function(use)
 
   ---- Vertical Move
   -- use { "haya14busa/vim-edgemotion", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/rc/pluginconfig/vim-edgemotion.vim") end } -- TODO
-  -- use { "machakann/vim-columnmove", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/rc/pluginconfig/vim-columnmove.vim") end } -- TODO
+  use { "machakann/vim-columnmove", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-columnmove.vim") end } -- TODO
 
   ---- Word Move
   -- use { "justinmk/vim-ipmotion", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/rc/pluginconfig/vim-ipmotion.vim") end } -- TODO
-  -- use { "bkad/CamelCaseMotion", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/rc/pluginconfig/CamelCaseMotion.vim") end } -- TODO
+  use { "bkad/CamelCaseMotion", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/CamelCaseMotion.vim") end }
 
   ---- MultiCursor -- TODO
   use { "mg979/vim-visual-multi", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-visual-multi.vim") end }
@@ -153,7 +161,7 @@ return require("packer").startup(function(use)
 
   ---- Yank
   -- use { "hrsh7th/nvim-pasta", event = "VimEnter", config = function() require("rc/pluginconfig/nvim-pasta") end, } -- TODO
-  -- use { "AckslD/nvim-neoclip.lua", requires = { { "nvim-telescope/telescope.nvim", opt = true }, { "kkharji/sqlite.lua", opt = true } }, after = { "telescope.nvim", "sqlite.lua" }, config = function() require("rc/pluginconfig/nvim-neoclip") end, } -- TODO
+  use { "AckslD/nvim-neoclip.lua", after = { "telescope.nvim", "sqlite.lua" }, config = function() require("plugins/config/nvim-neoclip") end }
 
   -- Search --------------------------------------
   use { "kevinhwang91/nvim-hlslens", event = "VimEnter", config = function() require("plugins/config/nvim-hlslens") end }
@@ -188,7 +196,7 @@ return require("packer").startup(function(use)
   use { "jghauser/mkdir.nvim", event = "VimEnter", config = function() require("mkdir") end }
 
   ---- Terminal
-  use { "akinsho/toggleterm.nvim", after = { colorscheme }, config = function() require("plugins/config/toggleterm") end }
+  use { "akinsho/toggleterm.nvim", event = "VimEnter", after = colorscheme, config = function() require("plugins/config/toggleterm") end }
 
   -- Other ---------------------------------------
   ---- Translate -- TODO
@@ -268,7 +276,7 @@ return require("packer").startup(function(use)
   -- use { "pwntester/octo.nvim", cmd = { "Octo" } } -- GitHub
 
   ---- Debugger -- TODO
-  -- use { "mfussenegger/nvim-dap", event = "VimEnter", config = function() require("rc/pluginconfig/nvim-dap") end }
+  use { "mfussenegger/nvim-dap", config = function() require("plugins/config/nvim-dap") end }
   -- use { "rcarriga/nvim-dap-ui", after = { "nvim-dap" }, config = function() require("rc/pluginconfig/nvim-dap-ui") end }
   -- use { "theHamsta/nvim-dap-virtual-text", after = { "nvim-dap" } }
   -- use { "nvim-telescope/telescope-dap.nvim", requires = { { "mfussenegger/nvim-dap", opt = true }, { "nvim-telescope/telescope.nvim", opt = true }, }, after = { "nvim-dap", "telescope.nvim" } }

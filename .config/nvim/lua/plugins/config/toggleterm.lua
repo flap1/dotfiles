@@ -56,13 +56,17 @@ function _lazygit_toggle()
   lazygit:toggle()
 end
 
-vim.keymap.set("n", "<leader>g", "<cmd>lua _lazygit_toggle()<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<Leader>t", '<Cmd>execute v:count1 . "ToggleTerm"<CR>',
-  { noremap = true, silent = true, buffer = true })
-
 vim.g.toglleterm_win_num = vim.fn.winnr()
 local groupname = "vimrc_toggleterm"
 vim.api.nvim_create_augroup(groupname, { clear = true })
+vim.api.nvim_create_autocmd({"VimEnter", "BufEnter"}, {
+  group = groupname,
+  callback = function()
+    vim.keymap.set("n", "<leader>g", "<cmd>lua _lazygit_toggle()<CR>", { noremap = true, silent = true })
+    vim.keymap.set("n", "<Leader>t", '<Cmd>execute v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true, buffer = true })
+  end,
+  once = false,
+})
 vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter", "BufEnter" }, {
   group = groupname,
   pattern = "term://*/zsh;#toggleterm#*",

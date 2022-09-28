@@ -1,0 +1,131 @@
+
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.015  000.015: --- NVIM STARTING ---
+000.170  000.154: event init
+000.337  000.167: early init
+000.425  000.088: locale set
+000.486  000.061: init first window
+001.002  000.516: inits 1
+001.025  000.023: window checked
+001.031  000.006: parsing arguments
+002.075  001.044: init lua interpreter
+002.200  000.125: expanding arguments
+002.333  000.133: inits 2
+002.908  000.576: init highlight
+002.913  000.004: waiting for UI
+004.862  001.949: done waiting for UI
+004.927  000.065: init screen for UI
+004.977  000.050: init default mappings
+005.015  000.038: init default autocommands
+007.881  000.141  000.141: sourcing /usr/share/nvim/runtime/ftplugin.vim
+008.451  000.068  000.068: sourcing /usr/share/nvim/runtime/indent.vim
+013.916  000.633  000.633: sourcing /usr/share/nvim/runtime/autoload/provider/clipboard.vim
+015.483  000.204  000.204: sourcing /usr/share/nvim/runtime/syntax/synload.vim
+015.939  000.043  000.043: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/filetype.nvim/filetype.vim
+016.399  000.142  000.142: sourcing /usr/share/nvim/runtime/filetype.lua
+016.466  000.030  000.030: sourcing /usr/share/nvim/runtime/filetype.vim
+017.741  002.882  002.463: sourcing /usr/share/nvim/runtime/syntax/syntax.vim
+033.045  024.359  020.844: sourcing /home/flap1/.config/nvim/init.lua
+033.077  003.495: sourcing vimrc file(s)
+035.669  000.051  000.051: sourcing /usr/share/nvim/runtime/plugin/gzip.vim
+035.729  000.028  000.028: sourcing /usr/share/nvim/runtime/plugin/health.vim
+035.778  000.022  000.022: sourcing /usr/share/nvim/runtime/plugin/man.vim
+035.832  000.030  000.030: sourcing /usr/share/nvim/runtime/plugin/matchit.vim
+035.887  000.028  000.028: sourcing /usr/share/nvim/runtime/plugin/matchparen.vim
+035.953  000.040  000.040: sourcing /usr/share/nvim/runtime/plugin/netrwPlugin.vim
+036.287  000.021  000.021: sourcing /home/flap1/.local/share/nvim/rplugin.vim
+036.306  000.328  000.306: sourcing /usr/share/nvim/runtime/plugin/rplugin.vim
+036.354  000.021  000.021: sourcing /usr/share/nvim/runtime/plugin/shada.vim
+036.405  000.026  000.026: sourcing /usr/share/nvim/runtime/plugin/spellfile.vim
+036.464  000.033  000.033: sourcing /usr/share/nvim/runtime/plugin/tarPlugin.vim
+036.513  000.024  000.024: sourcing /usr/share/nvim/runtime/plugin/tohtml.vim
+036.559  000.021  000.021: sourcing /usr/share/nvim/runtime/plugin/tutor.vim
+036.620  000.037  000.037: sourcing /usr/share/nvim/runtime/plugin/zipPlugin.vim
+083.977  000.047  000.047: sourcing /home/flap1/.config/nvim/vim/plugins/config/vim-table-mode.vim
+125.356  000.053  000.053: sourcing /home/flap1/.config/nvim/vim/plugins/config/vim-visual-multi.vim
+131.974  000.109  000.109: sourcing /home/flap1/.config/nvim/vim/plugins/config/vimtex.vim
+132.050  095.267  095.058: sourcing /home/flap1/.config/nvim/plugin/packer_compiled.lua
+132.455  003.424: loading rtp plugins
+133.400  000.342  000.342: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/LuaSnip/plugin/luasnip.vim
+133.878  000.267  000.267: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/auto-save.nvim/plugin/auto-save.lua
+134.043  000.083  000.083: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/close-buffers.nvim/plugin/close-buffers.vim
+134.967  000.034  000.034: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/nightfox.nvim/plugin/nightfox.vim
+136.463  001.297  001.297: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/nvim-cmp/plugin/cmp.lua
+136.697  000.096  000.096: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/nvim-dap/plugin/dap.lua
+136.879  000.046  000.046: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/plenary.nvim/plugin/plenary.vim
+137.114  000.059  000.059: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/possession.nvim/plugin/possession.lua
+137.345  000.115  000.115: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/sidebar.nvim/plugin/sidebar-nvim.vim
+137.562  000.015  000.015: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/startuptime.vim/plugin/startuptime.vim
+138.627  000.862  000.862: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/vim-table-mode/plugin/table-mode.vim
+141.438  000.205  000.205: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/vim-visual-multi/autoload/vm/plugs.vim
+142.190  000.220  000.220: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/vim-visual-multi/autoload/vm/maps.vim
+142.605  000.159  000.159: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/vim-visual-multi/autoload/vm/maps/all.vim
+144.436  005.657  005.074: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/vim-visual-multi/plugin/visual-multi.vim
+144.625  000.043  000.043: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/vimtex/plugin/vimtex.vim
+144.836  003.464: loading packages
+145.224  000.117  000.117: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-dictionary/after/plugin/cmp_dictionary.vim
+146.286  000.415  000.415: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-buffer/after/plugin/cmp_buffer.lua
+146.577  000.212  000.212: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-calc/after/plugin/cmp_calc.lua
+146.850  000.190  000.190: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-cmdline/after/plugin/cmp_cmdline.lua
+147.110  000.178  000.178: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-cmdline-history/after/plugin/cmp_cmdline_history.lua
+147.378  000.142  000.142: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-emoji/after/plugin/cmp_emoji.lua
+147.630  000.168  000.168: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-mocword/after/plugin/cmp_mocword.lua
+148.257  000.231  000.231: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/cmp-nvim-lsp/after/plugin/cmp_nvim_lsp.lua
+148.418  000.701  000.470: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp-document-symbol/after/plugin/cmp_nvim_lsp_document_symbol.lua
+148.708  000.204  000.204: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp-signature-help/after/plugin/cmp_nvim_lsp_signature_help.lua
+148.962  000.172  000.172: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-nvim-lua/after/plugin/cmp_nvim_lua.lua
+149.196  000.156  000.156: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-path/after/plugin/cmp_path.lua
+149.463  000.190  000.190: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-rg/after/plugin/cmp-rg.lua
+149.650  000.110  000.110: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-spell/after/plugin/cmp-spell.lua
+150.052  000.329  000.329: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-tabnine/after/plugin/cmp-tabnine.lua
+150.561  000.426  000.426: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp-treesitter/after/plugin/cmp_treesitter.lua
+151.320  000.675  000.675: sourcing /home/flap1/.local/share/nvim/site/pack/packer/start/cmp_luasnip/after/plugin/cmp_luasnip.lua
+151.366  002.144: loading after plugins
+151.397  000.032: inits 3
+154.467  003.070: reading ShaDa
+155.003  000.535: opening buffers
+155.456  000.453: BufEnter autocommands
+155.464  000.008: editing files in windows
+166.147  000.292  000.292: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/hop.nvim/plugin/hop.vim
+168.863  001.521  001.521: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/vim-columnmove/plugin/columnmove.vim
+169.143  000.064  000.064: sourcing /home/flap1/.config/nvim/vim/plugins/config/vim-columnmove.vim
+172.668  003.324  003.324: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/vim-quickhl/plugin/quickhl.vim
+172.890  000.039  000.039: sourcing /home/flap1/.config/nvim/vim/plugins/config/vim-quickhl.vim
+173.575  000.472  000.472: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/lightspeed.nvim/plugin/init.lua
+175.081  000.503  000.503: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/CamelCaseMotion/plugin/camelcasemotion.vim
+175.390  000.052  000.052: sourcing /home/flap1/.config/nvim/vim/plugins/config/CamelCaseMotion.vim
+176.145  000.546  000.546: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/Comment.nvim/plugin/Comment.lua
+176.842  000.108  000.108: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/bufdelete.nvim/plugin/bufdelete.vim
+183.209  002.508  002.508: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/tokyonight.nvim/colors/tokyonight.lua
+183.484  000.065  000.065: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/nvim-web-devicons/plugin/nvim-web-devicons.vim
+194.917  000.874  000.874: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/nvim-treesitter/plugin/nvim-treesitter.lua
+198.466  000.556  000.556: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/iswap.nvim/plugin/iswap.vim
+199.820  000.875  000.875: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/nvim-treesitter-textobjects/plugin/nvim-treesitter-textobjects.vim
+200.250  000.077  000.077: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/nvim-treehopper/plugin/tsht.vim
+205.590  000.304  000.304: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/telescope.nvim/plugin/telescope.lua
+208.125  000.046  000.046: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/telescope-frecency.nvim/plugin/frecency.vim
+319.791  001.369  001.369: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/tokyonight.nvim/colors/tokyonight.lua
+326.858  000.201  000.201: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/lspsaga.nvim/plugin/lspsaga.vim
+328.158  000.091  000.091: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/trouble.nvim/plugin/trouble.vim
+331.837  000.124  000.124: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/nvim-lspconfig/plugin/lspconfig.lua
+368.198  000.263  000.263: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/vim-ref/plugin/ref.vim
+368.900  000.341  000.341: sourcing /home/flap1/.config/nvim/vim/plugins/config/vim-ref.vim
+369.629  000.092  000.092: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/mkdir.nvim/plugin/mkdir.lua
+370.074  000.045  000.045: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/nvim-colorizer.lua/plugin/colorizer.vim
+375.084  002.174  002.174: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/dial.nvim/plugin/dial.vim
+375.975  000.034  000.034: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/which-key.nvim/plugin/which-key.vim
+409.933  000.525  000.525: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/dressing.nvim/plugin/dressing.lua
+410.962  000.627  000.627: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/eyeliner.nvim/plugin/init.lua
+411.576  000.200  000.200: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/nvim-hlslens/plugin/hlslens.vim
+414.111  000.185  000.185: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/neo-tree.nvim/plugin/neo-tree.vim
+424.496  000.211  000.211: sourcing /home/flap1/.local/share/nvim/site/pack/packer/opt/vim-asterisk/plugin/asterisk.vim
+424.751  000.038  000.038: sourcing /home/flap1/.config/nvim/vim/plugins/config/vim-asterisk.vim
+463.849  289.636: VimEnter autocommands
+463.901  000.052: UIEnter autocommands
+463.911  000.010: before starting main loop
+470.320  006.409: first screen update
+470.331  000.011: --- NVIM STARTED ---

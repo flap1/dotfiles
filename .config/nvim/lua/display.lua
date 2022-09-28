@@ -45,4 +45,4 @@ vim.o.cursorlineopt = "number" -- Comma-separated list of settings for how 'curs
 -- vim.o.laststatus = 2 -- The value of this option influences when the last window will have a status line
 vim.o.shortmess = "aItToOF" -- This option helps to avoid all the hit-enter prompts caused by file messages
 
-vim.o.cmdheight = 0 -- default: 1, Number of screen lines to use for the command-line
+vim.o.cmdheight = 1 -- default: 1, Number of screen lines to use for the command-line
