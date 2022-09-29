@@ -278,6 +278,9 @@ return require("packer").startup(function(use)
   ---- REPL -- TODO:
   -- use { "hkupty/iron.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/iron") end }
 
+  ---- EditorConfig
+  use { "editorconfig/editorconfig-vim" }
+
   -- Programming Languages -----------------------
   ---- Markdown
   use { "iamcco/markdown-preview.nvim", ft = { "markdown" }, run = ":call mkdp#util#install()" }
