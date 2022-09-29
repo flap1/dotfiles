@@ -10,7 +10,7 @@ local colorscheme = persist_colorscheme.get_colorscheme()
 vim.cmd("colorscheme " .. colorscheme)
 
 -- Keymap for telescope selection
-vim.keymap.set("n", "[ff]sc", require("colorscheme-persist").picker, { noremap = true, silent = true, desc = "colorscheme-persist" })
+vim.keymap.set("n", "[ff]s", require("colorscheme-persist").picker, { noremap = true, silent = true, desc = "colorscheme-persist" })
 
 require("colorscheme-persist").setup({
   -- Absolute path to file where colorscheme should be saved

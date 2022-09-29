@@ -13,8 +13,13 @@ dashboard.section.buttons.val = {
   dashboard.button("SPC f m", "  Bookmarks  ", ":Telescope marks<CR>"),
   dashboard.button("SPC t", "  Terminal  ", ':execute v:count1 . "ToggleTerm"<CR>'),
   dashboard.button("SPC g", "  Lazygit  ", ':lua _lazygit_toggle()<CR>'),
+  dashboard.button("SPC cal", "  Calendar  ", ":Calendar<CR>"),
   dashboard.button("CTRL n", "  Toggle Tree  ", ":NeoTreeRevealToggle<CR>"),
   dashboard.button("CTRL s", "  Toggle Sidebar  ", ":SidebarNvimToggle<CR>"),
+  dashboard.button("n", "  Memo New", ":Telekasten new_note<CR>"),
+  dashboard.button("t", "  Memo Today", ":Telekasten goto_today<CR>"),
+  dashboard.button("w", "  Memo Week", ":Telekasten goto_thisweek<CR>"),
+  dashboard.button("f", "  Memo List", ":Telekasten find_notes<CR>"),
   dashboard.button("e", "  New file", ":enew<CR>"),
   dashboard.button("p", "  Update plugins", ":PackerSync<CR>"),
   dashboard.button("s", "  Settings", ":e $MYVIMRC | :cd %:p:h <CR>"),
@@ -35,6 +40,7 @@ local function get_listed_buffers()
 
   return buffers
 end
+
 vim.api.nvim_create_augroup('alpha_on_empty', { clear = true })
 vim.api.nvim_create_autocmd('User', {
   pattern = 'BDeletePre',

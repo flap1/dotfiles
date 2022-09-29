@@ -1,0 +1,8 @@
+Open cheatsheet | <leader>?
+Open cheatsheet in floating window | :CheatSheet!
+
+View mappings | :map [mapping]
+Set text width to {n} | :set tw={n}
+
+## numpy
+import(インポートする) | import numpy as np

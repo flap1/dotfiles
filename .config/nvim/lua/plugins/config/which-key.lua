@@ -23,3 +23,4 @@ require("which-key").setup {
 vim.keymap.set("n", "g<CR>", "<Cmd>WhichKey g<CR>", { noremap = true })
 vim.keymap.set("n", "[<CR>", "<Cmd>WhichKey [<CR>", { noremap = true })
 vim.keymap.set("n", "]<CR>", "<Cmd>WhichKey ]<CR>", { noremap = true })
+

@@ -20,9 +20,9 @@ export NODE_PATH=$NVM_DIR/default/lib/node_modules
 NODE_PATH=${NODE_PATH:A}
 export PATH=$HOME/.local/bin:$NVM_DIR/default/bin:$PATH
 
-nvm() {
-  unset -f nvm
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-  nvm "$@"
-}
+# nvm() {
+  # unset -f nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  # nvm "$@"
+# }

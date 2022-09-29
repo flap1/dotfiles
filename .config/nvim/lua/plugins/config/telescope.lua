@@ -1,5 +1,11 @@
+local fb_actions = require "telescope".extensions.file_browser.actions
+local base_dirs = {
+  '~/dotfiles',
+}
+
 require("telescope").setup {
   defaults = {
+    prompt_prefix = " ",
     mappings = {
       n = {
         ["<esc>"] = require('telescope.actions').close,
@@ -8,6 +14,15 @@ require("telescope").setup {
       i = {
         ["<esc>"] = require('telescope.actions').close,
         ["<Leader>q"] = require('telescope.actions').close,
+        ["<C-h>"] = require("telescope").extensions.hop.hop,
+        -- custom hop loop to multi selects and sending selected entries to quickfix list
+        ["<C-space>"] = function(prompt_bufnr)
+          local opts = {
+            callback = require("telescope.actions").toggle_selection,
+            loop_callback = require("telescope.actions").send_selected_to_qflist,
+          }
+          require("telescope").extensions.hop._hop_loop(prompt_bufnr, opts)
+        end,
       }
     },
     vimgrep_arguments = {
@@ -40,8 +55,7 @@ require("telescope").setup {
       global_files = { "~/.config/nvim/bibtex/paperpile.bib" },
       -- Define the search keys to use in the picker
       search_keys = { 'author', 'year', 'title' },
-      -- Template for the formatted citation
-      citation_format = '{{author}} ({{year}}), {{title}}.',
+      -- Template for the formatted citation citation_format = '{{author}} ({{year}}), {{title}}.',
       -- Only use initials for the authors first name
       citation_trim_firstname = true,
       -- Max number of authors to write in the formatted citation
@@ -55,20 +69,53 @@ require("telescope").setup {
       -- Wrapping in the preview window is disabled by default
       wrap = false,
     },
+    file_browser = {
+      mappings = {
+        ["i"] = {
+          ["<C-w>"] = fb_actions.change_cwd,
+          ["<C-t>"] = false
+        },
+        ["n"] = {
+          ["x"] = fb_actions.change_cwd
+        },
+      },
+    },
+    hop = {
+      -- Highlight groups to link to signs and lines; the below configuration refers to demo
+      -- sign_hl typically only defines foreground to possibly be combined with line_hl
+      sign_hl = { "WarningMsg", "Title" },
+      -- optional, typically a table of two highlight groups that are alternated between
+      line_hl = { "CursorLine", "Normal" },
+      -- options specific to `hop_loop`
+      -- true temporarily disables Telescope selection highlighting
+      clear_selection_hl = false,
+      -- highlight hopped to entry with telescope selection highlight
+      -- note: mutually exclusive with `clear_selection_hl`
+      trace_entry = true,
+      -- jump to entry where hoop loop was started from
+      reset_selection = true,
+    },
+    project = {
+      base_dirs = base_dirs,
+      hidden_files = true, -- default: false
+      theme = "dropdown",
+      order_by = "asc"
+    },
   },
 }
-
 local opts = { noremap = true, silent = true }
 
+vim.keymap.set('n', '<C-p>', "<Cmd>lua require'telescope'.extensions.project.project{}<CR>", opts)
+
 -- find ------------------------------------------
-vim.keymap.set("n", "[ff]i", "<Cmd>Telescope find_files<CR>", opts) -- ignore dotfiles
+vim.keymap.set("n", "[ff]x", "<Cmd>Telescope find_files<CR>", opts) -- ignore(x) dotfiles
 vim.keymap.set("n", "[ff]e", "<Cmd>Telescope frecency<CR>", opts) -- telescope-frecency
 vim.keymap.set("n", "[ff]u", "<Cmd>Telescope symbols<CR>", opts) -- telescope-symbols, unicode
 vim.keymap.set("n", "[ff]w", "<Cmd>Telescope live_grep<CR>", opts)
 vim.keymap.set("n", "[ff]f", "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", opts)
 vim.keymap.set("n", "[ff]<Leader>", "<Cmd>Telescope buffers<CR>", opts)
 vim.keymap.set("n", "[ff]@", "<Cmd>Telescope bibtex<CR>", opts) -- telescope-bibtex
-vim.keymap.set("n", "[ff]c", "<Cmd>Telescope commands<CR>", opts)
+vim.keymap.set("n", "[ff]cmd", "<Cmd>Telescope commands<CR>", opts)
 vim.keymap.set("n", "[ff]h", "<Cmd>Telescope help_tags<CR>", opts)
 vim.keymap.set("n", "[ff]t", "<Cmd>Telescope treesitter<CR>", opts)
 vim.keymap.set("n", "[ff]o", "<Cmd>Telescope oldfiles<CR>", opts)
@@ -83,6 +130,7 @@ vim.keymap.set("n", "[ff]l", "<Cmd>Telescope luasnip<CR>", opts) -- telescope-lu
 vim.keymap.set("n", "[ff];", "<Cmd>Telescope git_files<CR>", opts)
 vim.keymap.set("n", "[ff]y", "<Cmd>Telescope neoclip<CR>", opts) -- neoclip
 vim.keymap.set("n", "[ff]b", "<Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
+vim.keymap.set("n", "[ff]i", "<Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
 
 -- git -------------------------------------------
 vim.keymap.set("n", "[ff]gc", "<Cmd>Telescope git_commits<CR>", opts)
