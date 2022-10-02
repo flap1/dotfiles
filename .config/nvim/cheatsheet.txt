@@ -16,3 +16,9 @@ update pip | pip install -U pip
 install en_core_web_sm | python -m spacy download en_core_web_sm
 
 ## numpy
+
+## lazy_git(<Space>g)
+git commit add -A | a @ Files 
+commit | c @ Files
+push | P @ Files
+pull | p @ Files
