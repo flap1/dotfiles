@@ -66,6 +66,11 @@ require('mason-lspconfig').setup_handlers({
         runtime_path = false,
         lspconfig = opts,
       })
+      l["settings"]["Lua"]["diagnostics"] = {
+        severity = {
+          ["missing-parameter"] = "Hint",
+        },
+      }
       lspconfig.sumneko_lua.setup(l)
     else
       lspconfig.sumneko_lua.setup({
@@ -73,6 +78,9 @@ require('mason-lspconfig').setup_handlers({
           Lua = {
             diagnostics = {
               globals = { "vim" },
+              severity = {
+                ["missing-parameter"] = "Hint",
+              },
             },
           },
         },

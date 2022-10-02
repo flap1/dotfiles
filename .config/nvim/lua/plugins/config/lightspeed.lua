@@ -5,7 +5,6 @@ require("lightspeed").setup {
   --- s/x ---
   jump_to_unique_chars = true,
 }
-
 vim.cmd([[
 nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
 nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"

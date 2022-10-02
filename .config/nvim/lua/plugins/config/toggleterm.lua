@@ -52,7 +52,7 @@ local lazygit  = Terminal:new({
   end,
 })
 
-function _lazygit_toggle()
+function _Lazygit_toggle()
   lazygit:toggle()
 end
 
@@ -62,7 +62,7 @@ vim.api.nvim_create_augroup(groupname, { clear = true })
 vim.api.nvim_create_autocmd({"VimEnter", "BufEnter"}, {
   group = groupname,
   callback = function()
-    vim.keymap.set("n", "<leader>g", "<cmd>lua _lazygit_toggle()<CR>", { noremap = true, silent = true })
+    vim.keymap.set("n", "<leader>g", "<cmd>lua _Lazygit_toggle()<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<Leader>t", '<Cmd>execute v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true, buffer = true })
   end,
   once = false,

@@ -7,7 +7,7 @@ vim.cmd [[ packadd packer.nvim ]]
 require 'plugins/packer'
 
 ---@format disable
-return require("packer").startup(function(use)
+return require("packer").startup({ function(use)
   -- Plugin Manager
   use { 'wbthomason/packer.nvim', opt = true } -- packer.nvim
 
@@ -24,9 +24,6 @@ return require("packer").startup(function(use)
   use { "rcarriga/nvim-notify", module = "notify" }
 
   -- Colorschme Library ---------------------------
-  ---- Colorscheme switcher
-  use { "propet/colorscheme-persist.nvim", after = { "telescope.nvim", colorscheme }, requires = "nvim-telescope/telescope-dap.nvim", config = function() require "plugins/config/colorscheme-persist" end }
-
   ---- Colorscheme
   local colorscheme = "tokyonight.nvim"
   use { "folke/tokyonight.nvim", event = { "VimEnter", "ColorSchemePre" }, config = function() require "plugins/config/tokyonight" end } ---- tokyonight
@@ -37,6 +34,9 @@ return require("packer").startup(function(use)
   use { "shaeinst/roshnivim-cs" }
   use { "sainnhe/sonokai" }
   use { "sainnhe/everforest" }
+
+  ---- Colorscheme switcher
+  use { "propet/colorscheme-persist.nvim", after = { "telescope.nvim", colorscheme }, requires = "nvim-telescope/telescope-dap.nvim", config = function() require "plugins/config/colorscheme-persist" end }
 
   -- UI Library ----------------------------------
   use { "stevearc/dressing.nvim", event = "VimEnter" }
@@ -146,7 +146,7 @@ return require("packer").startup(function(use)
 
   ---- Horizontal Move
   use { "jinh0/eyeliner.nvim", event = "VimEnter", config = function() require("eyeliner").setup({}) end }
-  use { "ggandor/lightspeed.nvim", event = "VimEnter", config = function() vim.g.lightspeed_no_default_keymaps = true end, config = function() require("plugins/config/lightspeed") end }
+  use { "ggandor/lightspeed.nvim", event = "VimEnter", config = function() require("plugins/config/lightspeed") end }
 
   ---- Vertical Move
   use { "haya14busa/vim-edgemotion", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-edgemotion.vim") end }
@@ -312,4 +312,8 @@ return require("packer").startup(function(use)
   -- texlab -- https://github.com/latex-lsp/texlab, https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/texlab.lua
   -- vimtex -- https://github.com/lervag/vimtex
   -- vim-latex-live-preview -- https://github.com/xuhdev/vim-latex-live-preview
-end)
+end,
+config = {
+  snapshot_path = ".config/nvim/snapshots"
+}
+})

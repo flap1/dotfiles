@@ -1,4 +1,4 @@
-function split(...)
+local function split(...)
   local arg = {...}
   local direction = arg[1]
   local file = arg[2] and arg[2] or ''
@@ -8,18 +8,18 @@ function split(...)
   end
 end
 
-function splitNew(...)
+local function splitNew(...)
   local arg = {...}
   local file = arg[2]
   split(arg[1], file == '' and '__vscode_new__' or file)
 end
 
-function closeOtherEditors()
+local function closeOtherEditors()
   VSCodeNotify('workbench.action.closeEditorsInOtherGroups')
   VSCodeNotify('workbench.action.closeOtherEditors')
 end
 
-function manageEditorHeight(...)
+local function manageEditorHeight(...)
   local arg = {...}
   local count, to = arg[1], arg[2]
   for i = 1, count and count or 1 do
@@ -27,7 +27,7 @@ function manageEditorHeight(...)
   end
 end
 
-function manageEditorWidth(...)
+local function manageEditorWidth(...)
   local arg = {...}
   local count, to = arg[1], arg[2]
   for i = 1, count and count or 1 do
