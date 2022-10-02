@@ -20,11 +20,6 @@ local optsexpr = { noremap = true, expr = true, silent = true}
 vim.keymap.set("n", "<Leader><CR>", "<Cmd>luafile %<CR>", opts) -- reload config
 vim.keymap.set("n", "<Leader><Leader><CR>", "<Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>", opts) -- reload config
 
--- lsp
-vim.keymap.set("n", ";", "<Nop>", { noremap = true, silent = true })
-vim.keymap.set("n", "[lsp]", "<Nop>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", ";", "[lsp]", {})
-
 -- git, use
 -- vim.keymap.set("n", "G", "<Nop>", { noremap = true, silent = true })
 -- vim.keymap.set("n", "[git]", "<Nop>", { noremap = true, silent = true })
@@ -156,7 +151,7 @@ vim.keymap.set("n", "i", function() return vim.fn.len(vim.fn.getline(".")) ~= 0 
 vim.keymap.set("n", "A", function() return vim.fn.len(vim.fn.getline(".")) ~= 0 and "A" or '"_cc' end, optsexpr)
 
 -- toggle 0, ^
-vim.keymap.set("n", "0", function() return string.match(vim.fn.getline("."):sub(0, vim.fn.col(".") - 1), "^%s+$") and "0" or "^" end, optsexpr)   
+vim.keymap.set("n", "0", function() return string.match(vim.fn.getline("."):sub(0, vim.fn.col(".") - 1), "^%s+$") and "0" or "^" end, optsexpr)
 vim.keymap.set('n', '$', function() return string.match(vim.fn.getline('.'):sub(0, vim.fn.col('.')), '^%s+$') and '$' or 'g_' end, optsexpr)
 
 -- Emacs style

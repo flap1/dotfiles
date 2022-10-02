@@ -5,6 +5,11 @@ require('mason-lspconfig').setup()
 local on_attach = function(client, bufnr)
   local opts = { noremap = true, silent = true, buffer = bufnr }
   -- See `:help vim.lsp.*` for documentation on any of the below functions
+  -- lsp
+  vim.keymap.set("n", ";", "<Nop>", { noremap = true, silent = true })
+  vim.keymap.set("n", "[lsp]", "<Nop>", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", ";", "[lsp]", {})
+
   vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
   vim.keymap.set('n', '?', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
@@ -34,11 +39,6 @@ require('mason-lspconfig').setup_handlers({
   end,
 
   -- markdown
-  ['marksman'] = function()
-    lspconfig.marksman.setup{
-      settings = {}
-    }
-  end,
 
   -- rust
   ['rust_analyzer'] = function()

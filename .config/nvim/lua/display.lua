@@ -3,7 +3,7 @@ vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1 -- enable true color
 
 vim.o.synmaxcol = 200 -- Maximum column in which to search for syntax items
 -- ColorScheme
-vim.cmd([[ syntax enable ]]) -- switches on syntax highlighting
+-- vim.cmd([[ syntax enable ]]) -- switches on syntax highlighting
 vim.o.t_Co = 256 -- number of colors
 vim.o.background = "dark" -- dark / light
 

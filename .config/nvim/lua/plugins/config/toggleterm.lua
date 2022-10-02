@@ -82,6 +82,7 @@ vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
     -- vim.keymap.set("t", "<Leader>t", "<Cmd>exe 'ToggleTerm'<CR>", { noremap = true, silent = true, buffer = true })
     -- vim.keymap.set("t", "<Leader>g", "<Cmd>exe 'ToggleTerm'<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("t", "<Esc>", "<Cmd>exe 'ToggleTerm'<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("t", "jk", "<C-\\><C-n>", { noremap = true, silent = true, buffer = true })
   end,
   once = false,
 })

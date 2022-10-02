@@ -5,7 +5,6 @@ local ignored_filetypes = {
   "unite",
   "qf",
   "help",
-  "markdown",
   "minimap",
   "packer",
   "dashboard",

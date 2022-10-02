@@ -4,5 +4,15 @@ Open cheatsheet in floating window | :CheatSheet!
 View mappings | :map [mapping]
 Set text width to {n} | :set tw={n}
 
+## pip
+install numpy | pip install numpy
+install pytorch | pip install torch
+install pandas | pip install pandas
+install spacy | pip isntall spacy
+install torchtext | pip install torchtext
+update pip | pip install -U pip
+
+## spacy
+install en_core_web_sm | python -m spacy download en_core_web_sm
+
 ## numpy
-import(インポートする) | import numpy as np

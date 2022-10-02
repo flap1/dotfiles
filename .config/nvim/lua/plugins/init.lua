@@ -84,6 +84,11 @@ return require("packer").startup(function(use)
   use { "folke/trouble.nvim", after = "mason.nvim", config = function() require("plugins/config/trouble") end } -- A pretty list for showing diagnostics etc.
   use { "j-hui/fidget.nvim", after = "mason.nvim", config = function() require("plugins/config/fidget") end } -- Standalone UI for nvim-lsp progress
 
+  ---- Linter, Formatter
+  -- use { 'mfussenegger/nvim-lint' }
+  -- use { 'mhartington/formatter.nvim' }
+  -- use { 'jose-elias-alvarez/null-ls.nvim', after = "mason.nvim", config = function() require("plugins/config/null-ls") end }
+
   -- FuzzyFinder Library --------------------------
   use { "nvim-telescope/telescope.nvim", requires = { 'nvim-lua/plenary.nvim' }, after = colorscheme, config = function() require("plugins/config/telescope") end }
   use { "nvim-telescope/telescope-dap.nvim", requires = { 'telescope.nvim', 'nvim-dap' }, after = "telescope.nvim", config = function() require("telescope").load_extension("dap") end }
@@ -108,7 +113,10 @@ return require("packer").startup(function(use)
   -- Appearance ----------------------------------
   ---- Statusline
   use { "nvim-lualine/lualine.nvim", after = colorscheme, requires = { "kyazdani42/nvim-web-devicons", opt = true }, config = function() require("plugins/config/lualine") end }
-  use { "SmiteshP/nvim-navic", module = "nvim-navic", setup = function() require("plugins/config/nvim-navic") end }
+  use { "SmiteshP/nvim-navic", module = "nvim-navic", config = function() require("plugins/config/nvim-navic") end }
+
+  ---- Indent
+  use { "lukas-reineke/indent-blankline.nvim", event = "VimEnter", config = function() require("plugins/config/indent-blankline") end }
 
   ---- Bufferline
   if not vim.g.vscode then
@@ -138,7 +146,7 @@ return require("packer").startup(function(use)
 
   ---- Horizontal Move
   use { "jinh0/eyeliner.nvim", event = "VimEnter", config = function() require("eyeliner").setup({}) end }
-  use { "ggandor/lightspeed.nvim", event = "VimEnter", setup = function() vim.g.lightspeed_no_default_keymaps = true end, config = function() require("plugins/config/lightspeed") end }
+  use { "ggandor/lightspeed.nvim", event = "VimEnter", config = function() vim.g.lightspeed_no_default_keymaps = true end, config = function() require("plugins/config/lightspeed") end }
 
   ---- Vertical Move
   use { "haya14busa/vim-edgemotion", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-edgemotion.vim") end }
@@ -283,8 +291,8 @@ return require("packer").startup(function(use)
 
   -- Programming Languages -----------------------
   ---- Markdown
-  use { "iamcco/markdown-preview.nvim", ft = { "markdown" }, run = ":call mkdp#util#install()" }
-  -- use { "SidOfc/mkdx", ft = { "markdown" }, setup = function() vim.cmd("source ~/.config/nvim/rc/pluginsetup/mkdx.vim") end } -- TODO:
+  use { "iamcco/markdown-preview.nvim", run = ":call mkdp#util#install()" }
+  use { "SidOfc/mkdx", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/mkdx.vim") end } -- TODO:
   use { "dhruvasagar/vim-table-mode", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-table-mode.vim") end } -- markdownでテーブルを綺麗に表示
 
   ---- CSV -- TODO:
@@ -293,7 +301,7 @@ return require("packer").startup(function(use)
   ---- Lua
   use { "folke/lua-dev.nvim", module = "lua-dev" } -- Dev setup for init.lua and plugin development
 
-  ---- Rust 
+  ---- Rust
   use { "simrat39/rust-tools.nvim", module = "rust-tools" }
 
   ---- LaTeX
@@ -305,4 +313,3 @@ return require("packer").startup(function(use)
   -- vimtex -- https://github.com/lervag/vimtex
   -- vim-latex-live-preview -- https://github.com/xuhdev/vim-latex-live-preview
 end)
-

@@ -1,5 +1,6 @@
 # flap1's dotfiles
 
+```txt
          ▄▄▒▒▀▀░░░▀▀▀▀▓▄▄
       ▄▓▀░▄▄▓▓▓▓▓▓▓▓▄▄▄▒█▓▄▄
     ▄▀▄▓███████████████▀░░░ ▀▄
@@ -14,13 +15,14 @@
    █                        ▄▀
     ▀ ▄    ▄       ▄▄▄▄   ▄
          ▀▀▀▀▀     ▀▀▀▀
+```
 
 ## Env
 
 * zsh
-    * Zinit
-    * Powerlevel10k
-* WezTerm 
+  * Zinit
+  * Powerlevel10k
+* WezTerm
 * Neovim
 
 ## Other
@@ -29,59 +31,59 @@
 
 ## Command
 
-| command    | alias元/exp
-| -          | -
-| xxx L      | xxx &#124; bat --style=plain
-| xxx H      | xxx &#124; head
-| xxx G      | xxx &#124; rg -S
-| xxx A      | xxx &#124; awk
-| xxx C      | xxx &#124; tee >(pbcopy)
-| xxx X      | xxx &#124; xargs
-| ..         | cd ..
-| .2         | cd ../..
-| .3         | cd ../../..
-| .4         | cd ../../../..
-| .5         | cd ../../../../..
-| mkdir      | mkdir -p
-| cat/less   | bat
-| ls         | lsd -A --group-dirs=last
-| l          | lsd -Ahl --total-size --group-dirs=last
-| ll         | lsd -Ahl --total-size --group-dirs=last
-| lt         | lsd -Ahl --total-size --tree --group-dirs=last
-| tree       | lsd -A --tree --group-dirs=last
-| du         | dust, ディレクトリサイズ
-| df         | df -h, ディスクの空き容量
-| ps         | procs --tree
-| grep       | rg -S
-| fd         | fd -E gdrive, ファイル検索
-| diff       | delta
-| rm/mv/cp   | rm/mv/cp -i
-| vim/v      | nvim
-| python/pip | python3/pip3
-| ga         | git add -A
-| gc         | git commit -m
-| gp         | git push
-| gl         | git pull
-| gpo        | git push -u origin HEAD
-| glom       | git pull origin main
-| gloms      | git pull origin master && git submodule update --init --recursive
-| gll        | git log --oneline
-| di         | docker images
-| dr         | docker run --rm
-| ds         | docker stop $(docker ps -q)
-| dcb        | docker-compose build
-| dcu        | docker-compose up
-| dcd        | docker-compose down
-| dps        | docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"
-| drm        | docker system prune
-| zmv        | ex) zmv -w 'from' 'to'
-| dir_name   | カレント/親/ホームディレクトリ内のディレクトリ名で移動, コマンド名と被る場合は./dir_name
-| cb         | chromeのブックマークを検索
-| ch         | chromeの履歴を検索
-| mkcd       | ディレクトリを作成して移動
-| gitfix     | checkoutせずにcommitした場合の修正
-| update     | 更新(Ubuntu)
-| pdf_unlock | pdfの鍵解除
+| command     | alias元/exp                                                                 |
+| ----------- | -------------------------------------------------------------------------- |
+| xxx L       | xxx \| bat --style=plain                                                   |
+| xxx H       | xxx \| head                                                                |
+| xxx G       | xxx \| rg -S                                                               |
+| xxx A       | xxx \| awk                                                                 |
+| xxx C       | xxx \| tee >(pbcopy)                                                       |
+| xxx X       | xxx \| xargs                                                               |
+| ..          | cd ..                                                                      |
+| .2          | cd ../..                                                                   |
+| .3          | cd ../../..                                                                |
+| .4          | cd ../../../..                                                             |
+| .5          | cd ../../../../..                                                          |
+| mkdir       | mkdir -p                                                                   |
+| cat/less    | bat                                                                        |
+| ls          | lsd -A --group-dirs=last                                                   |
+| l           | lsd -Ahl --total-size --group-dirs=last                                    |
+| ll          | lsd -Ahl --total-size --group-dirs=last                                    |
+| lt          | lsd -Ahl --total-size --tree --group-dirs=last                             |
+| tree        | lsd -A --tree --group-dirs=last                                            |
+| du          | dust, ディレクトリサイズ                                                            |
+| df          | df -h, ディスクの空き容量                                                           |
+| ps          | procs --tree                                                               |
+| grep        | rg -S                                                                      |
+| fd          | fd -E gdrive, ファイル検索                                                       |
+| diff        | delta                                                                      |
+| rm/mv/cp    | rm/mv/cp -i                                                                |
+| vim/v       | nvim                                                                       |
+| python/pip  | python3/pip3                                                               |
+| ga          | git add -A                                                                 |
+| gc          | git commit -m                                                              |
+| gp          | git push                                                                   |
+| gl          | git pull                                                                   |
+| gpo         | git push -u origin HEAD                                                    |
+| glom        | git pull origin main                                                       |
+| gloms       | git pull origin master && git submodule update --init --recursive          |
+| gll         | git log --oneline                                                          |
+| di          | docker images                                                              |
+| dr          | docker run --rm                                                            |
+| ds          | docker stop $(docker ps -q)                                                |
+| dcb         | docker-compose build                                                       |
+| dcu         | docker-compose up                                                          |
+| dcd         | docker-compose down                                                        |
+| dps         | docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}" |
+| drm         | docker system prune                                                        |
+| zmv         | ex) zmv -w 'from' 'to'                                                     |
+| dir\_name   | カレント/親/ホームディレクトリ内のディレクトリ名で移動, コマンド名と被る場合は./dir\_name                       |
+| cb          | chromeのブックマークを検索                                                           |
+| ch          | chromeの履歴を検索                                                               |
+| mkcd        | ディレクトリを作成して移動                                                              |
+| gitfix      | checkoutせずにcommitした場合の修正                                                   |
+| update      | 更新(Ubuntu)                                                                 |
+| pdf\_unlock | pdfの鍵解除                                                                    |
 
 ## Fonts
 
@@ -150,4 +152,3 @@ sudo apt install libxml2-dev
 sudo apt install pkg-config libasound2-dev libssl-dev cmake libfreetype6-dev libexpat1-dev libxcb-composite0-dev
 cargo install silicon
 ```
-
