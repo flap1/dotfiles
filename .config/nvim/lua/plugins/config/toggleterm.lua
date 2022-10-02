@@ -45,6 +45,7 @@ local lazygit  = Terminal:new({
     vim.cmd("startinsert!")
     vim.api.nvim_buf_set_keymap(term.bufnr, "n", "<Esc>", "<cmd>close<CR>", { noremap = true, silent = true })
     vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(term.bufnr, "n", "<C-q>", "<cmd>close<CR>", { noremap = true, silent = true })
   end,
   -- function to run on closing the terminal
   on_close = function(term)
@@ -79,10 +80,9 @@ vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
   group = groupname,
   pattern = "term://*#toggleterm#[^9]",
   callback = function()
-    -- vim.keymap.set("t", "<Leader>t", "<Cmd>exe 'ToggleTerm'<CR>", { noremap = true, silent = true, buffer = true })
-    -- vim.keymap.set("t", "<Leader>g", "<Cmd>exe 'ToggleTerm'<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("t", "<C-q>", "<Cmd>exe 'ToggleTerm'<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set("t", "jk", "<C-\\><C-n>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("n", "<C-q>", "<Cmd>exe 'ToggleTerm'<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { noremap = true, silent = true, buffer = true })
   end,
   once = false,
 })
