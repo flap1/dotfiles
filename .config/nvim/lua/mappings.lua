@@ -143,7 +143,7 @@ vim.keymap.set("n", "gM", "M", opts)
 vim.keymap.set("n", "gL", "L", opts)
 
 -- jump cursor
-vim.keymap.set('n', '<Tab>', function() return vim.v.count > 0 and '0<Bar>' or '10l' end, optsexpr)
+-- vim.keymap.set('n', '<Tab>', function() return vim.v.count > 0 and '0<Bar>' or '10l' end, optsexpr)
 vim.keymap.set('n', '<CR>', function() return vim.o.buftype == 'quickfix' and "<CR>" or vim.v.count > 0 and '0jzz' or '10jzz' end, optsexpr)
 
 -- Automatically indent with i and A

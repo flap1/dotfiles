@@ -115,6 +115,10 @@ return require("packer").startup({ function(use)
   use { "nvim-lualine/lualine.nvim", after = colorscheme, requires = { "kyazdani42/nvim-web-devicons", opt = true }, config = function() require("plugins/config/lualine") end }
   use { "SmiteshP/nvim-navic", module = "nvim-navic", config = function() require("plugins/config/nvim-navic") end }
 
+  ---- Fold
+  -- use{ 'anuvyklack/pretty-fold.nvim', config = function() require('plugins/config/pretty-fold') end }
+  use { 'jghauser/fold-cycle.nvim', config = function() require('plugins/config/fold-cycle') end }
+
   ---- Indent
   use { "lukas-reineke/indent-blankline.nvim", event = "VimEnter", config = function() require("plugins/config/indent-blankline") end }
 
@@ -306,6 +310,12 @@ return require("packer").startup({ function(use)
 
   ---- LaTeX
   use { "lervag/vimtex", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vimtex.vim") end }
+
+  ---- Python
+  -- use { "untitled-ai/jupyter_ascending.vim" }
+  -- use { "glacambre/firenvim", run = function() vim.fn["firenvim#install"](0) end }
+  use { "ahmedkhalf/jupyter-nvim", run = ":UpdateRemotePlugins", config = function() require("jupyter-nvim").setup { } end }
+  use { 'dccsillag/magma-nvim', run = ':UpdateRemotePlugins', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/magma-nvim.vim") end }
 
   -- Paper writing
   -- Zotcite -- https://github.com/latex-lsp/texlab
