@@ -3,12 +3,13 @@ require("nvim-surround").setup({
   keymaps = { -- vim-surround style keymaps
     insert = "<C-s>",
     insert_line = "<C-s><C-s>",
-    normal = "sa",
-    normal_line = "saa",
-    normal_cur_line = "sS",
+    normal = "ys",
+    normal_cur = "yss",
+    normal_line = "yS",
+    normal_cur_line = "ySS",
     visual = "s",
-    delete = "sd",
-    change = "sc",
+    delete = "ds",
+    change = "cs",
   },
   aliases = {
     ["a"] = "a",

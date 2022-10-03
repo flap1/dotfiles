@@ -52,7 +52,7 @@ end, optsexpr)
 vim.keymap.set("n", "<LocalLeader>s", "<Nop>", opts)
 
 -- nvim-surround
-vim.keymap.set("n", "s", "<Nop>", opts)
+-- vim.keymap.set("n", "s", "<Nop>", opts)
 
 -- lightspeed
 vim.keymap.set("n", "t", "<Nop>", opts)
