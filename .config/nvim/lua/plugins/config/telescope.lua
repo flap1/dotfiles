@@ -137,4 +137,3 @@ vim.keymap.set("n", "[ff]gc", "<Cmd>Telescope git_commits<CR>", opts)
 vim.keymap.set("n", "[ff]gs", "<Cmd>Telescope git_status<CR>", opts)
 vim.keymap.set("n", "[ff]gC", "<Cmd>Telescope git_bcommits<CR>", opts)
 vim.keymap.set("n", "[ff]gb", "<Cmd>Telescope git_branches<CR>", opts)
-

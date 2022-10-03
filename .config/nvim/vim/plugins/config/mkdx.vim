@@ -8,6 +8,5 @@ let g:mkdx#settings = { 'highlight': { 'enable': 1 },
       \ 'toc': { 'text': 'Table of Contents', 'update_on_write': 1 },
       \ 'fold': { 'enable': 1 } }
 
-
 " let g:mkdx#settings.insert_indent_mappings = 1
 

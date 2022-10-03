@@ -39,6 +39,11 @@ require('mason-lspconfig').setup_handlers({
   end,
 
   -- markdown
+  -- ['remark_ls'] = function()
+  --   lspconfig.remark_ls.setup({
+  --     filetypes = { "markdown", "telekasten" }
+  --   })
+  -- end,
 
   -- rust
   ['rust_analyzer'] = function()
