@@ -14,7 +14,7 @@ require("toggleterm").setup({
   start_in_insert = false,
   insert_mappings = true, -- whether or not the open mapping applies in insert mode
   persist_size = false,
-  direction = "float",
+  direction = "horizontal",
   close_on_exit = false, -- close the terminal window when the process exits
   shell = vim.o.shell, -- change the default shell
   -- This field is only relevant if direction is set to 'float'
@@ -65,6 +65,7 @@ vim.api.nvim_create_autocmd({"VimEnter", "BufEnter"}, {
   callback = function()
     vim.keymap.set("n", "<leader>g", "<cmd>lua _Lazygit_toggle()<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<Leader>t", '<Cmd>execute v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("n", "<C-t><C-a>", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
   end,
   once = false,
 })
@@ -80,9 +81,17 @@ vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
   group = groupname,
   pattern = "term://*#toggleterm#[^9]",
   callback = function()
-    vim.keymap.set("t", "<C-q>", "<Cmd>exe 'ToggleTerm'<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set("n", "<C-q>", "<Cmd>exe 'ToggleTerm'<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-q>", "<Cmd>ToggleTerm<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("t", "<C-t><C-a>", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>1", "<Cmd>1ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>2", "<Cmd>2ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>3", "<Cmd>3ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>4", "<Cmd>4ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
   end,
   once = false,
 })
