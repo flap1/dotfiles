@@ -100,7 +100,7 @@ vim.o.modeline = false -- If 'modeline' is off or 'modelines' is zero no lines a
 
 -- clipboard
 if vim.fn.has("clipboard") == 1 then
-	vim.o.clipboard = "unnamedplus,unnamed"
+  vim.o.clipboard = "unnamedplus,unnamed"
   -- unnamedplus: save to + register(OS clipboard) 
   -- unnamed: save to * register
 end

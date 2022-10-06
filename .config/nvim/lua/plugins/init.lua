@@ -191,7 +191,7 @@ return require("packer").startup({ function(use)
   ---- Manual -- TODO
   use { "thinca/vim-ref", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-ref.vim") end }
   use { "folke/which-key.nvim", event = "VimEnter", config = function() require("plugins/config/which-key") end }
-  use { 'sudormrfbin/cheatsheet.nvim', after = "telescope.nvim", requires = { 'nvim-telescope/telescope.nvim', 'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim' }, config = function() require("plugins/config/cheatsheet") end }
+  use { 'flap1/cheatsheet.nvim', after = "telescope.nvim", requires = { 'nvim-telescope/telescope.nvim', 'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim' }, config = function() require("plugins/config/cheatsheet") end }
 
   ---- Quickfix -- TODO:
   use { "kevinhwang91/nvim-bqf", event = "VimEnter", ft = 'qf'}

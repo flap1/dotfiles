@@ -22,3 +22,23 @@ git commit add -A | a @ Files
 commit | c @ Files
 push | P @ Files
 pull | p @ Files
+
+## pyenv
+インストール可能なバージョン一覧の確認 | pyenv install --list 
+インストール(長い) | pyenv install -v <version>
+現在のバージョン確認 | pyenv version
+インストール済みのバージョン一覧確認 | pyenv versions
+全体で利用するバージョンの設定 | pyenv global <version> 
+特定ディレクトリ配下のみ利用するバージョンの設定 | pyenv local <version>
+アンインストール | pyenv uninstall <version>
+ヘルプ | pyenv
+pyenvのインストール先の絶対パス | pyenv root
+
+## pyenv(virtual)
+<env-name>の環境を作る(<versioin>/envs/<env-name>が作成される) | pyenv virtualenv <version> <env-name>
+特定ディレクトリ配下で利用する | pyenv local <env-name>
+virtualenv の有効化 | pyenv activate <env-name>
+virtualenv の無効化 | pyenv deactivate
+存在している virtualenv の確認 | pyenv virtualenvs
+環境の削除 | pyenv uninstall <env-name>
+

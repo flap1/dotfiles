@@ -225,7 +225,39 @@ return {
     dl(3, l._1:gsub("\n", " linebreak ") .. l._2, { 1, 2 }),
   }),
 },
-    {
-      type = "autosnippets",
-      key = "all_auto",
-    }
+{
+  type = "autosnippets",
+  key = "all_auto",
+}
+
+-- TM_SELECTED_TEXT現在選択されているテキストまたは空の文字列
+-- TM_CURRENT_LINE現在の行の内容
+-- TM_CURRENT_WORDカーソルの下の単語の内容または空の文字列
+-- TM_LINE_INDEXゼロインデックスベースの行番号
+-- TM_LINE_NUMBERワンインデックスベースの行番号
+-- TM_FILENAME現在のドキュメントのファイル名
+-- TM_FILENAME_BASE現在のドキュメントの拡張子なしのファイル名
+-- TM_DIRECTORY現在のドキュメントのディレクトリ
+-- TM_FILEPATH現在のドキュメントの完全なファイルパス
+-- CLIPBOARDクリップボードの内容
+-- WORKSPACE_NAME開いているワークスペースまたはフォルダーの名前
+-- CURRENT_YEAR現在の年
+-- CURRENT_YEAR_SHORT現在の年の下2桁
+-- CURRENT_MONTH 2桁の月（例 '02'）
+-- CURRENT_MONTH_NAME月のフルネーム（例：「7月」）
+-- CURRENT_MONTH_NAME_SHORT月の短い名前（例： 'Jul'）
+-- CURRENT_DATE月の日
+-- CURRENT_DAY_NAME曜日の名前（例：「月曜日」）
+-- CURRENT_DAY_NAME_SHORT曜日の短い名前（例： 'Mon'）
+-- CURRENT_HOUR 24時間形式の現在の時間
+-- CURRENT_MINUTE現在の分
+-- CURRENT_SECOND現在の秒
+-- CURRENT_SECONDS_UNIX Unixエポックからの秒数
+-- BLOCK_COMMENT_START出力例：PHP / *またはHTML <！-
+-- BLOCK_COMMENT_END出力例：PHP * /またはHTML->
+-- LINE_COMMENTの出力例：PHPの場合//
+
+
+
+
+

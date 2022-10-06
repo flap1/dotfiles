@@ -14,6 +14,8 @@ export PATH=$DENO_INSTALL/bin:$PATH
 
 export TODOIST_API_KEY="$(pass Todoist/API)"
 
+export PYENV_VIRTUALENV_DISABLE_PROMPT=0
+
 export NVM_DIR=$HOME/.nvm
 MANPATH=$NVM_DIR/default/share/man:$MANPATH
 export NODE_PATH=$NVM_DIR/default/lib/node_modules
