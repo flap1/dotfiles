@@ -139,3 +139,5 @@ vim.o.diffopt = vim.o.diffopt .. ",vertical,internal,algorithm:patience,iwhite,i
 -- increment
 vim.opt.nrformats:append("unsigned") -- This defines what bases Vim will consider for numbers when using the CTRL-A and CTRL-X commands for adding to and subtracting from a number respectively
 -- unsigned: If included, numbers are recognized as unsigned
+
+vim.g.python3_host_prog = "~/.pyenv/shims/python3"

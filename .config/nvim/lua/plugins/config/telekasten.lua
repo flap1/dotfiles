@@ -12,7 +12,7 @@ require("telekasten").setup({
   dailies_create_nonexisting = true,
   weeklies_create_nonexisting = true,
 
-  -- template for new notes (new_note, follow_link)
+  -- template for new notes (newNote, follow_link)
   template_new_note = templ_dir .. "/new_note.md",
 
   -- template for newly created daily notes (goto_today)
@@ -23,12 +23,21 @@ require("telekasten").setup({
 
   image_link_style = "markdown",
 
-
   -- image (sub)dir for pasting
   -- dir name (absolute path or subdir name)
   -- or nil if pasted images shouldn't go into a special subdir
   image_subdir = "img",
 
+  -- Generate note filenames. One of:
+  -- "title" (default) - Use title if supplied, uuid otherwise
+  -- "uuid" - Use uuid
+  -- "uuid-title" - Prefix title by uuid
+  -- "title-uuid" - Suffix title with uuid
+  new_note_filename = "uuid-title",
+  -- file uuid type ("rand" or input for os.date()")
+  uuid_type = "%Y-%m-%d", -- "%Y%m%d%H%M",
+  -- UUID separator
+  uuid_sep = "-", -- "-"
 
   -- default sort option: 'filename', 'modified'
   sort = "modified",

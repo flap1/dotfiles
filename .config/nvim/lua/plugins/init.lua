@@ -65,7 +65,7 @@ return require("packer").startup({ function(use)
     { "f3fora/cmp-spell" }, -- vim's spell suggests
     { "yutkat/cmp-mocword" }, -- mocward(predict next word) completion
     { "uga-rosa/cmp-dictionary", config = function() require "plugins/config/cmp-dictionary" end }, -- dictionary completion
-    { "tzachar/cmp-tabnine", run = "./install.sh" },  -- AI completion
+    -- { "tzachar/cmp-tabnine", run = "./install.sh" },  -- AI completion
     { "ray-x/cmp-treesitter" }, -- treesitter node completion
     { "lukas-reineke/cmp-rg" }, -- ripgrep completion, `sudo apt-get install ripgrep`
     { "lukas-reineke/cmp-under-comparator", module = "cmp-under-comparator" } -- better sort completion
@@ -185,7 +185,7 @@ return require("packer").startup({ function(use)
 
   ---- Buffer
   use { "kazhala/close-buffers.nvim", config = function() require("plugins/config/close-buffers") end } -- https://github.com/kazhala/close-buffers.nvim
-  use { "famiu/bufdelete.nvim", event = "VimEnter", config = function() require("plugins/config/bufdelete") end }
+  use { "famiu/bufdelete.nvim", event = "VimEnter", commit = "46255e4", config = function() require("plugins/config/bufdelete") end }
 
   -- Standard Feature Enhancement ----------------
   ---- Manual -- TODO
@@ -317,13 +317,19 @@ return require("packer").startup({ function(use)
   use { "ahmedkhalf/jupyter-nvim", run = ":UpdateRemotePlugins", config = function() require("jupyter-nvim").setup { } end }
   use { 'dccsillag/magma-nvim', run = ':UpdateRemotePlugins', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/magma-nvim.vim") end }
 
+  ---- PlantUML
+  use { "weirongxu/plantuml-previewer.vim", requires = { { "tyru/open-browser.vim" }, { "aklt/plantuml-syntax" } }}
   -- Paper writing
+
+  ---- Image
+  -- use { "edluffy/hologram.nvim", config = function() require("hologram").setup{ } end }
+
   -- Zotcite -- https://github.com/latex-lsp/texlab
   -- texlab -- https://github.com/latex-lsp/texlab, https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/texlab.lua
   -- vimtex -- https://github.com/lervag/vimtex
   -- vim-latex-live-preview -- https://github.com/xuhdev/vim-latex-live-preview
 end,
 config = {
-  snapshot_path = ".config/nvim/snapshots"
+  snapshot_path = "snapshots"
 }
 })

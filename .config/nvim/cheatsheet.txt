@@ -42,3 +42,5 @@ virtualenv の無効化 | pyenv deactivate
 存在している virtualenv の確認 | pyenv virtualenvs
 環境の削除 | pyenv uninstall <env-name>
 
+## bash
+鍵を指定してssh | ssh -i /path/to/key <username@domain> -p <port>

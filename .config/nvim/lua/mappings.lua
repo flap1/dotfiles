@@ -17,8 +17,15 @@
 local opts = { noremap = true, silent = true }
 local optsexpr = { noremap = true, expr = true, silent = true}
 
-vim.keymap.set("n", "<Leader><CR>", "<Cmd>luafile %<CR>", opts) -- reload config
-vim.keymap.set("n", "<Leader><Leader><CR>", "<Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>", opts) -- reload config
+-- vim.keymap.set("n", "<Leader><CR>", "<Cmd>luafile %<CR>", opts) -- reload config
+-- vim.keymap.set("n", "<Leader><Leader><CR>", "<Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>", opts) -- reload config
+
+vim.cmd(
+[[
+  autocmd FileType lua nnoremap <silent> <Leader><CR> <Cmd>luafile %<CR>
+  autocmd FileType lua nnoremap <silent> <Leader><Leader><CR> <Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>
+]]
+)
 
 -- git, use
 -- vim.keymap.set("n", "G", "<Nop>", { noremap = true, silent = true })
@@ -164,8 +171,8 @@ vim.keymap.set("c", "<C-b>", "<left>", { noremap = true, silent = false })
 vim.keymap.set("c", "<C-d>", "<DEL>", { noremap = true, silent = false })
 vim.keymap.set('c', '<C-h>', '<BS>', {noremap = true, silent = true})
 vim.keymap.set("c", "<C-w>", "<BS>", { noremap = true, silent = false })
-vim.keymap.set({ "i", "t" }, "<C-d>", "<Del>", { noremap = true, silent = false })
-vim.keymap.set({ "i", "t" }, "<C-w>", "<BS>", { noremap = true, silent = false })
+vim.keymap.set({ "i", "t" }, "<C-x>", "<Del>", { noremap = true, silent = false })
+vim.keymap.set({ "i", "t" }, "<C-z>", "<BS>", { noremap = true, silent = false })
 vim.keymap.set({ "i", "t" }, "<C-a>", "<Home>", { noremap = true, silent = false })
 vim.keymap.set({ "i", "t" }, "<C-e>", "<End>", { noremap = true, silent = false })
 vim.keymap.set({ "i", "t" }, "<C-f>", "<right>", { noremap = true, silent = false })
