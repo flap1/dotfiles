@@ -31,31 +31,31 @@ require("toggleterm").setup({
   },
 })
 
-local Terminal = require('toggleterm.terminal').Terminal
-local lazygit  = Terminal:new({
-  cmd = "lazygit",
-  dir = "git_dir",
-  count = 5,
-  direction = "float",
-  float_opts = {
-    border = "double",
-  },
-  -- function to run on opening the terminal
-  on_open = function(term)
-    vim.cmd("startinsert!")
-    -- vim.api.nvim_buf_set_keymap(term.bufnr, "n", "<Esc>", "<cmd>close<CR>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(term.bufnr, "n", "<C-q>", "<cmd>close<CR>", { noremap = true, silent = true })
-  end,
-  -- function to run on closing the terminal
-  on_close = function(term)
-    vim.cmd("startinsert!")
-  end,
-})
+-- local Terminal = require('toggleterm.terminal').Terminal
+-- local lazygit  = Terminal:new({
+--   cmd = "lazygit",
+--   dir = "git_dir",
+--   count = 5,
+--   direction = "float",
+--   float_opts = {
+--     border = "double",
+--   },
+--   -- function to run on opening the terminal
+--   on_open = function(term)
+--     vim.cmd("startinsert!")
+--     -- vim.api.nvim_buf_set_keymap(term.bufnr, "n", "<Esc>", "<cmd>close<CR>", { noremap = true, silent = true })
+--     vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
+--     vim.api.nvim_buf_set_keymap(term.bufnr, "n", "<C-q>", "<cmd>close<CR>", { noremap = true, silent = true })
+--   end,
+--   -- function to run on closing the terminal
+--   on_close = function(term)
+--     vim.cmd("startinsert!")
+--   end,
+-- })
 
-function _Lazygit_toggle()
-  lazygit:toggle()
-end
+-- function _Lazygit_toggle()
+--   lazygit:toggle()
+-- end
 
 vim.g.toglleterm_win_num = vim.fn.winnr()
 local groupname = "vimrc_toggleterm"
@@ -63,7 +63,7 @@ vim.api.nvim_create_augroup(groupname, { clear = true })
 vim.api.nvim_create_autocmd({"VimEnter", "BufEnter"}, {
   group = groupname,
   callback = function()
-    vim.keymap.set("n", "<leader>g", "<cmd>lua _Lazygit_toggle()<CR>", { noremap = true, silent = true })
+    -- vim.keymap.set("n", "<leader>g", "<cmd>lua _Lazygit_toggle()<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<Leader>t", '<Cmd>execute v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true, buffer = true })
     vim.keymap.set("n", "<LocalLeader>ta", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
   end,

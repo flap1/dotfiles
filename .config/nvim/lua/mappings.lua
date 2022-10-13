@@ -30,19 +30,14 @@ vim.cmd(
 -- git, use
 -- vim.keymap.set("n", "G", "<Nop>", { noremap = true, silent = true })
 -- vim.keymap.set("n", "[git]", "<Nop>", { noremap = true, silent = true })
--- vim.keymap.set("n", "GG", "G", { noremap = true, silent = true })
 -- vim.api.nvim_set_keymap("n", "G", "[git]", {})
+-- vim.keymap.set("n", "GG", "G", { noremap = true, silent = true })
 
 -- FuzzyFinder
 vim.keymap.set({ "n", "v" }, "<Leader>f", "<Nop>", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "[ff]", "<Nop>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<Leader>f", "[ff]", {})
 vim.api.nvim_set_keymap("v", "<Leader>f", "[ff]", {})
-
--- tab
--- vim.keymap.set("n", "<Leader>t", "<Nop>", opts)
--- vim.keymap.set("n", "[tab]", "<Nop>", opts)
--- vim.api.nvim_set_keymap("n", "<Leader>t", "[tab]", {})
 
 -- header -----------------------------------------
 vim.keymap.set("n", "<LocalLeader>-", function()
