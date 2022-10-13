@@ -43,7 +43,7 @@ local lazygit  = Terminal:new({
   -- function to run on opening the terminal
   on_open = function(term)
     vim.cmd("startinsert!")
-    vim.api.nvim_buf_set_keymap(term.bufnr, "n", "<Esc>", "<cmd>close<CR>", { noremap = true, silent = true })
+    -- vim.api.nvim_buf_set_keymap(term.bufnr, "n", "<Esc>", "<cmd>close<CR>", { noremap = true, silent = true })
     vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
     vim.api.nvim_buf_set_keymap(term.bufnr, "n", "<C-q>", "<cmd>close<CR>", { noremap = true, silent = true })
   end,
@@ -65,7 +65,7 @@ vim.api.nvim_create_autocmd({"VimEnter", "BufEnter"}, {
   callback = function()
     vim.keymap.set("n", "<leader>g", "<cmd>lua _Lazygit_toggle()<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<Leader>t", '<Cmd>execute v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true, buffer = true })
-    vim.keymap.set("n", "<C-t>a", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("n", "<LocalLeader>ta", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
   end,
   once = false,
 })

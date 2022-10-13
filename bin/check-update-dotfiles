@@ -1,10 +1,9 @@
-#/bin/bash
+#!/bin/bash
 
 SCRIPT_DIR=$HOME/dotfiles
 
 # check update
-if test -n "$(git -C ${SCRIPT_DIR} status --porcelain)" ||
-   ! git -C ${SCRIPT_DIR} diff --exit-code --stat --cached origin/main > /dev/null ; then
+if test -n "$(git -C ${SCRIPT_DIR} status --porcelain)" || ! git -C ${SCRIPT_DIR} diff --exit-code --stat --cached origin/main > /dev/null ; then
   echo -e "=== DOTFILES IS DIRTY ==="
   echo -e "The dotfiles have been changed."
   echo -e "Please update them with the following command."

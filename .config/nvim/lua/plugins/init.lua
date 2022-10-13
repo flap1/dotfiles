@@ -48,7 +48,7 @@ return require("packer").startup({ function(use)
 
   -- LSP & Completion ----------------------------
   ---- Auto Completion
-  use { "hrsh7th/nvim-cmp", wants = { "LuaSnip" }, requires = {
+  use { "hrsh7th/nvim-cmp", commit = "2427d06", wants = { "LuaSnip" }, requires = {
     { "L3MON4D3/LuaSnip" },
     { "windwp/nvim-autopairs", config = function() require("plugins/config/nvim-autopairs") end},
     { "hrsh7th/cmp-buffer" },
@@ -272,8 +272,8 @@ return require("packer").startup({ function(use)
   use "rafamadriz/friendly-snippets" -- snippets collection
 
   ---- Git -- TODO:
-  -- use { "TimUntersberger/neogit", config = function() require("plugins/config/neogit") end }
-  -- use { "akinsho/git-conflict.nvim", event = "VimEnter", config = function() require("git-conflict").setup() end }
+  use { "TimUntersberger/neogit", config = function() require("plugins/config/neogit") end }
+  use { "akinsho/git-conflict.nvim", event = "VimEnter",  tag = "*", config = function() require("git-conflict").setup() end }
   -- use { "lewis6991/gitsigns.nvim", requires = { "nvim-lua/plenary.nvim" }, event = "VimEnter", config = function() require("rc/pluginconfig/gitsigns") end }
   -- use { "sindrets/diffview.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/diffview") end }
   -- use { "rhysd/committia.vim" }

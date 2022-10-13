@@ -1,9 +1,23 @@
+# cheatsheet
 Open cheatsheet | <leader>?
 Open cheatsheet in floating window | :CheatSheet!
 
 View mappings | :map [mapping]
 Set text width to {n} | :set tw={n}
 
+##################################################
+# git
+##################################################
+## git
+ローカルブランチ削除 | git branch -d <branchname>
+リモートブランチ削除 | git push origin --delete <branchname>
+rename git branch | git branch -m <old> <new> 
+n回分のcommitをまとめる(一番上だけpickにして残りをs) | git rebase -i HEAD~n
+
+
+##################################################
+# python
+##################################################
 ## pip
 install numpy | pip install numpy
 install pytorch | pip install torch
@@ -16,12 +30,6 @@ update pip | pip install -U pip
 install en_core_web_sm | python -m spacy download en_core_web_sm
 
 ## numpy
-
-## lazy_git
-git commit add -A | a @ Files 
-commit | c @ Files
-push | P @ Files
-pull | p @ Files
 
 ## pyenv
 インストール可能なバージョン一覧の確認 | pyenv install --list 
@@ -42,5 +50,38 @@ virtualenv の無効化 | pyenv deactivate
 存在している virtualenv の確認 | pyenv virtualenvs
 環境の削除 | pyenv uninstall <env-name>
 
+##################################################
+# git
+##################################################
+## lazy_git
+git commit add -A | a @ Files 
+commit | c @ Files
+push | P @ Files
+pull | p @ Files
+
+##################################################
+# shell
+##################################################
 ## bash
 鍵を指定してssh | ssh -i /path/to/key <username@domain> -p <port>
+codec取得 | nkf -g <file>
+recode(sjis to utf8) | recode sjis..utf8 <file>
+recode(utf8 to sjis) | recode utf8..sjis <file>
+
+##################################################
+# research
+##################################################
+## english
+Lexical | 語彙, 字句
+affiliate | 関連会社
+supervised | 教師あり
+heuristics | 経験則
+semantic drift | 意味的漂流
+ACE | Automatic Content Extraction
+bigram | 任意の文字列が2文字だけ続いた文字列
+chunk | かたまり
+corpus | 自然言語の文章を構造化し大規模に集積したもの(Wikipediaなど)
+aggregate | 集約する
+syntactic analysis | 構文解析
+coverage | 被覆
+semantics | 意味論, 解釈の問題

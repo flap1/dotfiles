@@ -1,0 +1,20 @@
+#!/bin/bash
+
+SCRIPT_DIRS=(
+  "$HOME/dotfiles" \
+  "$HOME/code"
+)
+text=""
+
+for file in $SCRIPT_DIRS
+do
+  if test -n "$(git -C ${file} status --porcelain)" || ! git -C ${file} diff --exit-code --stat --cached origin/main > /dev/null ; then
+    echo -e "$file have been changed" 
+    text+="cd $file; git add -A; git commit -m 'update'; git push origin main"
+  fi
+done
+
+echo -e "Please update them with the following command."
+echo -e ""
+echo -e $text
+

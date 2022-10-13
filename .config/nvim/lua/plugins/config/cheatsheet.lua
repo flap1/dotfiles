@@ -1,10 +1,12 @@
 require("cheatsheet").setup({
     bundled_cheatsheets = {
         -- only show the default cheatsheet
-        enabled = { "markdown", "regex", "nerd-fonts" },
+        -- enabled = { "markdown", "regex", "nerd-fonts" },
+        -- enabled = { "markdown", "regex" },
+        enabled = {},
     },
     bundled_plugin_cheatsheets = {
-        -- enabled = {}
+        enabled = {}
         -- disabled = { "gitsigns.nvim" },
     },
     register = "+",

@@ -10,7 +10,7 @@ neogit.setup {
   },
 }
 
-vim.keymap.set("n", "[git]<Space>", "<Cmd>Neogit<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "[git]s", "<Cmd>Neogit<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "[git]S", "<Cmd>Neogit<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "G<Space>", "<Cmd>Neogit<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "Gs", "<Cmd>Neogit<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "GS", "<Cmd>Neogit<CR>", { noremap = true, silent = true })
 
