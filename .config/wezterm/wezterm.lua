@@ -3,6 +3,10 @@ local wezterm = require("wezterm")
 local bindings= require("bindings")
 local scheme = wezterm.get_builtin_color_schemes()["nightfox"]
 local mux = wezterm.mux
+local home = os.getenv("HOME")
+if home == nil then
+  home = os.getenv("UserProfile")
+end
 
 -- Always open window in full screen
 wezterm.on("gui-startup", function(cmd)
@@ -27,7 +31,7 @@ return {
 
   -- color scheme
   color_scheme = "nightfox",
-  color_scheme_dirs = { os.getenv("HOME") .. "/.config/wezterm/colors/" },
+  color_scheme_dirs = { home .. "/.config/wezterm/colors/" },
 
   -- the boundaries of a word
   selection_word_boundary = " \t\n{}[]()\"'`,;:│=&!%",

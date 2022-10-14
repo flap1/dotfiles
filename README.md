@@ -89,6 +89,7 @@
 
 * [UDEV Gothic 35NFLG](https://github.com/yuru7/udev-gothic)
 * [NERD FONTS](https://www.nerdfonts.com/)
+* `~/.local/share/fonts`におく
 
 ## Preparation
 
@@ -152,3 +153,42 @@ sudo apt install libxml2-dev
 sudo apt install pkg-config libasound2-dev libssl-dev cmake libfreetype6-dev libexpat1-dev libxcb-composite0-dev
 cargo install silicon
 ```
+
+## setup windows
+
+@cmd.exe
+
+```dos
+@rem install Powershell7
+winget install --id Microsoft.Powershell --source winget
+winget install --id Microsoft.Powershell.Preview --source winget
+
+@rem install scoop
+Set-ExecutionPolicy RemoteSigned -scope CurrentUser -force
+iwr -useb get.scoop.sh | iex
+
+@rem basics
+scoop install aria2
+scoop install jq ccat wget sed vim
+scoop install 7zip sudo git unzip openssl
+
+@rem install neovim
+scoop install neovim
+
+@rem install oh-my-posh
+scoop install https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/oh-my-posh.json
+
+git clone https://gitlab.com/flap1/dotfiles ~
+```
+
+```powershell
+sudo cmd /c %UserProfile%\dotfiles\setup_windows.bat
+```
+
+* [install wezterm](https://wezfurlong.org/wezterm/install/windows.html)
+
+### Fonts
+
+* JetBriansMono Nerd Font
+* [UDEVGothic Releases](https://github.com/yuru7/udev-gothic/releases)からUDEVGothic_NF_vx.x.x.zipをダウンロードして展開
+* 個人用設定>フォント>ttfファイルをドラッグアンドドロップ

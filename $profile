@@ -1,0 +1,3 @@
+$ENV:Path+=";C:\Program Files\nvim\bin"
+$ENV:ComSpec+=";C:\Program Files\PowerShell\7\pwsh.exe"
+$ENV:Profile="C:
