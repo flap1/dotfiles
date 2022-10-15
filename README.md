@@ -178,6 +178,9 @@ scoop install neovim
 @rem install oh-my-posh
 scoop install https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/oh-my-posh.json
 
+@rem install c
+scoop install gcc
+
 git clone https://gitlab.com/flap1/dotfiles ~
 ```
 
@@ -192,3 +195,17 @@ sudo cmd /c %UserProfile%\dotfiles\setup_windows.bat
 * JetBriansMono Nerd Font
 * [UDEVGothic Releases](https://github.com/yuru7/udev-gothic/releases)からUDEVGothic_NF_vx.x.x.zipをダウンロードして展開
 * 個人用設定>フォント>ttfファイルをドラッグアンドドロップ
+
+### コマンド
+
+```powershell
+shutdown /s /t 0 # shutdown now
+shutdown /r /t 0 # reboot
+Get-ChildItem env: # 環境変数取得
+```
+
+### neovim setup
+
+```powershell
+git clone https://github.com/wbthomason/packer.nvim "$env:LOCALAPPDATA\nvim-data\site\pack\packer\start\packer.nvim"
+```

@@ -217,7 +217,7 @@ return require("packer").startup({ function(use)
   ---- Memo
   use { "renerocksai/calendar-vim" }
   use { "renerocksai/telekasten.nvim", after = { "telescope.nvim" }, require = { "renerocksai/calendar-vim" }, config = function() require("plugins/config/telekasten") end }
-  use { "smolck/nvim-todoist.lua", event = "VimEnter", config = function() require('nvim-todoist').neovim_stuff.use_defaults() end }
+  -- use { "smolck/nvim-todoist.lua", event = "VimEnter", config = function() require('nvim-todoist').neovim_stuff.use_defaults() end }
 
   ---- Template -- TODO:
   -- use { "glepnir/template.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/template") end }
