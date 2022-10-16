@@ -101,6 +101,7 @@ return require("packer").startup({ function(use)
   use { "nvim-telescope/telescope-media-files.nvim", after = "telescope.nvim", config = function () require("telescope").load_extension("media_files") end }
   use { "nvim-telescope/telescope-hop.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("hop") end }
   use { "nvim-telescope/telescope-project.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("project") end }
+  use { "dhruvmanila/telescope-bookmarks.nvim", tag = "*", config = function() require("telescope").load_extension("bookmarks") end }
 
   -- Treesitter ----------------------------------
   use { "nvim-treesitter/nvim-treesitter", after = colorscheme, event = "VimEnter", run = ":TSUpdate", config = function() require("plugins/config/nvim-treesitter") end }

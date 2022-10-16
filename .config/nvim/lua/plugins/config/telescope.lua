@@ -101,6 +101,24 @@ require("telescope").setup {
       theme = "dropdown",
       order_by = "asc"
     },
+    bookmarks = {
+      selected_browser = 'vivaldi',
+      -- Either provide a shell command to open the URL
+      url_open_command = 'open',
+      -- Or provide the plugin name which is already installed
+      -- Available: 'vim_external', 'open_browser'
+      url_open_plugin = nil,
+      -- Show the full path to the bookmark instead of just the bookmark name
+      full_path = true,
+      -- Provide a custom profile name for Firefox browser
+      firefox_profile_name = nil,
+      -- Provide a custom profile name for Waterfox browser
+      waterfox_profile_name = nil,
+      -- Add a column which contains the tags for each bookmark for buku
+      buku_include_tags = false,
+      -- Provide debug messages
+      debug = false,
+    },
   },
 }
 local opts = { noremap = true, silent = true }
@@ -123,6 +141,7 @@ vim.keymap.set("n", "[ff]k", "<Cmd>Telescope keymaps<CR>", opts)
 vim.keymap.set("n", "[ff]m", "<Cmd>Telescope marks<CR>", opts)
 vim.keymap.set("n", "[ff]/", "<Cmd>Telescope search_history<CR>", opts)
 vim.keymap.set("n", "[ff]r", "<Cmd>Telescope registers<CR>", opts)
+vim.keymap.set("n", '"', "<Cmd>Telescope registers<CR>", opts)
 vim.keymap.set("n", "[ff]q", "<Cmd>Telescope quickfix<CR>", opts)
 vim.keymap.set("n", "[ff]p", "<Cmd>Telescope packer<CR>", opts) -- telescope-packer
 vim.keymap.set("n", "[ff]a", "<Cmd>Telescope loclist<CR>", opts) -- under q
@@ -131,6 +150,7 @@ vim.keymap.set("n", "[ff];", "<Cmd>Telescope git_files<CR>", opts)
 vim.keymap.set("n", "[ff]y", "<Cmd>Telescope neoclip<CR>", opts) -- neoclip
 vim.keymap.set("n", "[ff]b", "<Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
 vim.keymap.set("n", "[ff]i", "<Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
+vim.keymap.set("n", "<Leader>b", "<Cmd>Telescope bookmarks<CR>", opts) -- telescope-bookmarks
 
 -- git -------------------------------------------
 vim.keymap.set("n", "[ff]gc", "<Cmd>Telescope git_commits<CR>", opts)
