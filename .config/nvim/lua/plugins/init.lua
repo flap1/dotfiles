@@ -31,7 +31,6 @@ return require("packer").startup({ function(use)
   use { "Th3Whit3Wolf/space-nvim" }
   use { "luisiacc/gruvbox-baby" }
   use { "bluz71/vim-moonfly-colors" }
-  use { "shaeinst/roshnivim-cs" }
   use { "sainnhe/sonokai" }
   use { "sainnhe/everforest" }
 
@@ -101,7 +100,7 @@ return require("packer").startup({ function(use)
   use { "nvim-telescope/telescope-media-files.nvim", after = "telescope.nvim", config = function () require("telescope").load_extension("media_files") end }
   use { "nvim-telescope/telescope-hop.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("hop") end }
   use { "nvim-telescope/telescope-project.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("project") end }
-  use { "dhruvmanila/telescope-bookmarks.nvim", tag = "*", config = function() require("telescope").load_extension("bookmarks") end }
+  use { "dhruvmanila/telescope-bookmarks.nvim", tag = "*", after = 'telescope.nvim', config = function() require("telescope").load_extension("bookmarks") end }
 
   -- Treesitter ----------------------------------
   use { "nvim-treesitter/nvim-treesitter", after = colorscheme, event = "VimEnter", run = ":TSUpdate", config = function() require("plugins/config/nvim-treesitter") end }
@@ -304,7 +303,7 @@ return require("packer").startup({ function(use)
   -- use { "chen244/csv-tools.lua", ft = { "csv" }, config = function() require("rc/pluginconfig/csv-tools") end, }
 
   ---- Lua
-  use { "folke/lua-dev.nvim", module = "lua-dev" } -- Dev setup for init.lua and plugin development
+  use { "folke/neodev.nvim" } -- Dev setup for init.lua and plugin development
 
   ---- Rust
   use { "simrat39/rust-tools.nvim", module = "rust-tools" }
@@ -331,6 +330,6 @@ return require("packer").startup({ function(use)
   -- vim-latex-live-preview -- https://github.com/xuhdev/vim-latex-live-preview
 end,
 config = {
-  snapshot_path = "snapshots"
+  snapshot_path = vim.fn.stdpath("config") .. "/snapshots"
 }
 })
