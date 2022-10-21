@@ -60,13 +60,44 @@ push | P @ Files
 pull | p @ Files
 
 ##################################################
-# shell
+# linux
 ##################################################
 ## bash
+ディレクトリ容量確認(check directory capacity) | du 
+
+## bash(ssh)
 鍵を指定してssh | ssh -i /path/to/key <username@domain> -p <port>
+## bash(codec)
 codec取得 | nkf -g <file>
+## bash(recode)
 recode(sjis to utf8) | recode sjis..utf8 <file>
 recode(utf8 to sjis) | recode utf8..sjis <file>
+## bash(rename)
+install rename | sudo apt install rename
+ファイル名一括変換(正規表現) | rename 's/<regex>/<regex>/' *
+ファイル名一括変換(preview) | rename -n 's/<regex>/<regex>/' *
+ファイル名一括変換(拡張子変換) | rename .md .txt *
+ファイル名変換(1-12-20->72-20) | rename "s/\s\d-1(\d-\d*)\s/ 7\1 /" *.png
+ファイル名変換(1-2-20->62-20) | rename "s/\s\d-(\d-\d*)\s/ 6\1 /" *.png
+## bash(scp)
+local to remote ローカルからリモート | scp </local/file> <username@domain:/remote/directory>
+remote to local リモートからローカル | scp <username@domain:/remote/directory/file> </local/directory>
+dir ディレクトリごとコピー | scp -r ...
+key 鍵認証を用いてコピー | scp -i /path/to/key ...
+port ポート番号指定してコピー | scp -P <port> ...
+multiple files to remote 複数ファイルをリモートにコピー1 | scp <a.txt b.txt> <username@domain:/remote/directory>
+multiple files to remote 複数ファイルをリモートにコピー2 | scp <{a,b,c}.txt> <username@domain:/remote/directory>
+multiple files to remote 複数ファイルをリモートにコピー3 | scp <*.txt> <username@domain:/remote/directory>
+multiple files to local 複数ファイルをローカルにコピー1 | scp <username@domain:/remote/directory/\{a.txt,b.jpg\}> </local/directory>
+multiple files to local 複数ファイルをローカルにコピー2 | scp <username@domain:/remote/directory/\{a,b,c}.txt\}> </local/directory>
+multiple files to local 複数ファイルをローカルにコピー3 | scp <username@domain:/remote/directory/*.txt\}> </local/directory>
+
+## docker
+コンテナ停止 | docker stop <container_name> 
+コンテナ開始 | docker start <container_name> 
+コンテナバックアップ(コンテナ停止後実行) | docker run --rm --volumes-from <container_name> -v $(pwd):/backup boombatower/docker-backup backup
+
+
 
 ##################################################
 # research

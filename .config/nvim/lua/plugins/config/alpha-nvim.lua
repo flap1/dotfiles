@@ -11,6 +11,7 @@ dashboard.section.buttons.val = {
   dashboard.button("SPC f o", "  Recent File  ", ":Telescope oldfiles<CR>"),
   dashboard.button("SPC f w", "  Find Word  ", ":Telescope live_grep<CR>"),
   dashboard.button("SPC f m", "  Bookmarks  ", ":Telescope marks<CR>"),
+  dashboard.button("SPC b", "  Browser Bookmarks  ", ':Telescope bookmarks<CR>'),
   dashboard.button("SPC t", "  Terminal  ", ':execute v:count1 . "ToggleTerm"<CR>'),
   dashboard.button("SPC g", "  Neogit  ", ':Neogit<CR>'),
   dashboard.button("SPC ?", "  Cheatsheet  ", ":Cheatsheet<CR>"),
