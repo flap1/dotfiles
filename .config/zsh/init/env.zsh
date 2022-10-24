@@ -12,7 +12,7 @@ export FZF_DEFAULT_OPTS="--ansi"
 export DENO_INSTALL=$HOME/.deno
 export PATH=$DENO_INSTALL/bin:$PATH
 
-export TODOIST_API_KEY="$(pass Todoist/API)"
+# export TODOIST_API_KEY="$(pass Todoist/API)"
 
 export PYENV_VIRTUALENV_DISABLE_PROMPT=0
 
