@@ -24,6 +24,7 @@ install pytorch | pip install torch
 install pandas | pip install pandas
 install spacy | pip isntall spacy
 install torchtext | pip install torchtext
+specify install dir | pip install <package> -t /path/ 
 update pip | pip install -U pip
 
 ## spacy
@@ -50,6 +51,13 @@ virtualenv の無効化 | pyenv deactivate
 存在している virtualenv の確認 | pyenv virtualenvs
 環境の削除 | pyenv uninstall <env-name>
 
+
+##################################################
+# nvim
+##################################################
+## nvr
+remoteで開く | nvr --remote file1 file2
+
 ##################################################
 # git
 ##################################################
@@ -64,7 +72,13 @@ pull | p @ Files
 ##################################################
 ## bash
 ディレクトリ容量確認(check directory capacity) | du 
+標準出力を捨てる(dump stdout) | &> /dev/null
 
+## bash(ocr)
+install ocr engine(Tesseract) | sudo apt install tesseract-ocr libtesseract-dev
+pngファイルに対してocr | tesseract -l eng <test.png> <test> pdf
+## bash(pdf)
+merge pdf | pdfunite *.pdf output.pdf
 ## bash(ssh)
 鍵を指定してssh | ssh -i /path/to/key <username@domain> -p <port>
 ## bash(codec)
@@ -97,8 +111,6 @@ multiple files to local 複数ファイルをローカルにコピー3 | scp <us
 コンテナ開始 | docker start <container_name> 
 コンテナバックアップ(コンテナ停止後実行) | docker run --rm --volumes-from <container_name> -v $(pwd):/backup boombatower/docker-backup backup
 
-
-
 ##################################################
 # research
 ##################################################
@@ -116,3 +128,8 @@ aggregate | 集約する
 syntactic analysis | 構文解析
 coverage | 被覆
 semantics | 意味論, 解釈の問題
+NSF | National Science Foundation(アメリカ国立科学財団)
+NLP | Natural Language Processing
+axiom | 公理
+RFI | Request For Information
+NER | 固有表現抽出

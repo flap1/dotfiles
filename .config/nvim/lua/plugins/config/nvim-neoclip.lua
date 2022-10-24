@@ -13,4 +13,5 @@ require("neoclip").setup({
 })
 
 require('telescope').load_extension('neoclip')
+vim.keymap.set("n", "[ff]y", "<Cmd>Telescope neoclip<CR>", opts) -- neoclip
 

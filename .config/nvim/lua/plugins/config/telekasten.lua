@@ -110,7 +110,7 @@ local opts = { noremap = true, silent = true }
 
 vim.keymap.set("n", "<Leader>zf", ":lua require('telekasten').find_notes()<CR>", opts)
 vim.keymap.set("n", "<Leader>zd", ":lua require('telekasten').find_daily_notes()<CR>", opts)
-vim.keymap.set("n", "<Leader>zg", ":lua require('telekasten').search_notes()<CR>", opts)
+vim.keymap.set("n", "<Leader>zj", ":lua require('telekasten').search_notes()<CR>", opts)
 vim.keymap.set("n", "<Leader>zz", ":lua require('telekasten').follow_link()<CR>", opts)
 vim.keymap.set("n", "<Leader>zT", ":lua require('telekasten').goto_today()<CR>", opts)
 vim.keymap.set("n", "<Leader>zW", ":lua require('telekasten').goto_thisweek()<CR>", opts)

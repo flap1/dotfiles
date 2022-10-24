@@ -6,6 +6,8 @@ alias -g A='| awk'
 alias -g C='| tee >(pbcopy)'
 alias -g X='| xargs'
 
+alias c='clear'
+
 # basics
 alias ..='cd ..'
 alias .2='cd ../..'

@@ -142,6 +142,9 @@ return require("packer").startup({ function(use)
   use { "petertriho/nvim-scrollbar", requires = { "kevinhwang91/nvim-hlslens", opt = true }, after = { colorscheme, "nvim-hlslens" }, config = function() require("plugins/config/nvim-scrollbar") end }
 
   -- Editing -------------------------------------
+  ---- Sudo
+  use { "lambdalisue/suda.vim" }
+
   ---- AutoSave
   use { "Pocco81/auto-save.nvim", branch = "dev", config = function() require("plugins/config/auto-save") end }
 
@@ -173,7 +176,7 @@ return require("packer").startup({ function(use)
   use { "monaqa/dial.nvim", event = "VimEnter", config = function() require("plugins/config/dial") end }
 
   ---- Yank
-  use { "AckslD/nvim-neoclip.lua", after = { "telescope.nvim", "sqlite.lua" }, config = function() require("plugins/config/nvim-neoclip") end }
+  use { "AckslD/nvim-neoclip.lua", requires = { { "nvim-telescope/telescope.nvim", opt = true }, { "kkharji/sqlite.lua", opt = true } }, after = { "telescope.nvim", "sqlite.lua" }, config = function() require("plugins/config/nvim-neoclip") end }
 
   -- Search --------------------------------------
   use { "kevinhwang91/nvim-hlslens", event = "VimEnter", config = function() require("plugins/config/nvim-hlslens") end }
@@ -295,7 +298,7 @@ return require("packer").startup({ function(use)
 
   -- Programming Languages -----------------------
   ---- Markdown
-  use { "iamcco/markdown-preview.nvim", run = ":call mkdp#util#install()" }
+  use { "iamcco/markdown-preview.nvim", run = ":call mkdp#util#install()", setup = function() vim.g.mkdp_filetypes = { "markdown", "telekasten" } end, ft = { "markdown", "telekasten" }, }
   use { "SidOfc/mkdx", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/mkdx.vim") end } -- TODO:
   use { "dhruvasagar/vim-table-mode", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-table-mode.vim") end } -- markdownでテーブルを綺麗に表示
 
@@ -303,7 +306,7 @@ return require("packer").startup({ function(use)
   -- use { "chen244/csv-tools.lua", ft = { "csv" }, config = function() require("rc/pluginconfig/csv-tools") end, }
 
   ---- Lua
-  use { "folke/neodev.nvim" } -- Dev setup for init.lua and plugin development
+  use { "folke/neodev.nvim", module = "neodev" } -- Dev setup for init.lua and plugin development
 
   ---- Rust
   use { "simrat39/rust-tools.nvim", module = "rust-tools" }

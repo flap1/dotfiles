@@ -129,7 +129,7 @@ vim.keymap.set('n', '<C-p>', "<Cmd>lua require'telescope'.extensions.project.pro
 vim.keymap.set("n", "[ff]x", "<Cmd>Telescope find_files<CR>", opts) -- ignore(x) dotfiles
 vim.keymap.set("n", "[ff]e", "<Cmd>Telescope frecency<CR>", opts) -- telescope-frecency
 vim.keymap.set("n", "[ff]u", "<Cmd>Telescope symbols<CR>", opts) -- telescope-symbols, unicode
-vim.keymap.set("n", "[ff]w", "<Cmd>Telescope live_grep<CR>", opts)
+vim.keymap.set("n", "[ff]j", "<Cmd>Telescope live_grep<CR>", opts)
 vim.keymap.set("n", "[ff]f", "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", opts)
 vim.keymap.set("n", "[ff]<Leader>", "<Cmd>Telescope buffers<CR>", opts)
 vim.keymap.set("n", "[ff]@", "<Cmd>Telescope bibtex<CR>", opts) -- telescope-bibtex
@@ -147,7 +147,6 @@ vim.keymap.set("n", "[ff]p", "<Cmd>Telescope packer<CR>", opts) -- telescope-pac
 vim.keymap.set("n", "[ff]a", "<Cmd>Telescope loclist<CR>", opts) -- under q
 vim.keymap.set("n", "[ff]l", "<Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
 vim.keymap.set("n", "[ff];", "<Cmd>Telescope git_files<CR>", opts)
-vim.keymap.set("n", "[ff]y", "<Cmd>Telescope neoclip<CR>", opts) -- neoclip
 vim.keymap.set("n", "[ff]b", "<Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
 vim.keymap.set("n", "[ff]i", "<Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
 vim.keymap.set("n", "<Leader>b", "<Cmd>Telescope bookmarks<CR>", opts) -- telescope-bookmarks

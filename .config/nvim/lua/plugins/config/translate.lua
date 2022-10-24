@@ -1,6 +1,8 @@
+vim.g.deepl_api_auth_key = vim.env.DEEPL_API_AUTH_KEY
+
 require("translate").setup({
     default = {
-        command = "google",
+        command = "deepl_free",
     },
     preset = {
         output = {
