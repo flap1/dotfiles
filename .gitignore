@@ -1,3 +1,8 @@
-### neovim
-.config/nvim/plugin/*
-.config/zsh/init/local.zsh
+## neovim
+/.config/nvim/plugin/**
+
+## zsh
+/.config/zsh/*.local/**
+/.config/zsh/.zcompdump
+/.config/zsh/.zshrc.local
+

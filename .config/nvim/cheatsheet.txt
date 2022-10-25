@@ -13,6 +13,7 @@ Set text width to {n} | :set tw={n}
 リモートブランチ削除 | git push origin --delete <branchname>
 rename git branch | git branch -m <old> <new> 
 n回分のcommitをまとめる(一番上だけpickにして残りをs) | git rebase -i HEAD~n
+delete file from commit履歴 | git filter-branch --index-filter 'git rm --cached --ignore-unmatch <path>' HEAD
 
 
 ##################################################
@@ -53,7 +54,7 @@ virtualenv の無効化 | pyenv deactivate
 
 
 ##################################################
-# neovim
+# neovim/nvim
 ##################################################
 ## nvr
 remoteで開く | nvr --remote file1 file2
@@ -61,6 +62,14 @@ remoteで開く | nvr --remote file1 file2
 create project (現在のディレクトリ(gir root)) | 選択画面で<C-a>
 rename project | 選択画面で<C-v>
 delete project | 選択画面で<C-d>
+## git-conflict
+next git conflict | ]x
+previous git conflict | [x
+choose ours | co
+choose theirs | ct
+choose both   | cb
+choose none   | c0
+Get all conflict to quickfix | :GitConflictListQf
 
 ##################################################
 # git

@@ -24,7 +24,7 @@ dashboard.section.buttons.val = {
   dashboard.button("f", "  Memo List", ":Telekasten find_notes<CR>"),
   dashboard.button("e", "  New file", ":enew<CR>"),
   dashboard.button("p", "  Update plugins", ":PackerSync<CR>"),
-  dashboard.button("s", "  Settings", ":e $MYVIMRC | :cd %:p:h <CR>"),
+  dashboard.button("s", "  Settings", ":e $NVIMRC | :cd %:p:h <CR>"),
   dashboard.button("q", "  Exit", ":qa<CR>"),
 }
 alpha.setup(dashboard.config)

@@ -1,8 +1,10 @@
 #!/bin/bash
 
 DOT_FILES=( 
-  ".config/zsh/.zshrc" \
+  ".config/zsh"
   ".config/git/.gitconfig" \
+  "bin" \
+  ".zshenv" \
   ".stylua.toml" \
   ".config/nvim" \
   ".config/wezterm" \
@@ -18,7 +20,6 @@ __prepare() {
   file=$1
   target=$2
 
-  echo ""
   echo "-- Create symbolic link: $target"
 
   if [[ -L $target ]]; then
@@ -32,8 +33,6 @@ __prepare() {
     echo "Create backup: $backupFile"
   fi
 }
-
-mkdir -p "$HOME"
 
 for file in "${DOT_FILES[@]}"
 do
@@ -50,7 +49,6 @@ do
   ln -s "$(pwd)"/"$file" "$target" 
 done
 
-cd $"dirname $0"
-
 # change default shell
-sudo chsh -s "$(which zsh)" "$USER"
+# sudo chsh -s "$(which zsh)" "$USER"
+

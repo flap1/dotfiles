@@ -160,6 +160,10 @@ cargo install navi
 rm -rf ~/.local/share/zinit
 sudo apt install zsh pass
 bash setup.sh
+
+# other
+sudo apt install feh # image viewer
+sudo apt install translate-shell # trans
 ```
 
 ## setup windows
