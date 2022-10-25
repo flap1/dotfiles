@@ -2,7 +2,6 @@
 /.config/nvim/plugin/**
 
 ## zsh
-/.config/zsh/*.local/**
 /.config/zsh/.zcompdump
 /.config/zsh/.zshrc.local
 
