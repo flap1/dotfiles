@@ -53,10 +53,14 @@ virtualenv の無効化 | pyenv deactivate
 
 
 ##################################################
-# nvim
+# neovim
 ##################################################
 ## nvr
 remoteで開く | nvr --remote file1 file2
+## project
+create project (現在のディレクトリ(gir root)) | 選択画面で<C-a>
+rename project | 選択画面で<C-v>
+delete project | 選択画面で<C-d>
 
 ##################################################
 # git
