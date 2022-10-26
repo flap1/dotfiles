@@ -14,6 +14,10 @@ Set text width to {n} | :set tw={n}
 rename git branch | git branch -m <old> <new> 
 n回分のcommitをまとめる(一番上だけpickにして残りをs) | git rebase -i HEAD~n
 delete file from commit履歴 | git filter-branch --index-filter 'git rm --cached --ignore-unmatch <path>' HEAD
+## gitignore
+特定の拡張子を無視する場合(どこにも/を付けない) | *.o
+特定のファイルを無視する場合は先頭に/ | /npm-debug.log
+特定のディレクトリを無視する場合は先頭と末尾に/ | /bin/
 
 
 ##################################################

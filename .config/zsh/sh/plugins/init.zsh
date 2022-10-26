@@ -45,10 +45,6 @@ zinit wait'0a' lucid \
 	atload"source $ZHOMEDIR/sh/plugins/config/zsh-autocomplete_atload.zsh" \
 	light-mode for @marlonrichert/zsh-autocomplete
 
-zinit wait'0b' lucid as"completion" \
-	light-mode for @zsh-users/zsh-completions
-
-
 # -------------------------------------------------------------------------
 # Prompt
 # -------------------------------------------------------------------------

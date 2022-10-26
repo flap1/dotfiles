@@ -18,3 +18,6 @@ WORDCHARS='*?_-[]~&;!#$%^(){}<>|'
 # カレントディレクトリ中にサブディレクトリが無い場合に cd が検索するディレクトリのリスト
 cdpath=("$HOME" .. $HOME/*)
 
+# define in post execution. because compinit is slow and plugin manager automatic load compinit.
+# autoload -Uz compinit && compinit -u
+# autoload -Uz is-at-least

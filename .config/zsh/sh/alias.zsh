@@ -46,8 +46,9 @@ alias 777='chmod 777'
 alias grep='rg -S'
 alias gre='grep -H -n -I --color=auto' #  ファイル名表示, 行数表示, バイナリファイルは処理しない
 
-# vi
+# vi/vim
 alias vi="$EDITOR"
+alias vim="$EDITOR"
 alias sv="sudo $EDITOR"
 
 # git
