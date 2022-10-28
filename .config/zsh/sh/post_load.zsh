@@ -13,3 +13,20 @@ if ! builtin command -v zinit > /dev/null 2>&1; then
 	fi
 fi
 
+eval "$(pyenv init -)"
+export PYENV_VIRTUALENV_DISABLE_PROMPT=0
+
+export DENO_INSTALL=$HOME/.deno
+
+export NVM_DIR=$HOME/.nvm
+MANPATH=$NVM_DIR/default/share/man:$MANPATH
+export NODE_PATH=$NVM_DIR/default/lib/node_modules
+NODE_PATH=${NODE_PATH:A}
+
+nvm() {
+  unset -f nvm
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  nvm "$@"
+}
+

@@ -20,7 +20,7 @@ alias diff='delta'
 alias mkdir='mkdir -p'
 alias cat='bat'
 alias less='bat'
-alias ls='lsd -A --group-dirs=last'
+alias ls='lsd --group-dirs=last'
 alias la='lsd -A --group-dirs=last'
 alias l='lsd -Ahl --total-size --group-dirs=last'
 alias ll='lsd -Ahl --total-size --group-dirs=last'
@@ -36,6 +36,8 @@ alias ps='procs --tree'
 alias history-mem='fc -rl'
 alias history-import='fc -RI'
 
+# gnome restart
+alias gnome-restart="killall -3 gnome-shell"
 
 # chmod
 alias 644='chmod 644'

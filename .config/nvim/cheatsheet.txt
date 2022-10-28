@@ -123,6 +123,10 @@ multiple files to local 複数ファイルをローカルにコピー1 | scp <us
 multiple files to local 複数ファイルをローカルにコピー2 | scp <username@domain:/remote/directory/\{a,b,c}.txt\}> </local/directory>
 multiple files to local 複数ファイルをローカルにコピー3 | scp <username@domain:/remote/directory/*.txt\}> </local/directory>
 
+## kill
+kill slack from terminal | pkill slack
+restart gnome shell (alias: gnome-restart) | killall -3 gnome-shell
+
 ## docker
 コンテナ停止 | docker stop <container_name> 
 コンテナ開始 | docker start <container_name> 

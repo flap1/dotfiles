@@ -12,6 +12,10 @@ function select_cdr(){
 zle -N select_cdr
 bindkey '^@' select_cdr
 
+export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --color=always --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_DEFAULT_OPTS="--ansi"
+
 # export FZF_CTRL_T_COMMAND='fd --hidden --follow --exclude .git'
 
 # export FZF_PREVIEW_OPTS='--preview "$ZRCDIR/myplugins/fzf-preview.sh {}" --bind "?:toggle-preview,ctrl-a:select-all,ctrl-d:preview-page-down,ctrl-u:preview-page-up" --preview-window wrap'

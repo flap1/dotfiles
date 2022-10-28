@@ -23,7 +23,7 @@ local optsexpr = { noremap = true, expr = true, silent = true}
 vim.cmd(
 [[
   autocmd FileType lua nnoremap <silent> <Leader><CR> <Cmd>luafile %<CR>
-  autocmd FileType lua nnoremap <silent> <Leader><Leader><CR> <Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>
+  autocmd FileType lua nnoremap <silent> <LocalLeader><CR> <Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>
 ]]
 )
 
@@ -129,7 +129,7 @@ vim.keymap.set("n", "<M-j>", "<Cmd>tabprevious<CR>", opts)
 vim.keymap.set("n", "<M-k>", "<Cmd>tabnext<CR>", opts)
 vim.keymap.set("n", "<M-d>", "<Cmd>tabclose<CR>", opts)
 vim.keymap.set("n", "<M-q>", "<Cmd>tabclose<CR>", opts)
-vim.keymap.set("n", "<M-n>", "<Cmd>tabnew<CR>", opts)
+vim.keymap.set("n", "<M-n>", "<Cmd>tabnew % | Alpha<CR>", opts)
 vim.keymap.set("n", "[t", "<Cmd>tabprevious<CR>", opts)
 vim.keymap.set("n", "]t", "<Cmd>tabnext<CR>", opts)
 vim.keymap.set("n", "[T", "<Cmd>tabfirst<CR>", opts)
@@ -141,6 +141,7 @@ vim.keymap.set("n", "L", "<Nop>", opts)
 -- vim.keymap.set("n", "J", "<Nop>", opts)
 -- vim.keymap.set("n", "K", "<Nop>", opts)
 vim.keymap.set({ "n", "x" }, "gJ", "J", opts)
+vim.keymap.set({ "n", "x" }, "<LocalLeader>j", "J", opts)
 vim.keymap.set({ "n", "x" }, "H", "5h", opts)
 -- vim.keymap.set({ "n", "x" }, "J", "5j", opts)
 -- vim.keymap.set({ "n", "x" }, "K", "5k", opts)
@@ -173,14 +174,13 @@ vim.keymap.set("c", "<C-b>", "<left>", { noremap = true, silent = false })
 vim.keymap.set("c", "<C-d>", "<DEL>", { noremap = true, silent = false })
 vim.keymap.set('c', '<C-h>', '<BS>', {noremap = true, silent = true})
 vim.keymap.set("c", "<C-w>", "<BS>", { noremap = true, silent = false })
-vim.keymap.set({ "i", "t" }, "<C-x>", "<Del>", { noremap = true, silent = false })
-vim.keymap.set({ "i", "t" }, "<C-z>", "<BS>", { noremap = true, silent = false })
+vim.keymap.set({ "i", "t" }, "<C-d>", "<Del>", { noremap = true, silent = false })
+vim.keymap.set({ "i", "t" }, "<C-h>", "<BS>", { noremap = true, silent = false })
 vim.keymap.set({ "i", "t" }, "<C-a>", "<Home>", { noremap = true, silent = false })
 vim.keymap.set({ "i", "t" }, "<C-e>", "<End>", { noremap = true, silent = false })
 vim.keymap.set({ "i", "t" }, "<C-f>", "<right>", { noremap = true, silent = false })
 vim.keymap.set({ "i", "t" }, "<C-b>", "<left>", { noremap = true, silent = false })
-vim.keymap.set({ "i", "t" }, "<C-h>", "<left>", { noremap = true, silent = false })
-vim.keymap.set({ "i", "t" }, "<C-l>", "<right>", { noremap = true, silent = false })
+-- vim.keymap.set({ "i", "t" }, "<C-l>", "<right>", { noremap = true, silent = false })
 vim.keymap.set({ "i", "t" }, "<C-k>", "<up>", { noremap = true, silent = false })
 vim.keymap.set({ "i", "t" }, "<C-j>", "<down>", { noremap = true, silent = false })
 

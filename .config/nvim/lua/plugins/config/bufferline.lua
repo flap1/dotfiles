@@ -25,7 +25,7 @@ require('bufferline').setup {
     name_formatter = function(buf)  -- buf contains a "name", "path" and "bufnr"
       -- remove extension from markdown files for example
       if buf.name:match('%.md') then
-        return vim.fn.fnamemodify(buf.name, ':t:r')
+        return vim.fn.fnamemodify(buf.path, ':t:r')
       end
     end,
     max_name_length = 18,
@@ -37,6 +37,11 @@ require('bufferline').setup {
     diagnostics_indicator = function(count, level, diagnostics_dict, context)
       return "("..count..")"
     end,
+    groups = {
+      items = {
+        require('bufferline.groups').builtin.pinned:with({ icon = "" })
+      }
+    },
     -- NOTE: this will be called a lot so don't do any heavy processing here
     custom_filter = function(buf_number, buf_numbers)
       -- filter out filetypes you don't want to see
@@ -57,21 +62,33 @@ require('bufferline').setup {
         return true
       end
     end,
+    offsets = {
+      {
+        filetype = "neo-tree",
+        text = function()
+          return vim.fn.getcwd()
+        end,
+        highlight = "Directory",
+        text_align = "left"
+      }
+    },
     show_buffer_icons = true, -- disable filetype icons for buffers
     show_buffer_close_icons = false,
     show_close_icon = false,
     show_tab_indicators = true,
+    show_duplicate_prefix = true, -- whether to show duplicate buffer prefix
     persist_buffer_sort = true, -- whether or not custom sorted buffers should persist
     -- can also be a table containing 2 custom separators
     -- [focused and unfocused]. eg: { '|', '|' }
     separator_style = "thick",
     enforce_regular_tabs = true,
     always_show_bufferline = true,
-    sort_by = 'insert_after_current'
+    sort_by = 'insert_after_current',
   }
 }
 
--- vim.keymap.set("n", "<Leader>b", "<Cmd>BufferLinePick<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader><Leader>", "<Cmd>BufferLinePick<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>p", "<Cmd>BufferLineTogglePin<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>h", "<Cmd>BufferLineGoToBuffer 1<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>l", "<Cmd>BufferLineGoToBuffer -1<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>j", "<Cmd>BufferLineCyclePrev<CR>", { noremap = true, silent = true })
@@ -88,4 +105,4 @@ vim.keymap.set("n", "<Leader>6", "<Cmd>BufferLineGoToBuffer 6<CR>", { noremap = 
 vim.keymap.set("n", "<Leader>7", "<Cmd>BufferLineGoToBuffer 7<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>8", "<Cmd>BufferLineGoToBuffer 8<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>9", "<Cmd>BufferLineGoToBuffer 9<CR>", { noremap = true, silent = true })
-
+vim.keymap.set("n", "<Leader>$", "<Cmd>BufferLineGoToBuffer -1<CR>", { noremap = true, silent = true })

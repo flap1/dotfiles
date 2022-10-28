@@ -275,7 +275,7 @@ return require("packer").startup({ function(use)
   use "rafamadriz/friendly-snippets" -- snippets collection
 
   ---- Git -- TODO:
-  use { "TimUntersberger/neogit", config = function() require("plugins/config/neogit") end }
+  use { "TimUntersberger/neogit", commit = "691cf89", config = function() require("plugins/config/neogit") end }
   use { "akinsho/git-conflict.nvim", event = "VimEnter",  tag = "*", config = function() require("git-conflict").setup() end }
   -- use { "lewis6991/gitsigns.nvim", requires = { "nvim-lua/plenary.nvim" }, event = "VimEnter", config = function() require("rc/pluginconfig/gitsigns") end }
   -- use { "sindrets/diffview.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/diffview") end }
