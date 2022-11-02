@@ -1,4 +1,5 @@
 require("todo-comments").setup({
+  signs = true,
   keywords = {
     FIX = {
       icon = "", -- icon used for the sign, and in search results

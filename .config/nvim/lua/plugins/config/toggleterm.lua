@@ -65,7 +65,13 @@ vim.api.nvim_create_autocmd({"VimEnter", "BufEnter"}, {
   callback = function()
     -- vim.keymap.set("n", "<leader>g", "<cmd>lua _Lazygit_toggle()<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<Leader>t", '<Cmd>execute v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true, buffer = true })
-    vim.keymap.set("n", "<LocalLeader>ta", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<C-q>", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>q", "<Cmd>ToggleTerm<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>1", "<Cmd>1ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>2", "<Cmd>2ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>3", "<Cmd>3ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>4", "<Cmd>4ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>5", "<Cmd>5ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
   end,
   once = false,
 })
@@ -81,7 +87,6 @@ vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
   group = groupname,
   pattern = "term://*#toggleterm#[^9]",
   callback = function()
-    vim.keymap.set({ "t", "n" } , "<C-q>", "<Cmd>ToggleTerm<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { noremap = true, silent = true, buffer = true })
@@ -92,6 +97,7 @@ vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
     vim.keymap.set({ "t", "n" } , "<C-t>2", "<Cmd>2ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set({ "t", "n" } , "<C-t>3", "<Cmd>3ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set({ "t", "n" } , "<C-t>4", "<Cmd>4ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" } , "<C-t>5", "<Cmd>5ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
   end,
   once = false,
 })

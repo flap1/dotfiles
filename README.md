@@ -147,6 +147,7 @@ bash setup.sh
 # other
 sudo apt install feh # image viewer
 sudo apt install translate-shell # trans
+sudo apt install xcape # xcape
 ```
 
 ## setup windows

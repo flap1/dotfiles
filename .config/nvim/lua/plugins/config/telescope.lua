@@ -14,7 +14,7 @@ require("telescope").setup {
       i = {
         ["<esc>"] = require('telescope.actions').close,
         ["<Leader>q"] = require('telescope.actions').close,
-        ["<C-h>"] = require("telescope").extensions.hop.hop,
+        ["<C-i>"] = require("telescope").extensions.hop.hop,
         -- custom hop loop to multi selects and sending selected entries to quickfix list
         ["<C-space>"] = function(prompt_bufnr)
           local opts = {

@@ -1,0 +1,14 @@
+[Unit]
+Description=FUSE filesystem over Google Drive
+After=network.target
+
+[Service]
+User=flap1
+Group=flap1
+ExecStart=bash -c 'mkdir -p $HOME/gdrive/m; google-drive-ocamlfuse $HOME/gdrive/m'
+ExecStop=bash -c 'fusermount -u $HOME/gdrive/m'
+Restart=always
+Type=forking
+
+[Install]
+WantedBy=default.target

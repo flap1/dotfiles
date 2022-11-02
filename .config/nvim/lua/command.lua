@@ -8,6 +8,8 @@ vim.api.nvim_create_user_command("IndentChange", "set tabstop=<args> shiftwidth=
 
 -- file fullpath
 vim.api.nvim_create_user_command("Filepath", "echo expand('%:p')", { force = true, nargs = "?" })
+vim.api.nvim_create_user_command("YankRelPath", ':let @+ = expand("%")', { force = true, nargs = "?" })
+vim.api.nvim_create_user_command("YankFullPath", ':let @+ = expand("%:p")', { force = true, nargs = "?" })
 vim.api.nvim_create_user_command(
 	"FileWithNumber",
 	"echo join([expand('%'),  line('.')], ':')",

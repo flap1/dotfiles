@@ -62,6 +62,9 @@ virtualenv の無効化 | pyenv deactivate
 ##################################################
 ## nvr
 remoteで開く | nvr --remote file1 file2
+terminalからmain processで開く | nvr <dir/file>
+terminalからmain windowで開く | nvr -l <file>
+
 ## project
 create project (現在のディレクトリ(gir root)) | 選択画面で<C-a>
 rename project | 選択画面で<C-v>
@@ -74,6 +77,9 @@ choose theirs | ct
 choose both   | cb
 choose none   | c0
 Get all conflict to quickfix | :GitConflictListQf
+## neovim
+open link | gx
+
 
 ##################################################
 # git
@@ -90,6 +96,13 @@ pull | p @ Files
 ## bash
 ディレクトリ容量確認(check directory capacity) | du 
 標準出力を捨てる(dump stdout) | &> /dev/null
+解凍 | tar -xvf xxx.tar.yy
+解凍 | unzip xxx.zip -d <dir>
+圧縮 | tar -zcvf xxxx.tar.gz <dir>
+圧縮 | tar -jcvf xxxx.tar.bz2 <dir>
+圧縮 | tar -Jcvf xxxx.tar.xz <dir>
+圧縮 | tar -cvf xxxx.tar <dir>
+圧縮 | zip -r xxx.zip <dir>
 
 ## bash(ocr)
 install ocr engine(Tesseract) | sudo apt install tesseract-ocr libtesseract-dev

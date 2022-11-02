@@ -34,8 +34,8 @@ vim.cmd(
 -- vim.keymap.set("n", "GG", "G", { noremap = true, silent = true })
 
 -- FuzzyFinder
-vim.keymap.set({ "n", "v" }, "<Leader>f", "<Nop>", { noremap = true, silent = true })
-vim.keymap.set({ "n", "v" }, "[ff]", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<Leader>f", "<Nop>", opts)
+vim.keymap.set({ "n", "v" }, "[ff]", "<Nop>", opts)
 vim.api.nvim_set_keymap("n", "<Leader>f", "[ff]", {})
 vim.api.nvim_set_keymap("v", "<Leader>f", "[ff]", {})
 
@@ -83,7 +83,9 @@ vim.keymap.set("i", "<C-t>", '<Esc><Left>"zx"zpa', { noremap = true, silent = fa
 -- w/q
 vim.keymap.set("n", "<Leader>w", "<Cmd>w<CR>", opts)
 vim.keymap.set("n", "<Leader>q", "<Cmd>q<CR>", opts)
-vim.keymap.set("n", "<C-q>", "<Cmd>q<CR>", opts)
+vim.keymap.set("n", "<Leader>aq", "<Cmd>qa<CR>", opts)
+vim.keymap.set("n", "<Leader>aw", "<Cmd>wa<CR>", opts)
+-- vim.keymap.set("n", "<C-q>", "<Cmd>q<CR>", opts)
 
 -- Move up and down the line
 -- vim.keymap.set("i", "<C-Up>", '<Esc>"zdd<Up>"zPi', opts)

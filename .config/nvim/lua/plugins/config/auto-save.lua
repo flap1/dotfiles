@@ -58,4 +58,4 @@ require("auto-save").setup({
   }
 })
 
-vim.api.nvim_set_keymap("n", "<leader>a", ":ASToggle<CR>", {})
+vim.api.nvim_set_keymap("n", "<LocalLeader>a", ":ASToggle<CR>", {})
