@@ -38,8 +38,8 @@ require("neo-tree").setup {
         -- Change type
         added     = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
         modified  = "", -- or "", but this is redundant info if you use git_status_colors on the name
-        deleted   = "✖",-- this can only be used in the git_status source
-        renamed   = "",-- this can only be used in the git_status source
+        deleted   = "✖", -- this can only be used in the git_status source
+        renamed   = "", -- this can only be used in the git_status source
         -- Status type
         untracked = "",
         ignored   = "",
@@ -51,6 +51,14 @@ require("neo-tree").setup {
     },
   },
   event_handlers = {
+    {
+      event = "vim_buffer_enter",
+      handler = function()
+        if vim.bo.filetype == "neo-tree" then
+          vim.cmd("setlocal number")
+        end
+      end,
+    },
     {
       event = "file_opened",
       handler = function(file_path)
@@ -112,11 +120,11 @@ require("neo-tree").setup {
         ["<c-x>"] = "clear_filter",
         ["d"] = "delete",
         ["y"] = "copy_to_clipboard",
-        ["a"] = {"add", config = {show_path = "absolute"}},
-        ["A"] = {"add_directory", config = {show_path = "absolute"}},
+        ["a"] = { "add", config = { show_path = "absolute" } },
+        ["A"] = { "add_directory", config = { show_path = "absolute" } },
         ["r"] = "rename",
-        ["c"] = {"copy", config = {show_path = "absolute"}},
-        ["m"] = {"move", config = {show_path = "absolute"}},
+        ["c"] = { "copy", config = { show_path = "absolute" } },
+        ["m"] = { "move", config = { show_path = "absolute" } },
         ["x"] = "cut_to_clipboard",
         ["p"] = "paste_from_clipboard",
         ["P"] = { "toggle_preview", config = { use_float = true } },
@@ -124,6 +132,14 @@ require("neo-tree").setup {
         ["?"] = "show_help",
       },
     },
+    commands = {
+      system_open = function(state)
+        local node = state.tree:get_node()
+        local path = node:get_id()
+        -- Linux: open file in default application
+        vim.api.nvim_command(string.format("silent !xdg-open '%s'", path))
+      end,
+    }
   },
   buffers = {
     show_unloaded = true,
@@ -132,10 +148,10 @@ require("neo-tree").setup {
       mappings = {
         ["<2-LeftMouse>"] = "open",
         ["<cr>"] = "open",
-        ["a"] = {"add", config = {show_path = "absolute"}},
-        ["A"] = {"add_directory", config = {show_path = "absolute"}},
-        ["c"] = {"copy", config = {show_path = "absolute"}},
-        ["m"] = {"move", config = {show_path = "absolute"}},
+        ["a"] = { "add", config = { show_path = "absolute" } },
+        ["A"] = { "add_directory", config = { show_path = "absolute" } },
+        ["c"] = { "copy", config = { show_path = "absolute" } },
+        ["m"] = { "move", config = { show_path = "absolute" } },
         ["r"] = "rename",
         ["S"] = "open_split",
         ["s"] = "open_vsplit",
@@ -209,6 +225,7 @@ require("neo-tree").setup {
 }
 
 vim.keymap.set("n", "<C-n>", ":NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<M-n>", ":NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("i", "<M-n>", "<Esc><Cmd>NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("t", "<M-n>", "<C-\\><C-n><Cmd>NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
 -- vim.keymap.set("n", "G,", ":NeoTreeFloatToggle git_status<CR>", { noremap = true, silent = true })
-
-

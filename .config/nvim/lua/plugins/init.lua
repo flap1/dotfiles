@@ -157,7 +157,7 @@ return require("packer").startup({ function(use)
 
   ---- Vertical Move
   use { "haya14busa/vim-edgemotion", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-edgemotion.vim") end }
-  use { "machakann/vim-columnmove", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-columnmove.vim") end }
+  -- use { "machakann/vim-columnmove", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-columnmove.vim") end }
 
   ---- Word Move
   use { "bkad/CamelCaseMotion", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/CamelCaseMotion.vim") end }

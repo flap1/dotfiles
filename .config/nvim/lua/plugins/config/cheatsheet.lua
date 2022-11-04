@@ -18,5 +18,7 @@ require("cheatsheet").setup({
     }
 })
 
-vim.keymap.set("n", "<Leader>?", ":Cheatsheet<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<M-?>", "<Cmd>Cheatsheet<CR>", { noremap = true, silent = true })
+vim.keymap.set("i", "<M-?>", "<Esc><Cmd>Cheatsheet<CR>", { noremap = true, silent = true })
+vim.keymap.set("t", "<M-?>", "<C-\\><C-n><Cmd>Cheatsheet<CR>", { noremap = true, silent = true })
 

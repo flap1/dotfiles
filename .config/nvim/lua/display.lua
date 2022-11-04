@@ -14,7 +14,7 @@ if vim.fn.exists("+termguicolors") == 1 then
 end
 
 -- colorscheme pluginconfig -> colorscheme
-vim.o.cursorline = false -- Highlight the text line of the cursor
+vim.o.cursorline = true -- Highlight the text line of the cursor
 
 vim.o.display = "lastline" -- Change the way text is displayed, when lastline is included, as much as possible of the last line in a window will be displayed
 vim.o.showmode = false -- Show mode(insert, normal, visual)

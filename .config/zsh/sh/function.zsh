@@ -46,7 +46,7 @@ function delete-trash() {
 		#     * ) echo 'Please type[y/n]';;
 		#   esac
 		# done
-		\rm -rf $TRASH_DIR/*
+		sudo \rm -rf $TRASH_DIR/*
 		echo 'Completely deleted!'
 	fi
 }

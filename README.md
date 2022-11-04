@@ -8,6 +8,40 @@
 * WezTerm
 * Neovim
 
+## 特殊な変更
+
+### cheatsheet.nvim
+
+registerを設定できるように. PR出してない
+
+```diff
+# ~/.local/share/nvim/site/pack/packer/opt/cheatsheet.nvim/lua/cheatsheet/config.lua
++    register = "0",
+
+# ~/.local/share/nvim/site/pack/packer/opt/cheatsheet.nvim/lua/cheatsheet/telescope/actions.lua
+-    vim.fn.setreg("0", cheatcode)
++    local register = require('cheatsheet.config').options.register
++    vim.fn.setreg(register, cheatcode)
+```
+
+### neo-tree.nvim
+
+システムの`rm`ではなく, aliasの`rm`を呼ぶ. PR出すべきでない.
+
+```diff
+# ~/.local/share/nvim/site/pack/packer/opt/neo-tree.nvim/lua/neo-tree/sources/filesystem/lib/fs_actions.lua
+- local success = loop.fs_unlink(path)
++ vim.api.nvim_command(string.format("silent !rm '%s'", path))
++ local success = true
+
+- local result = vim.fn.system({ "rm", "-Rf", path }) # NOTE: changed
++ vim.api.nvim_command(string.format("silent !rm '%s'", path))
++ local result = true
+
+- local success = loop.fs_unlink(child_path)
++ local success = true
+```
+
 ## Other
 
 `:checkhealth`: debug

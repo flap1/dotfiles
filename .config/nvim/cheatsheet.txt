@@ -31,6 +31,14 @@ install spacy | pip isntall spacy
 install torchtext | pip install torchtext
 specify install dir | pip install <package> -t /path/ 
 update pip | pip install -U pip
+update pip package | pip install -U <package>
+output to requirements.txt | pip freeze > requirements.txt
+
+## requirements.txt
+comment | #
+specify version | numpy ==/!=/>/>=/<=/< x.x.x
+specify version | numpy <= x.x.x, > x.x.x
+
 
 ## spacy
 install en_core_web_sm | python -m spacy download en_core_web_sm
@@ -79,6 +87,8 @@ choose none   | c0
 Get all conflict to quickfix | :GitConflictListQf
 ## neovim
 open link | gx
+repeat command | q{0-9a-z}<command>
+exec repeated command | @{0-9a-z}
 
 
 ##################################################
@@ -94,7 +104,9 @@ pull | p @ Files
 # linux
 ##################################################
 ## bash
-ディレクトリ容量確認(check directory capacity) | du 
+ディレクトリ容量確認(check directory capacity) | du <dir> 
+$HOME の容量確認(check home capacity) | dust -X gdrive -z 10M
+ディスク空き容量確認(check disk capacity) | df
 標準出力を捨てる(dump stdout) | &> /dev/null
 解凍 | tar -xvf xxx.tar.yy
 解凍 | unzip xxx.zip -d <dir>
@@ -135,6 +147,10 @@ multiple files to remote 複数ファイルをリモートにコピー3 | scp <*
 multiple files to local 複数ファイルをローカルにコピー1 | scp <username@domain:/remote/directory/\{a.txt,b.jpg\}> </local/directory>
 multiple files to local 複数ファイルをローカルにコピー2 | scp <username@domain:/remote/directory/\{a,b,c}.txt\}> </local/directory>
 multiple files to local 複数ファイルをローカルにコピー3 | scp <username@domain:/remote/directory/*.txt\}> </local/directory>
+## bash(wget)
+download file from google drive  | wget -O <export_name> https://docs.google.com/uc?export=download&id=xxxxxxxxxxxxxxxxxxxxx
+download large file from google drive | wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=xxxxxxxxxxxxxxxxxxxxx' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=xxxxxxxxxxxxxxxx" -O <export_name> && rm -rf /tmp/cookies.txt
+
 
 ## kill
 kill slack from terminal | pkill slack

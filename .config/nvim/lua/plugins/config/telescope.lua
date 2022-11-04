@@ -2,27 +2,32 @@ local fb_actions = require "telescope".extensions.file_browser.actions
 local base_dirs = {
   '~/dotfiles',
 }
+local action_layout = require("telescope.actions.layout")
+local actions = require("telescope.actions")
 
 require("telescope").setup {
   defaults = {
     prompt_prefix = " ",
     mappings = {
       n = {
-        ["<esc>"] = require('telescope.actions').close,
-        ["<Leader>q"] = require('telescope.actions').close,
+        ["<esc>"] = actions.close,
+        ["<Leader>q"] = actions.close,
+        ["<M-p>"] = action_layout.toggle_preview
       },
       i = {
-        ["<esc>"] = require('telescope.actions').close,
-        ["<Leader>q"] = require('telescope.actions').close,
+        ["<esc>"] = actions.close,
+        ["<Leader>q"] = actions.close,
         ["<C-i>"] = require("telescope").extensions.hop.hop,
+        ["<C-u>"] = false, -- disable C-u
         -- custom hop loop to multi selects and sending selected entries to quickfix list
         ["<C-space>"] = function(prompt_bufnr)
           local opts = {
-            callback = require("telescope.actions").toggle_selection,
-            loop_callback = require("telescope.actions").send_selected_to_qflist,
+            callback = actions.toggle_selection,
+            loop_callback = actions.send_selected_to_qflist,
           }
           require("telescope").extensions.hop._hop_loop(prompt_bufnr, opts)
         end,
+        ["<M-p>"] = action_layout.toggle_preview
       }
     },
     vimgrep_arguments = {
@@ -124,6 +129,9 @@ require("telescope").setup {
 local opts = { noremap = true, silent = true }
 
 vim.keymap.set('n', '<C-p>', "<Cmd>lua require'telescope'.extensions.project.project{}<CR>", opts)
+vim.keymap.set('n', '<M-p>', "<Cmd>lua require'telescope'.extensions.project.project{}<CR>", opts)
+vim.keymap.set('i', '<M-p>', "<Esc><Cmd>lua require'telescope'.extensions.project.project{}<CR>", opts)
+vim.keymap.set('t', '<M-p>', "<C-\\><C-n><Cmd>lua require'telescope'.extensions.project.project{}<CR>", opts)
 
 -- find ------------------------------------------
 vim.keymap.set("n", "[ff]x", "<Cmd>Telescope find_files<CR>", opts) -- ignore(x) dotfiles
@@ -150,6 +158,76 @@ vim.keymap.set("n", "[ff];", "<Cmd>Telescope git_files<CR>", opts)
 vim.keymap.set("n", "[ff]b", "<Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
 vim.keymap.set("n", "[ff]i", "<Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
 vim.keymap.set("n", "<Leader>b", "<Cmd>Telescope bookmarks<CR>", opts) -- telescope-bookmarks
+
+-- find ------------------------------------------
+vim.keymap.set("t", "<M-f>x", "<C-\\><C-n><Cmd>Telescope find_files<CR>", opts) -- ignore(x) dotfiles
+vim.keymap.set("t", "<M-f>e", "<C-\\><C-n><Cmd>Telescope frecency<CR>", opts) -- telescope-frecency
+vim.keymap.set("t", "<M-f>u", "<C-\\><C-n><Cmd>Telescope symbols<CR>", opts) -- telescope-symbols, unicode
+vim.keymap.set("t", "<M-f>j", "<C-\\><C-n><Cmd>Telescope live_grep<CR>", opts)
+vim.keymap.set("t", "<M-f>f", "<C-\\><C-n><Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", opts)
+vim.keymap.set("t", "<M-f><Leader>", "<C-\\><C-n><Cmd>Telescope buffers<CR>", opts)
+vim.keymap.set("t", "<M-f>@", "<C-\\><C-n><Cmd>Telescope bibtex<CR>", opts) -- telescope-bibtex
+vim.keymap.set("t", "<M-f>cmd", "<C-\\><C-n><Cmd>Telescope commands<CR>", opts)
+vim.keymap.set("t", "<M-f>h", "<C-\\><C-n><Cmd>Telescope help_tags<CR>", opts)
+vim.keymap.set("t", "<M-f>t", "<C-\\><C-n><Cmd>Telescope treesitter<CR>", opts)
+vim.keymap.set("t", "<M-f>o", "<C-\\><C-n><Cmd>Telescope oldfiles<CR>", opts)
+vim.keymap.set("t", "<M-f>k", "<C-\\><C-n><Cmd>Telescope keymaps<CR>", opts)
+vim.keymap.set("t", "<M-f>m", "<C-\\><C-n><Cmd>Telescope marks<CR>", opts)
+vim.keymap.set("t", "<M-f>/", "<C-\\><C-n><Cmd>Telescope search_history<CR>", opts)
+vim.keymap.set("t", "<M-f>r", "<C-\\><C-n><Cmd>Telescope registers<CR>", opts)
+vim.keymap.set("t", "<M-f>q", "<C-\\><C-n><Cmd>Telescope quickfix<CR>", opts)
+vim.keymap.set("t", "<M-f>p", "<C-\\><C-n><Cmd>Telescope packer<CR>", opts) -- telescope-packer
+vim.keymap.set("t", "<M-f>a", "<C-\\><C-n><Cmd>Telescope loclist<CR>", opts) -- under q
+vim.keymap.set("t", "<M-f>l", "<C-\\><C-n><Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+vim.keymap.set("t", "<M-f>;", "<C-\\><C-n><Cmd>Telescope git_files<CR>", opts)
+vim.keymap.set("t", "<M-f>b", "<C-\\><C-n><Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
+vim.keymap.set("t", "<M-f>i", "<C-\\><C-n><Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
+
+vim.keymap.set("i", "<M-f>x", "<Esc><Cmd>Telescope find_files<CR>", opts) -- ignore(x) dotfiles
+vim.keymap.set("i", "<M-f>e", "<Esc><Cmd>Telescope frecency<CR>", opts) -- telescope-frecency
+vim.keymap.set("i", "<M-f>u", "<Esc><Cmd>Telescope symbols<CR>", opts) -- telescope-symbols, unicode
+vim.keymap.set("i", "<M-f>j", "<Esc><Cmd>Telescope live_grep<CR>", opts)
+vim.keymap.set("i", "<M-f>f", "<Esc><Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", opts)
+vim.keymap.set("i", "<M-f><Leader>", "<Esc><Cmd>Telescope buffers<CR>", opts)
+vim.keymap.set("i", "<M-f>@", "<Esc><Cmd>Telescope bibtex<CR>", opts) -- telescope-bibtex
+vim.keymap.set("i", "<M-f>cmd", "<Esc><Cmd>Telescope commands<CR>", opts)
+vim.keymap.set("i", "<M-f>h", "<Esc><Cmd>Telescope help_tags<CR>", opts)
+vim.keymap.set("i", "<M-f>t", "<Esc><Cmd>Telescope treesitter<CR>", opts)
+vim.keymap.set("i", "<M-f>o", "<Esc><Cmd>Telescope oldfiles<CR>", opts)
+vim.keymap.set("i", "<M-f>k", "<Esc><Cmd>Telescope keymaps<CR>", opts)
+vim.keymap.set("i", "<M-f>m", "<Esc><Cmd>Telescope marks<CR>", opts)
+vim.keymap.set("i", "<M-f>/", "<Esc><Cmd>Telescope search_history<CR>", opts)
+vim.keymap.set("i", "<M-f>r", "<Esc><Cmd>Telescope registers<CR>", opts)
+vim.keymap.set("i", "<M-f>q", "<Esc><Cmd>Telescope quickfix<CR>", opts)
+vim.keymap.set("i", "<M-f>p", "<Esc><Cmd>Telescope packer<CR>", opts) -- telescope-packer
+vim.keymap.set("i", "<M-f>a", "<Esc><Cmd>Telescope loclist<CR>", opts) -- under q
+vim.keymap.set("i", "<M-f>l", "<Esc><Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+vim.keymap.set("i", "<M-f>;", "<Esc><Cmd>Telescope git_files<CR>", opts)
+vim.keymap.set("i", "<M-f>b", "<Esc><Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
+vim.keymap.set("i", "<M-f>i", "<Esc><Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
+
+vim.keymap.set("n", "<M-f>x", "<Cmd>Telescope find_files<CR>", opts) -- ignore(x) dotfiles
+vim.keymap.set("n", "<M-f>e", "<Cmd>Telescope frecency<CR>", opts) -- telescope-frecency
+vim.keymap.set("n", "<M-f>u", "<Cmd>Telescope symbols<CR>", opts) -- telescope-symbols, unicode
+vim.keymap.set("n", "<M-f>j", "<Cmd>Telescope live_grep<CR>", opts)
+vim.keymap.set("n", "<M-f>f", "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", opts)
+vim.keymap.set("n", "<M-f><Leader>", "<Cmd>Telescope buffers<CR>", opts)
+vim.keymap.set("n", "<M-f>@", "<Cmd>Telescope bibtex<CR>", opts) -- telescope-bibtex
+vim.keymap.set("n", "<M-f>cmd", "<Cmd>Telescope commands<CR>", opts)
+vim.keymap.set("n", "<M-f>h", "<Cmd>Telescope help_tags<CR>", opts)
+vim.keymap.set("n", "<M-f>t", "<Cmd>Telescope treesitter<CR>", opts)
+vim.keymap.set("n", "<M-f>o", "<Cmd>Telescope oldfiles<CR>", opts)
+vim.keymap.set("n", "<M-f>k", "<Cmd>Telescope keymaps<CR>", opts)
+vim.keymap.set("n", "<M-f>m", "<Cmd>Telescope marks<CR>", opts)
+vim.keymap.set("n", "<M-f>/", "<Cmd>Telescope search_history<CR>", opts)
+vim.keymap.set("n", "<M-f>r", "<Cmd>Telescope registers<CR>", opts)
+vim.keymap.set("n", "<M-f>q", "<Cmd>Telescope quickfix<CR>", opts)
+vim.keymap.set("n", "<M-f>p", "<Cmd>Telescope packer<CR>", opts) -- telescope-packer
+vim.keymap.set("n", "<M-f>a", "<Cmd>Telescope loclist<CR>", opts) -- under q
+vim.keymap.set("n", "<M-f>l", "<Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+vim.keymap.set("n", "<M-f>;", "<Cmd>Telescope git_files<CR>", opts)
+vim.keymap.set("n", "<M-f>b", "<Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
+vim.keymap.set("n", "<M-f>i", "<Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
 
 -- git -------------------------------------------
 vim.keymap.set("n", "[ff]gc", "<Cmd>Telescope git_commits<CR>", opts)

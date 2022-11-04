@@ -15,10 +15,10 @@ bindkey '^[OB' down-line-or-history
 # .accept-line: Accept command line.
 # accept-line:  Accept selection and exit menu.
 
-bindkey -M menuselect '^[H' vi-backward-char
-bindkey -M menuselect '^[K' vi-up-line-or-history
-bindkey -M menuselect '^[L' vi-forward-char
-bindkey -M menuselect '^[J' vi-down-line-or-history
+bindkey -M menuselect '^H' vi-backward-char
+bindkey -M menuselect '^K' vi-up-line-or-history
+bindkey -M menuselect '^L' vi-forward-char
+bindkey -M menuselect '^J' vi-down-line-or-history
 
 zstyle ':completion:*:complete:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+l:|=* r:|=*'
 #function precmd_overwrite_options() {

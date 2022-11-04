@@ -5,7 +5,7 @@
 # common
 alias rm='rm-trash'
 alias del='rm -rf'
-alias cp='cp -irf'
+alias cp='cp -ivr'
 alias mv='mv -i'
 alias ..='cd ..'
 alias .2='cd ../..'
