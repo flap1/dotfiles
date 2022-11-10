@@ -142,4 +142,8 @@ vim.opt.nrformats:append("unsigned") -- This defines what bases Vim will conside
 
 vim.g.python3_host_prog = "~/.pyenv/shims/python3"
 
+-- load zshenv
 vim.o.shellcmdflag = "-ic"
+
+-- load local settings
+vim.g.autosource_conf_names = { '.exrc', '.exrc.lua' }

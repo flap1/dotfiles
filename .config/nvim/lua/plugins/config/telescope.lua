@@ -5,6 +5,21 @@ local base_dirs = {
 local action_layout = require("telescope.actions.layout")
 local actions = require("telescope.actions")
 
+-- Custom actions
+local transform_mod = require("telescope.actions.mt").transform_mod
+local nvb_actions = transform_mod {
+  yank_content = function(prompt_bufnr)
+    -- Get selected entry and the file full path
+    local content = require("telescope.actions.state").get_selected_entry()
+
+    -- Yank the path to unnamed register
+    vim.fn.setreg('+', content.value)
+
+    -- Close the popup
+    require("telescope.actions").close(prompt_bufnr)
+  end,
+}
+
 require("telescope").setup {
   defaults = {
     prompt_prefix = " ",
@@ -40,6 +55,13 @@ require("telescope").setup {
       '--smart-case',
       '--hidden',
     }
+  },
+  pickers = {
+    -- https://github.com/nvim-telescope/telescope.nvim
+    find_files = {theme = "ivy", mappings = {n = {["y"] = nvb_actions.yank_content}, i = {["<C-y>"] = nvb_actions.yank_content}}},
+    live_grep = {theme = "ivy", mappings = {n = {["y"] = nvb_actions.yank_content}, i = {["<C-y>"] = nvb_actions.yank_content}}},
+    command_history = {theme = "ivy", mappings = {n = {["y"] = nvb_actions.yank_content}, i = {["<C-y>"] = nvb_actions.yank_content}}},
+    keymaps = {theme = "ivy", mappings = {n = {["y"] = nvb_actions.yank_content}, i = {["<C-y>"] = nvb_actions.yank_content}}},
   },
   extensions = {
     frecency = {
@@ -141,7 +163,7 @@ vim.keymap.set("n", "[ff]j", "<Cmd>Telescope live_grep<CR>", opts)
 vim.keymap.set("n", "[ff]f", "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", opts)
 vim.keymap.set("n", "[ff]<Leader>", "<Cmd>Telescope buffers<CR>", opts)
 vim.keymap.set("n", "[ff]@", "<Cmd>Telescope bibtex<CR>", opts) -- telescope-bibtex
-vim.keymap.set("n", "[ff]cmd", "<Cmd>Telescope commands<CR>", opts)
+vim.keymap.set("n", "[ff]c", "<Cmd>Telescope command_history<CR>", opts)
 vim.keymap.set("n", "[ff]h", "<Cmd>Telescope help_tags<CR>", opts)
 vim.keymap.set("n", "[ff]t", "<Cmd>Telescope treesitter<CR>", opts)
 vim.keymap.set("n", "[ff]o", "<Cmd>Telescope oldfiles<CR>", opts)
@@ -167,7 +189,7 @@ vim.keymap.set("t", "<M-f>j", "<C-\\><C-n><Cmd>Telescope live_grep<CR>", opts)
 vim.keymap.set("t", "<M-f>f", "<C-\\><C-n><Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", opts)
 vim.keymap.set("t", "<M-f><Leader>", "<C-\\><C-n><Cmd>Telescope buffers<CR>", opts)
 vim.keymap.set("t", "<M-f>@", "<C-\\><C-n><Cmd>Telescope bibtex<CR>", opts) -- telescope-bibtex
-vim.keymap.set("t", "<M-f>cmd", "<C-\\><C-n><Cmd>Telescope commands<CR>", opts)
+vim.keymap.set("t", "<M-f>c", "<C-\\><C-n><Cmd>Telescope command_history<CR>", opts)
 vim.keymap.set("t", "<M-f>h", "<C-\\><C-n><Cmd>Telescope help_tags<CR>", opts)
 vim.keymap.set("t", "<M-f>t", "<C-\\><C-n><Cmd>Telescope treesitter<CR>", opts)
 vim.keymap.set("t", "<M-f>o", "<C-\\><C-n><Cmd>Telescope oldfiles<CR>", opts)
@@ -190,7 +212,7 @@ vim.keymap.set("i", "<M-f>j", "<Esc><Cmd>Telescope live_grep<CR>", opts)
 vim.keymap.set("i", "<M-f>f", "<Esc><Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", opts)
 vim.keymap.set("i", "<M-f><Leader>", "<Esc><Cmd>Telescope buffers<CR>", opts)
 vim.keymap.set("i", "<M-f>@", "<Esc><Cmd>Telescope bibtex<CR>", opts) -- telescope-bibtex
-vim.keymap.set("i", "<M-f>cmd", "<Esc><Cmd>Telescope commands<CR>", opts)
+vim.keymap.set("i", "<M-f>c", "<Esc><Cmd>Telescope command_history<CR>", opts)
 vim.keymap.set("i", "<M-f>h", "<Esc><Cmd>Telescope help_tags<CR>", opts)
 vim.keymap.set("i", "<M-f>t", "<Esc><Cmd>Telescope treesitter<CR>", opts)
 vim.keymap.set("i", "<M-f>o", "<Esc><Cmd>Telescope oldfiles<CR>", opts)
@@ -213,7 +235,7 @@ vim.keymap.set("n", "<M-f>j", "<Cmd>Telescope live_grep<CR>", opts)
 vim.keymap.set("n", "<M-f>f", "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", opts)
 vim.keymap.set("n", "<M-f><Leader>", "<Cmd>Telescope buffers<CR>", opts)
 vim.keymap.set("n", "<M-f>@", "<Cmd>Telescope bibtex<CR>", opts) -- telescope-bibtex
-vim.keymap.set("n", "<M-f>cmd", "<Cmd>Telescope commands<CR>", opts)
+vim.keymap.set("n", "<M-f>c", "<Cmd>Telescope command_history<CR>", opts)
 vim.keymap.set("n", "<M-f>h", "<Cmd>Telescope help_tags<CR>", opts)
 vim.keymap.set("n", "<M-f>t", "<Cmd>Telescope treesitter<CR>", opts)
 vim.keymap.set("n", "<M-f>o", "<Cmd>Telescope oldfiles<CR>", opts)

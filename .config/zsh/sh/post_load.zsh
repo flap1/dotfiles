@@ -15,6 +15,7 @@ fi
 
 eval "$(pyenv init -)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=0
+export PYENV_ROOT=$HOME/.pyenv
 
 export DENO_INSTALL=$HOME/.deno
 

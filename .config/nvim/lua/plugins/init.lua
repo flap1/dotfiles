@@ -298,12 +298,13 @@ return require("packer").startup({ function(use)
 
   -- Programming Languages -----------------------
   ---- Markdown
-  use { "iamcco/markdown-preview.nvim", run = ":call mkdp#util#install()", setup = function() vim.g.mkdp_filetypes = { "markdown", "telekasten" } end, ft = { "markdown", "telekasten" }, }
+  use { "iamcco/markdown-preview.nvim", run = ":call mkdp#util#install()", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/markdown-preview.vim") end, ft = { "markdown", "telekasten" }, }
   use { "SidOfc/mkdx", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/mkdx.vim") end } -- TODO:
   use { "dhruvasagar/vim-table-mode", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-table-mode.vim") end } -- markdownでテーブルを綺麗に表示
 
   ---- CSV -- TODO:
   -- use { "chen244/csv-tools.lua", ft = { "csv" }, config = function() require("rc/pluginconfig/csv-tools") end, }
+  use { "chrisbra/csv.vim", ft = { "csv" }, config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/csv.vim") end, }
 
   ---- Lua
   use { "folke/neodev.nvim", module = "neodev" } -- Dev setup for init.lua and plugin development

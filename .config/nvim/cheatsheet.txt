@@ -14,6 +14,8 @@ Set text width to {n} | :set tw={n}
 rename git branch | git branch -m <old> <new> 
 n回分のcommitをまとめる(一番上だけpickにして残りをs) | git rebase -i HEAD~n
 delete file from commit履歴 | git filter-branch --index-filter 'git rm --cached --ignore-unmatch <path>' HEAD
+Turn an existing repository into a git repository | git init
+Turn an existing repository into a git repository(after init) | git remote add origin git@github.com:<usre>/<repo>.git
 ## gitignore
 特定の拡張子を無視する場合(どこにも/を付けない) | *.o
 特定のファイルを無視する場合は先頭に/ | /npm-debug.log
@@ -63,6 +65,7 @@ virtualenv の有効化 | pyenv activate <env-name>
 virtualenv の無効化 | pyenv deactivate
 存在している virtualenv の確認 | pyenv virtualenvs
 環境の削除 | pyenv uninstall <env-name>
+環境の削除 | pyenv virtualenv-delete <env-name>
 
 
 ##################################################
@@ -89,6 +92,12 @@ Get all conflict to quickfix | :GitConflictListQf
 open link | gx
 repeat command | q{0-9a-z}<command>
 exec repeated command | @{0-9a-z}
+
+###########################
+# regex
+###########################
+## regex
+最小一致(minimum consistency) | {-} 
 
 
 ##################################################

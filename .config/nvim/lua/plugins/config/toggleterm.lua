@@ -65,6 +65,7 @@ vim.api.nvim_create_autocmd({"VimEnter", "BufEnter"}, {
   callback = function()
     -- vim.keymap.set("n", "<leader>g", "<cmd>lua _Lazygit_toggle()<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<Leader>t", '<Cmd>execute v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("i", "<C-q>", "<Esc><Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set({ "t", "n" }, "<C-q>", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set({ "t", "n" } , "<C-t>q", "<Cmd>ToggleTerm<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set({ "t", "n" } , "<C-t>1", "<Cmd>1ToggleTerm<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })

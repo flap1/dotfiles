@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function cd() {
+function cd_() {
     if [[ "$#" != 0 ]]; then
         builtin cd "$@";
         return
@@ -20,5 +20,5 @@ function cd() {
     done
 }
 
-cd $@
+cd_ $@
 

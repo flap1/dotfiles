@@ -1,0 +1,40 @@
+#!/bin/bash
+
+usage="\
+$(basename "$0") [-h] [-f files] -- program to remove files from .git repository
+
+where:
+    -h  show this help text
+    -f  specify files (you can also use wildcard*)"
+
+while getopts ':h:f:' option; do
+  case "$option" in
+    h) echo "$usage"
+       exit
+       ;;
+    f) files=("$OPTARG") # get multiple value
+       until [[ $(eval "echo \${$OPTIND}") =~ ^-.* ]] || [ -z $(eval "echo \${$OPTIND}") ]; do
+           files+=($(eval "echo \${$OPTIND}"))
+           OPTIND=$((OPTIND + 1))
+       done
+       ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+   \?) printf "illegal option: -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+  esac
+done
+shift $((OPTIND - 1)) # remove all the options from the positional parameters
+
+git filter-branch --force --index-filter "git rm -rf --cached --ignore-unmatch ${files[@]}" --prune-empty -- --all
+git gc --aggressive --prune=now #  Delete unwanted objects and logs
+git repack -A -d # repack
+echo "\
+------------------------
+Finally do the following 
+git push --all --force origin"
+

@@ -3,5 +3,6 @@
 
 ## zsh
 /.config/zsh/.zcompdump
+/.config/zsh/.zcompcache
 /.config/zsh/.zshrc.local
 

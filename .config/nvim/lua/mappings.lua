@@ -85,12 +85,10 @@ vim.keymap.set("n", "<C-x>", ">>", opts)
 vim.keymap.set("n", "<C-z>", "<<", opts)
 
 -- w/q
-vim.keymap.set("n", "<M-q>", "<Cmd>q<CR>", opts)
+vim.keymap.set({ "n", "t" }, "<M-q>", "<Cmd>q<CR>", opts)
 vim.keymap.set("i", "<M-q>", "<Esc><Cmd>q<CR>", opts)
-vim.keymap.set("t", "<M-q>", "<C-\\><C-n><Cmd>q<CR>", opts)
-vim.keymap.set("n", "<M-w>", "<Cmd>w<CR>", opts)
+vim.keymap.set({ "n", "t" }, "<M-w>", "<Cmd>w<CR>", opts)
 vim.keymap.set("i", "<M-w>", "<Esc><Cmd>w<CR>", opts)
-vim.keymap.set("t", "<M-w>", "<C-\\><C-n><Cmd>w<CR>", opts)
 
 vim.keymap.set("n", "<Leader>w", "<Cmd>w<CR>", opts)
 vim.keymap.set("n", "<Leader>q", "<Cmd>q<CR>", opts)
@@ -138,8 +136,12 @@ vim.keymap.set("t", "<M-/>", "<C-\\><C-n><C-w>/", opts)
 
 vim.keymap.set("n", "z+", "5<C-w>+", opts)
 vim.keymap.set("n", "z-", "5<C-w>-", opts)
+vim.keymap.set("n", "zk", "5<C-w>+", opts)
+vim.keymap.set("n", "zj", "5<C-w>-", opts)
 vim.keymap.set("n", "z>", "5<C-w>>", opts)
 vim.keymap.set("n", "z<", "5<C-w><", opts)
+vim.keymap.set("n", "zl", "5<C-w>>", opts)
+vim.keymap.set("n", "zh", "5<C-w><", opts)
 
 -- switch tab
 vim.keymap.set("n", "<M-1>", "1gt", opts)
@@ -297,6 +299,7 @@ vim.keymap.set("x", "/", "<ESC>/\\%V", { noremap = true, silent = false }) -- \%
 vim.keymap.set("x", "?", "<ESC>?\\%V", { noremap = true, silent = false })
 
 -- For replace
+vim.keymap.set("n", "/", "/\\v", opts) -- always use regex 
 vim.keymap.set("n", "<LocalLeader>s", ":%s/\\<<C-r><C-w>\\>/", { noremap = true, silent = false })
 vim.keymap.set("x", "<LocalLeader>s", ":s/\\%V", { noremap = true, silent = false })
 
