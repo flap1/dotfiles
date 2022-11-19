@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pip install neovim-remote
+
 DOT_FILES=( 
   ".config/zsh"
   ".config/git/.gitconfig" \
