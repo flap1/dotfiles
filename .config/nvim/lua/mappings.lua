@@ -15,13 +15,13 @@
 ---------------------------------------------------------------------------------------------------+
 
 local opts = { noremap = true, silent = true }
-local optsexpr = { noremap = true, expr = true, silent = true}
+local optsexpr = { noremap = true, expr = true, silent = true }
 
 -- vim.keymap.set("n", "<Leader><CR>", "<Cmd>luafile %<CR>", opts) -- reload config
 -- vim.keymap.set("n", "<Leader><Leader><CR>", "<Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>", opts) -- reload config
 
 vim.cmd(
-[[
+  [[
   autocmd FileType lua nnoremap <silent> <Leader><CR> <Cmd>luafile %<CR>
   autocmd FileType lua nnoremap <silent> <LocalLeader><CR> <Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>
 ]]
@@ -43,7 +43,7 @@ vim.api.nvim_set_keymap("v", "<Leader>f", "[ff]", {})
 vim.keymap.set("n", "<LocalLeader>-", function()
   local linenum = 50
   local margin = vim.fn.col("$") - 1 > 0 and " " or "--"
-  return "A"..margin..string.rep("-", linenum - vim.fn.col("$")).."<Esc>"
+  return "A" .. margin .. string.rep("-", linenum - vim.fn.col("$")) .. "<Esc>"
 end, optsexpr)
 
 -- Plugins ----------------------------------------
@@ -53,7 +53,7 @@ end, optsexpr)
 -- iswap
 vim.keymap.set("n", "<LocalLeader>s", "<Nop>", opts)
 
--- nvim-surround
+-- lightspeed
 -- vim.keymap.set("n", "s", "<Nop>", opts)
 
 -- lightspeed
@@ -133,6 +133,15 @@ vim.keymap.set("t", "<M-l>", "<C-\\><C-n><C-w>l", opts)
 vim.keymap.set("t", "<M-o>", "<C-\\><C-n><C-w>o", opts)
 vim.keymap.set("t", "<M-:>", "<C-\\><C-n><C-w>:", opts)
 vim.keymap.set("t", "<M-/>", "<C-\\><C-n><C-w>/", opts)
+vim.keymap.set("n", ";1", ":1wincmd w<CR>", opts)
+vim.keymap.set("n", ";2", ":2wincmd w<CR>", opts)
+vim.keymap.set("n", ";3", ":3wincmd w<CR>", opts)
+vim.keymap.set("n", ";4", ":4wincmd w<CR>", opts)
+vim.keymap.set("n", ";5", ":5wincmd w<CR>", opts)
+vim.keymap.set("n", ";6", ":6wincmd w<CR>", opts)
+vim.keymap.set("n", ";7", ":7wincmd w<CR>", opts)
+vim.keymap.set("n", ";8", ":8wincmd w<CR>", opts)
+vim.keymap.set("n", ";9", ":9wincmd w<CR>", opts)
 
 vim.keymap.set("n", "z+", "5<C-w>+", opts)
 vim.keymap.set("n", "z-", "5<C-w>-", opts)
@@ -159,9 +168,15 @@ vim.keymap.set("n", "<M-t>h", "<Cmd>tabfirst<CR>", opts)
 vim.keymap.set("n", "<M-t>l", "<Cmd>tablast<CR>", opts)
 vim.keymap.set("n", "<M-t>j", "<Cmd>tabprevious<CR>", opts)
 vim.keymap.set("n", "<M-t>k", "<Cmd>tabnext<CR>", opts)
+vim.keymap.set("n", "<LocalLeader>h", "<Cmd>tabfirst<CR>", opts)
+vim.keymap.set("n", "<LocalLeader>l", "<Cmd>tablast<CR>", opts)
+vim.keymap.set("n", "<LocalLeader>j", "<Cmd>tabprevious<CR>", opts)
+vim.keymap.set("n", "<LocalLeader>k", "<Cmd>tabnext<CR>", opts)
 -- vim.keymap.set("n", "<M-d>", "<Cmd>tabclose<CR>", opts)
 vim.keymap.set("n", "<M-t>q", "<Cmd>tabclose<CR>", opts)
 vim.keymap.set("n", "<M-t>n", "<Cmd>tabnew % | Alpha<CR>", opts)
+vim.keymap.set("n", "<LocalLeader>q", "<Cmd>tabclose<CR>", opts)
+vim.keymap.set("n", "<LocalLeader>n", "<Cmd>tabnew % | Alpha<CR>", opts)
 -- vim.keymap.set("n", "[t", "<Cmd>tabprevious<CR>", opts)
 -- vim.keymap.set("n", "]t", "<Cmd>tabnext<CR>", opts)
 -- vim.keymap.set("n", "[T", "<Cmd>tabfirst<CR>", opts)
@@ -173,7 +188,7 @@ vim.keymap.set("n", "L", "<Nop>", opts)
 -- vim.keymap.set("n", "J", "<Nop>", opts)
 -- vim.keymap.set("n", "K", "<Nop>", opts)
 vim.keymap.set({ "n", "x" }, "gJ", "J", opts)
-vim.keymap.set({ "n", "x" }, "<LocalLeader>j", "J", opts)
+-- vim.keymap.set({ "n", "x" }, "<LocalLeader>j", "J", opts)
 vim.keymap.set({ "n", "x" }, "H", "5h", opts)
 -- vim.keymap.set({ "n", "x" }, "J", "5j", opts)
 -- vim.keymap.set({ "n", "x" }, "K", "5k", opts)
@@ -186,15 +201,18 @@ vim.keymap.set("n", "gL", "L", opts)
 
 -- jump cursor
 -- vim.keymap.set('n', '<Tab>', function() return vim.v.count > 0 and '0<Bar>' or '10l' end, optsexpr)
-vim.keymap.set('n', '<CR>', function() return vim.o.buftype == 'quickfix' and "<CR>" or vim.v.count > 0 and '0jzz' or '10jzz' end, optsexpr)
+vim.keymap.set('n', '<CR>',
+  function() return vim.o.buftype == 'quickfix' and "<CR>" or vim.v.count > 0 and '0jzz' or '10jzz' end, optsexpr)
 
 -- Automatically indent with i and A
 vim.keymap.set("n", "i", function() return vim.fn.len(vim.fn.getline(".")) ~= 0 and "i" or '"_cc' end, optsexpr)
 vim.keymap.set("n", "A", function() return vim.fn.len(vim.fn.getline(".")) ~= 0 and "A" or '"_cc' end, optsexpr)
 
 -- toggle 0, ^
-vim.keymap.set("n", "0", function() return string.match(vim.fn.getline("."):sub(0, vim.fn.col(".") - 1), "^%s+$") and "0" or "^" end, optsexpr)
-vim.keymap.set('n', '$', function() return string.match(vim.fn.getline('.'):sub(0, vim.fn.col('.')), '^%s+$') and '$' or 'g_' end, optsexpr)
+vim.keymap.set("n", "0",
+  function() return string.match(vim.fn.getline("."):sub(0, vim.fn.col(".") - 1), "^%s+$") and "0" or "^" end, optsexpr)
+vim.keymap.set('n', '$',
+  function() return string.match(vim.fn.getline('.'):sub(0, vim.fn.col('.')), '^%s+$') and '$' or 'g_' end, optsexpr)
 
 -- Emacs style
 ---- Navigation
@@ -285,8 +303,8 @@ vim.keymap.set("n", "[L", ":lfirst<CR>", opts)
 vim.keymap.set("n", "]L", ":llast<CR>", opts)
 
 -- switch quickfix/location list
-vim.keymap.set("n", "<LocalLeader>q", "<Cmd>copen<CR>", opts)
-vim.keymap.set("n", "<LocalLeader>l", "<Cmd>lopen<CR>", opts)
+-- vim.keymap.set("n", "<LocalLeader>q", "<Cmd>copen<CR>", opts)
+-- vim.keymap.set("n", "<LocalLeader>l", "<Cmd>lopen<CR>", opts)
 
 -- For search
 vim.keymap.set("n", "g/", "/\\v", { noremap = true, silent = false }) -- 正規表現(very magic)
@@ -299,9 +317,10 @@ vim.keymap.set("x", "/", "<ESC>/\\%V", { noremap = true, silent = false }) -- \%
 vim.keymap.set("x", "?", "<ESC>?\\%V", { noremap = true, silent = false })
 
 -- For replace
-vim.keymap.set("n", "/", "/\\v", opts) -- always use regex 
+vim.keymap.set("n", "/", "/\\v", opts) -- always use regex
 vim.keymap.set("n", "<LocalLeader>s", ":%s/\\<<C-r><C-w>\\>/", { noremap = true, silent = false })
 vim.keymap.set("x", "<LocalLeader>s", ":s/\\%V", { noremap = true, silent = false })
+vim.keymap.set("n", ";s", ":%s/\\v", { noremap = true, silent = false })
 
 -- Change encoding
 vim.keymap.set("n", "<LocalLeader>eu", "<Cmd>e ++enc=utf-8<CR>", opts)

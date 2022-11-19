@@ -175,7 +175,8 @@ vim.keymap.set("n", '"', "<Cmd>Telescope registers<CR>", opts)
 vim.keymap.set("n", "[ff]q", "<Cmd>Telescope quickfix<CR>", opts)
 vim.keymap.set("n", "[ff]p", "<Cmd>Telescope packer<CR>", opts) -- telescope-packer
 vim.keymap.set("n", "[ff]a", "<Cmd>Telescope loclist<CR>", opts) -- under q
-vim.keymap.set("n", "[ff]l", "<Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+-- vim.keymap.set("n", "[ff]l", "<Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+vim.keymap.set("n", "[ff]l", "<Cmd>Telescope possession list<CR>", opts) -- possession
 vim.keymap.set("n", "[ff];", "<Cmd>Telescope git_files<CR>", opts)
 vim.keymap.set("n", "[ff]b", "<Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
 vim.keymap.set("n", "[ff]i", "<Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
@@ -200,7 +201,8 @@ vim.keymap.set("t", "<M-f>r", "<C-\\><C-n><Cmd>Telescope registers<CR>", opts)
 vim.keymap.set("t", "<M-f>q", "<C-\\><C-n><Cmd>Telescope quickfix<CR>", opts)
 vim.keymap.set("t", "<M-f>p", "<C-\\><C-n><Cmd>Telescope packer<CR>", opts) -- telescope-packer
 vim.keymap.set("t", "<M-f>a", "<C-\\><C-n><Cmd>Telescope loclist<CR>", opts) -- under q
-vim.keymap.set("t", "<M-f>l", "<C-\\><C-n><Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+-- vim.keymap.set("t", "<M-f>l", "<C-\\><C-n><Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+vim.keymap.set("t", "<M-f>l", "<C-\\><C-n><Cmd>Telescope possession list<CR>", opts) -- possession
 vim.keymap.set("t", "<M-f>;", "<C-\\><C-n><Cmd>Telescope git_files<CR>", opts)
 vim.keymap.set("t", "<M-f>b", "<C-\\><C-n><Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
 vim.keymap.set("t", "<M-f>i", "<C-\\><C-n><Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
@@ -223,7 +225,8 @@ vim.keymap.set("i", "<M-f>r", "<Esc><Cmd>Telescope registers<CR>", opts)
 vim.keymap.set("i", "<M-f>q", "<Esc><Cmd>Telescope quickfix<CR>", opts)
 vim.keymap.set("i", "<M-f>p", "<Esc><Cmd>Telescope packer<CR>", opts) -- telescope-packer
 vim.keymap.set("i", "<M-f>a", "<Esc><Cmd>Telescope loclist<CR>", opts) -- under q
-vim.keymap.set("i", "<M-f>l", "<Esc><Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+-- vim.keymap.set("i", "<M-f>l", "<Esc><Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+vim.keymap.set("i", "<M-f>l", "<Esc><Cmd>Telescope possession list<CR>", opts) -- possession
 vim.keymap.set("i", "<M-f>;", "<Esc><Cmd>Telescope git_files<CR>", opts)
 vim.keymap.set("i", "<M-f>b", "<Esc><Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
 vim.keymap.set("i", "<M-f>i", "<Esc><Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
@@ -246,7 +249,8 @@ vim.keymap.set("n", "<M-f>r", "<Cmd>Telescope registers<CR>", opts)
 vim.keymap.set("n", "<M-f>q", "<Cmd>Telescope quickfix<CR>", opts)
 vim.keymap.set("n", "<M-f>p", "<Cmd>Telescope packer<CR>", opts) -- telescope-packer
 vim.keymap.set("n", "<M-f>a", "<Cmd>Telescope loclist<CR>", opts) -- under q
-vim.keymap.set("n", "<M-f>l", "<Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+-- vim.keymap.set("n", "<M-f>l", "<Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
+vim.keymap.set("n", "<M-f>l", "<Cmd>Telescope possession list<CR>", opts) -- possession
 vim.keymap.set("n", "<M-f>;", "<Cmd>Telescope git_files<CR>", opts)
 vim.keymap.set("n", "<M-f>b", "<Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
 vim.keymap.set("n", "<M-f>i", "<Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images

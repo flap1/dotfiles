@@ -41,6 +41,12 @@ require("possession").setup({
   autosave = {
     tmp_name = vim.fn.getcwd():gsub(get_dir_pattern(), "__"),
   },
+  commands = {
+      save = 'SSave',
+      load = 'SLoad',
+      delete = 'SDelete',
+      list = 'SList',
+  },
   hooks = {
     before_save = function(name)
       if vim.fn.argc() > 0 then
@@ -79,6 +85,10 @@ vim.api.nvim_create_user_command("PossessionLoadCurrent", function()
   vim.cmd("PossessionLoad" .. tmp_name)
 end, { force = true })
 
+-- vim.api.nvim_create_user_command("SaveWindow", function()
+--   vim.cmd("PossessionSave " .. vim.fn.strftime("%Y%m%d_%H%M%S"))
+-- end, { force = true })
+
 vim.api.nvim_create_augroup("vimrc_possession", { clear = true })
 vim.api.nvim_create_autocmd({ "VimLeave" }, {
   group = "vimrc_possession",
@@ -88,3 +98,5 @@ vim.api.nvim_create_autocmd({ "VimLeave" }, {
   end,
   once = false,
 })
+
+require('telescope').load_extension('possession')

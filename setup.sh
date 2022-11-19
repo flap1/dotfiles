@@ -8,7 +8,6 @@ DOT_FILES=(
   ".stylua.toml" \
   ".config/nvim" \
   ".config/wezterm" \
-  ".config/xkeysnail" \
   ".latexmkrc" \
   # ".config/lazygit" \
   # ".config/peco" 

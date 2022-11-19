@@ -149,11 +149,12 @@ return require("packer").startup({ function(use)
   use { "Pocco81/auto-save.nvim", branch = "dev", config = function() require("plugins/config/auto-save") end }
 
   ---- Move
-  use { "phaazon/hop.nvim", event = "VimEnter", config = function() require("plugins/config/hop") end }
+  -- use { "phaazon/hop.nvim", event = "VimEnter", config = function() require("plugins/config/hop") end }
 
   ---- Horizontal Move
   use { "jinh0/eyeliner.nvim", event = "VimEnter", config = function() require("eyeliner").setup({}) end }
   use { "ggandor/lightspeed.nvim", event = "VimEnter", config = function() require("plugins/config/lightspeed") end }
+  -- use { "ggandor/leap.nvim", event = "VimEnter", config = function() require("plugins/config/leap") end }
 
   ---- Vertical Move
   use { "haya14busa/vim-edgemotion", event = "VimEnter", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-edgemotion.vim") end }
@@ -184,7 +185,7 @@ return require("packer").startup({ function(use)
 
   -- File ----------------------------------------
   ---- Filer
-  use { "nvim-neo-tree/neo-tree.nvim", event = "VimEnter" ,branch = "v2.x", requires = { "nvim-lua/plenary.nvim", "kyazdani42/nvim-web-devicons", "MunifTanjim/nui.nvim" }, config = function() require("plugins/config/neo-tree") end }
+  use { "nvim-neo-tree/neo-tree.nvim", event = "VimEnter", branch = "v2.x", requires = { "nvim-lua/plenary.nvim", "kyazdani42/nvim-web-devicons", "MunifTanjim/nui.nvim" }, config = function() require("plugins/config/neo-tree") end }
 
   ---- Buffer
   use { "kazhala/close-buffers.nvim", config = function() require("plugins/config/close-buffers") end } -- https://github.com/kazhala/close-buffers.nvim
@@ -202,7 +203,7 @@ return require("packer").startup({ function(use)
   -- use { "stevearc/qf_helper.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/qf_helper") end, }
 
   ---- Session
-  use { "jedrzejboczar/possession.nvim", config = function() require("plugins/config/possession") end }
+  use { "jedrzejboczar/possession.nvim", requires = { { "nvim-telescope/telescope.nvim", opt = true } }, after = { "telescope.nvim" }, config = function() require("plugins/config/possession") end }
 
   ---- SpellCorrect (iabbr) -- TODO:
   -- use { "Pocco81/AbbrevMan.nvim", event = "VimEnter", config = function() require("plugins/config/AbbrevMan") end }
@@ -228,7 +229,7 @@ return require("packer").startup({ function(use)
   ---- Performance Improvement
   use { "tweekmonster/startuptime.vim" } -- :StartupTime, https://github.com/tweekmonster/startuptime.vim
   use { "lewis6991/impatient.nvim", config = function() require('impatient') require('impatient').enable_profile() end }
-  use { "nathom/filetype.nvim", config = function() require("plugins/config/filetype") end } -- earlier then Neovim 0.8.0
+  -- use { "nathom/filetype.nvim", config = function() require("plugins/config/filetype") end } -- earlier then Neovim 0.8.0
 
   ---- Analytics -- TODO:
   -- if not os.getenv("DISABLE_WAKATIME") or os.getenv("DISABLE_WAKATIME") == "true" then

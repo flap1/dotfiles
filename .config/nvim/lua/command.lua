@@ -12,6 +12,7 @@ vim.api.nvim_create_user_command("SpaceToTab", "set noexpandtab | retab!", { for
 
 -- file fullpath
 vim.api.nvim_create_user_command("Filepath", "echo expand('%:p')", { force = true, nargs = "?" })
+
 -- vim.api.nvim_create_user_command("YankRelPath", ':let @+ = expand("%")', { force = true, nargs = "?" })
 vim.api.nvim_create_user_command("YankFullPath", ':let @+ = expand("%:p")', { force = true, nargs = "?" })
 vim.api.nvim_create_user_command(
@@ -19,6 +20,10 @@ vim.api.nvim_create_user_command(
   "echo join([expand('%'),  line('.')], ':')",
   { force = true, nargs = "?" }
 )
+
+vim.api.nvim_create_user_command("Snapshot", function()
+  vim.cmd("PackerSnapshot " .. vim.fn.strftime("%Y%m%d"))
+end, { force = true })
 
 -- edit plugin config
 vim.api.nvim_create_user_command("EditPluginConfigVim", function()

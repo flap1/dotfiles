@@ -130,6 +130,21 @@ install ocr engine(Tesseract) | sudo apt install tesseract-ocr libtesseract-dev
 pngファイルに対してocr | tesseract -l eng <test.png> <test> pdf
 ## bash(pdf)
 merge pdf | pdfunite *.pdf output.pdf
+merge pdf2 | pdftk input1.pdf input2.pdf cat output output.pdf
+divide pdf | pdftk input.pdf burst output page_%02d.pdf
+exclude specified pages 1 | pdftk input.pdf cat '~5~7' output output.pdf # p5,p7を除外
+extract specified pages 2 | pdftk input.pdf cat 1 4 6 output output.pdf # p1,p4,p6
+extract specified pages 3 | pdftk input.pdf cat 4-6 output output.pdf # p4~p6
+extract specified pages 4 | pdftk input.pdf cat 1 4-6 8 output output.pdf # p1,p4~p6,p8
+reverse page order (end is last) | pdftk input.pdf cat end-1 output output.pdf
+rotate 180 deg | down, south
+rotate 90 deg | right, east
+rotate 90 deg | left, west
+rotate all pages 180 deg | pdftk input.pdf cat 1-enddown output output.pdf
+rotate 3-5 pages 90 deg to right | pdftk input.pdf cat 1-2 3-5right 6-end output output.pdf
+unlock pass | pdftk input.pdf input_pw RPOMPT output output.pdf
+set pass | pdftk input.pdf output output.pdf user_pw PASSWORD
+
 ## bash(ssh)
 鍵を指定してssh | ssh -i /path/to/key <username@domain> -p <port>
 ## bash(codec)
@@ -192,3 +207,7 @@ NLP | Natural Language Processing
 axiom | 公理
 RFI | Request For Information
 NER | 固有表現抽出
+
+## latex
+行送り1/2分の空白を入れる | \vskip.5\baselineskip
+

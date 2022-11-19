@@ -6,3 +6,8 @@
 /.config/zsh/.zcompcache
 /.config/zsh/.zshrc.local
 
+## background
+/.config/pictures/**
+
+## gitkeep
+!.gitkeep
