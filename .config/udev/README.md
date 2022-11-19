@@ -14,6 +14,19 @@
 
 ## 設定
 
+```bash
+sudo apt install -y evtest
+sudo evtest 
+# setting...
+
+sudo cp ~/.config/udev/hwdb.d/90-desktop-keyboard.hwdb /etc/udev/hwdb.d/
+# or
+sudo cp ~/dotfiles/.config/udev/hwdb.d/90-thinkpad-keyboard.hwdb /etc/udev/hwdb.d/
+
+sudo systemd-hwdb update && sudo udevadm trigger
+udevadm info /dev/input/by-path/* | grep KEYBOARD_KEY
+```
+
 `.hwdb`ファイルは`/etc/udev/hwdb.d/` or `/lib/udev/hwdb.d/`に配置する
 
 ```bash
@@ -28,6 +41,8 @@ evdev:atkbd:dmi:bvn*:bvr*:bd*:svn*:pn*:pvr
 ## 特定のキーボードのみにマッチ
 evdev:input:b<bus_id>v<vender_id>p<product_id>*
 # bus_id, vender_id, product_id: cat /proc/bus/input/devices の該当デバイスの I: Bus=<bus_id> Vendor=<vendor_id> Product=<product_id>
+evdev:input:b*v<vender_id>p<product_id>*
+# lsusb ID<vendor_id>:<product_id>
 
 # 変更したいキー
  KEYBOARD_KEY_<value>=<key_code>

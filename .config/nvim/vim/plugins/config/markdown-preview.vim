@@ -1,4 +1,4 @@
-let g:mkdp_filetypes = { "markdown", "telekasten" }
+let g:mkdp_filetypes = [ 'markdown', 'telekasten' ]
 let g:mkdp_preview_options = {
     \ 'mkit': {},
     \ 'katex': {},

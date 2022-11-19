@@ -1,0 +1,6 @@
+evdev:input:b*v05D5p624C*
+ KEYBOARD_KEY_700e6=grave # rightalt to zenkakuhankaku
+ KEYBOARD_KEY_70088=grave # hiragana/katakana to zenkakuhankaku
+ KEYBOARD_KEY_70039=leftctrl # capslock to leftctrl
+ KEYBOARD_KEY_7008a=backspace # henkan to backspace
+ KEYBOARD_KEY_7008b=esc # muhenkan to esc
