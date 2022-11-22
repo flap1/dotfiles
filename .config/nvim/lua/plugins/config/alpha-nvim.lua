@@ -12,7 +12,7 @@ dashboard.section.buttons.val = {
   dashboard.button("SPC f j", "  Find Word  ", ":Telescope live_grep<CR>"),
   dashboard.button("SPC f m", "  Bookmarks  ", ":Telescope marks<CR>"),
   dashboard.button("SPC b", "  Browser Bookmarks  ", ':Telescope bookmarks<CR>'),
-  dashboard.button("SPC t", "  Terminal  ", ':execute v:count1 . "ToggleTerm"<CR>'),
+  dashboard.button("ALT 1", "  Terminal  ", ':1ToggleTermOpen"<CR>'),
   dashboard.button("SPC g", "  Neogit  ", ':Neogit<CR>'),
   dashboard.button("SPC ?", "  Cheatsheet  ", ":Cheatsheet<CR>"),
   dashboard.button("SPC cal", "  Calendar  ", ":Calendar<CR>"),
