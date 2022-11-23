@@ -32,6 +32,7 @@ vim.o.pumheight = 10 -- Determines the maximum number of items to show in the po
 -- folding
 -- vim.o.foldmethod="marker"
 vim.o.foldmethod = "manual" -- 折り畳みは手動で設定
+vim.o.foldenable = true
 vim.o.foldlevel = 1 -- 折り畳みの深さ
 vim.o.foldlevelstart = 99 -- 編集開始時に常に全ての折り畳みを開いておく
 vim.w.foldcolumn = "0:"

@@ -13,9 +13,9 @@ DOT_FILES=(
   ".latexmkrc" \
   # ".config/lazygit" \
   # ".config/peco" 
-  # "tmux/.tmux.conf" \
-  # "tmux/.tmux.conf.local" \
-  # "alacritty/.alacritty.yml"
+  ".config/tmux/.tmux.conf" \
+  # ".config/tmux/.tmux.conf.local" \
+  ".config/alacritty/.alacritty.yml"
 )
 
 __prepare() {
