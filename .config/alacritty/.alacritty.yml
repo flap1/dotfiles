@@ -52,7 +52,7 @@ window:
   # Values for `decorations` (macOS only):
   #     - transparent: Title bar, transparent background and title bar buttons
   #     - buttonless: Title bar, transparent background, but no title bar buttons
-  decorations: full        # ボーダーとタイトルバーを表示する
+  decorations: none        # ボーダーとタイトルバーを表示する
 
   # Startup Mode (changes require restart)
   #
