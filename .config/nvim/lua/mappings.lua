@@ -261,8 +261,8 @@ vim.keymap.set("n", "y<Space>", "yiw", opts)
 vim.keymap.set({ "n", "x" }, "gy", "y`>", opts)
 
 -- yank
-vim.keymap.set({ "n", "x" }, "<LocalLeader>y", '"+y', { noremap = true, silent = true })
-vim.keymap.set({ "n", "x" }, "<LocalLeader>d", '"+d', { noremap = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<LocalLeader>y", '"0y', { noremap = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<LocalLeader>d", '"0d', { noremap = true, silent = true })
 vim.keymap.set("x", "p", '"_xP', opts) -- Visual Modeペースト時にyankしない
 
 -- paste

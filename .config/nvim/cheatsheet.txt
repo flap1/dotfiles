@@ -128,7 +128,8 @@ $HOME の容量確認(check home capacity) | dust -X gdrive -z 10M
 ## bash(ocr)
 install ocr engine(Tesseract) | sudo apt install tesseract-ocr libtesseract-dev
 pngファイルに対してocr | tesseract -l eng <test.png> <test> pdf
-## bash(pdf)
+
+## pdf
 merge pdf | pdfunite *.pdf output.pdf
 merge pdf2 | pdftk input1.pdf input2.pdf cat output output.pdf
 divide pdf | pdftk input.pdf burst output page_%02d.pdf
@@ -184,6 +185,14 @@ restart gnome shell (alias: gnome-restart) | killall -3 gnome-shell
 コンテナ停止 | docker stop <container_name> 
 コンテナ開始 | docker start <container_name> 
 コンテナバックアップ(コンテナ停止後実行) | docker run --rm --volumes-from <container_name> -v $(pwd):/backup boombatower/docker-backup backup
+
+## convert
+svg to pdf | rsvg-convert -f pdf -o <to>.pdf <from>.svg
+svg to png | rsvg-convert -f png -o <to>.png <from>.svg
+pdf to png (result: <to>-1.png) | pdftoppm <from>.pdf <to> -png
+png to pdf | convert <from>.png <to>.pdf
+HEIC to jpg | convert <from>.HEIC <to>.jpg
+convert all files in <dir> from HEIC to jpg | for file in <dir>/*.HEIC; do convert $file ${file/%.HEIC/.jpg}; done
 
 ##################################################
 # research
