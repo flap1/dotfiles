@@ -77,12 +77,12 @@ require("possession").setup({
 
 vim.api.nvim_create_user_command("PossessionSaveCurrent", function()
   local tmp_name = vim.fn.getcwd():gsub(get_dir_pattern(), "__")
-  vim.cmd("PossessionSave!" .. tmp_name)
+  vim.cmd("SSave!" .. tmp_name)
 end, { force = true })
 
 vim.api.nvim_create_user_command("PossessionLoadCurrent", function()
   local tmp_name = vim.fn.getcwd():gsub(get_dir_pattern(), "__")
-  vim.cmd("PossessionLoad" .. tmp_name)
+  vim.cmd("SLoad " .. tmp_name)
 end, { force = true })
 
 -- vim.api.nvim_create_user_command("SaveWindow", function()

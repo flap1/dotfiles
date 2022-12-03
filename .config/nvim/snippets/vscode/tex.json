@@ -132,15 +132,14 @@
             "    % \\captionsetup{labelformat=empty,labelsep=none}",
             "    \\centering",
             "    \\normalsize",
-            "    \\begin{center}",
-            "        \\begin{tabular}{|ccc|}",
-            "            \\hline",
-            "            名称&文字&値\\\\\\",
-            "            \\hline \\hline",
-            "            \\hline",
-            "        \\end{tabular}",
-            "    \\end{center}",
+        "        \\begin{tabular}{|ccc|}",
+        "            \\hline",
+        "            名称&文字&値\\\\\\",
+        "            \\bhline{1pt}",
+        "            \\hline",
+        "        \\end{tabular}",
             "    \\caption{}",
+            "    \\label{tab}",
             "\\end{table}"
         ]
     },
@@ -168,7 +167,7 @@
             "    \\centering",
             "    \\includegraphics[width=14cm]{}",
             "    \\caption{}",
-            "    \\label{}",
+            "    \\label{fig}",
             "\\end{figure}"
         ],
         "description": "図挿入"
