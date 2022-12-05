@@ -21,6 +21,14 @@ Turn an existing repository into a git repository(after init) | git remote add o
 特定のファイルを無視する場合は先頭に/ | /npm-debug.log
 特定のディレクトリを無視する場合は先頭と末尾に/ | /bin/
 
+##################################################
+# go
+##################################################
+## go
+install | wget https://go.dev/dl/go1.19.3.linux-amd64.tar.gz; rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.19.3.linux-amd64.tar.gz; rm go1.19.3.linux-amd64.tar.gz  
+
+## ghq
+install | go install github.com/x-motemen/ghq@latest
 
 ##################################################
 # python
@@ -197,6 +205,8 @@ multiple files to local 複数ファイルをローカルにコピー2 | scp <us
 multiple files to local 複数ファイルをローカルにコピー3 | scp <username@domain:/remote/directory/*.txt\}> </local/directory>
 
 ## wget
+specify file path | wget <uri> -O /path/to/file.ext
+specify dir path | wget <uri> -P /path/to/dir
 download file from google drive  | wget -O <export_name> https://docs.google.com/uc?export=download&id=xxxxxxxxxxxxxxxxxxxxx
 download large file from google drive | wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=xxxxxxxxxxxxxxxxxxxxx' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=xxxxxxxxxxxxxxxx" -O <export_name> && rm -rf /tmp/cookies.txt
 

@@ -135,3 +135,10 @@ CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=$ID" -O $2
 rm -rf /tmp/cookies.txt
 }
+
+## github
+## ex) ghcr <repo-name> --private
+function ghcr() {
+	gh repo create $argv # --public, --private
+	ghq get git@github.com:flap1/$argv[1].git
+}

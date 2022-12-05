@@ -27,6 +27,7 @@ path=(
   $HOME/.local/bin(N-/)
   $HOME/go/bin(N-/)
   $HOME/.go/bin(N-/)
+  /usr/local/go/bin(N-/)
   $HOME/.pyenv/bin(N-/)
   $HOME/.pyenv/shims(N-/)
   $HOME/.nvm/default/bin(N-/)
@@ -55,4 +56,5 @@ export LS_COLORS="rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;
 export NVIMRC=$HOME/.config/nvim
 export NEO4J_HOME=$HOME/.local/share/neo4j
 export NEO4J_CONF=$HOME/.config/neo4j
+export GOBIN=$HOME/.go/bin/ go install
 
