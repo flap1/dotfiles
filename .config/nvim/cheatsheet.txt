@@ -26,6 +26,8 @@ Turn an existing repository into a git repository(after init) | git remote add o
 ##################################################
 ## nvm
 install node | nvm install node
+install node lts | nvm install --lst
+use node lts | nvm use --lst
 get current version | nvm current
 list nvm versions | nvm ls
 change version to stable | nvm use stable
