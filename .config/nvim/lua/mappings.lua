@@ -17,8 +17,7 @@
 local opts = { noremap = true, silent = true }
 local optsexpr = { noremap = true, expr = true, silent = true }
 
--- vim.keymap.set("n", "<Leader><CR>", "<Cmd>luafile %<CR>", opts) -- reload config
--- vim.keymap.set("n", "<Leader><Leader><CR>", "<Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>", opts) -- reload config
+vim.keymap.set("n", "<LocalLeader><CR>", "<Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR>", opts) -- reload config
 
 vim.cmd(
   [[

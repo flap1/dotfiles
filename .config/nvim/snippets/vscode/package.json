@@ -1,5 +1,8 @@
 {
   "name": "my-snippets",
+  "displayname": "my-snippets",
+  "version": "0.0.1",
+  "publisher": "flap1",
   "engines": {
     "vscode": "^1.11.0"
   },
@@ -28,6 +31,18 @@
       {
         "language": "tex",
         "path": "./tex.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./javascriptreact.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./html.json"
+      },
+      {
+        "language": "html",
+        "path": "./html.json"
       }
     ]
   }

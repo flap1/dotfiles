@@ -1,27 +1,29 @@
 require('mason-lspconfig').setup()
 
-local opts = { noremap = true, silent = true }
+local nvim_lsp = require('lspconfig')
+
+local key_opts = { noremap = true, silent = true }
 -- lsp
 -- vim.keymap.set("n", ";", "<Nop>", { noremap = true, silent = true })
 -- vim.keymap.set("n", "[lsp]", "<Nop>", { noremap = true, silent = true })
 -- vim.api.nvim_set_keymap("n", ";", "[lsp]", {})
 
-vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-vim.keymap.set('n', '?', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-vim.keymap.set('n', 'g?', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-vim.keymap.set('n', ';wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-vim.keymap.set('n', ';wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-vim.keymap.set('n', ';wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-vim.keymap.set('n', ';D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-vim.keymap.set('n', ';a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-vim.keymap.set('n', ';e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-vim.keymap.set('n', ';q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
-vim.keymap.set('n', ';f', '<cmd>lua vim.lsp.buf.format({ async = true })<CR>', opts)
+vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', key_opts)
+vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', key_opts)
+vim.keymap.set('n', '?', '<cmd>lua vim.lsp.buf.hover()<CR>', key_opts)
+vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', key_opts)
+vim.keymap.set('n', 'g?', '<cmd>lua vim.lsp.buf.signature_help()<CR>', key_opts)
+vim.keymap.set('n', ';wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', key_opts)
+vim.keymap.set('n', ';wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', key_opts)
+vim.keymap.set('n', ';wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', key_opts)
+vim.keymap.set('n', ';D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', key_opts)
+vim.keymap.set('n', ';a', '<cmd>lua vim.lsp.buf.code_action()<CR>', key_opts)
+vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', key_opts)
+vim.keymap.set('n', ';e', '<cmd>lua vim.diagnostic.open_float()<CR>', key_opts)
+vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', key_opts)
+vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', key_opts)
+vim.keymap.set('n', ';q', '<cmd>lua vim.diagnostic.setloclist()<CR>', key_opts)
+vim.keymap.set('n', ';f', '<cmd>lua vim.lsp.buf.format({ async = true })<CR>', key_opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -32,7 +34,7 @@ end
 
 local lspconfig = require 'lspconfig'
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-local opts = { capabilities = capabilities, on_attach = on_attach }
+local opts = { capabilities = capabilities, on_attach = on_attach, root_dir = nvim_lsp.util.find_git_ancestor }
 
 require('mason-lspconfig').setup_handlers({
   function(server_name)
@@ -59,6 +61,16 @@ require('mason-lspconfig').setup_handlers({
       }
     })
   end,
+
+  -- ["tsserver"] = function()
+  --   lspconfig.tsserver.setup({
+  --     init_options = {
+  --       preferences = {
+  --         -- disableSuggestions = true
+  --       }
+  --     }
+  --   })
+  -- end,
 
   -- rust
   ['rust_analyzer'] = function()

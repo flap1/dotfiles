@@ -108,8 +108,8 @@ cmp.setup({
 
   mapping = {
     ["<C-e>"] = cmp.mapping(cmp.mapping.close()),
-    ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
-    ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
+    -- ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
+    -- ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
     ["<C-n>"] = cmp.mapping(function(fallback) if cmp.visible() then cmp.select_next_item() elseif luasnip.choice_active() then luasnip
             .change_choice(1)
       else fallback() end

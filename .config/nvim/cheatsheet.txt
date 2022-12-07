@@ -22,6 +22,19 @@ Turn an existing repository into a git repository(after init) | git remote add o
 特定のディレクトリを無視する場合は先頭と末尾に/ | /bin/
 
 ##################################################
+# node
+##################################################
+## nvm
+install node | nvm install node
+get current version | nvm current
+list nvm versions | nvm ls
+change version to stable | nvm use stable
+change default version | nvm alias default stable
+## node
+kill port node | npx kill-port <PORT> 
+react create-react-app | npx create-react-app <app-name>
+
+##################################################
 # go
 ##################################################
 ## go
@@ -151,6 +164,7 @@ $HOME の容量確認(check home capacity) | dust -X gdrive -z 10M
 圧縮(.tar.xz) | tar -Jcvf xxxx.tar.xz <dir>
 圧縮(.tar) | tar -cvf xxxx.tar <dir>
 圧縮(.zip) | zip -r xxx.zip <dir>
+kill port | sudo lsof -i:<PORT> <then> sudo kill <PID>
 
 ## ocr
 install ocr engine(Tesseract) | sudo apt install tesseract-ocr libtesseract-dev
