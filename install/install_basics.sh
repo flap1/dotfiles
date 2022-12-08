@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# japanese
+sudo apt install mozc-utils-gui
+
 # terminal
 check_and_install tmux
 # zsh
