@@ -1,7 +1,15 @@
 #!/bin/bash
 
+source ~/.config/zsh/sh/function.zsh
+
 # japanese
 sudo apt install mozc-utils-gui
+
+# clipboard
+sudo apt install xclip wl-clipboard
+
+# pdf viewer
+check_and_install okular
 
 # terminal
 check_and_install tmux
@@ -12,6 +20,7 @@ check_and_install fzf
 check_and_install bat "sudo apt install bat; ln -s /usr/bin/batcat ~/dotfiles/bin/bat"
 check_and_install rg "curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb; sudo apt install ./ripgrep_13.0.0_amd64.deb; sudo apt-mark hold ripgrep; rm ripgrep_13.0.0_amd64.deb"
 check_and_install lsd "cargo install lsd"
+check_and_install fd 'sudo apt install fd-find; ln -s $(which fdfind) ~/dotfiles/bin/fd'
 
 # common
 check_and_install curl

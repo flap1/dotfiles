@@ -23,7 +23,7 @@ vim.cmd(
   [[
   autocmd FileType lua nnoremap <silent> <Leader><CR> <Cmd>luafile %<CR>
   autocmd FileType lua nnoremap <silent> <LocalLeader><CR> <Cmd>luafile %<CR><Cmd>luafile ~/.config/nvim/lua/plugins/init.lua<CR><Cmd>PackerSync<CR>
-]]
+  ]]
 )
 
 -- git, use
