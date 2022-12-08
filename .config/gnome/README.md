@@ -2,7 +2,8 @@
 
 ## Extensions Sync
 
-* local: ~/.config/gnome/extensions-sync.json
+* Install from  <https://extensions.gnome.org/extension/1486/extensions-sync/>
+* open gnome-extension and set "Local" and "~/.config/gnome/extensions-sync.json"
 
 ```bash
 busctl --user call org.gnome.Shell /io/elhan/ExtensionsSync io.elhan.ExtensionsSync save # uploads to server

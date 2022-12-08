@@ -1,7 +1,5 @@
 #!/bin/bash
 
-pip install neovim-remote
-
 DOT_FILES=( 
   ".config/zsh"
   ".config/git/.gitconfig" \
@@ -11,11 +9,13 @@ DOT_FILES=(
   ".config/nvim" \
   ".config/wezterm" \
   ".latexmkrc" \
+  ".config/gnome" \
+  ".config/pictures" \
+  ".config/tmux/.tmux.conf" \
+  ".config/alacritty/.alacritty.yml"
   # ".config/lazygit" \
   # ".config/peco" 
-  ".config/tmux/.tmux.conf" \
   # ".config/tmux/.tmux.conf.local" \
-  ".config/alacritty/.alacritty.yml"
 )
 
 __prepare() {
