@@ -1,30 +1,9 @@
 #!/bin/bash
 
-function check_and_install () {
-    if ! [ -x "$(command -v $1)" ]; then
-        if [ "$#" = "2" ]; then
-            eval $2
-        elif [ "$#" = "1" ]; then
-            sudo apt install $1
-        else
-            echo "arg must be one or two"
-            exit
-        fi
-    fi
-}
-
 check_and_install chrome-gnome-shell
 check_and_install gnome-tweaks
 check_and_install gnome-shell-extensions
 check_and_install dconf-editor
-
-function gdrive_download () {
-ID=`echo $1 | sed -e "s/^https\:\/\/drive\.google\.com\/file\/d\/\(.*\)\/.*$/\1/"`
-CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate \
-	"https://docs.google.com/uc?export=download&id=$ID" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
-wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=$ID" -O $2
-rm -rf /tmp/cookies.txt
-}
 
 if [ ! -e ~/.config/pictures/Monterey2.png ]; then
 	gdrive_download https://drive.google.com/file/d/1YiOxt3_V-ezSxgIVFwn2s5gGCRQfA0hK/view?usp=share_link ~/.config/pictures/Monterey2.png

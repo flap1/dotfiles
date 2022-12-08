@@ -1,10 +1,10 @@
 #!/bin/bash
 
-cd ~
 if [ ! -d ~/alacritty ]; then
-    git clone https://github.com/alacritty/alacritty.git
+    git clone https://github.com/alacritty/alacritty.git ~/
 fi
-cd alacritty
+cd ~/alacritty
+
 # rustup update
 rustup override set stable
 rustup update stable

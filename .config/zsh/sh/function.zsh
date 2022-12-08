@@ -142,3 +142,18 @@ function ghcr() {
 	gh repo create $argv # --public, --private
 	ghq get git@github.com:flap1/$argv[1].git
 }
+
+## setup
+function check_and_install () {
+    if ! [ -x "$(command -v $1)" ]; then
+        if [ "$#" = "2" ]; then
+            eval $2
+        elif [ "$#" = "1" ]; then
+            sudo apt install $1
+        else
+            echo "args must be one or two"
+            exit
+        fi
+    fi
+}
+
