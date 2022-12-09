@@ -190,7 +190,7 @@ fi
 zdd() {
   local dir
   dir="$(
-    find "${1:-.}" -name '*/\.*' -prune -o -type d -print 2> /dev/null \
+    find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2> /dev/null \
       | fzf +m \
           --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
           --preview-window='right:hidden:wrap' \
@@ -383,7 +383,8 @@ e() {
       )"
   ) || return
 
-  "${EDITOR:-vim}" "${files[@]}"
+  # "${EDITOR:-vim}" "${files[@]}"
+  "nvr -l" "${files[@]}"
 }
 
 # fe [FUZZY PATTERN] - Open the selected file with the default editor
@@ -405,7 +406,8 @@ fe() {
           --header='(view:ctrl-v) (sort:ctrl-x)'
     )"
   ) || return
-  "${EDITOR:-vim}" "${files[@]}"
+  # "${EDITOR:-vim}" "${files[@]}"
+  "nvr -l" "${files[@]}"
 }
 
 # fo - Modified version of fe() where you can press

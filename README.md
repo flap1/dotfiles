@@ -5,7 +5,7 @@
 * zsh
   * Zinit
   * Powerlevel10k
-* WezTerm
+* Alacritty + tmux
 * Neovim
 
 ## 特殊な変更
@@ -41,10 +41,6 @@ registerを設定できるように. PR出してない
 - local success = loop.fs_unlink(child_path)
 + local success = true
 ```
-
-### pictures
-
-
 
 ## Other
 
