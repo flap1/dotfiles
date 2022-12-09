@@ -1,3 +1,5 @@
+
+
 # lsみながらcdrする
 function select_cdr(){
     local selected_dir=$(cdr -l | awk '{ print $2 }' | \

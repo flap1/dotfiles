@@ -13,12 +13,15 @@ if ! builtin command -v zinit > /dev/null 2>&1; then
 	fi
 fi
 
+# pyenv
 eval "$(pyenv init -)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=0
 export PYENV_ROOT=$HOME/.pyenv
 
+# deno
 export DENO_INSTALL=$HOME/.deno
 
+# node
 export NVM_DIR=$HOME/.nvm
 MANPATH=$NVM_DIR/default/share/man:$MANPATH
 export NODE_PATH=$NVM_DIR/default/lib/node_modules

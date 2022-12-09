@@ -5,9 +5,6 @@ source ~/.config/zsh/sh/function.zsh
 # japanese
 sudo apt install mozc-utils-gui
 
-# clipboard
-sudo apt install xclip wl-clipboard
-
 # pdf viewer
 check_and_install okular
 
@@ -21,6 +18,7 @@ check_and_install bat "sudo apt install bat; ln -s /usr/bin/batcat ~/dotfiles/bi
 check_and_install rg "curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb; sudo apt install ./ripgrep_13.0.0_amd64.deb; sudo apt-mark hold ripgrep; rm ripgrep_13.0.0_amd64.deb"
 check_and_install lsd "cargo install lsd"
 check_and_install fd 'sudo apt install fd-find; ln -s $(which fdfind) ~/dotfiles/bin/fd'
+check_and_install gawk # for translate-shell
 
 # common
 check_and_install curl
@@ -33,4 +31,7 @@ check_and_install gh "sudo apt install gh; gh auth login"
 
 # cargo
 check_and_install cargo "curl https://sh.rustup.rs -sSf | sh"
+
+# draw.io
+check_and_install drawio "wget https://github.com/jgraph/drawio-desktop/releases/download/v20.3.0/drawio-amd64-20.3.0.deb; sudo apt install ./drawio-amd64-20.3.0.deb; rm drawio-amd64-20.3.0.deb"
 

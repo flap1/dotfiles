@@ -11,7 +11,7 @@ bindkey '^E' peco-cdr
 
 # カレントディレクトリ以下のディレクトリ検索・移動 ctrl+x
 function find_cd() {
-  local selected_dir=$(find . -type d | peco)
+  local selected_dir=$(find . -type d | fzf)
   if [ -n "$selected_dir" ]; then
     BUFFER="cd ${selected_dir}"
     zle accept-line

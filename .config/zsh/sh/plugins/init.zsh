@@ -127,10 +127,10 @@ zinit light romkatv/powerlevel10k
 #--------------------------------#
 # fzf
 #--------------------------------#
-# zinit wait'0b' lucid \
-# 	from"gh-r" as"program" \
-# 	atload"source $ZHOMEDIR/sh/plugins/config/fzf_atload.zsh" \
-# 	for @junegunn/fzf
+zinit wait'0b' lucid \
+	from"gh-r" as"program" \
+	atload"source $ZHOMEDIR/sh/plugins/config/fzf_atload.zsh" \
+	for @junegunn/fzf
 # zinit ice wait'0a' lucid
 # zinit snippet https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
 # zinit ice wait'1a' lucid atload"source $ZHOMEDIR/rc/pluginconfig/fzf_completion.zsh_atload.zsh"
