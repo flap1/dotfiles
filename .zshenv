@@ -2,6 +2,8 @@
 # Environment Variables
 ## =========================================================================
 
+echo "LOADED"
+
 export LC_ALL="${LC_ALL:-en_US.UTF-8}"
 export LANG="${LANG:-en_US.UTF-8}"
 
@@ -33,6 +35,8 @@ path=(
   $HOME/.nvm/default/bin(N-/)
   $HOME/.cargo/bin(N-/)
   $HOME/.deno/bin(N-/)
+  $HOME/.dvm/bin(N-/)
+  $HOME/.jenv/bin(N-/)
   $HOME/.local/share/nvim/mason/bin(N-/)
   $path
 )

@@ -145,6 +145,7 @@ function ghcr() {
 
 ## setup
 function check_and_install () {
+<<<<<<< HEAD
     if ! [ -x "$(command -v $1)" ]; then
         if [ "$#" = "2" ]; then
             eval $2
@@ -155,6 +156,29 @@ function check_and_install () {
 						return
         fi
     fi
+||||||| parent of e3344e9 (update dotfiles)
+    if ! [ -x "$(command -v $1)" ]; then
+        if [ "$#" = "2" ]; then
+            eval $2
+        elif [ "$#" = "1" ]; then
+            sudo apt install $1
+        else
+            echo "args must be one or two"
+            exit
+        fi
+    fi
+=======
+if ! [ -x "$(command -v $1)" ]; then
+		if [ "$#" = "2" ]; then
+				eval $2
+		elif [ "$#" = "1" ]; then
+				sudo apt install $1
+		else
+				echo "args must be one or two"
+				exit
+		fi
+fi
+>>>>>>> e3344e9 (update dotfiles)
 }
 
 ## convert

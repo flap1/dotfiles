@@ -108,25 +108,38 @@ require("telekasten").setup({
 
 local opts = { noremap = true, silent = true }
 
-vim.keymap.set("n", "<Leader>zf", ":lua require('telekasten').find_notes()<CR>", opts)
-vim.keymap.set("n", "<Leader>zd", ":lua require('telekasten').find_daily_notes()<CR>", opts)
-vim.keymap.set("n", "<Leader>zj", ":lua require('telekasten').search_notes()<CR>", opts)
-vim.keymap.set("n", "<Leader>zz", ":lua require('telekasten').follow_link()<CR>", opts)
-vim.keymap.set("n", "<Leader>zT", ":lua require('telekasten').goto_today()<CR>", opts)
-vim.keymap.set("n", "<Leader>zW", ":lua require('telekasten').goto_thisweek()<CR>", opts)
-vim.keymap.set("n", "<Leader>zw", ":lua require('telekasten').find_weekly_notes()<CR>", opts)
-vim.keymap.set("n", "<Leader>zn", ":lua require('telekasten').new_note()<CR>", opts)
-vim.keymap.set("n", "<Leader>zN", ":lua require('telekasten').new_templated_note()<CR>", opts)
-vim.keymap.set("n", "<Leader>zy", ":lua require('telekasten').yank_notelink()<CR>", opts)
-vim.keymap.set("n", "<Leader>zc", ":lua require('telekasten').show_calendar()<CR>", opts)
-vim.keymap.set("n", "<Leader>zC", ":CalendarT<CR>", opts)
-vim.keymap.set("n", "<Leader>zi", ":lua require('telekasten').paste_img_and_link()<CR>", opts)
-vim.keymap.set("n", "<Leader>zt", ":lua require('telekasten').toggle_todo()<CR>", opts)
-vim.keymap.set("n", "<Leader>zb", ":lua require('telekasten').show_backlinks()<CR>", opts)
-vim.keymap.set("n", "<Leader>zF", ":lua require('telekasten').find_friends()<CR>", opts)
-vim.keymap.set("n", "<Leader>zI", ":lua require('telekasten').insert_img_link({ i=true })<CR>", opts)
-vim.keymap.set("n", "<Leader>zp", ":lua require('telekasten').preview_img()<CR>", opts)
-vim.keymap.set("n", "<Leader>zm", ":lua require('telekasten').browse_media()<CR>", opts)
-vim.keymap.set("n", "<Leader>za", ":lua require('telekasten').show_tags()<CR>", opts)
-vim.keymap.set("n", "<Leader>z#", ":lua require('telekasten').show_tags()<CR>", opts)
-vim.keymap.set("n", "<Leader>zr", ":lua require('telekasten').rename_note()<CR>", opts)
+local function vim_keymap_set_list(keymaps)
+  for key, cmd in pairs(keymaps) do
+    vim.keymap.set("n", "<Leader>z" .. key, cmd, opts)
+    vim.keymap.set("n", "<M-z>" .. key, cmd, opts)
+    vim.keymap.set("t", "<M-z>" .. key, "<C-\\><C-n>" .. cmd, opts)
+    vim.keymap.set("i", "<M-z>" .. key, "<Esc>" .. cmd, opts)
+  end
+end
+
+local keymaps = {
+ ["f"] = "<Cmd>lua require('telekasten').find_notes()<CR>",
+ ["d"] = "<Cmd>lua require('telekasten').find_daily_notes()<CR>",
+ ["j"] = "<Cmd>lua require('telekasten').search_notes()<CR>",
+ ["z"] = "<Cmd>lua require('telekasten').follow_link()<CR>",
+ ["T"] = "<Cmd>lua require('telekasten').goto_today()<CR>",
+ ["W"] = "<Cmd>lua require('telekasten').goto_thisweek()<CR>",
+ ["w"] = "<Cmd>lua require('telekasten').find_weekly_notes()<CR>",
+ ["n"] = "<Cmd>lua require('telekasten').new_note()<CR>",
+ ["N"] = "<Cmd>lua require('telekasten').new_templated_note()<CR>",
+ ["y"] = "<Cmd>lua require('telekasten').yank_notelink()<CR>",
+ ["c"] = "<Cmd>lua require('telekasten').show_calendar()<CR>",
+ ["C"] = "<Cmd>CalendarT<CR>",
+ ["i"] = "<Cmd>lua require('telekasten').paste_img_and_link()<CR>",
+ ["t"] = "<Cmd>lua require('telekasten').toggle_todo()<CR>",
+ ["b"] = "<Cmd>lua require('telekasten').show_backlinks()<CR>",
+ ["F"] = "<Cmd>lua require('telekasten').find_friends()<CR>",
+ ["I"] = "<Cmd>lua require('telekasten').insert_img_link({ i=true })<CR>",
+ ["p"] = "<Cmd>lua require('telekasten').preview_img()<CR>",
+ ["m"] = "<Cmd>lua require('telekasten').browse_media()<CR>",
+ ["a"] = "<Cmd>lua require('telekasten').show_tags()<CR>",
+ ["#"] = "<Cmd>lua require('telekasten').show_tags()<CR>",
+ ["r"] = "<Cmd>lua require('telekasten').rename_note()<CR>",
+}
+vim_keymap_set_list(keymaps)
+

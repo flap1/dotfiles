@@ -27,7 +27,7 @@ while test $# -gt 0; do
   esac
 done
 
-# nvm
+# nvm: node version management
 mkdir -p ~/.nvm
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
 nvm install --lts

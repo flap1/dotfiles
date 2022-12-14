@@ -22,12 +22,12 @@ Turn an existing repository into a git repository(after init) | git remote add o
 特定のディレクトリを無視する場合は先頭と末尾に/ | /bin/
 
 ##################################################
-# node
+# javascript
 ##################################################
 ## nvm
 install node | nvm install node
-install node lts | nvm install --lst
-use node lts | nvm use --lst
+install node lts | nvm install --lts
+use node lts | nvm use --lts
 get current version | nvm current
 list nvm versions | nvm ls
 change version to stable | nvm use stable
@@ -35,6 +35,16 @@ change default version | nvm alias default stable
 ## node
 kill port node | npx kill-port <PORT> 
 react create-react-app | npx create-react-app <app-name>
+## npm
+update | npm update -g npm
+
+##################################################
+# java
+##################################################
+## jenv
+get version | jenv versions
+set local version | jenv local <version>
+set global version | jenv global <version>
 
 ##################################################
 # go
@@ -168,6 +178,9 @@ $HOME の容量確認(check home capacity) | dust -X gdrive -z 10M
 圧縮(.zip) | zip -r xxx.zip <dir>
 kill port | sudo lsof -i:<PORT> <then> sudo kill <PID>
 
+## fd
+find file except gdrive | fd -E ~/gdrive <target> <from>
+
 ## ocr
 install ocr engine(Tesseract) | sudo apt install tesseract-ocr libtesseract-dev
 pngファイルに対してocr | tesseract -l eng <test.png> <test> pdf
@@ -243,6 +256,8 @@ pdf to png (result: <to>-1.png) | pdftoppm <from>.pdf <to> -png
 png to pdf | convert <from>.png <to>.pdf
 HEIC to jpg | convert <from>.HEIC <to>.jpg
 convert all files in <dir> from HEIC to jpg | for file in <dir>/*.HEIC; do convert $file ${file/%.HEIC/.jpg}; done
+change img size (abs) | convert -geometry 640x480 <from>.jpg <to>.jpg
+change img size (rel) | convert -geometry "60%" <from>.jpg <to>.png
 
 ##################################################
 # research

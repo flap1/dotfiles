@@ -32,6 +32,9 @@ vim.cmd(
 -- vim.api.nvim_set_keymap("n", "G", "[git]", {})
 -- vim.keymap.set("n", "GG", "G", { noremap = true, silent = true })
 
+-- open browser
+vim.keymap.set("n", "gx", "<Cmd>silent! !open <cWORD><CR>", opts)
+
 -- FuzzyFinder
 vim.keymap.set({ "n", "v" }, "<Leader>f", "<Nop>", opts)
 vim.keymap.set({ "n", "v" }, "[ff]", "<Nop>", opts)

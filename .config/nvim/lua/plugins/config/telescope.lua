@@ -150,7 +150,7 @@ require("telescope").setup {
 }
 local opts = { noremap = true, silent = true }
 
-function vim_keymap_set_list(keymaps)
+local function vim_keymap_set_list(keymaps)
   for key, cmd in pairs(keymaps) do
     vim.keymap.set("n", key, cmd, opts)
     vim.keymap.set("t", key, "<C-\\><C-n>" .. cmd, opts)
@@ -159,7 +159,7 @@ function vim_keymap_set_list(keymaps)
 end
 
 -- find ------------------------------------------
-keymaps = {
+local keymaps = {
  ["<M-p>"] = "<Cmd>lua require'telescope'.extensions.project.project{}<CR>",
  ["<M-b>"] = "<Cmd>Telescope bookmarks<CR>",
  ["<M-f>x"] = "<Cmd>Telescope find_files<CR>", -- ignore(x) dotfiles

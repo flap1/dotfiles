@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ~/.config/zsh/sh/function.zsh
+
 check_and_install chrome-gnome-shell
 check_and_install gnome-tweaks
 check_and_install gnome-shell-extensions
