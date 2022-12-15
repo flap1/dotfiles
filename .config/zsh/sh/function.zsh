@@ -169,7 +169,7 @@ function convert_add_padding () {
 		return
 	fi
 
-	convert $1 -background transparent -gravity center -scale 96x96 -extent $((96*$2))x$((96*$2)) $2_$1.png
+	convert $1 -background transparent -gravity center -scale 96x96 -extent $((96*$2))x$((96*$2)) $2_$1
 }
 
 ## fzf-extra
