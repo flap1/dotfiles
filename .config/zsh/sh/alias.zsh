@@ -61,7 +61,7 @@ alias gl='git pull'
 alias gpo='git push -u origin HEAD'
 alias glom='git pull origin main'
 alias gloms='git pull origin main && git submodule update --init --recursive'
-alias gll='git log --oneline'
+alias gll='git log --oneline --graph --decorate -n 10'
 
 # docker
 alias di="docker images"
