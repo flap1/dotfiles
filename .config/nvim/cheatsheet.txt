@@ -248,6 +248,20 @@ restart gnome shell (alias: gnome-restart) | killall -3 gnome-shell
 コンテナ停止 | docker stop <container_name> 
 コンテナ開始 | docker start <container_name> 
 コンテナバックアップ(コンテナ停止後実行) | docker run --rm --volumes-from <container_name> -v $(pwd):/backup boombatower/docker-backup backup
+リンク切れボリューム削除 | docker volume ls -qf dangling=true | xargs -r docker volume rm
+remove containers | rm -> stop -> kill -> prune
+rm | docker rm <container-id>
+stop | docker stop <container-id>
+kill | docker kill <container-id>
+prune | docker container prune -f
+stop all containers | docker stop $(docker ps -q)
+remove all containers | docker rm $(docker ps -aq)
+remove all images | docker rmi $(docker images -q)
+list containers | docker ps -aq
+list volumes | docker volume ls
+delete volume | docker volume rm <volume-name>
+delete all containers | docker system prune -f ; docker volume prune -f ;docker rm -f -v $(docker ps -q -a)
+stop and remove all containers | docker ps -aq | xargs docker stop | xargs docker rm
 
 ## convert
 svg to pdf | rsvg-convert -f pdf -o <to>.pdf <from>.svg
