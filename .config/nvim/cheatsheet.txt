@@ -178,6 +178,9 @@ $HOME の容量確認(check home capacity) | dust -X gdrive -z 10M
 圧縮(.zip) | zip -r xxx.zip <dir>
 kill port | sudo lsof -i:<PORT> <then> sudo kill <PID>
 
+## random
+乱数生成 | cat /dev/urandom | base64 | fold -w 32 | head -n 1
+
 ## fd
 find file except gdrive | fd -E ~/gdrive <target> <from>
 
