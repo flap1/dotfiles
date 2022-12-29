@@ -13,7 +13,7 @@ exec 1>&2
 
 readonly REMOTE_ORIGIN_URL=$(git config --local remote.origin.url)
 
-readonly GIT_DOMAIN=".com"
+readonly GIT_DOMAIN="git"
 readonly GIT_USER_NAME="flap1"
 readonly GIT_USER_EMAIL="sho1seto@gmail.com"
 
@@ -27,14 +27,14 @@ if [[ ${GIT_USER_NAME} = ${LOCAL_GIT_USER_NAME} ]] \
 fi
 
 # Change the Author to company information
-if [[ ${REMOTE_ORIGIN_URL} = *${GIT_DOMAIN}* ]] ; then
-    git config --local user.name "${GIT_USER_NAME}"
-    git config --local user.email "${GIT_USER_EMAIL}"
-    git reset HEAD . # Because you can't change the Author of staged files
-    echo "[WARN] Configure the Author (name, email) and unstage files."
-    echo "[WARN] Please run git-commands again."
-    exit 1
-fi
+# if [[ ${REMOTE_ORIGIN_URL} = *${GIT_DOMAIN}* ]] ; then
+git config --local user.name "${GIT_USER_NAME}"
+git config --local user.email "${GIT_USER_EMAIL}"
+git reset HEAD . # Because you can't change the Author of staged files
+echo "[WARN] Configure the Author (name, email) and unstage files."
+echo "[WARN] Please run git-commands again."
+exit 1
+# fi
 
 # Warn if there are unresolved conflict files
 for FILE in `git diff-index --name-status $against | grep -E '\.(swift|pbxproj|m|h|xib|storyboard)$' | cut -c3-`; do
