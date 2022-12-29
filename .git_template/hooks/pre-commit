@@ -1,0 +1,51 @@
+#!/bin/bash
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+    against=HEAD
+else
+    # Initial commit: diff against an empty tree object
+    against=$(git hash-object -t tree /dev/null)
+fi
+
+# Redirect output to stderr.
+exec 1>&2
+
+readonly REMOTE_ORIGIN_URL=$(git config --local remote.origin.url)
+
+readonly GIT_DOMAIN=".com"
+readonly GIT_USER_NAME="flap1"
+readonly GIT_USER_EMAIL="sho1seto@gmail.com"
+
+readonly LOCAL_GIT_USER_NAME=$(git config --local user.name)
+readonly LOCAL_GIT_USER_EMAIL=$(git config --local user.email)
+
+# Skip if the Author has been changed
+if [[ ${GIT_USER_NAME} = ${LOCAL_GIT_USER_NAME} ]] \
+    && [[ ${GIT_USER_EMAIL} = ${GIT_USER_EMAIL} ]] ; then
+    exit 0
+fi
+
+# Change the Author to company information
+if [[ ${REMOTE_ORIGIN_URL} = *${GIT_DOMAIN}* ]] ; then
+    git config --local user.name "${GIT_USER_NAME}"
+    git config --local user.email "${GIT_USER_EMAIL}"
+    git reset HEAD . # Because you can't change the Author of staged files
+    echo "[WARN] Configure the Author (name, email) and unstage files."
+    echo "[WARN] Please run git-commands again."
+    exit 1
+fi
+
+# Warn if there are unresolved conflict files
+for FILE in `git diff-index --name-status $against | grep -E '\.(swift|pbxproj|m|h|xib|storyboard)$' | cut -c3-`; do
+    if [ -e $FILE ]; then
+        # Skip deleted files
+        continue
+    fi
+    grep_result=`grep -E '(<<<<<<<|>>>>>>>)' $FILE | grep -v '^$'`
+    if [ -n "${grep_result}" ]; then
+        echo $'\e[1;31m'$FILE$'\e[m' ' <- There are conflicting unresolved files'
+        echo $grep_result
+        exit 1
+    fi
+done

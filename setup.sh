@@ -12,7 +12,8 @@ DOT_FILES=(
   ".config/gnome" \
   ".config/pictures" \
   ".config/tmux/.tmux.conf" \
-  ".config/alacritty/.alacritty.yml"
+  ".config/alacritty/.alacritty.yml",
+  ".git_template"
   # ".config/lazygit" \
   # ".config/peco" 
   # ".config/tmux/.tmux.conf.local" \
