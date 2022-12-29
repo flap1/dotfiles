@@ -12,6 +12,7 @@
 [core]
     pager = delta
     editor = nvim
+    hooksPath = ~/.git_template/hooks
 
 [interactive]
     diffFilter = delta --color-only
