@@ -17,6 +17,7 @@ check_and_install fzf
 check_and_install bat "sudo apt install bat; ln -s /usr/bin/batcat ~/dotfiles/bin/bat"
 check_and_install rg "curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb; sudo apt install ./ripgrep_13.0.0_amd64.deb; sudo apt-mark hold ripgrep; rm ripgrep_13.0.0_amd64.deb"
 check_and_install lsd "cargo install lsd"
+check_and_install dust "cargo install du-dust"
 check_and_install fd 'sudo apt install fd-find; ln -s $(which fdfind) ~/dotfiles/bin/fd'
 check_and_install gawk # for translate-shell
 
