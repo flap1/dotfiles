@@ -24,6 +24,7 @@ typeset -xT SUDO_PATH sudo_path # -x: export SUDO_PATHも一緒に行う, -T: SU
 
 path=(
   $HOME/.local/share/zinit/polaris/bin(N-/)
+  $HOME/.local/bin(N-/)
   $HOME/.bin(N-/)
   $HOME/bin(N-/)
   $HOME/.local/bin(N-/)
