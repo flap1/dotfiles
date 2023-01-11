@@ -58,6 +58,9 @@ install | go install github.com/x-motemen/ghq@latest
 ##################################################
 # python
 ##################################################
+## poetry
+export requirements | poetry export -f requirements.txt --output requirements.txt --without-hashes
+
 ## pip
 install numpy | pip install numpy
 install pytorch | pip install torch

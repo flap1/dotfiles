@@ -319,6 +319,7 @@ return require("packer").startup({ function(use)
   ---- Python
   -- use { "untitled-ai/jupyter_ascending.vim" }
   -- use { "glacambre/firenvim", run = function() vim.fn["firenvim#install"](0) end }
+  use { 'kkoomen/vim-doge', run = ':call doge#install()', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-doge.vim") end }
   use { "ahmedkhalf/jupyter-nvim", run = ":UpdateRemotePlugins", config = function() require("jupyter-nvim").setup { } end }
   use { 'dccsillag/magma-nvim', run = ':UpdateRemotePlugins', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/magma-nvim.vim") end }
 
