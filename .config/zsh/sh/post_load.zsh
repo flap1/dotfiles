@@ -20,6 +20,9 @@ fi
 export PYENV_VIRTUALENV_DISABLE_PROMPT=0
 export PYENV_ROOT=$HOME/.pyenv
 
+# poetry
+export PATH=${POETRY_HOME:-$HOME/.local/share/poetry}/bin:$PATH
+
 # jenv
 if [ -e "~/.jenv" ]; then
 	eval "$(jenv init -)"

@@ -72,6 +72,20 @@ update pip | pip install -U pip
 update pip package | pip install -U <package>
 output to requirements.txt | pip freeze > requirements.txt
 
+## mypy
+use mypy | poetry run mypy --warn-incomplete-stub <dir>
+
+## poetry
+new project | poetry new <project-name>
+new project in existing repo | poetry init
+setup virtualenv | poetry install
+setup virtualenv without dev | poetry install --no-dev
+check update packages | poetry update --dry-run
+update packages | poetry update
+exec in virtualenv | poetry run python <python-file>
+exec in virtualenv | poetry shell && python <python-file>
+pytest in virtualenv | poetry run pytest
+
 ## requirements.txt
 comment | #
 specify version | numpy ==/!=/>/>=/<=/< x.x.x
@@ -268,6 +282,13 @@ list volumes | docker volume ls
 delete volume | docker volume rm <volume-name>
 delete all containers | docker system prune -f ; docker volume prune -f ;docker rm -f -v $(docker ps -q -a)
 stop and remove all containers | docker ps -aq | xargs docker stop | xargs docker rm
+
+## docker-compose
+down and remove volumes and netrowks | docker-compose down -v 
+down | docker-compose down 
+up | docker-compose up -d
+exec | docker-compose exec <container-name> bash
+exec some command | docker-compose exec <container-name> <some-command>
 
 ## convert
 svg to pdf | rsvg-convert -f pdf -o <to>.pdf <from>.svg

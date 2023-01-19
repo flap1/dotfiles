@@ -37,3 +37,6 @@ check_and_install cargo "curl https://sh.rustup.rs -sSf | sh"
 # draw.io
 check_and_install drawio "wget https://github.com/jgraph/drawio-desktop/releases/download/v20.3.0/drawio-amd64-20.3.0.deb; sudo apt install ./drawio-amd64-20.3.0.deb; rm drawio-amd64-20.3.0.deb"
 
+# python poetry
+curl -sSL https://install.python-poetry.org | python3 -
+
