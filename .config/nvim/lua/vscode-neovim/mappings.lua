@@ -27,7 +27,7 @@ local function manageEditorHeight(...)
   end
 end
 
-local function manageEditorWidth(...)
+function manageEditorWidth(...)
   local arg = {...}
   local count, to = arg[1], arg[2]
   for i = 1, count and count or 1 do

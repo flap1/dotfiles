@@ -39,7 +39,7 @@ require('bufferline').setup {
     end,
     groups = {
       items = {
-        require('bufferline.groups').builtin.pinned:with({ icon = "" })
+        require('bufferline.groups').builtin.pinned:with({ icon = "" })
       }
     },
     -- NOTE: this will be called a lot so don't do any heavy processing here

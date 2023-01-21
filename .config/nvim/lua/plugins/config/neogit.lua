@@ -11,5 +11,6 @@ neogit.setup {
   },
 }
 
-vim.keymap.set("n", "<Leader>g", "<Cmd>Neogit<CR>", { noremap = true, silent = true })
+-- vim.keymap.set("n", "<Leader>g", "<Cmd>Neogit<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<M-g>", "<Cmd>Neogit<CR>", { noremap = true, silent = true })
 

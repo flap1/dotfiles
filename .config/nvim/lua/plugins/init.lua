@@ -108,7 +108,11 @@ return require("packer").startup({ function(use)
   use { "mfussenegger/nvim-treehopper", after = { "nvim-treesitter" }, config = function() require("plugins/config/nvim-treehopper") end }
   use { "David-Kunz/treesitter-unit", after = { "nvim-treesitter" }, config = function() require("plugins/config/treesitter-unit") end }
   use { "nvim-treesitter/nvim-treesitter-textobjects", after = { "nvim-treesitter" } }
+	use { "mrjones2014/nvim-ts-rainbow", event = "VimEnter" }
+  use { "nvim-treesitter/playground", after = { "nvim-treesitter" } }
   use { "mizlan/iswap.nvim", after = { "nvim-treesitter" }, config = function() require("plugins/config/iswap") end }
+	use { "haringsrob/nvim_context_vt", event = "VimEnter" }
+	use { "m-demare/hlargs.nvim", event = "VimEnter", config =  function() require("hlargs").setup() end }
 
   -- Appearance ----------------------------------
   ---- Statusline
@@ -199,8 +203,8 @@ return require("packer").startup({ function(use)
 
   ---- Quickfix -- TODO:
   use { "kevinhwang91/nvim-bqf", event = "VimEnter", ft = 'qf'}
-  -- use { "gabrielpoca/replacer.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/replacer") end, }
-  -- use { "stevearc/qf_helper.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/qf_helper") end, }
+  use { "gabrielpoca/replacer.nvim", event = "VimEnter", config = function() require("plugins/config/replacer") end, }
+  use { "stevearc/qf_helper.nvim", event = "VimEnter", config = function() require("plugins/config/qf_helper") end, }
 
   ---- Session
   use { "jedrzejboczar/possession.nvim", requires = { { "nvim-telescope/telescope.nvim", opt = true } }, after = { "telescope.nvim" }, config = function() require("plugins/config/possession") end }
@@ -319,7 +323,8 @@ return require("packer").startup({ function(use)
   ---- Python
   -- use { "untitled-ai/jupyter_ascending.vim" }
   -- use { "glacambre/firenvim", run = function() vim.fn["firenvim#install"](0) end }
-  use { 'kkoomen/vim-doge', run = ':call doge#install()', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-doge.vim") end }
+  -- use { 'kkoomen/vim-doge', run = ':call doge#install()', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-doge.vim") end }
+  use { 'pixelneo/vim-python-docstring', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-python-docstring.vim") end }
   use { "ahmedkhalf/jupyter-nvim", run = ":UpdateRemotePlugins", config = function() require("jupyter-nvim").setup { } end }
   use { 'dccsillag/magma-nvim', run = ':UpdateRemotePlugins', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/magma-nvim.vim") end }
 

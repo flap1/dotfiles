@@ -26,6 +26,8 @@ g.loaded_pythonx_provider = 0
 g.loaded_ruby_provider = 0
 -- g.loaded_remote_plugins = os.getenv("HOME") .. "/.local/share/nvim/rplugin.vim"
 
+g.markdown_fenced_languages = {'bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'php', 'html', 'css', 'rust', 'py=python'}
+
 -- Improve plugin performance
 g.load_black = 1
 

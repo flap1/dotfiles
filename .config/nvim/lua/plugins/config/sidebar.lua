@@ -18,4 +18,4 @@ require("sidebar-nvim").setup({
   section_separator = "-----",
 })
 
-vim.keymap.set("n", "<C-s>", "<Cmd>SidebarNvimToggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<M-s>", "<Cmd>SidebarNvimToggle<CR>", { noremap = true, silent = true })

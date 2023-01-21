@@ -54,3 +54,4 @@ source "$ZSHDIR/post_load.zsh"
 # -------------------------------------------------------------------------
 source-safe "$ZHOMEDIR/.zshrc.local"
 
+GITSTATUS_LOG_LEVEL=DEBUG

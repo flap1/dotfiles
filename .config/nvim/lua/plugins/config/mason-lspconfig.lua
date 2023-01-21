@@ -1,4 +1,6 @@
-require('mason-lspconfig').setup()
+require('mason-lspconfig').setup {
+  ensure_installed = { "sumneko_lua", "rust_analyzer", "remark_ls" },
+}
 
 local nvim_lsp = require('lspconfig')
 
@@ -42,11 +44,13 @@ require('mason-lspconfig').setup_handlers({
   end,
 
   -- markdown
-  -- ['remark_ls'] = function()
-  --   lspconfig.remark_ls.setup({
-  --     filetypes = { "markdown", "telekasten" }
-  --   })
-  -- end,
+  ['remark_ls'] = function()
+    lspconfig.remark_ls.setup {
+      root_dir = nvim_lsp.util.root_pattern(".remarkrc.yml", ".remarkrc.js"),
+      filetypes = { "markdown", "telekasten" }
+    }
+  end,
+
   ["pylsp"] = function()
     lspconfig.pylsp.setup({
       settings = {
