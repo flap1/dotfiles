@@ -30,20 +30,20 @@ vim.api.nvim_create_user_command("EditPluginConfigVim", function()
   local plugin_name = string.match(vim.fn.expand("<cWORD>"), "['\"].*/(.*)['\"]")
   vim.cmd(
     "edit "
-      .. vim.fn.resolve(vim.fn.expand(vim.fn.stdpath("config") .. "/vim/plugins/config/"))
-      .. "/"
-      .. vim.fn.fnamemodify(plugin_name, ":r")
-      .. ".vim"
+    .. vim.fn.resolve(vim.fn.expand(vim.fn.stdpath("config") .. "/vim/plugins/config/"))
+    .. "/"
+    .. vim.fn.fnamemodify(plugin_name, ":r")
+    .. ".vim"
   )
 end, { force = true })
 vim.api.nvim_create_user_command("EditPluginConfigLua", function()
   local plugin_name = string.match(vim.fn.expand("<cWORD>"), "['\"].*/(.*)['\"]")
   vim.cmd(
     "edit "
-      .. vim.fn.resolve(vim.fn.expand(vim.fn.stdpath("config") .. "/lua/plugins/config/"))
-      .. "/"
-      .. vim.fn.fnamemodify(plugin_name, ":r")
-      .. ".lua"
+    .. vim.fn.resolve(vim.fn.expand(vim.fn.stdpath("config") .. "/lua/plugins/config/"))
+    .. "/"
+    .. vim.fn.fnamemodify(plugin_name, ":r")
+    .. ".lua"
   )
 end, { force = true })
 
@@ -63,6 +63,7 @@ vim.api.nvim_create_user_command("TabInfo", function()
     end
     return winid2bufnr_dict
   end
+
   print("====== Tab Page Info ======")
   local current_tnr = vim.fn.tabpagenr()
   local winid2bufnr_dict = create_winid2bufnr_dict()
@@ -81,3 +82,17 @@ vim.api.nvim_create_user_command("TabInfo", function()
   end
 end, { force = true, bar = true })
 
+vim.api.nvim_create_user_command("ToggleQF", function()
+  local qf_exists = false
+  for _, win in pairs(vim.fn.getwininfo()) do
+    if win["quickfix"] == 1 then
+      qf_exists = true
+    end
+  end
+  if qf_exists == true then
+    vim.cmd "cclose"
+    return
+  else
+    vim.cmd "copen"
+  end
+end, { force = true })

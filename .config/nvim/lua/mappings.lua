@@ -322,7 +322,11 @@ vim.keymap.set("x", "?", "<ESC>?\\%V", { noremap = true, silent = false })
 vim.keymap.set("n", "/", "/\\v", opts) -- always use regex
 vim.keymap.set("n", "<LocalLeader>s", ":%s/\\<<C-r><C-w>\\>/", { noremap = true, silent = false })
 vim.keymap.set("x", "<LocalLeader>s", ":s/\\%V", { noremap = true, silent = false })
-vim.keymap.set("n", ";s", ":%s/\\v", { noremap = true, silent = false })
+vim.keymap.set("n", ";s", function() return vim.o.buftype == "quickfix" and ":QfReplacer<CR>:%s/\\v" or ":%s/\\v" end,
+  { noremap = true, silent = false, expr = true })
+
+-- Quickfix
+vim.keymap.set("n", ";q", "<Cmd>ToggleQF<CR>", { noremap = true, silent = false })
 
 -- Change encoding
 vim.keymap.set("n", "<LocalLeader>eu", "<Cmd>e ++enc=utf-8<CR>", opts)
