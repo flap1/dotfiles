@@ -50,3 +50,8 @@ nvm() {
 # deno
 export DENO_INSTALL=$HOME/.deno
 
+# gh
+if [ -x "$(command -v gh)" ]; then
+eval "$(gh completion -s zsh)"
+fi
+
