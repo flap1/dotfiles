@@ -101,6 +101,7 @@ return require("packer").startup({ function(use)
   use { "nvim-telescope/telescope-hop.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("hop") end }
   use { "nvim-telescope/telescope-project.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("project") end }
   use { "dhruvmanila/telescope-bookmarks.nvim", tag = "*", after = 'telescope.nvim', config = function() require("telescope").load_extension("bookmarks") end }
+  use { "cljoly/telescope-repo.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("repo") end }
 
   -- Treesitter ----------------------------------
   use { "nvim-treesitter/nvim-treesitter", after = colorscheme, event = "VimEnter", run = ":TSUpdate", config = function() require("plugins/config/nvim-treesitter") end }
@@ -130,6 +131,9 @@ return require("packer").startup({ function(use)
   if not vim.g.vscode then
     use { "akinsho/bufferline.nvim", after = "colorscheme-persist.nvim", requires = 'kyazdani42/nvim-web-devicons', config = function() require("plugins/config/bufferline") end }
   end
+
+  ---- Project
+	use { "ahmedkhalf/project.nvim", event = "BufWinEnter", config = function() require("plugins/config/project") end }
 
   ---- Syntax
   use { "norcalli/nvim-colorizer.lua", event = "VimEnter", config = function() require("colorizer").setup() end } -- A high-performance color highlighter
@@ -283,7 +287,7 @@ return require("packer").startup({ function(use)
   use { "TimUntersberger/neogit", commit = "691cf89", config = function() require("plugins/config/neogit") end }
   use { "akinsho/git-conflict.nvim", event = "VimEnter",  tag = "*", config = function() require("git-conflict").setup() end }
   -- use { "lewis6991/gitsigns.nvim", requires = { "nvim-lua/plenary.nvim" }, event = "VimEnter", config = function() require("rc/pluginconfig/gitsigns") end }
-  -- use { "sindrets/diffview.nvim", event = "VimEnter", config = function() require("rc/pluginconfig/diffview") end }
+  use { "sindrets/diffview.nvim", event = "VimEnter", config = function() require("plugins/config/diffview") end }
   -- use { "rhysd/committia.vim" }
   -- use { "hotwatermorning/auto-git-diff", ft = { "gitrebase" } }
   -- use { "pwntester/octo.nvim", cmd = { "Octo" } } -- GitHub

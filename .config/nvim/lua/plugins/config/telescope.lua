@@ -146,6 +146,15 @@ require("telescope").setup {
       -- Provide debug messages
       debug = false,
     },
+    repo = {
+      list = {
+        search_dirs = {
+          "~/ghq",
+          "~/dotfiles",
+          "~/dotfiles.local",
+        },
+      },
+    },
   },
 }
 local opts = { noremap = true, silent = true }
@@ -160,30 +169,31 @@ end
 
 -- find ------------------------------------------
 local keymaps = {
- ["<M-p>"] = "<Cmd>lua require'telescope'.extensions.project.project{}<CR>",
- ["<M-b>"] = "<Cmd>Telescope bookmarks<CR>",
- ["<M-f>x"] = "<Cmd>Telescope find_files<CR>", -- ignore(x) dotfiles
- ["<M-f>e"] = "<Cmd>Telescope frecency<CR>", -- telescope-frecency
- ["<M-f>u"] = "<Cmd>Telescope symbols<CR>", -- telescope-symbols, unicode
- ["<M-f>j"] = "<Cmd>Telescope live_grep<CR>",
- ["<M-f>f"] = "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>",
- ["<M-f><Leader>"] = "<Cmd>Telescope buffers<CR>",
- ["<M-f>@"] = "<Cmd>Telescope bibtex<CR>", -- telescope-bibtex
- ["<M-f>c"] = "<Cmd>Telescope command_history<CR>",
- ["<M-f>h"] = "<Cmd>Telescope help_tags<CR>",
- ["<M-f>t"] = "<Cmd>Telescope treesitter<CR>",
- ["<M-f>o"] = "<Cmd>Telescope oldfiles<CR>",
- ["<M-f>k"] = "<Cmd>Telescope keymaps<CR>",
- ["<M-f>m"] = "<Cmd>Telescope marks<CR>",
- ["<M-f>/"] = "<Cmd>Telescope search_history<CR>",
- ["<M-f>r"] = "<Cmd>Telescope registers<CR>",
- ["<M-f>q"] = "<Cmd>Telescope quickfix<CR>",
- ["<M-f>p"] = "<Cmd>Telescope packer<CR>", -- telescope-packer
- ["<M-f>a"] = "<Cmd>Telescope loclist<CR>", -- under q
- ["<M-f>l"] = "<Cmd>Telescope possession list<CR>", -- possession
- ["<M-f>;"] = "<Cmd>Telescope git_files<CR>",
- ["<M-f>b"] = "<Cmd>Telescope file_browser hidden=true<CR>", -- file-browser
- ["<M-f>i"] = "<Cmd>Telescope media_files<CR>" -- telescope-media_files, images
+  ["<M-p>"] = "<Cmd>lua require'telescope'.extensions.project.project{}<CR>",
+  ["<M-b>"] = "<Cmd>Telescope bookmarks<CR>",
+  ["<M-f>x"] = "<Cmd>Telescope find_files<CR>", -- ignore(x) dotfiles
+  ["<M-f>e"] = "<Cmd>Telescope frecency<CR>", -- telescope-frecency
+  ["<M-f>u"] = "<Cmd>Telescope symbols<CR>", -- telescope-symbols, unicode
+  ["<M-f>j"] = "<Cmd>Telescope live_grep<CR>",
+  ["<M-f>f"] = "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>",
+  ["<M-f><Leader>"] = "<Cmd>Telescope buffers<CR>",
+  ["<M-f>@"] = "<Cmd>Telescope bibtex<CR>", -- telescope-bibtex
+  ["<M-f>c"] = "<Cmd>Telescope command_history<CR>",
+  ["<M-f>h"] = "<Cmd>Telescope help_tags<CR>",
+  ["<M-f>t"] = "<Cmd>Telescope treesitter<CR>",
+  ["<M-f>o"] = "<Cmd>Telescope oldfiles<CR>",
+  ["<M-f>k"] = "<Cmd>Telescope keymaps<CR>",
+  ["<M-f>m"] = "<Cmd>Telescope marks<CR>",
+  ["<M-f>/"] = "<Cmd>Telescope search_history<CR>",
+  ["<M-f>r"] = "<Cmd>Telescope registers<CR>",
+  ["<M-f>q"] = "<Cmd>Telescope quickfix<CR>",
+  ["<M-f>p"] = "<Cmd>Telescope packer<CR>", -- telescope-packer
+  ["<M-f>l"] = "<Cmd>Telescope loclist<CR>", -- under q
+  ["<M-f>s"] = "<Cmd>Telescope possession list<CR>", -- possession
+  ["<M-f>;"] = "<Cmd>Telescope git_files<CR>",
+  ["<M-f>b"] = "<Cmd>Telescope file_browser hidden=true<CR>", -- file-browser
+  ["<M-f>i"] = "<Cmd>Telescope media_files<CR>", -- telescope-media_files, images
+  ["<M-f>a"] = "<Cmd>Telescope repo list<CR>" -- telescope-media_files, images
 }
 vim_keymap_set_list(keymaps)
 
@@ -205,13 +215,14 @@ vim.keymap.set("n", "[ff]r", "<Cmd>Telescope registers<CR>", opts)
 vim.keymap.set("n", '"', "<Cmd>Telescope registers<CR>", opts)
 vim.keymap.set("n", "[ff]q", "<Cmd>Telescope quickfix<CR>", opts)
 vim.keymap.set("n", "[ff]p", "<Cmd>Telescope packer<CR>", opts) -- telescope-packer
-vim.keymap.set("n", "[ff]a", "<Cmd>Telescope loclist<CR>", opts) -- under q
+vim.keymap.set("n", "[ff]l", "<Cmd>Telescope loclist<CR>", opts) -- under q
 -- vim.keymap.set("n", "[ff]l", "<Cmd>Telescope luasnip<CR>", opts) -- telescope-luasnip
-vim.keymap.set("n", "[ff]l", "<Cmd>Telescope possession list<CR>", opts) -- possession
+vim.keymap.set("n", "[ff]s", "<Cmd>Telescope possession list<CR>", opts) -- possession
 vim.keymap.set("n", "[ff];", "<Cmd>Telescope git_files<CR>", opts)
 vim.keymap.set("n", "[ff]b", "<Cmd>Telescope file_browser hidden=true<CR>", opts) -- file-browser
 vim.keymap.set("n", "[ff]i", "<Cmd>Telescope media_files<CR>", opts) -- telescope-media_files, images
 vim.keymap.set('n', '<C-p>', "<Cmd>lua require'telescope'.extensions.project.project{}<CR>", opts)
+vim.keymap.set("n", "[ff]a", "<Cmd>Telescope repo list<CR>", opts) -- under q
 
 -- git -------------------------------------------
 vim.keymap.set("n", "[ff]gc", "<Cmd>Telescope git_commits<CR>", opts)
