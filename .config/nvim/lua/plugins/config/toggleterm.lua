@@ -56,25 +56,25 @@ end
 
 vim.api.nvim_create_user_command(
   "ToggleTermOpen",
-  function(opts) toggle_term_open(opts.args, opts.count) end, 
+  function(opts) toggle_term_open(opts.args, opts.count) end,
   { count = true, complete = commandline.toggle_term_complete, nargs = "*" }
 )
 
 vim.g.toglleterm_win_num = vim.fn.winnr()
 local groupname = "vimrc_toggleterm"
 vim.api.nvim_create_augroup(groupname, { clear = true })
-vim.api.nvim_create_autocmd({"VimEnter", "BufEnter"}, {
+vim.api.nvim_create_autocmd({ "VimEnter", "BufEnter" }, {
   group = groupname,
   callback = function()
     -- vim.keymap.set("n", "<Leader>t", '<Cmd>execute v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true, buffer = true })
     vim.keymap.set("i", "<M-a>", "<Esc><Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set({ "t", "n" }, "<M-a>", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-0>", "<Cmd>ToggleTerm<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-1>", "<Cmd>1ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-2>", "<Cmd>2ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-3>", "<Cmd>3ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-4>", "<Cmd>4ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-5>", "<Cmd>5ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-0>", "<Cmd>ToggleTerm<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-1>", "<Cmd>1ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-2>", "<Cmd>2ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-3>", "<Cmd>3ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-4>", "<Cmd>4ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-5>", "<Cmd>5ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
   end,
   once = false,
 })
@@ -82,7 +82,8 @@ vim.api.nvim_create_autocmd({"VimEnter", "BufEnter"}, {
 
 vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter", "BufEnter" }, {
   group = groupname,
-  pattern = "term://*/zsh;#toggleterm#*",
+  -- pattern = "term://*/zsh;#toggleterm#*",
+  pattern = "term://*",
   callback = function()
     vim.cmd([[startinsert]])
   end,
@@ -96,11 +97,11 @@ vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
     vim.keymap.set("t", "jk", "<C-\\><C-n>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set({ "t", "n" }, "<M-a>", "<Cmd>ToggleTermToggleAll<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-1>", "<Cmd>1ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-2>", "<Cmd>2ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-3>", "<Cmd>3ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-4>", "<Cmd>4ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set({ "t", "n" } , "<M-5>", "<Cmd>5ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-1>", "<Cmd>1ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-2>", "<Cmd>2ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-3>", "<Cmd>3ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-4>", "<Cmd>4ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "t", "n" }, "<M-5>", "<Cmd>5ToggleTermOpen<CR><Cmd>startinsert<CR>", { noremap = true, silent = true, buffer = true })
   end,
   once = false,
 })
