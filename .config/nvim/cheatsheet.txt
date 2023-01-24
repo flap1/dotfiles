@@ -1,5 +1,5 @@
 # cheatsheet
-Open cheatsheet | <leader>?
+Open cheatsheet | <M-?>
 Open cheatsheet in floating window | :CheatSheet!
 
 View mappings | :map [mapping]
