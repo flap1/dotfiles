@@ -139,8 +139,25 @@ rm -rf /tmp/cookies.txt
 ## github
 ## ex) ghcr <repo-name> --private
 function ghcr() {
-	gh repo create $argv # --public, --private
-	ghq get git@github.com:flap1/$argv[1].git
+gh repo create $argv # --public, --private
+ghq get $argv[1]
+nvr (ghq list --full-path -e $argv[1])
+}
+
+## git worktree
+function gwc() {
+GIT_WORKTREE_PATH=`git rev-parse --show-toplevel | sed -e 's/ghq/.git-worktrees/'`
+git worktree add -b $1 $GIT_WORKTREE_PATH/$1
+cd $GIT_WORKTREE_PATH/$1
+nvr .
+}
+
+function gwd() {
+GIT_MAIN_PATH=`git rev-parse --git-dir | sed -e 's/\/\.git.*$//'`
+GIT_WORKTREE_PATH=`git rev-parse --show-toplevel`
+git worktree remove $GIT_WORKTREE_PATH
+cd $GIT_MAIN_PATH
+nvr .
 }
 
 ## setup
