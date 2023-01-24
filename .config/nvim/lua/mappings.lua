@@ -82,6 +82,11 @@ vim.keymap.set("n", "<LocalLeader>cd", "<Cmd>lcd %:p:h<CR>:pwd<CR>", { noremap =
 vim.keymap.set("i", "jk", "<Esc>", { noremap = true, silent = false }) -- jk to Esc
 vim.keymap.set("i", "<C-t>", '<Esc><Left>"zx"zpa', { noremap = true, silent = false }) -- 直前2つ入れ替え
 
+-- terminal mode
+vim.keymap.set("t", "jk", "<C-\\><C-n>", { noremap = true, silent = false }) -- jk to Esc
+vim.keymap.set("n", "<M-->", ":terminal<CR>", { noremap = true, silent = false }) -- jk to Esc
+vim.keymap.set("n", "<M-\\>", ":vsplit | terminal<CR>", { noremap = true, silent = false }) -- jk to Esc
+
 -- indent
 vim.keymap.set("n", "<C-x>", ">>", opts)
 vim.keymap.set("n", "<C-z>", "<<", opts)
