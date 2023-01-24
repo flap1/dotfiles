@@ -27,3 +27,22 @@
 
 [diff]
     colorMoved = default
+
+[alias]
+    s = status -sb
+    cm = commit
+    cme = commit --allow-empty
+    co = checkout
+    br = branch --verbose --color --sort=-authordate
+    d = diff
+    dc = diff --cached -U2
+    rh = reset --soft HEAD .
+    p = !git push origin `git rev-parse --abbrev-ref HEAD`
+    go = "switch -c"
+    dm = "!git branch --merged | grep -v main | grep -v master | grep -v '*' | xargs -n 1 git branch -d"
+    please = push --force-with-lease
+    uncommit = reset --mixed HEAD~
+    refrech = fetch --prune
+    sync = !git checkout $(git remote show origin | grep 'HEAD branch' | awk '{print $NF}') && git pull
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    l = log --oneline --graph --decorate -n 10
