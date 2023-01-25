@@ -20,8 +20,8 @@ local ignored_filetypes = {
   "NeogitStatus",
   "NeogitStatusNew",
   "aerial",
-  "markdown",
-  "telekasten",
+  -- "markdown",
+  -- "telekasten",
   "null-ls-info",
 }
 

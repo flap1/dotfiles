@@ -112,7 +112,7 @@ return require("packer").startup({ function(use)
 	use { "mrjones2014/nvim-ts-rainbow", event = "VimEnter" }
   use { "nvim-treesitter/playground", after = { "nvim-treesitter" } }
   use { "mizlan/iswap.nvim", after = { "nvim-treesitter" }, config = function() require("plugins/config/iswap") end }
-	use { "haringsrob/nvim_context_vt", event = "VimEnter" }
+	-- use { "haringsrob/nvim_context_vt", event = "VimEnter" }
 	use { "m-demare/hlargs.nvim", event = "VimEnter", config =  function() require("hlargs").setup() end }
 
   -- Appearance ----------------------------------

@@ -46,7 +46,7 @@ require('mason-lspconfig').setup_handlers({
   -- markdown
   ['remark_ls'] = function()
     lspconfig.remark_ls.setup {
-      root_dir = nvim_lsp.util.root_pattern(".remarkrc.yml", ".remarkrc.js"),
+      root_dir = nvim_lsp.util.root_pattern(".remarkrc.yml", ".remarkrc.js", ".git"),
       filetypes = { "markdown", "telekasten" }
     }
   end,

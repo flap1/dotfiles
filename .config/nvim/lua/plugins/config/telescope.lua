@@ -150,6 +150,7 @@ require("telescope").setup {
       list = {
         search_dirs = {
           "~/ghq",
+          "~/.git-worktrees",
           "~/dotfiles",
           "~/dotfiles.local",
         },
