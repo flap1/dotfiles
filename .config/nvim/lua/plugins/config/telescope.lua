@@ -158,6 +158,19 @@ require("telescope").setup {
     },
   },
 }
+-- load extensions
+require("telescope").load_extension("dap")
+require("telescope").load_extension("frecency")
+require("telescope").load_extension("packer")
+require("telescope").load_extension("gh")
+require("telescope").load_extension("bibtex")
+require("telescope").load_extension("file_browser")
+require("telescope").load_extension("media_files")
+require("telescope").load_extension("hop")
+require("telescope").load_extension("project")
+require("telescope").load_extension("bookmarks")
+require("telescope").load_extension("repo")
+
 local opts = { noremap = true, silent = true }
 
 local function vim_keymap_set_list(keymaps)

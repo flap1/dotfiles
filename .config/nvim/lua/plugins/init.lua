@@ -90,18 +90,18 @@ return require("packer").startup({ function(use)
 
   -- FuzzyFinder Library --------------------------
   use { "nvim-telescope/telescope.nvim", requires = { 'nvim-lua/plenary.nvim' }, after = colorscheme, config = function() require("plugins/config/telescope") end }
-  use { "nvim-telescope/telescope-dap.nvim", requires = { 'telescope.nvim', 'nvim-dap' }, after = "telescope.nvim", config = function() require("telescope").load_extension("dap") end }
-  use { "nvim-telescope/telescope-frecency.nvim", requires = { "kkharji/sqlite.lua" }, after = { "telescope.nvim", "sqlite.lua" }, config = function() require("telescope").load_extension("frecency") end } -- :Telescope frecency
-  use { "nvim-telescope/telescope-packer.nvim", requires = { "wbthomason/packer.nvim" }, after = "telescope.nvim", config = function() require("telescope").load_extension("packer") end } -- :Telescope packer
-  use { "nvim-telescope/telescope-github.nvim", after = "telescope.nvim", config = function() require("telescope").load_extension("gh") end } -- :Telescope gh
-  use { "nvim-telescope/telescope-bibtex.nvim", after = 'telescope.nvim', config = function () require("telescope").load_extension("bibtex") end }
+  use { "nvim-telescope/telescope-dap.nvim", requires = { 'telescope.nvim', 'nvim-dap' }, after = "telescope.nvim"}
+  use { "nvim-telescope/telescope-frecency.nvim", requires = { "kkharji/sqlite.lua" }, after = { "telescope.nvim", "sqlite.lua" } } -- :Telescope frecency
+  use { "nvim-telescope/telescope-packer.nvim", requires = { "wbthomason/packer.nvim" }, after = "telescope.nvim" } -- :Telescope packer
+  use { "nvim-telescope/telescope-github.nvim", after = "telescope.nvim" } -- :Telescope gh
+  use { "nvim-telescope/telescope-bibtex.nvim", after = 'telescope.nvim' }
   use { "nvim-telescope/telescope-symbols.nvim", after = 'telescope.nvim' }
-  use { "nvim-telescope/telescope-file-browser.nvim", after = 'telescope.nvim', config = function () require("telescope").load_extension("file_browser") end }
-  use { "nvim-telescope/telescope-media-files.nvim", after = "telescope.nvim", config = function () require("telescope").load_extension("media_files") end }
-  use { "nvim-telescope/telescope-hop.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("hop") end }
-  use { "nvim-telescope/telescope-project.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("project") end }
-  use { "dhruvmanila/telescope-bookmarks.nvim", tag = "*", after = 'telescope.nvim', config = function() require("telescope").load_extension("bookmarks") end }
-  use { "cljoly/telescope-repo.nvim", after = 'telescope.nvim', config = function() require("telescope").load_extension("repo") end }
+  use { "nvim-telescope/telescope-file-browser.nvim", after = 'telescope.nvim' }
+  use { "nvim-telescope/telescope-media-files.nvim", after = "telescope.nvim" }
+  use { "nvim-telescope/telescope-hop.nvim", after = 'telescope.nvim' }
+  use { "nvim-telescope/telescope-project.nvim", after = 'telescope.nvim' }
+  use { "dhruvmanila/telescope-bookmarks.nvim", tag = "*", after = 'telescope.nvim' }
+  use { "cljoly/telescope-repo.nvim", after = 'telescope.nvim' }
 
   -- Treesitter ----------------------------------
   use { "nvim-treesitter/nvim-treesitter", after = colorscheme, event = "VimEnter", run = ":TSUpdate", config = function() require("plugins/config/nvim-treesitter") end }
@@ -306,6 +306,9 @@ return require("packer").startup({ function(use)
   use { "editorconfig/editorconfig-vim" }
 
   -- Programming Languages -----------------------
+  --- ChatGPT
+  use { "jackMort/ChatGPT.nvim", after = { "telescope.nvim" }, requires = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" }, config = function() require("plugins/config/chatgpt") end }
+
   ---- Markdown
   use { "iamcco/markdown-preview.nvim", run = ":call mkdp#util#install()", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/markdown-preview.vim") end, ft = { "markdown", "telekasten" }, }
   use { "SidOfc/mkdx", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/mkdx.vim") end } -- TODO:
@@ -343,6 +346,8 @@ return require("packer").startup({ function(use)
   -- texlab -- https://github.com/latex-lsp/texlab, https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/texlab.lua
   -- vimtex -- https://github.com/lervag/vimtex
   -- vim-latex-live-preview -- https://github.com/xuhdev/vim-latex-live-preview
+  --- Userless plugin
+  use { 'eandrju/cellular-automaton.nvim', config = function() require("plugins/config/cellular-automaton") end } 
 end,
 config = {
   snapshot_path = vim.fn.stdpath("config") .. "/snapshots"
