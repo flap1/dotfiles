@@ -58,9 +58,6 @@ install | go install github.com/x-motemen/ghq@latest
 ##################################################
 # python
 ##################################################
-## poetry
-export requirements | poetry export -f requirements.txt --output requirements.txt --without-hashes
-
 ## pip
 install numpy | pip install numpy
 install pytorch | pip install torch
@@ -76,6 +73,7 @@ output to requirements.txt | pip freeze > requirements.txt
 use mypy | poetry run mypy --warn-incomplete-stub <dir>
 
 ## poetry
+export requirements | poetry export -f requirements.txt --output requirements.txt --without-hashes
 new project | poetry new <project-name>
 new project in existing repo | poetry init
 setup virtualenv | poetry install
