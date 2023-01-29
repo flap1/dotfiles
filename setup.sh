@@ -4,7 +4,7 @@ DOT_FILES=(
   ".config/zsh"
   ".config/git/.gitconfig" \
   "bin" \
-  ".zshenv" \
+  # ".config/zsh/.zshenv" \
   ".stylua.toml" \
   ".config/nvim" \
   ".config/wezterm" \
