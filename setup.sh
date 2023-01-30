@@ -37,6 +37,7 @@ __prepare() {
   fi
 }
 
+# sync
 for file in "${DOT_FILES[@]}"
 do
   if [[ ! -e $file ]]; then
@@ -51,6 +52,9 @@ do
   __prepare "$file" "$target"
   ln -s "$(pwd)"/"$file" "$target" 
 done
+
+# dir
+mkdir ~/.git-worktrees
 
 # change default shell
 # sudo chsh -s "$(which zsh)" "$USER"
