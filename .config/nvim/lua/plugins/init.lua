@@ -62,15 +62,16 @@ return require("packer").startup({ function(use)
     { "hrsh7th/cmp-calc" }, -- simple calc
     { "saadparwaiz1/cmp_luasnip" }, -- luasnip completion
     { "f3fora/cmp-spell" }, -- vim's spell suggests
-    { "yutkat/cmp-mocword" }, -- mocward(predict next word) completion
     { "uga-rosa/cmp-dictionary", config = function() require "plugins/config/cmp-dictionary" end }, -- dictionary completion
-    -- { "tzachar/cmp-tabnine", run = "./install.sh" },  -- AI completion
+    { "tzachar/cmp-tabnine", run = "./install.sh" },  -- AI completion
     { "ray-x/cmp-treesitter" }, -- treesitter node completion
     { "lukas-reineke/cmp-rg" }, -- ripgrep completion, `sudo apt-get install ripgrep`
-    { "lukas-reineke/cmp-under-comparator", module = "cmp-under-comparator" } -- better sort completion
+    { "lukas-reineke/cmp-under-comparator", module = "cmp-under-comparator" }, -- better sort completion
+    { "zbirenbaum/copilot-cmp", after = { "copilot.lua" }, config = function() require("copilot_cmp").setup() end }
     },
       config = function() require("plugins/config/nvim-cmp") end }
   use { "onsails/lspkind-nvim", module = "lspkind", config = function() require "plugins/config/lspkind-nvim" end } -- show icon
+	use { "zbirenbaum/copilot.lua", event = "InsertEnter", config = function() vim.defer_fn(function() require("plugins/config/copilot") end, 100) end, }
 
   ---- Language Server Protocol(LSP)
   use { "neovim/nvim-lspconfig", event = "VimEnter", config = function() require("plugins/config/nvim-lspconfig") end }
