@@ -147,3 +147,7 @@ vim.o.shellcmdflag = "-ic"
 
 -- load local settings
 vim.g.autosource_conf_names = { '.exrc', '.exrc.lua' }
+
+-- spell
+vim.opt.spell = true
+vim.opt.spelllang = { 'en_us' }
