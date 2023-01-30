@@ -4,9 +4,14 @@ local cmp = require("cmp")
 local luasnip = require("luasnip")
 local types = require "cmp.types"
 local str = require "cmp.utils.str"
+-- local has_words_before = function()
+--   local line, col = table.unpack(vim.api.nvim_win_get_cursor(0))
+--   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+-- end
 local has_words_before = function()
-  local line, col = table.unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
 end
 
 local t = function(str)
@@ -32,6 +37,7 @@ cmp.setup({
         vim_item.menu = ({
           buffer = "[Buffer]",
           nvim_lsp = "[LSP]",
+          copilot = "[Copilot]",
           cmp_tabnine = "[TabNine]",
           luasnip = "[LuaSnip]",
           nvim_lua = "[NeovimLua]",
@@ -42,7 +48,6 @@ cmp.setup({
           rg = "[Rg]",
           treesitter = "[TS]",
           dictionary = "[Dictionary]",
-          mocword = "[mocword]",
           cmdline_history = "[History]",
         })[entry.source.name]
         -- Get the full snippet (and only keep first line)
@@ -153,36 +158,38 @@ cmp.setup({
     { name = "luasnip", priority = 100 }, -- For luasnip users.
     { name = "path", priority = 100 },
     { name = "emoji", insert = true, priority = 60 },
+    { name = "calc", priority = 50 },
     { name = "nvim_lua", priority = 50 },
     { name = "nvim_lsp_signature_help", priority = 80 },
+    { name = "buffer", priority = 50 },
+    { name = "dictionary", keyword_length = 2, priority = 10 },
+    { name = "spell", priority = 25,
+      option = { keep_all_entries = false, enable_in_context = function() return true end } },
+    { name = "treesitter", priority = 30 },
+    { name = "rg", priority = 70 },
   }, {
     { name = "buffer", priority = 50 },
-    { name = "omni", priority = 40 },
+    { name = "calc", priority = 50 },
+  })
+})
+
+cmp.setup.filetype({ "gitcommit", "markdown" }, {
+  sources = cmp.config.sources({
+    { name = "copilot", priority = 90 }, -- For luasnip users.
+    { name = "nvim_lsp", priority = 100 },
+    { name = "cmp_tabnine", priority = 30 },
+    { name = "luasnip", priority = 80 }, -- For luasnip users.
+    { name = "rg", priority = 70 },
+    { name = "path", priority = 100 },
+    { name = "emoji", insert = true, priority = 60 },
+  }, {
+    { name = "buffer", priority = 50 },
     { name = "spell", priority = 40 },
     { name = "calc", priority = 50 },
     { name = "treesitter", priority = 30 },
     { name = "dictionary", keyword_length = 2, priority = 10 },
   }),
 })
-
--- cmp.setup.filetype({ "gitcommit", "markdown"}, {
---   sources = cmp.config.sources({
---     { name = "copilot", priority = 90 }, -- For luasnip users.
---     { name = "nvim_lsp", priority = 100 },
---     { name = "cmp_tabnine", priority = 30 },
---     { name = "luasnip", priority = 80 }, -- For luasnip users.
---     { name = "rg", priority = 70 },
---     { name = "path", priority = 100 },
---     { name = "emoji", insert = true, priority = 60 },
---   }, {
---     { name = "buffer", priority = 50 },
---     { name = "spell", priority = 40 },
---     { name = "calc", priority = 50 },
---     { name = "treesitter", priority = 30 },
---     { name = "mocword", priority = 60 },
---     { name = "dictionary", keyword_length = 2, priority = 10 },
---   }),
--- })
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline("/", {
@@ -204,9 +211,23 @@ cmp.setup.cmdline(":", {
     ["<C-y>"] = { c = cmp.mapping.confirm({ select = false }) },
     ["<C-q>"] = { c = cmp.mapping.abort() },
   },
-  sources = cmp.config.sources({ { name = "path" } }, { { name = "cmdline" }, { { name = "cmdline_history" } } }),
+  sources = cmp.config.sources({
+    { name = "path" },
+  }, {
+    { name = "cmdline" },
+    { { name = "cmdline_history" } }
+  }),
 })
 
 -- autopairs
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
+
+-- copilot
+cmp.event:on("menu_opened", function()
+  vim.b.copilot_suggestion_hidden = true
+end)
+
+cmp.event:on("menu_closed", function()
+  vim.b.copilot_suggestion_hidden = false
+end)
