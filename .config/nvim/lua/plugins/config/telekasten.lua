@@ -54,18 +54,18 @@ require("telekasten").setup({
   },
 
   -- telescope actions behavior
-  close_after_yanking = false,
+  close_after_yanking = true,
   insert_after_inserting = true,
 
   -- tag notation: '#tag', ':tag:', 'yaml-bare'
   tag_notation = "#tag",
 
   -- command palette theme: dropdown (window) or ivy (bottom panel)
-  command_palette_theme = "ivy",
+  command_palette_theme = "dropdown",
 
   -- tag list theme:
   -- get_cursor: small tag list at cursor; ivy and dropdown like above
-  show_tags_theme = "ivy",
+  show_tags_theme = "dropdown",
 
   -- when linking to a note in subdir/, create a [[subdir/title]] link
   -- instead of a [[title only]] link
@@ -140,6 +140,7 @@ local keymaps = {
  ["a"] = "<Cmd>lua require('telekasten').show_tags()<CR>",
  ["#"] = "<Cmd>lua require('telekasten').show_tags()<CR>",
  ["r"] = "<Cmd>lua require('telekasten').rename_note()<CR>",
+ [""] = "<Cmd>lua require('telekasten').panel()<CR>",
 }
 vim_keymap_set_list(keymaps)
 

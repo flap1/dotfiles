@@ -8,15 +8,14 @@ date:  {{hdate}}
 ---
 
 ## Highlights
+
 - **this**!
 - that!
 
-## Monday link
-## Tuesday link
-## Wednesday link
-## Thursday link
-## Friday link
-## Saturday link
-## Sunday link
-
-
+## {{monday}} (Monday)
+## {{tuesday}} (Tuesday)
+## {{wednesday}} (Wednesday)
+## {{thursday}} (Thursday)
+## {{friday}} (Friday)
+## {{saturday}} (Saturday)
+## {{sunday}} (Sunday)
