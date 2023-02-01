@@ -17,6 +17,7 @@ fi
 if [ -x "$(command -v pyenv)" ]; then
 eval "$(pyenv init -)"
 fi
+
 export PYENV_VIRTUALENV_DISABLE_PROMPT=0
 export PYENV_ROOT=$HOME/.pyenv
 
@@ -40,12 +41,16 @@ export MANPATH=$NVM_DIR/default/share/man:$MANPATH
 export NODE_PATH=$NVM_DIR/default/lib/node_modules
 export NODE_PATH=${NODE_PATH:A}
 
-nvm() {
-  unset -f nvm
-	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-  nvm "$@"
-}
+if [ ! -x "$(command -v node )" ]; then
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
+# nvm() {
+#   unset -f nvm
+# 	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# 	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+#   nvm "$@"
+# }
 
 # deno
 export DENO_INSTALL=$HOME/.deno
