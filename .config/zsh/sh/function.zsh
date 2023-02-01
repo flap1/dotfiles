@@ -141,7 +141,7 @@ rm -rf /tmp/cookies.txt
 function ghcr() {
 gh repo create $argv # --public, --private
 ghq get $argv[1]
-nvr (ghq list --full-path -e $argv[1])
+nvr $(ghq list --full-path -e $argv[1])
 }
 
 ## git worktree
