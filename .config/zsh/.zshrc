@@ -5,7 +5,6 @@ if [ "$ZSHRC_PROFILE" != "" ]; then
   zmodload zsh/zprof && zprof > /dev/null
 fi
 
-
 # -------------------------------------------------------------------------
 # base configuration
 # -------------------------------------------------------------------------
@@ -59,4 +58,3 @@ source "$ZSHDIR/post_load.zsh"
 # -------------------------------------------------------------------------
 source-safe "$ZHOMEDIR/.zshrc.local"
 
-GITSTATUS_LOG_LEVEL=DEBUG
