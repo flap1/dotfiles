@@ -1,0 +1,34 @@
+\documentclass[autodetect-engine,a4paper]{jsarticle}
+\input{tex/packages.tex}
+
+\fontsize{11pt}{9pt}\selectfont
+\thispagestyle{fancy}
+\fancyhead{}
+\fancyhead[L]{Upper Left}
+\fancyhead[R]{Upper Right}
+
+\fancyfoot{}
+\cfoot{\thepage}
+
+\begin{document}
+\title{\vspace{-1.5zw}This is title}
+\author{\vspace{-2zw}\\Name}
+\date{\vspace{-0.5zw}\large YYYY-MM-DD}
+\maketitle
+\thispagestyle{fancy}
+
+\vspace{-2.0zw}
+\begin{abstract}
+% \input{tex/00_Abstract.tex}
+\end{abstract}
+
+\normalsize
+\begin{multicols}{2}
+% \input{tex/10_Chapter1.tex}
+% \input{tex/20_Chapter2.tex}
+% \input{tex/99_Bibliography.tex}
+\end{multicols}
+
+\end{document}
+
+

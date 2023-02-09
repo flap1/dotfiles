@@ -1,0 +1,132 @@
+\usepackage[top=22truemm,bottom=20truemm,left=20truemm, right=20truemm,truedimen]{geometry}
+\usepackage{here}
+\usepackage{layout}
+\usepackage{newtxtext,newtxmath}
+\usepackage{okumacro}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{url}
+\usepackage{ulem}
+\usepackage{titlesec}
+% \usepackage[font=normalsize]{caption}
+\usepackage{siunitx}
+\usepackage{fancyhdr}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{longtable}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usepackage{pxpgfmark}
+\usepackage{textcomp}
+\usepackage{okumacro}
+\usepackage{colortbl}
+\usepackage[deluxe]{otf}
+\usepackage{ulem}
+\usepackage{lipsum}
+\usepackage{titletoc}
+\usepackage{wrapfig}
+\usepackage{ajmacros}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{bm}
+\setcounter{secnumdepth}{5}
+\usepackage{enumerate}
+\usepackage[dvipdfmx]{hyperref}
+\usepackage{pxjahyper}
+\usepackage{import}
+\usepackage{booktabs}
+\usepackage{appendix}
+\usepackage{lscape}
+
+%%%%%%諸設定%%%%%%%
+\newcommand{\bhline}[1]{\noalign{\hrule height #1}}
+\newcommand{\bvline}[1]{\vrule width #1}
+\graphicspath{{../src/}}
+\hypersetup{% hyperref option lists
+	pdftoolbar=true,        % show Acrobat’s toolbar?
+	pdfmenubar=true,        % show Acrobat’s menu?
+	pdffitwindow=false,     % window fit to page when opened
+	pdfstartview={FitH},    % fits the width of the page to the window
+	pdftitle={title},    % title
+	pdfauthor={Salvatore Mazzarino},     % author
+	pdfsubject={Subject},   % subject of the document
+	pdfcreator={Salvatore Mazzarino},   % creator of the document
+	pdfproducer={Salvatore Mazzarino}, % producer of the document
+	pdfkeywords={Green Networking} {Mobile Cloud} {Network Coding} {Energy}, % list of keywords
+	setpagesize=false,
+	bookmarksnumbered=true,%
+	bookmarksopen=true,%
+	pdfnewwindow=true,      % links in new window
+	colorlinks=true,       % false: boxed links; true: colored links
+	linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+	citecolor=black,        % color of links to bibliography
+	filecolor=magenta,      % color of file links
+	urlcolor=black           % color of external links
+}
+
+%%%%%%%%%%%%%%%%%%%%%
+%% ソースコード
+% \usepackage{listings,jlisting}
+% \renewcommand{\lstlistingname}{リスト}
+% \lstset{
+%   basicstyle={\ttfamily},
+%   identifierstyle={\small},
+%   commentstyle={\smallitshape},
+%   keywordstyle={\small\bfseries},
+%   ndkeywordstyle={\small},
+%   stringstyle={\small\ttfamily},
+%   frame={tb},
+%   breaklines=true,
+%   columns=[l]{fullflexible},
+%   numbers=left,
+%   xrightmargin=0zw,
+%   xleftmargin=3zw,
+%   numberstyle={\scriptsize},
+%   stepnumber=1,
+%   numbersep=1zw,
+%   lineskip=-0.5ex
+% }
+% \renewcommand{\lstlistingname}{\footnotesize{コード}}
+% \renewcommand{\lstlistlistingname}{コード目次}
+% setting of line skip
+\setlength{\lineskiplimit}{6pt}
+\setlength{\lineskip}{6pt}
+
+% setting of indent
+\setlength{\parindent}{1zw}
+%\setlength{\mathindent}{5zw}
+
+% change cite form
+\def\citeform#1{[#1]}
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%subsubsubsection
+\makeatletter
+\newcommand{\subsubsubsection}{\@startsection{paragraph}{4}{\z@}%
+	{.1\Cvs \@plus.5\Cdp \@minus.2\Cdp}%
+	{.1\Cvs \@plus.3\Cdp}%
+	{\reset@font\sffamily\normalsize}
+}
+\makeatother
+\setcounter{secnumdepth}{4}
+
+%tab/fig number
+\makeatletter
+\renewcommand{\theequation}{% 式番号の付け方
+	\thesection.\arabic{equation}}
+\@addtoreset{equation}{section}
+
+\renewcommand{\thefigure}{% 図番号の付け方
+	\thesection.\arabic{figure}}
+\@addtoreset{figure}{section}
+
+\renewcommand{\thetable}{% 表番号の付け方
+	\thesection.\arabic{table}}
+\@addtoreset{table}{section}
+\makeatother
+
+%title
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+%Font
+\renewcommand{\bfdefault}{bx}
