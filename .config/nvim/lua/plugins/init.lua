@@ -142,7 +142,7 @@ return require("packer").startup({ function(use)
   use { "folke/todo-comments.nvim", requires = "nvim-lua/plenary.nvim", config = function() require("plugins/config/todo-comments") end }
 
   ---- Sidebar
-  use { "sidebar-nvim/sidebar.nvim", config = function() require("plugins/config/sidebar") end }
+  -- use { "sidebar-nvim/sidebar.nvim", config = function() require("plugins/config/sidebar") end }
 
   ---- Startup Screen
   use { "goolord/alpha-nvim", config = function() require("plugins/config/alpha-nvim") end } -- トップページ
