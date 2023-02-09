@@ -63,7 +63,7 @@ return require("packer").startup({ function(use)
     { "saadparwaiz1/cmp_luasnip" }, -- luasnip completion
     { "f3fora/cmp-spell" }, -- vim's spell suggests
     { "uga-rosa/cmp-dictionary", config = function() require "plugins/config/cmp-dictionary" end }, -- dictionary completion
-    { "tzachar/cmp-tabnine", run = "./install.sh" },  -- AI completion
+    -- { "tzachar/cmp-tabnine", run = "./install.sh" },  -- AI completion
     { "ray-x/cmp-treesitter" }, -- treesitter node completion
     { "lukas-reineke/cmp-rg" }, -- ripgrep completion, `sudo apt-get install ripgrep`
     { "lukas-reineke/cmp-under-comparator", module = "cmp-under-comparator" }, -- better sort completion
