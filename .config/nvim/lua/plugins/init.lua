@@ -134,7 +134,7 @@ return require("packer").startup({ function(use)
   end
 
   ---- Project
-	use { "ahmedkhalf/project.nvim", event = "BufWinEnter", config = function() require("plugins/config/project") end }
+	-- use { "ahmedkhalf/project.nvim", event = "BufWinEnter", config = function() require("plugins/config/project") end }
 
   ---- Syntax
   use { "norcalli/nvim-colorizer.lua", event = "VimEnter", config = function() require("colorizer").setup() end } -- A high-performance color highlighter
