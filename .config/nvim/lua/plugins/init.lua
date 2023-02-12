@@ -327,6 +327,7 @@ return require("packer").startup({ function(use)
 
   ---- LaTeX
   use { "lervag/vimtex", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vimtex.vim") end }
+  use { "thinca/vim-quickrun", config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-quickrun.vim") end }
 
   ---- Python
   -- use { "untitled-ai/jupyter_ascending.vim" }

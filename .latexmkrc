@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 # LaTeX
-$latex = 'platex -synctex=1 -halt-on-error -file-line-error %O %S';
+$latex = 'lualatex -synctex=1 -halt-on-error -file-line-error -interaction=nonstopmode %O %S';
 $max_repeat = 5;
 
 # BibTeX
@@ -13,7 +13,7 @@ $makeindex = 'mendex %O -o %D %S';
 
 # DVI / PDF
 $dvipdf = 'dvipdfmx %O -o %D %S';
-$pdf_mode = 3;
+$pdf_mode = 3; # use dvipdf
 
 # preview
 $pvc_view_file_via_temporary = 0;

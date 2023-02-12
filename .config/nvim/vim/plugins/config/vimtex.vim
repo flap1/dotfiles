@@ -4,6 +4,7 @@ let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
 let g:vimtex_compiler_latexmk = {
       \ 'build_dir' : 'out',
       \ 'options' : [
+      \   '-pdfdvi',
       \   '-verbose',
       \   '-file-line-error',
       \   '-synctex=1',

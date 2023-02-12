@@ -1,0 +1,101 @@
+\documentclass[lualatex,twocolumn,a4paper,10pt]{ltjsarticle} % lualatex, 2列, A4, 10pt
+\usepackage[vmargin=25mm, hmargin=23mm]{geometry} % 余白設定
+\usepackage{luatexja-fontspec}
+\setmainfont[Scale=0.95,Ligatures=TeX]{Times New Roman} % 10pt * 0.95 = 9.5pt
+\setsansfont[Scale=0.95,Ligatures=TeX]{Times New Roman} % 10pt * 0.95 = 9.5pt
+\setmainjfont[Scale=0.96]{Noto Serif CJK JP} % 10pt * 0.95 = 9.5pt, フォントはお好みの明朝体に
+\setsansjfont[Scale=0.96]{Noto Serif CJK JP} % 10pt * 0.95 = 9.5pt, フォントはお好みの明朝体に
+\setlength{\columnsep}{7mm} % 列間
+\pagestyle{empty} % ページ番号なし
+
+\renewcommand{\baselinestretch}{0.875} % 目視
+\renewcommand{\abstractname}{\textbf{Abstract}} % Abstractに
+
+\title{
+\vspace{-.8em}
+\fontsize{16pt}{16pt}\selectfont\textbf{1A01 日本航空宇宙学会講演集原稿書式見本} % タイトル
+\normalsize\\[1.6em]
+\textbf{○航空一郎，宇宙花子}（日本航空宇宙学会）\\[1.6em] % 著者名
+How to Prepare the Paper for the 49th Annual Meeting of JSASS\\ % 英語タイトル
+Ichiro Koku and Hanako Uchu (JSASS)\\[2em]
+Key Words : Society Activities, … % キーワード
+\vspace{-3.2em}
+}
+\author{} % なし
+\date{} % なし
+
+\makeatletter
+\def\@arabicz#1{%
+  \ifcase#1 ０\or １\or ２\or ３\or ４\or ５\or ６\or ７\or ８\or ９\or １０\or
+  １１\or １２\or １３\or １４\or １５\or １６\or １７\or １８\or １９\or ２０\or 
+  ２１\or ２２\or ２３\or ２４\or ２５\or ２６\else\@ctrerr\fi} % 全角カウンター(使わなくてもいい気がする)
+\renewcommand{\thepart}{\@Roman\c@part}
+\renewcommand{\thesection}{\presectionname\@arabicz\c@section\postsectionname．} % 半角の場合: arabicz -> arabic, ．-> .
+\renewcommand{\thesubsection}{\@arabicz\c@section.\@arabicz\c@subsection} % 半角の場合: arabicz -> arabic
+\renewcommand{\thesubsubsection}{\thesubsection.\@arabicz\c@subsubsection} % 半角の場合: arabicz -> arabic
+\renewcommand{\theparagraph}{\thesubsubsection.\@arabicz\c@paragraph} % 半角の場合: arabicz -> arabic
+\renewcommand{\thesubparagraph}{\theparagraph.\@arabicz\c@subparagraph} % 半角の場合: arabicz -> arabic
+\def\section{\@startsection{section}{1}{0pt}{1.7em}{0pt}{\normalfont\normalsize\bfseries}}
+\def\subsection{\@startsection {subsection}{2}{0pt}{\baselineskip}{0pt}{\normalfont\normalsize}}
+\def\subsubsection{\@startsection {subsubsection}{3}{0pt}{\baselineskip}{0pt}{\normalfont\normalsize}}
+\newbox\@abstractbox
+\renewenvironment{abstract}{% Abstract再設定
+  \global\setbox\@abstractbox\hbox\bgroup
+  \begin{minipage}[b]{\textwidth}
+    \normalsize\parindent1\zw
+    \begin{center}%
+      {\headfont \abstractname\vspace{-.8em}\vspace{\z@}}%
+    \end{center}%
+    \list{}{%
+      \listparindent=\parindent
+      \itemindent=\listparindent
+      \rightmargin=0pt
+      \leftmargin=0pt}%
+    \item\relax}{\endlist\end{minipage}\egroup}
+\makeatother
+
+\begin{document}
+\begin{abstract}
+\noindent
+This is the manual for how to prepare your manuscript for the 49th Annual Meeting of Japan Society for Aeronautical and
+Space Science (JSASS). All the final drafts should be written by word processors with the format specified in this manua1.
+Your final paper in a PDF form must arrive at the Society Head-quarter by 16 February, 2018. Any questions regarding
+this manual should be addressed to the head-quarter
+\vspace{-1.4em}
+\end{abstract}
+
+\maketitle
+
+\section{はじめに}
+
+これは航空宇宙学会主催の講演会講演集原稿の詳細および見本です。
+
+\section{原稿の詳細}
+\subsection{原稿作成上の注意点}
+
+提出された原稿はそのまま写真製本用原稿として使用します。
+
+講演番号は、2月上旬にお知らせいたします。第50期年会講演会プログラムでご確認してください。
+
+表１の原稿フォーマットにしたがって作成してください。図は印刷時に見えにくくならないよう、線は太目に作成してください。
+
+図表のタイトル記入場所は、図の場合は下端、表の場合は上端です。図・表には必ず番号とタイトルをつけてください。
+また、図の各軸には必ず変数名を記入してください。
+
+原稿にカラーの図を使用しても前刷集の印刷は白黒になります。
+
+\section{原稿送付}
+
+本会より、メール「講演会原稿アップロード依頼」でご案内いたしますアドレスへ、PDF原稿を電子投稿してください。
+
+原稿はＡ４判10ページ以内、PDF形式に変換、5MB以内。\\
+
+\textbf{
+※ PDF形式に変換した場合、フォント、画像の鮮明さ等、十分確認をしてから投稿してください。
+事務局では、文字化け等の責任は負いかねます。}
+
+\section{原稿締切り}
+
+平成31年2月15日（金）
+
+\end{document}

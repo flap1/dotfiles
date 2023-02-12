@@ -6,6 +6,7 @@ require("nvim-treesitter.configs").setup {
     "html",
     "yaml",
     "python",
+    "latex",
     "toml",
     "markdown",
     "markdown_inline",
