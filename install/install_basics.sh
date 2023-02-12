@@ -10,6 +10,8 @@ check_and_install okular
 
 # terminal
 check_and_install tmux
+[ -e "$HOME/.tmux/plugins/tpm" ] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 # zsh
 check_and_install zsh
 # tools
@@ -39,4 +41,3 @@ check_and_install drawio "wget https://github.com/jgraph/drawio-desktop/releases
 
 # python poetry
 curl -sSL https://install.python-poetry.org | python3 -
-
