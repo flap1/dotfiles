@@ -31,18 +31,16 @@ let g:quickrun_config['tex'] = {
 \                      '%S:p:r.log',
 \                      '%S:p:r.out'
 \                      ],
-\ 'exec': ['%c %o %a %s', 'xdg-open %s:r.pdf'],
+\ 'exec': '%c %s %a %o',
 \}
 
 " 部分的に選択してコンパイル
 " http://auewe.hatenablog.com/entry/2013/12/25/033416 を参考に
 let g:quickrun_config.tmptex = {
 \   'exec': [
-\           'mkdir -p %a/out',
-\           'mv -f %s %a/out/tmptex.tex',
-\           'latexmk -pdfdvi -verbose -file-line-error -output-directory=%a/out %a/out/tmptex.tex',
+\           'mv -f %s %a/tmptex.tex',
+\           'latexmk_tmptex_wrapper %a',
 \           ],
-\   'args' : expand("%:p:h:gs?\\\\?/?"),
 \   'outputter' : 'error',
 \   'outputter/error/error' : 'quickfix',
 \
@@ -51,6 +49,9 @@ let g:quickrun_config.tmptex = {
 \
 \   'hook/eval/template' : '\documentclass{ltjsarticle}'
 \                         .'\usepackage{float}'
+\                         .'\usepackage{here}'
+\                         .'\usepackage{url}'
+\                         .'\usepackage{graphicx}'
 \                         .'\usepackage{amsmath,amssymb,amsthm,ascmac,mathrsfs}'
 \                         .'\allowdisplaybreaks[1]'
 \                         .'\theoremstyle{definition}'
@@ -59,6 +60,9 @@ let g:quickrun_config.tmptex = {
 \                         .'\newtheorem{definition}[theorem]{定義}'
 \                         .'\newtheorem*{definition*}{定義}'
 \                         .'\renewcommand\vector[1]{\mbox{\boldmath{\$#1\$}}}'
+\                         .'\makeatletter'
+\                         .'\def\input\@path{{..//}{../..//}}'
+\                         .'\makeatother'
 \                         .'\begin{document}'
 \                         .'%s'
 \                         .'\end{document}',
@@ -73,7 +77,9 @@ let g:quickrun_config.tmptex = {
 \                        ],
 \}
 
-vnoremap <silent> <F5> :QuickRun -mode v -type tmptex<CR>
+vnoremap <silent> <F5> :<C-u>
+      \ let @x = expand("%:p:h:gs?\\\\?/?")<CR>
+      \:QuickRun -mode v -type tmptex -args @x<CR>
 
 " QuickRun and view compile result quickly (but don't preview pdf file)
 nnoremap <silent> <F5> :QuickRun<CR>
@@ -84,6 +90,5 @@ augroup filetype
   autocmd BufRead,BufNewFile *.tex set filetype=tex
 augroup END
 
-autocmd BufWritePost,FileWritePost *.tex QuickRun tex
-
+" autocmd BufWritePost,FileWritePost *.tex QuickRun tex
 
