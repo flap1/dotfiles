@@ -68,6 +68,7 @@ specify install dir | pip install <package> -t /path/
 update pip | pip install -U pip
 update pip package | pip install -U <package>
 output to requirements.txt | pip freeze > requirements.txt
+clear cache | pip cache purge
 
 ## mypy
 use mypy | poetry run mypy --warn-incomplete-stub <dir>
