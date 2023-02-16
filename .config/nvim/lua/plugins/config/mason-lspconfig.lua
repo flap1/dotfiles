@@ -1,5 +1,5 @@
 require('mason-lspconfig').setup {
-  ensure_installed = { "sumneko_lua", "rust_analyzer", "remark_ls" },
+  ensure_installed = { "lua_ls", "rust_analyzer", "remark_ls" },
 }
 
 local nvim_lsp = require('lspconfig')
@@ -87,7 +87,7 @@ require('mason-lspconfig').setup_handlers({
   end,
 
   -- lua
-  ["sumneko_lua"] = function()
+  ["lua_ls"] = function()
     local has_lua_dev, lua_dev = pcall(require, "neodev")
     if has_lua_dev then
       local l = lua_dev.setup({
@@ -110,9 +110,9 @@ require('mason-lspconfig').setup_handlers({
           ["missing-parameter"] = "Hint",
         },
       }
-      lspconfig.sumneko_lua.setup(l)
+      lspconfig.lua_ls.setup(l)
     else
-      lspconfig.sumneko_lua.setup({
+      lspconfig.lua_ls.setup({
         settings = {
           Lua = {
             diagnostics = {
