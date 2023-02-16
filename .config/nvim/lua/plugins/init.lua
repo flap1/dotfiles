@@ -208,7 +208,7 @@ return require("packer").startup({ function(use)
 
   ---- Quickfix -- TODO:
   use { "kevinhwang91/nvim-bqf", event = "VimEnter", ft = 'qf'}
-  use { "gabrielpoca/replacer.nvim", event = "VimEnter", config = function() require("plugins/config/replacer") end, }
+  use { "gabrielpoca/replacer.nvim", commit = "e06a955", event = "VimEnter", config = function() require("plugins/config/replacer") end, }
   -- use { "stevearc/qf_helper.nvim", event = "VimEnter", config = function() require("plugins/config/qf_helper") end, }
 
   ---- Session
