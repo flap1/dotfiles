@@ -140,7 +140,7 @@ rm -rf /tmp/cookies.txt
 ## ex) ghcr <repo-name> --private
 function ghcr() {
 gh repo create $argv # --public, --private
-ghq get $argv[1]
+ghq get -p $argv[1]
 nvr $(ghq list --full-path -e $argv[1])
 }
 
