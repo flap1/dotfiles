@@ -41,3 +41,7 @@ check_and_install drawio "wget https://github.com/jgraph/drawio-desktop/releases
 
 # python poetry
 curl -sSL https://install.python-poetry.org | python3 -
+
+# font
+# sudo apt -y install ttf-mscorefonts-installer
+

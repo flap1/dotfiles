@@ -22,6 +22,11 @@ if [ ! -f ~/.local/share/fonts/Hack-Regular.ttf ];then
   rm -rf Hack-v3.003-ttf.zip
 fi
 
+# Times New Roman
+if [ ! -f /usr/share/fonts/truetype/msttcorefonts/Times_New_Roman.ttf ]; then
+  sudo apt -y install ttf-mscorefonts-installer
+fi
+
 # clear and regenerate your font cache and indexes
 fc-cache -f -v
 
