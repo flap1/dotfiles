@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# 引数の解析
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --min)
+            shift
+            min_lines="$1"
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: $(basename "$0") [--min N] [DIR]"
+            echo "  --min N  Show only files with N or more lines"
+            echo "  -h, --help  Show this help message"
+            exit 0
+            ;;
+        *)
+            root="$1"
+            shift
+            ;;
+    esac
+done
+
+# ルートディレクトリが指定されていない場合は、現在のディレクトリを使用する
+if [ -z "$root" ]; then
+    root="."
+fi
+
+# ルートディレクトリ以下にあるファイルのリストを取得し、
+# 行数をカウントして行数の多い順にソートする
+find "$root" -type f -print0 | xargs -0 wc -l | sort -nr | \
+    awk -v min="$min_lines" '{if ($1 >= min || min == "") print}'
+

@@ -177,7 +177,9 @@ return require("packer").startup({ function(use)
 
   ---- Operator
   -- use { "gbprod/substitute.nvim", event = "VimEnter", config = function() require("plugins/config/substitute") end } -- TODO:
-  use { "kylechui/nvim-surround", event = "VimEnter", config = function() require("plugins/config/nvim-surround") end }
+  if not vim.g.vscode then
+    use { "kylechui/nvim-surround", event = "VimEnter", config = function() require("plugins/config/nvim-surround") end }
+  end
 
   ---- Join
   use { "AckslD/nvim-trevJ.lua", module = "trevj", after = { "nvim-treesitter" }, config = function() require("plugins/config/nvim-trevJ") end }
@@ -194,7 +196,7 @@ return require("packer").startup({ function(use)
 
   -- File ----------------------------------------
   ---- Filer
-  use { "nvim-neo-tree/neo-tree.nvim", event = "VimEnter", branch = "v2.x", requires = { "nvim-lua/plenary.nvim", "kyazdani42/nvim-web-devicons", "MunifTanjim/nui.nvim" }, config = function() require("plugins/config/neo-tree") end }
+  use { "nvim-neo-tree/neo-tree.nvim", event = "VimEnter", requires = { "nvim-lua/plenary.nvim", "kyazdani42/nvim-web-devicons", "MunifTanjim/nui.nvim" }, config = function() require("plugins/config/neo-tree") end }
 
   ---- Buffer
   use { "kazhala/close-buffers.nvim", config = function() require("plugins/config/close-buffers") end } -- https://github.com/kazhala/close-buffers.nvim
@@ -336,6 +338,10 @@ return require("packer").startup({ function(use)
   use { 'pixelneo/vim-python-docstring', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/vim-python-docstring.vim") end }
   use { "ahmedkhalf/jupyter-nvim", run = ":UpdateRemotePlugins", config = function() require("jupyter-nvim").setup { } end }
   use { 'dccsillag/magma-nvim', run = ':UpdateRemotePlugins', config = function() vim.cmd("source ~/.config/nvim/vim/plugins/config/magma-nvim.vim") end }
+
+  ---- C
+  -- use { 'marxin/neo-rtags' }
+  -- use { 'lyuts/vim-rtags' }
 
   ---- PlantUML
   use { "weirongxu/plantuml-previewer.vim", requires = { { "tyru/open-browser.vim" }, { "aklt/plantuml-syntax" } }}
