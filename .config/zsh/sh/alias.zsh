@@ -30,7 +30,7 @@ alias tree='lsd -A --tree --group-dirs=last'
 alias du="dust" # alias du="du -sh"
 alias df="df -h"
 alias su="su -l"
-alias ps='procs --tree'
+# alias ps='procs --tree'
 
 # history
 alias history-mem='fc -rl'
@@ -45,7 +45,7 @@ alias 755='chmod 755'
 alias 777='chmod 777'
 
 # grep
-alias grep='rg -S'
+# alias grep='rg -S'
 alias gre='grep -H -n -I --color=auto' #  ファイル名表示, 行数表示, バイナリファイルは処理しない
 
 # vi/vim
