@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# 第一引数にパスが指定されているか確認
+if [ -z "$1" ]; then
+  echo "Usage: $0 <path>"
+  exit 1
+fi
+
+path="$1"
+
+# .gitmodules ファイルの削除確認
+if [ -f ".gitmodules" ]; then
+  echo ".gitmodules ファイルの削除を確認しますか？ (y/n): "
+  read -r confirm_gitmodules
+  if [[ $confirm_gitmodules == "y" ]]; then
+    git config --file=.git/config --remove-section "submodule.$path"
+    git config -f .gitmodules --remove-section "submodule.$path"
+    git rm --cached -rf "$path"
+  fi
+fi
+
+# .git/config ファイルの削除確認
+if [ -f ".git/config" ]; then
+  echo ".git/config ファイルの削除を確認しますか？ (y/n): "
+  read -r confirm_config
+  if [[ $confirm_config == "y" ]]; then
+    git config --file=.git/config --remove-section "submodule.$path"
+    git rm --cached -rf "$path"
+  fi
+fi
+
+# .git/modules ディレクトリの削除確認
+if [ -d ".git/modules/$path" ]; then
+  echo ".git/modules/$path ディレクトリの削除を確認しますか？ (y/n): "
+  read -r confirm_modules
+  if [[ $confirm_modules == "y" ]]; then
+    rm -rf ".git/modules/$path"
+  fi
+fi
+
+# 指定されたパスの削除
+echo "パス '$path' を削除しますか？ (y/n): "
+read -r confirm_path
+if [[ $confirm_path == "y" ]]; then
+  rm -rf "$path"
+  git rm --cached -rf "$path"
+fi
+
+echo "処理が完了しました。"
+
