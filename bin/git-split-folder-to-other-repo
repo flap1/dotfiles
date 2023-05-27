@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# 一時的なブランチ名の生成
+branch_name="feature/$(date +%s%N | sha256sum | head -c 8)"
+
+# ブランチの作成
+git checkout -b "$branch_name"
+
+# 移行したいフォルダのパス
+target_path="$1"
+
+# ルートディレクトリへの移動
+cd "$(git rev-parse --show-toplevel)"
+
+# 移行したいフォルダの存在チェック
+if [ ! -d "$target_path" ]; then
+  echo "指定したフォルダが存在しません"
+  exit 1
+fi
+
+# filter-branch の実行
+git filter-branch -f --prune-empty --subdirectory-filter "$target_path" -- --all
+
+# 変更の反映とプッシュ
+git add -A
+git commit -m "Move $target_path to a separate repository"
+git push origin "$branch_name" --force
+
+# メッセージの表示
+echo "不要なディレクトリやファイルを除いて再度リポジトリをプッシュしてください。"
+echo ""
+echo "他の空のリポジトリをクローンし、以下のコマンドを実行してください:"
+echo ""
+echo "git remote add original-repo 元のリポジトリのURL"
+echo "git fetch original-repo $branch_name"
+echo "git checkout -b main original-repo/$branch_name"
+echo ""
+echo "最後に、変更をリモートリポジトリにプッシュしてください。"
+
