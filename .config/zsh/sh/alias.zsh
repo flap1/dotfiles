@@ -27,7 +27,7 @@ alias ll='lsd -Ahl --total-size --group-dirs=last'
 alias lt='lsd -Ahl --total-size --tree --group-dirs=last'
 alias l.='lsd .[a-zA-Z]* --group-dirs=last'
 alias tree='lsd -A --tree --group-dirs=last'
-alias du="dust" # alias du="du -sh"
+# alias du="dust" # alias du="du -sh"
 alias df="df -h"
 alias su="su -l"
 # alias ps='procs --tree'
