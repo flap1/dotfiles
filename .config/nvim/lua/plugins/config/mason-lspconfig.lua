@@ -1,5 +1,5 @@
 require('mason-lspconfig').setup {
-  ensure_installed = { "lua_ls", "rust_analyzer", "remark_ls" },
+  ensure_installed = { "lua_ls", "rust_analyzer", "remark_ls", "clangd" },
 }
 
 local nvim_lsp = require('lspconfig')
@@ -37,6 +37,10 @@ end
 local lspconfig = require 'lspconfig'
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 local opts = { capabilities = capabilities, on_attach = on_attach, root_dir = nvim_lsp.util.find_git_ancestor }
+
+-- for clang
+local clangd_capabilities = capabilities
+clangd_capabilities.offsetEncoding = "utf-8"
 
 require('mason-lspconfig').setup_handlers({
   function(server_name)
@@ -76,6 +80,23 @@ require('mason-lspconfig').setup_handlers({
   --     }
   --   })
   -- end,
+  ['clangd'] = function()
+    lspconfig.clangd.setup {
+      capabilities = clangd_capabilities,
+      cmd = { "clangd", "--background-index", "--clang-tidy", "--cross-file-rename", "--completion-style=detailed" },
+      -- handlers = {
+      --   ["textDocument/publishDiagnostics"] = vim.lsp.with(
+      --     vim.lsp.diagnostic.on_publish_diagnostics, {
+      --       virtual_text = false,
+      --       signs = true,
+      --       underline = true,
+      --       update_in_insert = true,
+      --     }
+      --   ),
+      -- },
+      root_dir = nvim_lsp.util.root_pattern("compile_commands.json", "compile_flags.txt", ".clangd", ".git"),
+    }
+  end,
 
   -- rust
   ['rust_analyzer'] = function()
