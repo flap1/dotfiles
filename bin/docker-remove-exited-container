@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# "Exited" ステータスのコンテナを一覧表示
+containers=$(docker ps -a --filter "status=exited" --format "{{.Names}}")
+
+# コンテナごとに確認と削除の処理を実行
+for container in $containers; do
+  echo "コンテナ: $container"
+  read -p "このコンテナを削除しますか？ (y/n): " answer
+
+  if [[ "$answer" == "y" ]]; then
+    docker rm "$container"
+    echo "コンテナ $container を削除しました"
+  else
+    echo "コンテナ $container は削除されませんでした"
+  fi
+
+  echo
+done
+
