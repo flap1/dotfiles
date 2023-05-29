@@ -1,4 +1,9 @@
 #!/bin/bash
 
-docker rmi $(docker images -f "dangling=true" -q)
+dangling_images=$(docker images -f "dangling=true" -q)
 
+if [[ -n $dangling_images ]]; then
+    docker rmi $dangling_images
+else
+    echo "No dangling images found. Skipping removal."
+fi
