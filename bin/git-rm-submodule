@@ -13,9 +13,9 @@ if [ -f ".gitmodules" ]; then
   echo ".gitmodules ファイルの削除を確認しますか？ (y/n): "
   read -r confirm_gitmodules
   if [[ $confirm_gitmodules == "y" ]]; then
-    git config --file=.git/config --remove-section "submodule.$path"
-    git config -f .gitmodules --remove-section "submodule.$path"
-    git rm --cached -rf "$path"
+    git config --file=.git/config --remove-section "submodule.$path" || { echo "Error: Failed to remove submodule from .git/config."; exit 1; }
+    git config -f .gitmodules --remove-section "submodule.$path" || { echo "Error: Failed to remove submodule from .gitmodules."; exit 1; }
+    git rm --cached -rf "$path" || { echo "Error: Failed to remove submodule from the repository."; exit 1; }
   fi
 fi
 
@@ -24,8 +24,8 @@ if [ -f ".git/config" ]; then
   echo ".git/config ファイルの削除を確認しますか？ (y/n): "
   read -r confirm_config
   if [[ $confirm_config == "y" ]]; then
-    git config --file=.git/config --remove-section "submodule.$path"
-    git rm --cached -rf "$path"
+    git config --file=.git/config --remove-section "submodule.$path" || { echo "Error: Failed to remove submodule from .git/config."; exit 1; }
+    git rm --cached -rf "$path" || { echo "Error: Failed to remove submodule from the repository."; exit 1; }
   fi
 fi
 
@@ -34,7 +34,7 @@ if [ -d ".git/modules/$path" ]; then
   echo ".git/modules/$path ディレクトリの削除を確認しますか？ (y/n): "
   read -r confirm_modules
   if [[ $confirm_modules == "y" ]]; then
-    rm -rf ".git/modules/$path"
+    rm -rf ".git/modules/$path" || { echo "Error: Failed to remove submodule from .git/modules directory."; exit 1; }
   fi
 fi
 
@@ -42,8 +42,8 @@ fi
 echo "パス '$path' を削除しますか？ (y/n): "
 read -r confirm_path
 if [[ $confirm_path == "y" ]]; then
-  rm -rf "$path"
-  git rm --cached -rf "$path"
+  rm -rf "$path" || { echo "Error: Failed to remove the specified path."; exit 1; }
+  git rm --cached -rf "$path" || { echo "Error: Failed to remove the specified path from the repository."; exit 1; }
 fi
 
 echo "処理が完了しました。"
