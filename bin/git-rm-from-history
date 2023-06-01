@@ -30,11 +30,11 @@ while getopts ':h:f:' option; do
 done
 shift $((OPTIND - 1)) # remove all the options from the positional parameters
 
-git filter-branch --force --index-filter "git rm -rf --cached --ignore-unmatch ${files[@]}" --prune-empty -- --all
-git gc --aggressive --prune=now #  Delete unwanted objects and logs
+git filter-repo --path ${files[@]} --invert-paths
+git gc --aggressive --prune=now # Delete unwanted objects and logs
 git repack -A -d # repack
 echo "\
 ------------------------
-Finally do the following 
+Finally, do the following:
 git push --all --force origin"
 
