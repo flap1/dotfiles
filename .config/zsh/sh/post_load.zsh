@@ -60,3 +60,7 @@ if [ -x "$(command -v gh)" ]; then
 eval "$(gh completion -s zsh)"
 fi
 
+# go
+export GOENV_ROOT="$HOME/.goenv"
+export PATH="$GOENV_ROOT/bin:$PATH"
+eval "$(goenv init -)"
