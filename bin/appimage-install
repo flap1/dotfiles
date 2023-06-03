@@ -1,0 +1,121 @@
+#!/bin/bash
+
+# ヘルプメッセージを表示する関数
+show_help() {
+  echo "Usage: $0 /path/to/appimage"
+  echo "This script installs an AppImage and creates a desktop entry for it."
+}
+
+# 第一引数がない場合はヘルプを表示して終了
+if [ -z "$1" ]; then
+  show_help
+  exit 1
+fi
+
+# AppImageのパスを取得
+appimage_path=$1
+
+# AppImageが存在しない場合は終了
+if [ ! -f "$appimage_path" ]; then
+  echo "AppImage not found: $appimage_path"
+  exit 1
+fi
+
+# $HOME/appimagesディレクトリが存在しない場合は作成
+appimages_dir="$HOME/appimages"
+mkdir -p "$appimages_dir"
+
+# AppImageを移動して実行権限を付与
+appimage_filename=$(basename "$appimage_path")
+mv "$appimage_path" "$appimages_dir/$appimage_filename"
+chmod +x "$appimages_dir/$appimage_filename"
+
+# AppImageのディレクトリに移動
+cd "$appimages_dir"
+
+# AppImageを展開前にsquashfs-rootディレクトリが存在する場合は削除するか確認
+app_dir="squashfs-root"
+if [ -d "$app_dir" ]; then
+  read -p "Existing 'squashfs-root' directory found. Do you want to remove it? (y/n): " remove_dir
+  if [ "$remove_dir" = "y" ]; then
+    rm -r "$app_dir"
+  else
+    echo "Aborted."
+    exit 1
+  fi
+fi
+
+# AppImageを展開
+./"$appimage_filename" --appimage-extract
+
+# AppImageのディレクトリ名を取得
+app_dir="squashfs-root"
+if [ -z "$app_dir" ]; then
+  echo "Failed to extract AppImage: $appimage_path"
+  exit 1
+fi
+
+# ディレクトリ名からプログラム名を取得
+program_name=$(basename "$appimage_filename" | sed 's/\.AppImage$//')
+
+# $program_nameディレクトリが既に存在する場合は削除するか確認
+if [ -d "$program_name" ]; then
+  read -p "Existing '$program_name' directory found. Do you want to remove it? (y/n): " remove_dir
+  if [ "$remove_dir" = "y" ]; then
+    rm -r "$program_name"
+  else
+    echo "Aborted."
+    exit 1
+  fi
+fi
+
+# ディレクトリを移動
+mv "$app_dir" "$program_name"
+
+# ユーザー名を取得
+user_name=$(whoami)
+
+# desktopファイルのパスを設定
+desktop_file=$(find "$appimages_dir/$program_name" -maxdepth 2 -type f -name "*.desktop")
+
+if [ -z "$desktop_file" ]; then
+  echo "Desktop file not found in $appimages_dir/$program_name"
+  exit 1
+fi
+
+# Exec=行を変更
+sed -i "s|Exec=.*|Exec=/home/$user_name/appimages/$appimage_filename|" "$desktop_file"
+
+# Iconのファイルを選択
+icon_files=("$appimages_dir/$program_name"/*.png)
+
+if [ ${#icon_files[@]} -gt 0 ]; then
+  echo "Select an icon file:"
+
+  # 選択肢の表示
+  index=0
+  selected_icon_file=""
+  for icon_file in "${icon_files[@]}"; do
+    echo "[$index] $icon_file"
+    index=$((index+1))
+  done
+
+  # ユーザーに番号を入力させる
+  read -p "Enter the number corresponding to the icon file: " selected_index
+
+  # 選択された番号に対応するアイコンファイルを取得
+  selected_icon_file=${icon_files[selected_index]}
+
+  if [ -n "$selected_icon_file" ]; then
+    sed -i "s|Icon=.*|Icon=$selected_icon_file|" "$desktop_file"
+  fi
+fi
+
+# desktopファイルをインストール
+desktop-file-install --dir="$HOME/.local/share/applications" "$desktop_file"
+
+# desktopファイルのデータベースを更新
+update-desktop-database "$HOME/.local/share/applications"
+
+# インストールが完了したことを表示
+echo "AppImage installed and desktop entry created."
