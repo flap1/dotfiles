@@ -20,6 +20,22 @@ if ! command -v goenv >/dev/null 2>&1; then
   echo ""
 fi
 
+# Check if go is installed
+if ! command -v go &> /dev/null; then
+    echo "go is not installed."
+fi
+
+# List installed versions
+installed_versions=$(goenv versions --bare)
+
+if [[ -z "$installed_versions" ]]; then
+    echo "No versions of Go are currently installed."
+else
+    echo "Installed versions of Go:"
+    echo "$installed_versions"
+    echo ""
+fi
+
 # 最新バージョンの確認
 echo "Please visit the following link to check the latest Go version:"
 echo "https://golang.org/dl/"
