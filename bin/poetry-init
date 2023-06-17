@@ -1,0 +1,111 @@
+#!/bin/bash
+
+# poetry init コマンドを手動で実行して、pyproject.toml ファイルを作成
+poetry init
+
+# プロジェクト名の入力
+read -p "Enter project name: " project_name
+
+# 年度と git ユーザ名の取得
+current_year=$(date +'%Y')
+git_username=$(git config user.name)
+
+# 著作権情報の設定
+default_copyright="$current_year, $git_username"
+read -p "Enter copyright information [$default_copyright]: " copyright
+copyright=${copyright:-$default_copyright}
+
+# 依存関係の追加
+poetry add --dev pytest
+poetry add --dev black
+poetry add --dev isort
+poetry add --dev mypy
+poetry add --dev pyproject-flake8
+poetry add --dev sphinx-rtd-theme
+poetry add --dev sphinx-pyproject
+poetry add --dev flake8-docstrings
+poetry add --dev flake8-isort
+poetry add --dev flake8-bugbear
+poetry add --dev flake8-builtins
+poetry add --dev taskipy
+
+# ドキュメントのソースパスの入力
+default_docs_source_path="./docs/source"
+read -p "Enter documentation source path [$default_docs_source_path]: " docs_source_path
+docs_source_path=${docs_source_path:-$default_docs_source_path}
+
+# ドキュメントのビルドパスの入力
+default_docs_build_path="./docs/build"
+read -p "Enter documentation build path [$default_docs_build_path]: " docs_build_path
+docs_build_path=${docs_build_path:-$default_docs_build_path}
+
+# ドキュメントのデプロイパスの入力
+default_docs_deploy_path="./public"
+read -p "Enter documentation deploy path [$default_docs_deploy_path]: " docs_deploy_path
+docs_deploy_path=${docs_deploy_path:-$default_docs_deploy_path}
+
+# pyproject.toml ファイルの追記
+cat << EOF >> pyproject.toml
+
+[tool.isort]
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+known_local_folder = ['config']
+
+[tool.flake8]
+max-line-length = 120
+max-complexity = 18
+ignore = "E203,E266,W503,"
+
+[tool.mypy]
+python_version = "3.9"
+show_error_context = true
+show_column_numbers = true
+ignore_missing_imports = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[project]
+name = "$project_name"
+description = ""
+version = "0.1.0"
+
+[[project.authors]]
+name = "$git_username"
+
+[tool.sphinx-pyproject]
+project = ""
+copyright = ""
+language = "en"
+html_theme = "sphinx_rtd_theme"
+todo_include_todos = true
+templates_path = ["_templates"]
+html_static_path = ["_static"]
+extensions = [
+  "sphinx.ext.autodoc",
+  "sphinx.ext.viewcode",
+  "sphinx.ext.todo",
+  "sphinx.ext.napoleon",
+]
+
+[tool.taskipy.tasks]
+test = "pytest -s -vv --cov=. --cov-branch --cov-report=html"
+fmt = "task fmt-black && task fmt-isort"
+fmt-black = "black $project_name tests"
+fmt-isort = "isort $project_name tests"
+lint = "task lint-black && task lint-flake8 && task lint-mypy"
+lint-flake8 = "flake8 $project_name tests"
+lint-mypy = "mypy $project_name tests"
+lint-black = "black --check $project_name tests"
+docs = "sphinx-apidoc -F -o $docs_source_path $project_name && sphinx-build $docs_source_path $docs_build_path"
+docs-deploy = "sphinx-apidoc -F -o $docs_source_path $project_name && sphinx-build $docs_source_path $docs_deploy_path"
+EOF
+
+echo "pyproject.toml file has been created."
+
