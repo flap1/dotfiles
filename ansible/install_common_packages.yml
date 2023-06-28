@@ -1,0 +1,21 @@
+---
+- name: Install Common Packages
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Install Vim
+      apt:
+        name: vim
+        state: present
+  serial: "1"
