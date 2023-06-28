@@ -52,6 +52,7 @@ create_symlink ".config/Code/User/settings.json" "$HOME/.config/Code/User/settin
 create_symlink ".config/tmux/.tmux.conf" "$HOME/.tmux.conf"
 create_symlink ".config/git/.gitconfig" "$HOME/.gitconfig"
 create_symlink ".config/alacritty/.alacritty.yml" "$HOME/.alacritty.yml"
+create_symlink ".config/ansible/.ansible.cfg" "$HOME/.ansible.cfg"
 
 # mkdir
 [ -d "$HOME/.git-worktrees" ] || mkdir "$HOME/.git-worktrees"
