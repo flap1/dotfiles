@@ -1,0 +1,9 @@
+#!/bin/bash
+
+settings_file="/tools/Xilinx/Vivado/2023.1/settings64.sh"
+
+if [ -f "$settings_file" ]; then
+    source "$settings_file" && vivado
+else
+    echo "Xilinx Vivado settings file not found: $settings_file"
+fi
