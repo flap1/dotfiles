@@ -64,3 +64,6 @@ fi
 export GOENV_ROOT="$HOME/.goenv"
 export PATH="$GOENV_ROOT/bin:$PATH"
 eval "$(goenv init -)"
+
+# ros
+[ -f "/opt/ros/humble/setup.zsh" ] && source "/opt/ros/humble/setup.zsh"
