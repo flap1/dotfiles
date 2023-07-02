@@ -67,3 +67,4 @@ eval "$(goenv init -)"
 
 # ros
 [ -f "/opt/ros/humble/setup.zsh" ] && source "/opt/ros/humble/setup.zsh"
+[ -d "$HOME/.tfenv" ] && export PATH=$HOME/.tfenv/bin:$PATH
