@@ -62,9 +62,7 @@ eval "$(gh completion -s zsh)"
 fi
 
 # go
-export GOENV_ROOT="$HOME/.goenv"
-export PATH="$GOENV_ROOT/bin:$PATH"
-eval "$(goenv init -)"
+[ -f "$HOME/.goenv" ] && export GOENV_ROOT="$HOME/.goenv" && export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)"  
 
 # ros
 [ -f "/opt/ros/humble/setup.zsh" ] && source "/opt/ros/humble/setup.zsh"
@@ -72,3 +70,6 @@ eval "$(goenv init -)"
 
 # yre
 [ -f "$HOME/.rye/env" ] && source "$HOME/.rye/env"
+
+# aws
+ [ -f "$HOME/.aws/config" ] && export AWS_VAULT_BACKEND=file
