@@ -31,10 +31,25 @@ create_symlink() {
             esac
         fi
     fi
+
+    parent_dir=$(dirname "$dst")
+    if [ ! -d "$parent_dir" ]; then
+        read -p "Parent directory $parent_dir does not exist. Do you want to create it? (y/n): " yn
+        case $yn in
+            [Yy]* )
+                mkdir -p "$parent_dir" || sudo mkdir -p "$parent_dir"
+                echo "Parent directory $parent_dir has been created.";;
+            * )
+                echo "Canceled. Skipping symbolic link creation."
+                return;;
+        esac
+    fi
+
     if ! ln -s "$src" "$dst"; then
         echo "Failed to create symbolic link $dst. Retrying with sudo..."
         sudo ln -sf "$src" "$dst"
     fi
+
     echo "Symbolic link $dst has been created to $src."
 }
 
