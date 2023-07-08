@@ -57,6 +57,7 @@ create_symlink() {
 create_symlink "bin" "$HOME/bin"
 create_symlink ".git_template" "$HOME/.git_template"
 create_symlink ".latexmkrc" "$HOME/.latexmkrc"
+create_symlink ".remarkrc.yml" "$HOME/.remarkrc.yml"
 create_symlink ".zprofile" "$HOME/.zprofile"
 create_symlink ".config/zsh" "$HOME/.config/zsh"
 create_symlink ".config/nvim" "$HOME/.config/nvim"
