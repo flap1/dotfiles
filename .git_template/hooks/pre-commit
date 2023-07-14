@@ -1,7 +1,6 @@
 #!/bin/bash
 
-if git rev-parse --verify HEAD >/dev/null 2>&1
-then
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
     against=HEAD
 else
     # Initial commit: diff against an empty tree object
@@ -11,41 +10,44 @@ fi
 # Redirect output to stderr.
 exec 1>&2
 
-readonly REMOTE_ORIGIN_URL=$(git config --local remote.origin.url)
+REMOTE_ORIGIN_URL=$(git config --local remote.origin.url)
+git_domain="git"
+git_user_name="flap1"
+git_user_email="sho1seto@gmail.com"
 
-readonly GIT_DOMAIN="git"
-readonly GIT_USER_NAME="flap1"
-readonly GIT_USER_EMAIL="sho1seto@gmail.com"
+local_git_user_name=$(git config --local user.name)
+local_git_user_email=$(git config --local user.email)
 
-readonly LOCAL_GIT_USER_NAME=$(git config --local user.name)
-readonly LOCAL_GIT_USER_EMAIL=$(git config --local user.email)
+readonly REMOTE_ORIGIN_URL
+readonly git_domain
+readonly git_user_name
+readonly git_user_email
+readonly local_git_user_name
+readonly local_git_user_email
 
-# Skip if the Author has been changed
-if [[ ${GIT_USER_NAME} = ${LOCAL_GIT_USER_NAME} ]] \
-    && [[ ${GIT_USER_EMAIL} = ${GIT_USER_EMAIL} ]] ; then
-    exit 0
-fi
-
-# Change the Author to company information
-if [[ ${REMOTE_ORIGIN_URL} = *${GIT_DOMAIN}* ]] ; then
-    git config --local user.name "${GIT_USER_NAME}"
-    git config --local user.email "${GIT_USER_EMAIL}"
-    git reset HEAD . # Because you can't change the Author of staged files
-    echo "[WARN] Configure the Author (name, email) and unstage files."
-    echo "[WARN] Please run git-commands again."
-    exit 1
+# Check if the Author has been changed
+if [[ "${git_user_name}" != "${local_git_user_name}" ]] || [[ "${git_user_email}" != "${local_git_user_email}" ]]; then
+    # Change the Author to company information
+    if [[ "${REMOTE_ORIGIN_URL}" = *"${git_domain}"* ]]; then
+        git config --local user.name "${git_user_name}"
+        git config --local user.email "${git_user_email}"
+        git reset HEAD . # Because you can't change the Author of staged files
+        echo "[WARN] Configure the Author (name, email) and unstage files." >&2
+        echo "[WARN] Please run git-commands again." >&2
+        exit 1
+    fi
 fi
 
 # Warn if there are unresolved conflict files
-for FILE in `git diff-index --name-status $against | grep -E '\.(swift|pbxproj|m|h|xib|storyboard)$' | cut -c3-`; do
-    if [ -e $FILE ]; then
+while IFS= read -r file; do
+    if [[ ! -e "$file" ]]; then
         # Skip deleted files
         continue
     fi
-    grep_result=`grep -E '(<<<<<<<|>>>>>>>)' $FILE | grep -v '^$'`
-    if [ -n "${grep_result}" ]; then
-        echo $'\e[1;31m'$FILE$'\e[m' ' <- There are conflicting unresolved files'
-        echo $grep_result
+    grep_result=$(grep -E '(<<<<<<<|>>>>>>>)' "$file" | grep -v '^$')
+    if [[ -n "${grep_result}" ]]; then
+        echo $'\e[1;31m'"$file"$'\e[m' ' <- There are conflicting unresolved files'
+        echo "$grep_result"
         exit 1
     fi
-done
+done < <(git diff-index --name-status "$against" | grep -E '\.(swift|pbxproj|m|h|xib|storyboard)$' | cut -c3-)
