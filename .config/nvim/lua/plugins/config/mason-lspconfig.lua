@@ -15,7 +15,7 @@ vim.keymap.set('n', ';wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspac
 vim.keymap.set('n', ';D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', key_opts)
 vim.keymap.set('n', ';a', '<cmd>lua vim.lsp.buf.code_action()<CR>', key_opts)
 vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', key_opts)
-vim.keymap.set('n', ';e', '<cmd>lua vim.diagnostic.open_float()<CR>', key_opts)
+vim.keymap.set('n', ';e', '<cmd>lua vim.diagnostic.open_float()<CR><cmd>lua vim.diagnostic.open_float()<CR>', key_opts)
 vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', key_opts)
 vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', key_opts)
 vim.keymap.set('n', ';q', '<cmd>lua vim.diagnostic.setloclist()<CR>', key_opts)
