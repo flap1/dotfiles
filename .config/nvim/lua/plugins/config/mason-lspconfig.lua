@@ -30,6 +30,12 @@ end
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 local opts = { capabilities = capabilities, on_attach = on_attach, root_dir = lspconfig.util.find_git_ancestor }
+local rust_opts = {
+  capabilities = capabilities,
+  on_attach = on_attach,
+  root_dir = lspconfig.util.find_git_ancestor,
+  settings = { ["rust-analyzer"] = { check = { command = "clippy" } } }
+}
 
 -- for clang
 local clangd_capabilities = capabilities
@@ -93,21 +99,20 @@ local handlers = {
 
   -- rust
   ['rust_analyzer'] = function()
-    -- capabilities.offsetEncoding = 'utf-8'
-    -- local has_rust_tools, rust_tools = pcall(require, 'rust-tools')
-    -- if has_rust_tools then
-    --   rust_tools.setup { server = opts }
-    -- else
-    lspconfig.rust_analyzer.setup {
-      settings = {
-        ["rust-analyzer"] = {
-          check = {
-            command = "clippy"
+    local has_rust_tools, rust_tools = pcall(require, 'rust-tools')
+    if has_rust_tools then
+      rust_tools.setup { server = rust_opts }
+    else
+      lspconfig.rust_analyzer.setup {
+        settings = {
+          ["rust-analyzer"] = {
+            check = {
+              command = "clippy"
+            }
           }
         }
       }
-    }
-    -- end
+    end
   end,
 
   -- lua
