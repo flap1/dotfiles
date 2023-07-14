@@ -2,6 +2,7 @@ vim.api.nvim_create_user_command("SetNumberToggle", "set number! relativenumber!
 
 -- CDC = Change to Directory of Current file
 vim.api.nvim_create_user_command("CdCurrentDirectory", "cd %:p:h", { force = true })
+vim.api.nvim_set_keymap('n', '<M-c>', ':CdCurrentDirectory<CR>', { silent = true })
 
 -- Change indent
 vim.api.nvim_create_user_command("IndentChange", "set tabstop=<args> shiftwidth=<args>", { force = true, nargs = 1 })
