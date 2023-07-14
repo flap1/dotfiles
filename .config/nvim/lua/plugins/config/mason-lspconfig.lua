@@ -1,9 +1,3 @@
-require('mason-lspconfig').setup {
-  ensure_installed = { "lua_ls", "rust_analyzer", "remark_ls", "clangd" },
-}
-
-local nvim_lsp = require('lspconfig')
-
 local key_opts = { noremap = true, silent = true }
 -- lsp
 -- vim.keymap.set("n", ";", "<Nop>", { noremap = true, silent = true })
@@ -33,16 +27,15 @@ local on_attach = function(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   require('nvim-navic').attach(client, bufnr)
 end
-
-local lspconfig = require 'lspconfig'
+local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-local opts = { capabilities = capabilities, on_attach = on_attach, root_dir = nvim_lsp.util.find_git_ancestor }
+local opts = { capabilities = capabilities, on_attach = on_attach, root_dir = lspconfig.util.find_git_ancestor }
 
 -- for clang
 local clangd_capabilities = capabilities
-clangd_capabilities.offsetEncoding = "utf-8"
+-- clangd_capabilities.offsetEncoding = "utf-8"
 
-require('mason-lspconfig').setup_handlers({
+local handlers = {
   function(server_name)
     lspconfig[server_name].setup(opts)
   end,
@@ -50,7 +43,7 @@ require('mason-lspconfig').setup_handlers({
   -- markdown
   ['remark_ls'] = function()
     lspconfig.remark_ls.setup {
-      root_dir = nvim_lsp.util.root_pattern(".remarkrc.yml", ".remarkrc.js", ".git"),
+      root_dir = lspconfig.util.root_pattern(".remarkrc.yml", ".remarkrc.js", ".git"),
       filetypes = { "markdown", "telekasten" }
     }
   end,
@@ -94,18 +87,25 @@ require('mason-lspconfig').setup_handlers({
       --     }
       --   ),
       -- },
-      root_dir = nvim_lsp.util.root_pattern("compile_commands.json", "compile_flags.txt", ".clangd", ".git"),
+      root_dir = lspconfig.util.root_pattern("compile_commands.json", "compile_flags.txt", ".clangd", ".git"),
     }
   end,
 
   -- rust
   ['rust_analyzer'] = function()
-    local has_rust_tools, rust_tools = pcall(require, 'rust-tools')
-    if has_rust_tools then
-      rust_tools.setup { server = opts }
-    else
-      lspconfig.rust_analyzer.setup {}
-    end
+    -- capabilities.offsetEncoding = 'utf-8'
+    -- local has_rust_tools, rust_tools = pcall(require, 'rust-tools')
+    -- if has_rust_tools then
+    --   rust_tools.setup { server = opts }
+    -- else
+    lspconfig.rust_analyzer.setup {
+      settings = {
+        check = {
+          command = "clippy"
+        }
+      }
+    }
+    -- end
   end,
 
   -- lua
@@ -116,7 +116,7 @@ require('mason-lspconfig').setup_handlers({
         library = {
           enabled = true,
           runtime = true, -- runtime path
-          types = true, -- full signature, docs and completion of vim.api, vim.treesitter, vim.lsp and others
+          types = true,   -- full signature, docs and completion of vim.api, vim.treesitter, vim.lsp and others
           -- plugins = false, -- installed opt or start plugins in packpath
           -- you can also specify the list of plugins to make available as a workspace library
           -- plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim" },
@@ -148,4 +148,9 @@ require('mason-lspconfig').setup_handlers({
       })
     end
   end,
+}
+
+require('mason-lspconfig').setup({
+  ensure_installed = { "lua_ls", "rust_analyzer", "remark_ls", "clangd" },
+  handlers = handlers
 })
