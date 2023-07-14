@@ -100,8 +100,10 @@ local handlers = {
     -- else
     lspconfig.rust_analyzer.setup {
       settings = {
-        check = {
-          command = "clippy"
+        ["rust-analyzer"] = {
+          check = {
+            command = "clippy"
+          }
         }
       }
     }
