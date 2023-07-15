@@ -46,6 +46,11 @@ local handlers = {
     lspconfig[server_name].setup(opts)
   end,
 
+  -- astro
+  ['astro_ls'] = function()
+    lspconfig.astro.setup {}
+  end,
+
   -- markdown
   ['remark_ls'] = function()
     lspconfig.remark_ls.setup {
@@ -79,6 +84,7 @@ local handlers = {
   --     }
   --   })
   -- end,
+
   ['clangd'] = function()
     lspconfig.clangd.setup {
       capabilities = clangd_capabilities,
