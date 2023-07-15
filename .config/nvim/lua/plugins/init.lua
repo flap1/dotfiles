@@ -87,7 +87,7 @@ return require("packer").startup({ function(use)
   ---- Linter, Formatter
   -- use { 'mfussenegger/nvim-lint' }
   -- use { 'mhartington/formatter.nvim' }
-  -- use { 'jose-elias-alvarez/null-ls.nvim', after = "mason.nvim", config = function() require("plugins/config/null-ls") end }
+  use { 'jose-elias-alvarez/null-ls.nvim', after = "mason.nvim", config = function() require("plugins/config/null-ls") end }
 
   -- FuzzyFinder Library --------------------------
   use { "nvim-telescope/telescope.nvim", requires = { 'nvim-lua/plenary.nvim' }, after = colorscheme, config = function() require("plugins/config/telescope") end }
