@@ -46,18 +46,18 @@ local handlers = {
     lspconfig[server_name].setup(opts)
   end,
 
-  ["prettier"] = function()
-    lspconfig.prettier.setup {
-      cmd = { "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0) },
-      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "css", "less", "scss", "json",
-        "graphql", "markdown", "vue", "yaml", "html" },
-      root_dir = lspconfig.util.root_pattern(".prettierrc", ".prettierrc.json", ".prettierrc.toml", ".prettierrc.js",
-        ".git"),
-    }
-  end,
+  -- ["prettier"] = function()
+  --   lspconfig.prettier.setup {
+  --     cmd = { "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0) },
+  --     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "css", "less", "scss", "json",
+  --       "graphql", "markdown", "vue", "yaml", "html" },
+  --     root_dir = lspconfig.util.root_pattern(".prettierrc", ".prettierrc.json", ".prettierrc.toml", ".prettierrc.js",
+  --       ".git"),
+  --   }
+  -- end,
 
   -- astro
-  ['astro_ls'] = function()
+  ['astro'] = function()
     lspconfig.astro.setup {}
   end,
 
@@ -174,6 +174,6 @@ local handlers = {
 }
 
 require('mason-lspconfig').setup({
-  ensure_installed = { "lua_ls", "rust_analyzer", "remark_ls", "clangd" },
+  ensure_installed = { "lua_ls", "rust_analyzer", "remark_ls", "clangd", "astro" },
   handlers = handlers
 })
