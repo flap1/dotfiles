@@ -41,6 +41,19 @@ local rust_opts = {
 local clangd_capabilities = capabilities
 -- clangd_capabilities.offsetEncoding = "utf-8"
 
+-- for neodev
+require('neodev').setup({
+  library = {
+    enabled = true,
+    runtime = true, -- runtime path
+    types = true,   -- full signature, docs and completion of vim.api, vim.treesitter, vim.lsp and others
+    -- plugins = false, -- installed opt or start plugins in packpath
+    -- you can also specify the list of plugins to make available as a workspace library
+    -- plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim" },
+    plugins = { "nvim-treesitter", "plenary.nvim" },
+  },
+})
+
 local handlers = {
   function(server_name)
     lspconfig[server_name].setup(opts)
@@ -140,13 +153,8 @@ local handlers = {
           enabled = true,
           runtime = true, -- runtime path
           types = true,   -- full signature, docs and completion of vim.api, vim.treesitter, vim.lsp and others
-          -- plugins = false, -- installed opt or start plugins in packpath
-          -- you can also specify the list of plugins to make available as a workspace library
-          -- plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim" },
           plugins = { "nvim-treesitter", "plenary.nvim" },
         },
-        -- runtime_path = false,
-        -- lspconfig = opts,
       })
       l["settings"]["Lua"] = {}
       l["settings"]["Lua"]["diagnostics"] = {
