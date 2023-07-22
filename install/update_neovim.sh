@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Build prerequisites
+sudo apt-get install ninja-build gettext cmake unzip curl
+
 # uninstall neovim: `which nvim` 
 nvim_path=$(which nvim)
 
