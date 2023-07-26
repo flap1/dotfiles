@@ -150,6 +150,10 @@ Get all conflict to quickfix | :GitConflictListQf
 open link | gx
 repeat command | q{0-9a-z}<command>
 exec repeated command | @{0-9a-z}
+get filetype | echo &filetype
+
+## nvim-treesitter
+install syntax highlight | :TSInstall <language> 
 
 ###########################
 # regex
@@ -195,6 +199,7 @@ $HOME の容量確認(check home capacity) | dust -X gdrive -z 10M
 圧縮(.tar) | tar -cvf xxxx.tar <dir>
 圧縮(.zip) | zip -r xxx.zip <dir>
 kill port | sudo lsof -i:<PORT> <then> sudo kill <PID>
+os情報他きれいに出力(output system info graphically) | neofetch
 
 ## random
 乱数生成 | cat /dev/urandom | base64 | fold -w 32 | head -n 1
