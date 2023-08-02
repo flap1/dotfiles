@@ -27,6 +27,7 @@ check_and_install dust "cargo install du-dust"
 check_and_install fd 'sudo apt install fd-find; ln -s $(which fdfind) ~/dotfiles/bin/fd'
 check_and_install gawk # for translate-shell
 check_and_install neofetch
+check_and_install htop
 
 # common
 check_and_install curl
