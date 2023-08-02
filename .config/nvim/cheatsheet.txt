@@ -201,6 +201,11 @@ $HOME の容量確認(check home capacity) | dust -X gdrive -z 10M
 kill port | sudo lsof -i:<PORT> <then> sudo kill <PID>
 os情報他きれいに出力(output system info graphically) | neofetch
 
+## memory
+3秒ごとにcpu使用率やmemory使用率を表示 | top -d 3
+cpu使用率やmemory使用率をきれいに表示 | htop
+memoryやswapの取得 | free -h
+
 ## random
 乱数生成 | cat /dev/urandom | base64 | fold -w 32 | head -n 1
 
