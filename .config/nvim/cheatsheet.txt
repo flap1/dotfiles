@@ -41,6 +41,12 @@ react create-react-app | npx create-react-app <app-name>
 update | npm update -g npm
 
 ##################################################
+# ffmpeg
+##################################################
+## ffmpeg
+動画サイズ圧縮 / compress movie size | ffmpeg -i input.mp4 -crf 18 output.mp4
+
+##################################################
 # java
 ##################################################
 ## jenv
@@ -293,6 +299,7 @@ list volumes | docker volume ls
 delete volume | docker volume rm <volume-name>
 delete all containers | docker system prune -f ; docker volume prune -f ;docker rm -f -v $(docker ps -q -a)
 stop and remove all containers | docker ps -aq | xargs docker stop | xargs docker rm
+get working dir (動いているディレクトリの取得) | docker inspect --format '{{json .Config.Labels}}' container-name | jq -r '.["com.docker.compose.project.working_dir"]'
 
 ## docker-compose
 down and remove volumes and netrowks | docker-compose down -v 
