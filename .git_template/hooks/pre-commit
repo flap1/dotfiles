@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Function to display warnings and exit
+display_warning() {
+    local user_name="$1"
+    local user_email="$2"
+    git config --local user.name "$user_name"
+    git config --local user.email "$user_email"
+    git reset HEAD . # Unstage files
+    echo "[WARN] user.name: $user_name, user.email: $user_email" >&2
+    echo "[WARN] Configure the Author (name, email) and unstage files." >&2
+    echo "[WARN] Please run git-commands again." >&2
+    exit 1
+}
+
 if git rev-parse --verify HEAD >/dev/null 2>&1; then
     against=HEAD
 else
@@ -11,6 +24,11 @@ fi
 exec 1>&2
 
 REMOTE_ORIGIN_URL=$(git config --local remote.origin.url)
+
+git_domain_issl="ut-issl"
+git_user_name_issl="seto"
+git_user_email_issl="redacted@example.invalid"
+
 git_domain="git"
 git_user_name="flap1"
 git_user_email="sho1seto@gmail.com"
@@ -18,23 +36,12 @@ git_user_email="sho1seto@gmail.com"
 local_git_user_name=$(git config --local user.name)
 local_git_user_email=$(git config --local user.email)
 
-readonly REMOTE_ORIGIN_URL
-readonly git_domain
-readonly git_user_name
-readonly git_user_email
-readonly local_git_user_name
-readonly local_git_user_email
-
 # Check if the Author has been changed
-if [[ "${git_user_name}" != "${local_git_user_name}" ]] || [[ "${git_user_email}" != "${local_git_user_email}" ]]; then
-    # Change the Author to company information
-    if [[ "${REMOTE_ORIGIN_URL}" = *"${git_domain}"* ]]; then
-        git config --local user.name "${git_user_name}"
-        git config --local user.email "${git_user_email}"
-        git reset HEAD . # Because you can't change the Author of staged files
-        echo "[WARN] Configure the Author (name, email) and unstage files." >&2
-        echo "[WARN] Please run git-commands again." >&2
-        exit 1
+if [[ "$git_user_name" != "$local_git_user_name" ]] || [[ "$git_user_email" != "$local_git_user_email" ]]; then
+    if [[ "$REMOTE_ORIGIN_URL" == *"$git_domain_issl"* ]]; then
+        display_warning "$git_user_name_issl" "$git_user_email_issl"
+    elif [[ "$REMOTE_ORIGIN_URL" == *"$git_domain"* ]]; then
+        display_warning "$git_user_name" "$git_user_email"
     fi
 fi
 
@@ -45,7 +52,7 @@ while IFS= read -r file; do
         continue
     fi
     grep_result=$(grep -E '(<<<<<<<|>>>>>>>)' "$file" | grep -v '^$')
-    if [[ -n "${grep_result}" ]]; then
+    if [[ -n "$grep_result" ]]; then
         echo $'\e[1;31m'"$file"$'\e[m' ' <- There are conflicting unresolved files'
         echo "$grep_result"
         exit 1
