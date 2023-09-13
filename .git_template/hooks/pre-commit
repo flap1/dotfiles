@@ -25,7 +25,7 @@ exec 1>&2
 
 REMOTE_ORIGIN_URL=$(git config --local remote.origin.url)
 
-git_domain_issl="ut-issl"
+git_domain_issl="git-ssh"
 git_user_name_issl="seto"
 git_user_email_issl="redacted@example.invalid"
 
