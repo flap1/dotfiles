@@ -17,7 +17,7 @@ vim.o.shadafile = vim.fn.stdpath("state") .. "/shada/main.shada" -- set shada fi
 
 vim.fn.mkdir(vim.fn.fnamemodify(vim.fn.expand(vim.g.viminfofile), ":h"), "p") -- viminfofile: viminfofile path
 
-vim.o.shellslash = true -- set \ to / in the file path in Windows
+-- vim.o.shellslash = true -- set \ to / in the file path in Windows
 
 vim.o.complete = vim.o.complete .. ",k" -- add dictionary file to input completion
 vim.o.completeopt = "menuone,noselect,noinsert" -- option of input completion
