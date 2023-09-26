@@ -8,6 +8,9 @@ sudo apt install mozc-utils-gui
 # pdf viewer
 check_and_install okular
 
+# clipboard manager
+check_and_install xsel
+
 # terminal
 check_and_install tmux
 [ -e "$HOME/.tmux/plugins/tpm" ] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
