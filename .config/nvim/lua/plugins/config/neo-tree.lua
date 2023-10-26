@@ -87,8 +87,10 @@ require("neo-tree").setup {
         "thumbs.db"
       },
     },
-    follow_current_file = false, -- This will find and focus the file in the active buffer every
-    -- time the current file is changed while the tree is open.
+    follow_current_file = {
+      enabled = false, -- This will find and focus the file in the active buffer every
+    },
+      -- time the current file is changed while the tree is open.
     use_libuv_file_watcher = false, -- This will use the OS level file watchers
     -- to detect changes instead of relying on nvim autocmd events.
     hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
@@ -224,8 +226,8 @@ require("neo-tree").setup {
   },
 }
 
-vim.keymap.set("n", "<C-n>", ":NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<M-n>", ":NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
-vim.keymap.set("i", "<M-n>", "<Esc><Cmd>NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
-vim.keymap.set("t", "<M-n>", "<C-\\><C-n><Cmd>NeoTreeRevealToggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-n>", ":Neotree reveal toggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<M-n>", ":Neotree reveal toggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("i", "<M-n>", "<Esc><Cmd>Neotree reveal toggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("t", "<M-n>", "<C-\\><C-n><Cmd>Neotree reveal toggle<CR>", { noremap = true, silent = true })
 -- vim.keymap.set("n", "G,", ":NeoTreeFloatToggle git_status<CR>", { noremap = true, silent = true })

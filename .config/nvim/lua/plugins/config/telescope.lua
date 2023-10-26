@@ -1,4 +1,4 @@
-local fb_actions = require "telescope".extensions.file_browser.actions
+-- local fb_actions = require "telescope".extensions.file_browser.actions
 local base_dirs = {
   '~/dotfiles',
 }
@@ -33,7 +33,7 @@ require("telescope").setup {
       i = {
         ["<esc>"] = actions.close,
         ["<Leader>q"] = actions.close,
-        ["<C-i>"] = require("telescope").extensions.hop.hop,
+        -- ["<C-i>"] = require("telescope").extensions.hop.hop,
         ["<C-u>"] = false, -- disable C-u
         -- custom hop loop to multi selects and sending selected entries to quickfix list
         ["<C-space>"] = function(prompt_bufnr)
@@ -97,17 +97,17 @@ require("telescope").setup {
       -- Wrapping in the preview window is disabled by default
       wrap = false,
     },
-    file_browser = {
-      mappings = {
-        ["i"] = {
-          ["<C-w>"] = fb_actions.change_cwd,
-          ["<C-t>"] = false
-        },
-        ["n"] = {
-          ["x"] = fb_actions.change_cwd
-        },
-      },
-    },
+    -- file_browser = {
+    --   mappings = {
+    --     ["i"] = {
+    --       ["<C-w>"] = fb_actions.change_cwd,
+    --       ["<C-t>"] = false
+    --     },
+    --     ["n"] = {
+    --       ["x"] = fb_actions.change_cwd
+    --     },
+    --   },
+    -- },
     hop = {
       -- Highlight groups to link to signs and lines; the below configuration refers to demo
       -- sign_hl typically only defines foreground to possibly be combined with line_hl
@@ -160,17 +160,17 @@ require("telescope").setup {
   },
 }
 -- load extensions
-require("telescope").load_extension("dap")
+-- require("telescope").load_extension("dap")
 -- require("telescope").load_extension("frecency")
-require("telescope").load_extension("packer")
-require("telescope").load_extension("gh")
-require("telescope").load_extension("bibtex")
-require("telescope").load_extension("file_browser")
-require("telescope").load_extension("media_files")
-require("telescope").load_extension("hop")
-require("telescope").load_extension("project")
-require("telescope").load_extension("bookmarks")
-require("telescope").load_extension("repo")
+-- require("telescope").load_extension("packer")
+-- require("telescope").load_extension("gh")
+-- require("telescope").load_extension("bibtex")
+-- require("telescope").load_extension("file_browser")
+-- require("telescope").load_extension("media_files")
+-- require("telescope").load_extension("hop")
+-- require("telescope").load_extension("project")
+-- require("telescope").load_extension("bookmarks")
+-- require("telescope").load_extension("repo")
 
 local opts = { noremap = true, silent = true }
 
