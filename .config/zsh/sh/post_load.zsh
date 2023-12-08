@@ -68,8 +68,11 @@ fi
 [ -f "/opt/ros/humble/setup.zsh" ] && source "/opt/ros/humble/setup.zsh"
 [ -d "$HOME/.tfenv" ] && export PATH=$HOME/.tfenv/bin:$PATH
 
-# yre
+# rye
 [ -f "$HOME/.rye/env" ] && source "$HOME/.rye/env"
 
 # aws
  [ -f "$HOME/.aws/config" ] && export AWS_VAULT_BACKEND=file
+
+ # volta
+[ -d "$HOME/.volta" ] && export VOLTA_HOME=$HOME/.volta

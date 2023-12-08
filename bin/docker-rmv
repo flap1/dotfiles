@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# DanglingなDockerボリューム（使用されていないボリューム）を削除するスクリプト
+
+# 1. DanglingなDockerボリュームを削除
+echo "DanglingなDockerボリュームを削除します..."
+docker volume rm $(docker volume ls -qf dangling=true)
+
+# 2. 使用されているコンテナと関連するDockerボリュームを表示
+echo "使用されているコンテナと関連するDockerボリュームを表示します..."
+docker ps --format "{{.ID}}" | xargs -I {} docker inspect --format '{{ .Mounts }}' {}
