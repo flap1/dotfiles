@@ -31,7 +31,7 @@ done
 shift $((OPTIND - 1)) # remove all the options from the positional parameters
 
 command -v git-filter-repo || sudo apt install git-filter-repo # add git-filter-repo
-git filter-repo --path ${files[@]} --invert-paths
+git filter-repo --path ${files[@]} --invert-paths --force
 git gc --aggressive --prune=now # Delete unwanted objects and logs
 git repack -A -d # repack
 echo "\
