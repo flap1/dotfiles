@@ -8,6 +8,7 @@
 
 [pull]
 	rebase = true
+	default = current
 
 [core]
     pager = delta

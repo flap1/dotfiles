@@ -9,20 +9,25 @@ where:
 
 while getopts ':h:f:' option; do
   case "$option" in
-    h) echo "$usage"
+    h)
+       echo "$usage"
        exit
        ;;
-    f) files=("$OPTARG") # get multiple value
-       until [[ $(eval "echo \${$OPTIND}") =~ ^-.* ]] || [ -z $(eval "echo \${$OPTIND}") ]; do
-           files+=($(eval "echo \${$OPTIND}"))
-           OPTIND=$((OPTIND + 1))
+    f)
+       # While the next argument does not start with '-' and is not empty
+       while [[ $OPTARG != -* && -n $OPTARG ]]; do
+           files+=("$OPTARG")
+           shift # Move to the next argument
+           OPTARG=$1 # Update OPTARG
        done
        ;;
-    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+    :)
+       printf "missing argument for -%s\n" "$OPTARG" >&2
        echo "$usage" >&2
        exit 1
        ;;
-   \?) printf "illegal option: -%s\n" "$OPTARG" >&2
+    \?)
+       printf "illegal option: -%s\n" "$OPTARG" >&2
        echo "$usage" >&2
        exit 1
        ;;
@@ -31,7 +36,10 @@ done
 shift $((OPTIND - 1)) # remove all the options from the positional parameters
 
 command -v git-filter-repo || sudo apt install git-filter-repo # add git-filter-repo
-git filter-repo --path ${files[@]} --invert-paths --force
+for file in "${files[@]}"; do
+  echo "Filtering file: $file"
+  git filter-repo --path "$file" --invert-paths --force
+done
 git gc --aggressive --prune=now # Delete unwanted objects and logs
 git repack -A -d # repack
 echo "\
