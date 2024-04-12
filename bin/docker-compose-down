@@ -16,12 +16,12 @@ fi
 service_name="$1"
 
 # サービスが存在するか確認
-if ! docker-compose config --services | grep -q "^$service_name$"; then
+if ! docker compose config --services | grep -q "^$service_name$"; then
   echo "Service not found: $service_name"
   show_help
   exit 1
 fi
 
 # docker-compose rm -fsv を実行
-docker-compose rm -fsv "$service_name"
+docker compose rm -fsv "$service_name"
 
