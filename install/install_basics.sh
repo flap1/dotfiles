@@ -45,7 +45,7 @@ check_and_install gh "sudo apt install gh; gh auth login"
 check_and_install drawio "wget https://github.com/jgraph/drawio-desktop/releases/download/v20.3.0/drawio-amd64-20.3.0.deb; sudo apt install ./drawio-amd64-20.3.0.deb; rm drawio-amd64-20.3.0.deb"
 
 # python poetry
-curl -sSL https://install.python-poetry.org | python3 -
+# curl -sSL https://install.python-poetry.org | python3 -
 
 # font
 # sudo apt -y install ttf-mscorefonts-installer
