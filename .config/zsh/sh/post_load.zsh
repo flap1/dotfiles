@@ -76,10 +76,3 @@ fi
 
  # volta
 [ -d "$HOME/.volta" ] && export VOLTA_HOME=$HOME/.volta
-
-# ssh
-# .ssh/id_rsaがある場合は以下を実行
-if [ -f ~/.ssh/id_rsa ]; then
-  eval $(ssh-agent)
-  ssh-add ~/.ssh/id_rsa
-fi
