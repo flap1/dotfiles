@@ -76,3 +76,6 @@ fi
 
  # volta
 [ -d "$HOME/.volta" ] && export VOLTA_HOME=$HOME/.volta
+
+# cuda
+[ -d "/usr/local/cuda/bin" ] && export PATH="/usr/local/cuda/bin:$PATH" && export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
