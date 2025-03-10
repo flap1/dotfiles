@@ -3,10 +3,10 @@
 mkdir -p ~/.local/share/fonts; cd ~/.local/share/fonts
 
 if [ ! -f ~/.local/share/fonts/UDEVGothicNF-Regular.ttf ];then
-  wget https://github.com/yuru7/udev-gothic/releases/download/v1.0.1/UDEVGothic_NF_v1.0.1.zip
-  unzip UDEVGothic_NF_v1.0.1.zip -d ~/.local/share/fonts
-  mv UDEVGothic_NF_v1.0.1/* ./; rm UDEVGothic_NF_v1.0.1/
-  rm -rf UDEVGothic_NF_v1.0.1.zip
+  wget https://github.com/yuru7/udev-gothic/releases/download/v1.3.1/UDEVGothic_NF_v1.3.1.zip
+  unzip UDEVGothic_NF_v1.3.1.zip -d ~/.local/share/fonts
+  mv UDEVGothic_NF_v1.3.1/* ./; rm UDEVGothic_NF_v1.3.1/
+  rm -rf UDEVGothic_NF_v1.3.1.zip
 fi
 
 # if [ ! -e ~/.local/share/fonts/UDEVGothicNF-Regular.ttf ];then

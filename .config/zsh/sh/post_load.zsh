@@ -62,7 +62,7 @@ eval "$(gh completion -s zsh)"
 fi
 
 # go
-[ -f "$HOME/.goenv" ] && export GOENV_ROOT="$HOME/.goenv" && export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)"  
+[ -f "$HOME/.goenv" ] && export GOENV_ROOT="$HOME/.goenv" && export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)"
 
 # ros
 [ -f "/opt/ros/humble/setup.zsh" ] && source "/opt/ros/humble/setup.zsh"
@@ -72,10 +72,17 @@ fi
 [ -f "$HOME/.rye/env" ] && source "$HOME/.rye/env"
 
 # aws
- [ -f "$HOME/.aws/config" ] && export AWS_VAULT_BACKEND=file
+[ -f "$HOME/.aws/config" ] && export AWS_VAULT_BACKEND=file
 
- # volta
+# volta
 [ -d "$HOME/.volta" ] && export VOLTA_HOME=$HOME/.volta
 
 # cuda
 [ -d "/usr/local/cuda/bin" ] && export PATH="/usr/local/cuda/bin:$PATH" && export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+
+# ssh-agent
+if [ -z "$SSH_AUTH_SOCK" ] ; then
+  eval `ssh-agent -s`
+  ssh-add ~/.ssh/id_ed25519
+  ssh-add -L
+fi
