@@ -79,10 +79,3 @@ fi
 
 # cuda
 [ -d "/usr/local/cuda/bin" ] && export PATH="/usr/local/cuda/bin:$PATH" && export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
-
-# ssh-agent
-if [ -z "$SSH_AUTH_SOCK" ] ; then
-  eval `ssh-agent -s`
-  ssh-add ~/.ssh/id_ed25519
-  ssh-add -L
-fi
