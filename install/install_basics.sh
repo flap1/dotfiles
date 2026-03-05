@@ -1,52 +1,196 @@
 #!/bin/bash
 
-source ~/.config/zsh/sh/function.zsh
+set -e
 
-# japanese
-sudo apt install mozc-utils-gui
+# Install if not found, with y/n prompt.
+# Already installed tools are skipped silently.
+ask_and_install() {
+    local name=$1
+    local cmd=$2
+    local install_cmd=$3
+    if command -v "$cmd" > /dev/null 2>&1; then
+        echo "$name: already installed, skipping."
+        return
+    fi
+    read -rp "Install $name? (y/n): " yn
+    case $yn in
+        [Yy]*) eval "$install_cmd" ;;
+        *) echo "Skipped $name." ;;
+    esac
+}
 
-# pdf viewer
-check_and_install okular
+# -------------------------------------------------------------------------
+# System packages (sudo required - unavoidable)
+# -------------------------------------------------------------------------
+# zsh, git, curl, unzip, gawk are system-level and have no user-local alternative
+sudo apt update
+ask_and_install "zsh"   zsh   "sudo apt install -y zsh"
+ask_and_install "git"   git   "sudo apt install -y git"
+ask_and_install "curl"  curl  "sudo apt install -y curl"
+ask_and_install "unzip" unzip "sudo apt install -y unzip"
+ask_and_install "gawk"  gawk  "sudo apt install -y gawk"  # for translate-shell
+ask_and_install "clang" clang "sudo apt install -y clang libclang-dev"  # required by cargo crates using bindgen (e.g. ouch)
 
-# clipboard manager
-check_and_install xsel
+# Japanese input (sudo required, no alternative)
+ask_and_install "fcitx5-mozc" fcitx5 "sudo apt install -y fcitx5 fcitx5-mozc"
 
-# terminal
-check_and_install tmux
-[ -e "$HOME/.tmux/plugins/tpm" ] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+# Wayland clipboard (sudo required)
+ask_and_install "wl-clipboard" wl-copy "sudo apt install -y wl-clipboard"
 
-# cargo
-check_and_install cargo "curl https://sh.rustup.rs -sSf | sh"
+# -------------------------------------------------------------------------
+# Rust toolchain (user-local: ~/.cargo)
+# -------------------------------------------------------------------------
+ask_and_install "rustup/cargo" cargo "curl https://sh.rustup.rs -sSf | sh -s -- -y && source $HOME/.cargo/env"
 
-# zsh
-check_and_install zsh
-# tools
-check_and_install fzf
-check_and_install bat "sudo apt install bat; ln -s /usr/bin/batcat ~/dotfiles/bin/bat"
-check_and_install rg "curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb; sudo apt install ./ripgrep_13.0.0_amd64.deb; sudo apt-mark hold ripgrep; rm ripgrep_13.0.0_amd64.deb"
-check_and_install lsd "cargo install lsd"
-check_and_install delta "cargo install git-delta"
-check_and_install dust "cargo install du-dust"
-check_and_install fd 'sudo apt install fd-find; ln -s $(which fdfind) ~/dotfiles/bin/fd'
-check_and_install gawk # for translate-shell
-check_and_install neofetch
-check_and_install htop
+# -------------------------------------------------------------------------
+# CLI tools via cargo (all user-local, no sudo)
+# -------------------------------------------------------------------------
+ask_and_install "eza"    eza    "cargo install eza"
+ask_and_install "bat"    bat    "cargo install bat"
+ask_and_install "ripgrep (rg)" rg "cargo install ripgrep"
+ask_and_install "fd"     fd     "cargo install fd-find"
+ask_and_install "delta"  delta  "cargo install git-delta"
+ask_and_install "fzf"    fzf    "cargo install fzf-bin"
+ask_and_install "zoxide" zoxide "cargo install zoxide"
+ask_and_install "trashy" trash  "cargo install trashy"
 
-# common
-check_and_install curl
-check_and_install unzip
+# -------------------------------------------------------------------------
+# More CLI tools via cargo (user-local, no sudo)
+# -------------------------------------------------------------------------
+ask_and_install "atuin"     atuin     "cargo install atuin"
+ask_and_install "dust"      dust      "cargo install du-dust"
+ask_and_install "bottom"    btm       "cargo install bottom"
+ask_and_install "procs"     procs     "cargo install procs"
+ask_and_install "tealdeer"  tldr      "cargo install tealdeer && tldr --update"
+ask_and_install "just"      just      "cargo install just"
+ask_and_install "hyperfine" hyperfine "cargo install hyperfine"
+ask_and_install "tokei"     tokei     "cargo install tokei"
+ask_and_install "xh"        xh        "cargo install xh"
+ask_and_install "hexyl"     hexyl     "cargo install hexyl"
+ask_and_install "ouch"      ouch      "cargo install ouch"
+ask_and_install "grex"      grex      "cargo install grex"
+ask_and_install "gping"     gping     "cargo install gping"
+ask_and_install "watchexec" watchexec "cargo install watchexec-cli"
+ask_and_install "yazi"      yazi      "cargo install --locked yazi-build && cargo install --locked yazi-fm yazi-cli"
+ask_and_install "bob (neovim manager)" bob "cargo install bob-nvim && bob use stable"
 
-# gh
-check_and_install go 'wget https://go.dev/dl/go1.19.3.linux-amd64.tar.gz; sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.19.3.linux-amd64.tar.gz; rm go1.19.3.linux-amd64.tar.gz'
-check_and_install ghq "go install github.com/x-motemen/ghq@latest"
-check_and_install gh "sudo apt install gh; gh auth login"
+# -------------------------------------------------------------------------
+# Version managers (user-local)
+# -------------------------------------------------------------------------
+ask_and_install "mise" mise "curl https://mise.run | sh"
+ask_and_install "uv"   uv   "curl -LsSf https://astral.sh/uv/install.sh | sh"
+ask_and_install "pynvim (neovim python provider)" pynvim-python "uv tool install pynvim"
 
-# draw.io
-check_and_install drawio "wget https://github.com/jgraph/drawio-desktop/releases/download/v20.3.0/drawio-amd64-20.3.0.deb; sudo apt install ./drawio-amd64-20.3.0.deb; rm drawio-amd64-20.3.0.deb"
+# -------------------------------------------------------------------------
+# Shell linting/formatting tools (user-local via mise)
+# -------------------------------------------------------------------------
+ask_and_install "shfmt"      shfmt      "mise use --global shfmt"
+ask_and_install "shellcheck" shellcheck "mise use --global shellcheck"
 
-# python poetry
-# curl -sSL https://install.python-poetry.org | python3 -
+# -------------------------------------------------------------------------
+# Starship prompt (user-local via --bin-dir)
+# -------------------------------------------------------------------------
+ask_and_install "starship" starship "curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir $HOME/.local/bin -y"
 
-# font
-# sudo apt -y install ttf-mscorefonts-installer
+# -------------------------------------------------------------------------
+# GitHub CLI (user-local binary)
+# -------------------------------------------------------------------------
+ask_and_install "gh" gh "$(cat <<'EOF'
+  mkdir -p "$HOME/.local/bin"
+  VERSION=$(curl -s https://api.github.com/repos/cli/cli/releases/latest | grep tag_name | cut -d'"' -f4 | tr -d v)
+  curl -sL "https://github.com/cli/cli/releases/download/v${VERSION}/gh_${VERSION}_linux_amd64.tar.gz" | tar xz -C /tmp
+  cp "/tmp/gh_${VERSION}_linux_amd64/bin/gh" "$HOME/.local/bin/gh"
+  gh auth login
+EOF
+)"
 
+if command -v ghq > /dev/null 2>&1; then
+    echo "ghq: already installed, skipping."
+else
+    read -rp "Install ghq? (y/n): " yn
+    if [[ $yn == [Yy]* ]]; then
+        if ! command -v go > /dev/null 2>&1; then
+            echo "go not found. Installing via mise..."
+            mise use --global go@latest
+            eval "$(mise activate bash)"
+        fi
+        go install github.com/x-motemen/ghq@latest
+    else
+        echo "Skipped ghq."
+    fi
+fi
+
+if command -v lazygit > /dev/null 2>&1; then
+    echo "lazygit: already installed, skipping."
+else
+    read -rp "Install lazygit? (y/n): " yn
+    if [[ $yn == [Yy]* ]]; then
+        if ! command -v go > /dev/null 2>&1; then
+            echo "go not found. Installing via mise..."
+            mise use --global go@latest
+            eval "$(mise activate bash)"
+        fi
+        go install github.com/jesseduffield/lazygit@latest
+    else
+        echo "Skipped lazygit."
+    fi
+fi
+
+if command -v lazydocker > /dev/null 2>&1; then
+    echo "lazydocker: already installed, skipping."
+else
+    read -rp "Install lazydocker? (y/n): " yn
+    if [[ $yn == [Yy]* ]]; then
+        if ! command -v go > /dev/null 2>&1; then
+            echo "go not found. Installing via mise..."
+            mise use --global go@latest
+            eval "$(mise activate bash)"
+        fi
+        go install github.com/jesseduffield/lazydocker@latest
+    else
+        echo "Skipped lazydocker."
+    fi
+fi
+
+# -------------------------------------------------------------------------
+# Docker (sudo required for daemon install + usermod)
+# -------------------------------------------------------------------------
+if command -v docker > /dev/null 2>&1; then
+    echo "docker: already installed, skipping."
+else
+    read -rp "Install Docker? (y/n): " yn
+    if [[ $yn == [Yy]* ]]; then
+        curl -fsSL https://get.docker.com | sh
+        sudo usermod -aG docker "$USER"
+        echo "Docker installed. Re-login to use without sudo."
+    else
+        echo "Skipped Docker."
+    fi
+fi
+
+# docker compose plugin (user-local: ~/.docker/cli-plugins, no sudo)
+if docker compose version > /dev/null 2>&1; then
+    echo "docker compose: already installed, skipping."
+else
+    read -rp "Install docker compose plugin? (y/n): " yn
+    if [[ $yn == [Yy]* ]]; then
+        mkdir -p "$HOME/.docker/cli-plugins"
+        curl -sL "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
+            -o "$HOME/.docker/cli-plugins/docker-compose"
+        chmod +x "$HOME/.docker/cli-plugins/docker-compose"
+        echo "docker compose installed."
+    else
+        echo "Skipped docker compose."
+    fi
+fi
+
+# -------------------------------------------------------------------------
+# WezTerm (terminal emulator)
+# -------------------------------------------------------------------------
+bash "$(dirname "$0")/install_wezterm.sh"
+
+# -------------------------------------------------------------------------
+# Fonts (user-local: ~/.local/share/fonts)
+# -------------------------------------------------------------------------
+read -rp "Install Nerd Fonts? (y/n): " yn
+[[ $yn == [Yy]* ]] && bash "$(dirname "$0")/install_fonts.sh" || echo "Skipped fonts."

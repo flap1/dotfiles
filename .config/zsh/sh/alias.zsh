@@ -3,8 +3,8 @@
 ## =========================================================================
 
 # common
-alias rm='rm-trash'
-alias del='rm -rf'
+alias rm='trash put'
+alias del='command rm -rf'
 alias cp='cp -ivr'
 alias mv='mv -i'
 alias ..='cd ..'
@@ -20,17 +20,18 @@ alias diff='delta'
 alias mkdir='mkdir -p'
 alias cat='bat'
 alias less='bat'
-alias ls='lsd --group-dirs=last'
-alias la='lsd -A --group-dirs=last'
-alias l='lsd -Ahl --total-size --group-dirs=last'
-alias ll='lsd -Ahl --total-size --group-dirs=last'
-alias lt='lsd -Ahl --total-size --tree --group-dirs=last'
-alias l.='lsd .[a-zA-Z]* --group-dirs=last'
-alias tree='lsd -A --tree --group-dirs=last'
-# alias du="dust" # alias du="du -sh"
-alias df="df -h"
+alias ls='eza --group-directories-first'
+alias la='eza -A --group-directories-first'
+alias l='eza -Ahl --total-size --group-directories-first'
+alias ll='eza -Ahl --total-size --group-directories-first'
+alias lt='eza -Ahl --total-size --tree --group-directories-first'
+alias l.='eza -A -d .[a-zA-Z]*'
+alias tree='eza -A --tree --group-directories-first'
+alias du="dust"
+alias df="duf"
 alias su="su -l"
-# alias ps='procs --tree'
+alias ps='procs --tree'
+alias top='btm'
 
 # history
 alias history-mem='fc -rl'
@@ -54,6 +55,7 @@ alias vim="$EDITOR"
 alias sv="sudo $EDITOR"
 
 # git
+alias lg='lazygit'
 alias ga='git add -A'
 alias gc='git commit -m'
 alias gp='git push'
@@ -64,12 +66,13 @@ alias gloms='git pull origin main && git submodule update --init --recursive'
 alias gll='git log --oneline --graph --decorate -n 10'
 
 # docker
+alias lzd='lazydocker'
 alias di="docker images"
 alias dr="docker run --rm"
 alias ds='docker stop $(docker ps -q)'
-alias dcb="docker-compose build"
-alias dcu="docker-compose up"
-alias dcd="docker-compose down"
+alias dcb="docker compose build"
+alias dcu="docker compose up"
+alias dcd="docker compose down"
 alias dps='docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"'
 alias drm="docker system prune"
 
@@ -90,7 +93,19 @@ alias -g T='| tail'
 alias -g H='| head'
 alias -g G='| rg -S' # fast ripgrep
 alias -g A='| awk'
-alias -g C='| tee >(pbcopy)'
+if [ "$WAYLAND_DISPLAY" != "" ]; then
+	if builtin command -v wl-copy > /dev/null 2>&1; then
+		alias -g C='| tee >(wl-copy)'
+	fi
+else
+	if builtin command -v xsel > /dev/null 2>&1; then
+		alias -g C='| tee >(xsel -i -b)'
+	elif builtin command -v xclip > /dev/null 2>&1; then
+		alias -g C='| tee >(xclip -i -selection clipboard)'
+	elif builtin command -v pbcopy > /dev/null 2>&1; then
+		alias -g C='| tee >(pbcopy)'
+	fi
+fi
 alias -g X='| xargs'
 alias -g W='| wc'
 if [ "$WAYLAND_DISPLAY" != "" ]; then
@@ -147,3 +162,20 @@ alias generate-passowrd='openssl rand -base64 20'
 alias transj='trans ja:'
 alias tj='trans ja:'
 alias te='trans :ja'
+
+# tealdeer (tldr)
+alias help='tldr'
+
+# http
+alias http='xh'
+
+# yazi - cd on quit
+function yy() {
+  local tmp cwd
+  tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}

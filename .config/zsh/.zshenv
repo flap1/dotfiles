@@ -2,8 +2,6 @@
 # Environment Variables
 ## =========================================================================
 
-echo "LOADED"
-
 export LC_ALL="${LC_ALL:-en_US.UTF-8}"
 export LANG="${LANG:-en_US.UTF-8}"
 
@@ -11,33 +9,24 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
-# export ZDOTDIR=$HOME/.config/zsh
+export ZDOTDIR=$HOME/.config/zsh
 export ZHOMEDIR=$HOME/.config/zsh
 export ZSHDIR=$ZHOMEDIR/sh
 export ZDATADIR=$XDG_DATA_HOME/zsh
 export ZCACHEDIR=$XDG_CACHE_HOME/zsh
 
-setopt no_global_rcs # /etc/z*のファイルが読み込まない
+setopt no_global_rcs # /etc/z* を読み込まない
 
-typeset -U path PATH manpath sudo_path # 重複したパスを登録しない
-typeset -xT SUDO_PATH sudo_path # -x: export SUDO_PATHも一緒に行う, -T: SUDO_PATHとsudo_pathを連動
+typeset -U path PATH manpath sudo_path # 重複パスを排除
+typeset -xT SUDO_PATH sudo_path
 
 path=(
   $HOME/.local/share/zinit/polaris/bin(N-/)
+  $HOME/.local/share/mise/shims(N-/)
   $HOME/.local/bin(N-/)
-  $HOME/.bin(N-/)
   $HOME/bin(N-/)
-  $HOME/.local/bin(N-/)
-  $HOME/go/bin(N-/)
-  $HOME/.go/bin(N-/)
-  /usr/local/go/bin(N-/)
-  $HOME/.pyenv/bin(N-/)
-  $HOME/.pyenv/shims(N-/)
-  $HOME/.nvm/default/bin(N-/)
   $HOME/.cargo/bin(N-/)
-  $HOME/.deno/bin(N-/)
-  $HOME/.dvm/bin(N-/)
-  $HOME/.jenv/bin(N-/)
+  $HOME/.go/bin(N-/)
   $HOME/.local/share/nvim/mason/bin(N-/)
   $path
 )
@@ -61,5 +50,6 @@ export LS_COLORS="rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;
 export NVIMRC=$HOME/.config/nvim
 export NEO4J_HOME=$HOME/.local/share/neo4j
 export NEO4J_CONF=$HOME/.config/neo4j
-export GOBIN=$HOME/.go/bin/ go install
-
+export GOBIN=$HOME/.go/bin
+. "$HOME/.cargo/env"
+. "/home/flap1/.local/share/bob/env/env.sh"

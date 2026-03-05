@@ -45,7 +45,6 @@ setopt equals                # =COMMAND を COMMAND のパス名に展開
 setopt nonomatch             # グロブ展開でnomatchにならないようにする
 setopt glob
 setopt extended_glob         # 拡張グロブを有効にする
-unsetopt flow_control        # (shell editor 内で) C-s, C-q を無効にする
 setopt no_flow_control       # C-s/C-q によるフロー制御を使わない
 setopt hash_cmds             # 各コマンドが実行されるときにパスをハッシュに入れる
 setopt no_hup                # ログアウト時にバックグラウンドジョブをkillしない
@@ -77,15 +76,13 @@ setopt rm_star_wait          # rm * を実行する前に確認
 #setopt rm_star_silent        # rm * を実行する前に確認しない
 setopt notify                # バックグラウンドジョブが終了したら(プロンプトの表示を待たずに)すぐに知らせる
 
-#setopt no_clobber            # リダイレクトで上書きを禁止
-unsetopt no_clobber
+setopt clobber               # リダイレクトで上書きを許可
 #setopt no_unset              # 未定義変数の使用禁止
 setopt interactive_comments  # コマンド入力中のコメントを認める
 setopt chase_links           # シンボリックリンクはリンク先のパスに変換してから実行
 #setopt print_exit_value      # 戻り値が 0 以外の場合終了コードを表示
 #setopt single_line_zle       # デフォルトの複数行コマンドライン編集ではなく、１行編集モードになる
 #setopt xtrace                # コマンドラインがどのように展開され実行されたかを表示する
-setopt noflowcontrol
 
 setopt nolistambiguous # メニューを出す
 

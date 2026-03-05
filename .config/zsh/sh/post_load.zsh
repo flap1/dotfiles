@@ -2,80 +2,55 @@
 ## Post Execution
 ## =========================================================================
 
-if ! builtin command -v zinit > /dev/null 2>&1; then
-	if ! builtin command -v compinit > /dev/null 2>&1; then
-		autoload -Uz compinit
-		if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-			compinit
-		else
-			compinit -C
-		fi
-	fi
+# -------------------------------------------------------------------------
+# mise (multi-language version manager)
+# -------------------------------------------------------------------------
+if command -v mise > /dev/null 2>&1; then
+    eval "$(mise activate zsh)"
 fi
 
-# pyenv
-if [ -x "$(command -v pyenv)" ]; then
-eval "$(pyenv init -)"
+# -------------------------------------------------------------------------
+# uv (Python package manager)
+# -------------------------------------------------------------------------
+if [ -f "$HOME/.cargo/env" ]; then
+    source "$HOME/.cargo/env"
 fi
 
-export PYENV_VIRTUALENV_DISABLE_PROMPT=0
-export PYENV_ROOT=$HOME/.pyenv
-
-# poetry
-export PATH=${POETRY_HOME:-$HOME/.local/share/poetry}/bin:$PATH
-
-# jenv
-if [ -e "~/.jenv" ]; then
-	eval "$(jenv init -)"
-fi
-
-# gradle
-if [ -e "/opt/gradle/latest" ]; then
-	eval "$(jenv init -)"
-fi
-export PATH=${GRADLE_HOME:-/opt/gradle/latest}/bin:$PATH
-
-# node
-export NVM_DIR=$HOME/.nvm
-export MANPATH=$NVM_DIR/default/share/man:$MANPATH
-export NODE_PATH=$NVM_DIR/default/lib/node_modules
-export NODE_PATH=${NODE_PATH:A}
-
-if ! [ -x "$(command -v node)" ]; then
-	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-fi
-
-nvm() {
-  unset -f nvm
-	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-  nvm "$@"
-}
-
-# deno
-export DENO_INSTALL=$HOME/.deno
-
-# gh
-if [ -x "$(command -v gh)" ]; then
-eval "$(gh completion -s zsh)"
-fi
-
-# go
-[ -f "$HOME/.goenv" ] && export GOENV_ROOT="$HOME/.goenv" && export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)"
-
-# ros
-[ -f "/opt/ros/humble/setup.zsh" ] && source "/opt/ros/humble/setup.zsh"
-[ -d "$HOME/.tfenv" ] && export PATH=$HOME/.tfenv/bin:$PATH
-
-# rye
-[ -f "$HOME/.rye/env" ] && source "$HOME/.rye/env"
-
-# aws
+# -------------------------------------------------------------------------
+# AWS
+# -------------------------------------------------------------------------
 [ -f "$HOME/.aws/config" ] && export AWS_VAULT_BACKEND=file
 
-# volta
-[ -d "$HOME/.volta" ] && export VOLTA_HOME=$HOME/.volta
+# -------------------------------------------------------------------------
+# CUDA
+# -------------------------------------------------------------------------
+if [ -d "/usr/local/cuda/bin" ]; then
+    export PATH="/usr/local/cuda/bin:$PATH"
+    export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+fi
 
-# cuda
-[ -d "/usr/local/cuda/bin" ] && export PATH="/usr/local/cuda/bin:$PATH" && export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+# -------------------------------------------------------------------------
+# ROS (optional - only loaded when present)
+# -------------------------------------------------------------------------
+[ -f "/opt/ros/humble/setup.zsh" ] && source "/opt/ros/humble/setup.zsh"
+
+# -------------------------------------------------------------------------
+# zoxide (smarter cd)
+# -------------------------------------------------------------------------
+if command -v zoxide > /dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+fi
+
+# -------------------------------------------------------------------------
+# atuin (shell history with SQLite + sync)
+# -------------------------------------------------------------------------
+if command -v atuin > /dev/null 2>&1; then
+    eval "$(atuin init zsh)"
+fi
+
+# -------------------------------------------------------------------------
+# Starship prompt
+# -------------------------------------------------------------------------
+if command -v starship > /dev/null 2>&1; then
+    eval "$(starship init zsh)"
+fi
