@@ -43,7 +43,6 @@ return {
 
   -- Key Mappings
   disable_default_key_bindings = true,
-  leader = { key = "\\", mods = "CTRL" },
   keys = bindings.keys,
   key_tables = bindings.key_tables,
   mouse_bindings = bindings.mouse_bindings,
