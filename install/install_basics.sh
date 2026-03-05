@@ -190,6 +190,11 @@ fi
 bash "$(dirname "$0")/install_wezterm.sh"
 
 # -------------------------------------------------------------------------
+# tmux plugins (TPM + catppuccin + cpu + sensible + resurrect + continuum)
+# -------------------------------------------------------------------------
+bash "$(dirname "$0")/install_tmux.sh"
+
+# -------------------------------------------------------------------------
 # Fonts (user-local: ~/.local/share/fonts)
 # -------------------------------------------------------------------------
 read -rp "Install Nerd Fonts? (y/n): " yn
