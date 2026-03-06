@@ -7,9 +7,9 @@ return {
     priority = 1000,
     lazy = false,
     keys = {
-      { "<M-\\>", function() Snacks.terminal.toggle() end,                            desc = "Terminal float" },
-      { "<M-->",  function() Snacks.terminal.toggle(nil, { win = { position = "bottom" } }) end, desc = "Terminal bottom" },
-      { "<M-|>",  function() Snacks.terminal.toggle(nil, { win = { position = "right" } }) end,  desc = "Terminal right" },
+      { "<M-\\>", function() Snacks.terminal.toggle(vim.o.shell, { win = { position = "float" } }) end,  mode = { "n", "t" }, desc = "Terminal float" },
+      { "<M-->",  function() Snacks.terminal.toggle(nil, { win = { position = "bottom" } }) end, mode = { "n", "t" }, desc = "Terminal bottom" },
+      { "<M-|>",  function() Snacks.terminal.toggle(nil, { win = { position = "right" }, env = { SNACKS_TERM = "right" } }) end,  mode = { "n", "t" }, desc = "Terminal right" },
       { "<leader>em", function() Snacks.terminal.toggle("aerc") end,                             desc = "Email (aerc)" },
       { "<Leader>gl", function() Snacks.lazygit() end,                                desc = "Lazygit" },
       { "<Leader>gf", function() Snacks.lazygit.log_file() end,                       desc = "Lazygit file history" },
