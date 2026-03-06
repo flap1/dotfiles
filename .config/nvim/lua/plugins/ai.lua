@@ -10,6 +10,7 @@ return {
       { "<M-\\>", function() Snacks.terminal.toggle() end,                            desc = "Terminal float" },
       { "<M-->",  function() Snacks.terminal.toggle(nil, { win = { position = "bottom" } }) end, desc = "Terminal bottom" },
       { "<M-|>",  function() Snacks.terminal.toggle(nil, { win = { position = "right" } }) end,  desc = "Terminal right" },
+      { "<leader>em", function() Snacks.terminal.toggle("aerc") end,                             desc = "Email (aerc)" },
       { "<Leader>gl", function() Snacks.lazygit() end,                                desc = "Lazygit" },
       { "<Leader>gf", function() Snacks.lazygit.log_file() end,                       desc = "Lazygit file history" },
       { "<Leader>gL", function() Snacks.lazygit.log() end,                            desc = "Lazygit log (cwd)" },

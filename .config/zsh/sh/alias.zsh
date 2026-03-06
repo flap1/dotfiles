@@ -54,6 +54,9 @@ alias vi="$EDITOR"
 alias vim="$EDITOR"
 alias sv="sudo $EDITOR"
 
+# MCP neovim-server: always expose a socket so Claude Code can connect
+function nvim() { command nvim --listen /tmp/nvim "$@"; }
+
 # git
 alias lg='lazygit'
 alias ga='git add -A'

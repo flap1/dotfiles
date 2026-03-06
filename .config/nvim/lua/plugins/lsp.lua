@@ -1,4 +1,5 @@
 -- LSP stack: mason + nvim-lspconfig + conform.nvim + nvim-lint
+-- Uses Neovim 0.11+ native vim.lsp.config() / vim.lsp.enable() API
 
 return {
   -- Mason: LSP/formatter/linter installer
@@ -30,20 +31,22 @@ return {
     end,
   },
 
-  -- mason-lspconfig: bridge between mason and nvim-lspconfig
+  -- mason-lspconfig: install LSP servers via mason
+  -- automatic_enable = true lets Neovim 0.11+ auto-enable installed servers
   {
     "williamboman/mason-lspconfig.nvim",
     event = { "BufReadPre", "BufNewFile" },
-    dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
+    dependencies = { "williamboman/mason.nvim" },
     opts = {
       ensure_installed = {
         "lua_ls", "rust_analyzer", "clangd", "astro",
         "pyright", "ts_ls", "jsonls", "yamlls", "remark_ls",
       },
+      automatic_enable = false, -- we call vim.lsp.enable() manually below
     },
   },
 
-  -- nvim-lspconfig: configure language servers
+  -- nvim-lspconfig: configure language servers via vim.lsp.config() (Nvim 0.11+)
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
@@ -54,15 +57,16 @@ return {
     },
     config = function()
       -- Diagnostic signs
-      local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-      end
-
       vim.diagnostic.config({
         virtual_text = { prefix = "●" },
-        signs = true,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = " ",
+            [vim.diagnostic.severity.WARN]  = " ",
+            [vim.diagnostic.severity.HINT]  = " ",
+            [vim.diagnostic.severity.INFO]  = " ",
+          },
+        },
         underline = true,
         update_in_insert = false,
         severity_sort = true,
@@ -70,95 +74,83 @@ return {
       })
 
       local capabilities = require("blink.cmp").get_lsp_capabilities()
-      local lspconfig = require("lspconfig")
 
-      local on_attach = function(client, bufnr)
-        local opts = { noremap = true, silent = true, buffer = bufnr }
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "?", vim.lsp.buf.hover, opts)
-        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-        vim.keymap.set("n", "g?", vim.lsp.buf.signature_help, opts)
-        vim.keymap.set("n", ";D", vim.lsp.buf.type_definition, opts)
-        vim.keymap.set("n", ";a", vim.lsp.buf.code_action, opts)
-        vim.keymap.set("n", ";r", vim.lsp.buf.rename, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        vim.keymap.set("n", ";e", vim.diagnostic.open_float, opts)
-        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-        vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-        vim.keymap.set("n", ";f", function()
-          require("conform").format({ bufnr = bufnr, async = true })
-        end, opts)
-        vim.keymap.set("x", ";f", function()
-          require("conform").format({ bufnr = bufnr, async = true })
-        end, opts)
+      -- LspAttach: set keymaps and navic when any LSP attaches
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(ev)
+          local bufnr = ev.buf
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+          local opts = { noremap = true, silent = true, buffer = bufnr }
+          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+          vim.keymap.set("n", "?", vim.lsp.buf.hover, opts)
+          vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+          vim.keymap.set("n", "g?", vim.lsp.buf.signature_help, opts)
+          vim.keymap.set("n", ";D", vim.lsp.buf.type_definition, opts)
+          vim.keymap.set("n", ";a", vim.lsp.buf.code_action, opts)
+          vim.keymap.set("n", ";r", vim.lsp.buf.rename, opts)
+          vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+          vim.keymap.set("n", ";e", vim.diagnostic.open_float, opts)
+          vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+          vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+          vim.keymap.set("n", ";f", function()
+            require("conform").format({ bufnr = bufnr, async = true })
+          end, opts)
+          vim.keymap.set("x", ";f", function()
+            require("conform").format({ bufnr = bufnr, async = true })
+          end, opts)
 
-        -- Attach navic for breadcrumbs
-        if client.server_capabilities.documentSymbolProvider then
-          local ok, navic = pcall(require, "nvim-navic")
-          if ok then navic.attach(client, bufnr) end
-        end
-      end
+          -- Attach navic for breadcrumbs
+          if client and client.server_capabilities.documentSymbolProvider then
+            local ok, navic = pcall(require, "nvim-navic")
+            if ok then navic.attach(client, bufnr) end
+          end
+        end,
+      })
 
-      local default_opts = {
+      -- Base config applied to all servers
+      vim.lsp.config("*", {
         capabilities = capabilities,
-        on_attach = on_attach,
-        root_dir = lspconfig.util.find_git_ancestor,
-      }
+        root_markers = { ".git" },
+      })
 
-      require("mason-lspconfig").setup_handlers({
-        -- Default handler
-        function(server_name)
-          lspconfig[server_name].setup(default_opts)
-        end,
-
-        ["lua_ls"] = function()
-          lspconfig.lua_ls.setup(vim.tbl_deep_extend("force", default_opts, {
-            settings = {
-              Lua = {
-                diagnostics = {
-                  globals = { "vim" },
-                  severity = { ["missing-parameter"] = "Hint" },
-                },
-                workspace = { checkThirdParty = false },
-                telemetry = { enable = false },
-              },
+      -- Per-server overrides using vim.lsp.config()
+      vim.lsp.config("lua_ls", {
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { "vim" },
+              severity = { ["missing-parameter"] = "Hint" },
             },
-          }))
-        end,
+            workspace = { checkThirdParty = false },
+            telemetry = { enable = false },
+          },
+        },
+      })
 
-        ["clangd"] = function()
-          lspconfig.clangd.setup(vim.tbl_deep_extend("force", default_opts, {
-            cmd = { "clangd", "--background-index", "--clang-tidy",
-              "--cross-file-rename", "--completion-style=detailed" },
-            root_dir = lspconfig.util.root_pattern(
-              "compile_commands.json", "compile_flags.txt", ".clangd", ".git"),
-          }))
-        end,
+      vim.lsp.config("clangd", {
+        cmd = { "clangd", "--background-index", "--clang-tidy",
+          "--cross-file-rename", "--completion-style=detailed" },
+        root_markers = { "compile_commands.json", "compile_flags.txt", ".clangd", ".git" },
+      })
 
-        ["remark_ls"] = function()
-          lspconfig.remark_ls.setup(vim.tbl_deep_extend("force", default_opts, {
-            root_dir = lspconfig.util.root_pattern(".remarkrc.yml", ".remarkrc.js", ".git"),
-            filetypes = { "markdown", "telekasten" },
-          }))
-        end,
+      vim.lsp.config("remark_ls", {
+        root_markers = { ".remarkrc.yml", ".remarkrc.js", ".git" },
+        filetypes = { "markdown", "telekasten" },
+      })
 
-        ["pyright"] = function()
-          lspconfig.pyright.setup(vim.tbl_deep_extend("force", default_opts, {
-            settings = {
-              python = {
-                analysis = { typeCheckingMode = "basic" },
-              },
-            },
-          }))
-        end,
+      vim.lsp.config("pyright", {
+        settings = {
+          python = {
+            analysis = { typeCheckingMode = "basic" },
+          },
+        },
+      })
 
-        ["ts_ls"] = function()
-          lspconfig.ts_ls.setup(default_opts)
-        end,
-
-        -- rust_analyzer is handled by rustaceanvim in lang.lua
-        ["rust_analyzer"] = function() end,
+      -- Enable all servers except rust_analyzer (handled by rustaceanvim)
+      vim.lsp.enable({
+        "lua_ls", "clangd", "astro",
+        "pyright", "ts_ls", "jsonls", "yamlls", "remark_ls",
       })
     end,
   },

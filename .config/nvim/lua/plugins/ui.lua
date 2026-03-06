@@ -65,10 +65,23 @@ return {
     "akinsho/bufferline.nvim",
     event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = (function()
+      local keys = {
+        { "<M-,>", "<Cmd>BufferLineCyclePrev<CR>", desc = "Prev buffer" },
+        { "<M-.>", "<Cmd>BufferLineCycleNext<CR>", desc = "Next buffer" },
+        { "<M-<>", "<Cmd>BufferLineMovePrev<CR>",  desc = "Move buffer left" },
+        { "<M->>", "<Cmd>BufferLineMoveNext<CR>",  desc = "Move buffer right" },
+      }
+      for i = 1, 9 do
+        table.insert(keys, { "<Leader>" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>", desc = "Buffer " .. i })
+      end
+      return keys
+    end)(),
     opts = {
       options = {
         diagnostics = "nvim_lsp",
         always_show_bufferline = false,
+        numbers = "ordinal",
         offsets = {
           { filetype = "neo-tree", text = "File Explorer", highlight = "Directory" },
         },
