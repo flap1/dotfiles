@@ -1,0 +1,61 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git stash)",
+      "Bash(git merge origin/develop --no-edit)",
+      "mcp__redacted-org__redacted-org_owners_me",
+      "mcp__postgres__query",
+      "Bash(while read:*)",
+      "Bash(do echo:*)",
+      "Read(//home/flap1/ghq/github.com/redacted-org/redacted-repo/**)",
+      "Bash(done)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(docker compose:*)",
+      "mcp__redacted-org__redacted-org_projects_overview",
+      "mcp__redacted-org__redacted-org_topics_search",
+      "mcp__redacted-org__redacted-org_topics_get",
+      "mcp__redacted-org__redacted-org_schemas_get",
+      "mcp__redacted-org__redacted-org_topics_create",
+      "mcp__redacted-org__redacted-org_triggers_list",
+      "Bash(git -C /home/flap1/ghq/github.com/redacted-org/redacted-repo stash)",
+      "Read(//srv/redacted-org/redacted-org-ci/**)",
+      "mcp__redacted-org__redacted-org_projects_list",
+      "Bash(aws ssm:*)",
+      "Bash(python3 -c \":*)",
+      "Bash(git -C /home/flap1/ghq/github.com/redacted-org/knowledge-engineer/redacted-org-tools ls-tree -r origin/main:packages/mcp/src/tools/topics/)",
+      "Bash(git -C /home/flap1/ghq/github.com/redacted-org/knowledge-engineer/redacted-org-tools ls-tree -r origin/main:packages/redacted-org/src/cli/commands/topic/)",
+      "Bash(git -C /home/flap1/ghq/github.com/redacted-org/knowledge-engineer/redacted-org-tools show origin/main:packages/mcp/src/tools/topics/core.ts)",
+      "Bash(for file:*)",
+      "Bash(do if:*)",
+      "mcp__redacted-org__redacted-org_messages_create",
+      "mcp__redacted-org__redacted-org_schemas_list",
+      "mcp__redacted-org__redacted-org_topics_list",
+      "mcp__redacted-org__redacted-org_triggers_get",
+      "mcp__redacted-org__redacted-org_activities_list",
+      "mcp__redacted-org__redacted-org_topics_update_document",
+      "Read(//home/flap1/ghq/github.com/redacted-org/redacted-org-platform/bff/src/processes/__core__/schema/**)",
+      "Bash(git -C redacted-org-tools log --all --oneline -- packages/mcp/src/tools/triggers.ts)",
+      "Bash(git -C redacted-org-tools diff HEAD -- packages/mcp/src/tools/triggers.ts)",
+      "Bash(git -C redacted-org-tools show HEAD:packages/mcp/src/tools/triggers.ts)",
+      "Bash(git -C redacted-org-tools log --oneline -5)",
+      "Bash(git -C redacted-org-tools fetch origin --quiet)",
+      "Bash(git -C redacted-org-tools log origin/main --oneline -- packages/mcp/src/tools/triggers.ts)",
+      "Bash(aws logs:*)"
+    ]
+  },
+  "effortLevel": "medium",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/st-session-start.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

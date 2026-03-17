@@ -124,6 +124,14 @@ install_category "Server: Ansible" \
     ".config/ansible/.ansible.cfg" "$HOME/.ansible.cfg"
 
 # -------------------------------------------------------------------------
+# AI tools
+# -------------------------------------------------------------------------
+install_category "AI: Claude Code (hooks + skills + settings)" \
+    ".claude/hooks"        "$HOME/.claude/hooks" \
+    ".claude/skills"       "$HOME/.claude/skills" \
+    ".claude/settings.json" "$HOME/.claude/settings.json"
+
+# -------------------------------------------------------------------------
 # Directories
 # -------------------------------------------------------------------------
 [ -d "$HOME/.git-worktrees" ] || mkdir "$HOME/.git-worktrees"
