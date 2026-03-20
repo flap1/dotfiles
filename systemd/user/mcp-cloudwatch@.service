@@ -1,0 +1,19 @@
+[Unit]
+Description=MCP CloudWatch (%i)
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.config/mcp/env/cloudwatch-%i.env
+ExecStart=/usr/bin/supergateway \
+  --stdio "uvx awslabs.cloudwatch-mcp-server@latest" \
+  --outputTransport streamableHttp \
+  --port ${MCP_PORT} \
+  --host 127.0.0.1 \
+  --baseUrl http://127.0.0.1:${MCP_PORT}
+Environment=PATH=/home/flap1/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
