@@ -33,3 +33,8 @@ out
 ## VSCode: retired in favour of the terminal stack, and its remote-SSH host
 ## map names the employer.
 /.config/Code/**
+
+## lazygit runtime state (recent repo list), not config
+/.config/lazygit/state.yml
+## superseded hook backup
+/.git_template/hooks/*.old
