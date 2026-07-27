@@ -47,8 +47,14 @@ if [ -n "$cwd" ] && git -C "$cwd" rev-parse --git-dir > /dev/null 2>&1; then
   fi
 fi
 
-# model
-model=$(echo "$input" | jq -r '.model.display_name // empty')
+# model, shortened.
+#
+# display_name is "Opus 5 (1M context)" for opus[1m]: 19 columns for something
+# that changes maybe twice a day. The parenthetical goes because the window
+# size is already visible as the ctx meter -- a 1M session simply sits at a
+# lower percentage. Dropping the space keeps it one token to the eye.
+#   "Opus 5 (1M context)" -> Opus5    "Haiku 4.5" -> Haiku4.5    "Opus" -> Opus
+model=$(echo "$input" | jq -r '.model.display_name // empty' | sed 's/ *(.*)//; s/ //g')
 
 # context used %
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
@@ -68,37 +74,54 @@ if [ "$lines_added" -gt 0 ] || [ "$lines_removed" -gt 0 ]; then
   lines_str="+${lines_added}/-${lines_removed}L"
 fi
 
-# 5h rate limit
+# Rate limit windows.
+#
+# Only five_hour and seven_day exist in this payload. There is no per-model
+# window, so the Fable weekly allowance cannot be shown here; /usage is the
+# only place it is broken out.
+
+# Time left, as the two largest units that are actually non-zero. A window is
+# only ever interesting at the resolution it is about to expire at: "2d" is
+# enough a week out, but on the last day the hours are the whole question, and
+# in the last hour so are the minutes. Both windows share this so the weekly
+# one degrades to hours and then minutes on its own, with nothing to remember.
+fmt_left() { # $1 = seconds remaining
+  _s=$1
+  _d=$(( _s / 86400 )); _h=$(( (_s % 86400) / 3600 )); _m=$(( (_s % 3600) / 60 ))
+  if   [ "$_d" -gt 0 ]; then printf '%dd%dh' "$_d" "$_h"
+  elif [ "$_h" -gt 0 ]; then printf '%dh%dm' "$_h" "$_m"
+  elif [ "$_m" -gt 0 ]; then printf '%dm' "$_m"
+  else                       printf 'now'
+  fi
+}
+
 rate_5h=""
 resets_at=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
 pct_5h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
+pct_5h_int=""
 if [ -n "$resets_at" ]; then
   now=$(date +%s)
   diff=$((resets_at - now))
-  pct_5h_int=""
   [ -n "$pct_5h" ] && pct_5h_int=$(printf "%.0f" "$pct_5h")
   if [ "$diff" -gt 0 ]; then
-    rate_5h="5h:${pct_5h_int}%($(( diff / 3600 ))h$(( (diff % 3600) / 60 ))m)"
+    rate_5h="${pct_5h_int}%($(fmt_left "$diff"))"
   else
-    rate_5h="5h:limit!"
+    rate_5h="limit!"; pct_5h_int=100
   fi
 fi
 
-# 7d rate limit
 rate_7d=""
 resets_at_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
 pct_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+pct_7d_int=""
 if [ -n "$resets_at_7d" ]; then
   now=$(date +%s)
   diff7=$((resets_at_7d - now))
-  pct_7d_int=""
   [ -n "$pct_7d" ] && pct_7d_int=$(printf "%.0f" "$pct_7d")
   if [ "$diff7" -gt 0 ]; then
-    days=$(( diff7 / 86400 ))
-    hours=$(( (diff7 % 86400) / 3600 ))
-    rate_7d="7d:${pct_7d_int}%(${days}d${hours}h)"
+    rate_7d="${pct_7d_int}%($(fmt_left "$diff7"))"
   else
-    rate_7d="7d:limit!"
+    rate_7d="limit!"; pct_7d_int=100
   fi
 fi
 
@@ -148,29 +171,29 @@ fi
 # shouting at half full is one you stop reading, and nothing useful happens at
 # 50% anyway: 70 is roughly where it is worth deciding whether to /clear, and 90
 # is where compaction is imminent.
-if [ -n "$used_pct" ]; then
-  used_int=$(printf "%.0f" "$used_pct")
-  ctx_c="$S"
-  [ "$used_int" -ge 70 ] && ctx_c="$A"
-  [ "$used_int" -ge 90 ] && ctx_c="$R"
-  # The steps are not evenly spaced: they are placed so the glyph changes at
-  # exactly the same points the colour does, at 70 and at 90. An even split put
-  # 89 and 90 both on ▇, so at the one boundary that matters the shape said
-  # nothing and the redundancy was lost precisely where it was needed.
-  if   [ "$used_int" -ge 90 ]; then ctx_bar="█"
-  elif [ "$used_int" -ge 80 ]; then ctx_bar="▇"
-  elif [ "$used_int" -ge 70 ]; then ctx_bar="▆"
-  elif [ "$used_int" -ge 56 ]; then ctx_bar="▅"
-  elif [ "$used_int" -ge 42 ]; then ctx_bar="▄"
-  elif [ "$used_int" -ge 28 ]; then ctx_bar="▃"
-  elif [ "$used_int" -ge 14 ]; then ctx_bar="▂"
-  else                              ctx_bar="▁"
+# One gauge renderer for all three meters. They answer the same question --
+# how much of a budget is gone -- so they get the same encoding; three
+# hand-rolled if-chains would be three chances to drift apart.
+#
+# The block glyph is not evenly spaced. Its steps sit exactly where the colour
+# steps, at 70 and 90, so the shape changes at the one boundary that matters.
+# An even eighth-split put 89 and 90 both on ▇ and said nothing there.
+gauge() { # $1 = label, $2 = integer percent, $3 = text after the number
+  _p=$2
+  if   [ "$_p" -ge 90 ]; then _c="$R"; _b="█"
+  elif [ "$_p" -ge 80 ]; then _c="$A"; _b="▇"
+  elif [ "$_p" -ge 70 ]; then _c="$A"; _b="▆"
+  elif [ "$_p" -ge 56 ]; then _c="$S"; _b="▅"
+  elif [ "$_p" -ge 42 ]; then _c="$S"; _b="▄"
+  elif [ "$_p" -ge 28 ]; then _c="$S"; _b="▃"
+  elif [ "$_p" -ge 14 ]; then _c="$S"; _b="▂"
+  else                        _c="$S"; _b="▁"
   fi
-  out="${out} ${ctx_c}${ctx_bar}${used_int}%ctx${X}"
-fi
+  printf ' %b%s%s%s%b' "$_c" "$1" "$_b" "$3" "$X"
+}
 
-if [ -n "$rate_5h" ]; then
-  case "$rate_5h" in *limit!*) out="${out} ${R}${rate_5h}${X}" ;; *) out="${out} ${S}${rate_5h}${X}" ;; esac
-fi
+[ -n "$used_pct" ] && out="${out}$(gauge ctx "$(printf "%.0f" "$used_pct")" "$(printf "%.0f" "$used_pct")%")"
+[ -n "$pct_5h_int" ] && out="${out}$(gauge 5h "$pct_5h_int" "$rate_5h")"
+[ -n "$pct_7d_int" ] && out="${out}$(gauge 7d "$pct_7d_int" "$rate_7d")"
 
 printf '%b' "$out"
