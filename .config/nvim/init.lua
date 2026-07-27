@@ -21,7 +21,9 @@ if vim.g.vscode then
 else
   require("lazy").setup("plugins", {
     defaults = { lazy = true },
-    install = { colorscheme = { "tokyonight" } },
+    -- Only used while lazy.nvim installs plugins, before base16 is configured.
+    -- A built-in scheme so it can never fail.
+    install = { colorscheme = { "habamax" } },
     checker = { enabled = false },
     rocks = { enabled = false },
     performance = {

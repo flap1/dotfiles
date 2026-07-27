@@ -1,150 +1,59 @@
--- UI plugins: colorscheme, statusline, bufferline, filetree, etc.
+-- UI plugins: colorscheme, statusline, file navigation
+--
+-- Chrome budget: tmux status line (1 row) + lualine (1 row). Nothing else.
+-- Buffer/window switching lives in tmux (windows) and telescope (files),
+-- so there is no bufferline and no persistent file tree.
 
 return {
-  -- tokyonight: colorscheme
+  -- Colorscheme: the redacted-org design-system palette fed through base16.
+  --
+  -- base16 is used instead of hand-writing highlight groups: supply 16 colours
+  -- and every plugin, treesitter capture and LSP group gets a consistent
+  -- assignment for free. Design tokens map onto the ramp as follows —
+  --   base00-07 = the neutral background→foreground ladder
+  --   base08-0F = the accent slots (red/orange/yellow/green/cyan/blue/purple/brown)
   {
-    "folke/tokyonight.nvim",
+    "RRethy/base16-nvim",
     lazy = false,
     priority = 1000,
-    opts = {
-      style = "night",
-      transparent = false,
-      terminal_colors = true,
-      styles = {
-        comments = { italic = true },
-        keywords = { italic = true },
-      },
-    },
-    config = function(_, opts)
-      require("tokyonight").setup(opts)
-      vim.cmd("colorscheme tokyonight-night")
+    -- Dark variant. The design system is specified for light web surfaces, so
+    -- three tokens fail WCAG AA (4.5:1) against a dark editor background and are
+    -- lifted to the next step of the same hue. Measured against base00 #0f172a:
+    --   primary/green  #047857 → 3.26  lifted to #10b981 (7.04)
+    --   error          #dc2626 → 3.70  lifted to #ef4444 (4.74)
+    --   primary/brown  #8B5A2B → 3.06  lifted to #d8c3a8 (10.45, = border/brown)
+    --   text/subtle    #64748b → 3.75  demoted to comments only, where AA is advisory
+    -- Everything else is the literal token value.
+    config = function()
+      vim.o.background = "dark"
+      require("base16-colorscheme").setup({
+        base00 = "#0f172a", -- text/default, inverted — editor background
+        base01 = "#1e293b", -- derived: one step up — gutter, floats, popup surfaces
+        base02 = "#334155", -- derived: two steps up — visual selection
+        base03 = "#64748b", -- text/subtle           — comments
+        base04 = "#94a3b8", -- text/muted            — line numbers
+        base05 = "#e2e8f0", -- derived: body text on dark
+        base06 = "#f1f5f9", -- derived
+        base07 = "#ffffff", -- text/on-primary       — brightest foreground
+        base08 = "#ef4444", -- error, lifted         — variables, deletions
+        base09 = "#f59e0b", -- active                — numbers, constants
+        base0A = "#fbbf24", -- derived: active lightened, kept distinct from base09
+        base0B = "#059669", -- success               — strings, insertions
+        base0C = "#0ea5e9", -- info                  — escapes, support
+        base0D = "#10b981", -- primary/green, lifted — functions (brand colour on code)
+        base0E = "#a855f7", -- inactive              — keywords
+        base0F = "#d8c3a8", -- border/brown          — deprecated, special
+      })
     end,
   },
 
-  -- lualine: statusline
-  {
-    "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-      "SmiteshP/nvim-navic",
-    },
-    opts = {
-      options = {
-        theme = "tokyonight",
-        globalstatus = true,
-        component_separators = { left = "", right = "" },
-        section_separators = { left = "", right = "" },
-      },
-      sections = {
-        lualine_a = { "mode" },
-        lualine_b = { "branch", "diff", "diagnostics" },
-        lualine_c = {
-          { "filename", path = 1 },
-          {
-            function() return require("nvim-navic").get_location() end,
-            cond = function() return require("nvim-navic").is_available() end,
-          },
-        },
-        lualine_x = { "encoding", "fileformat", "filetype" },
-        lualine_y = { "progress" },
-        lualine_z = { "location" },
-      },
-    },
-  },
-
-  -- nvim-navic: breadcrumbs for lualine
-  {
-    "SmiteshP/nvim-navic",
-    lazy = true,
-    opts = { highlight = true },
-  },
-
-  -- bufferline: tab-style buffer list
-  {
-    "akinsho/bufferline.nvim",
-    event = "VeryLazy",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    keys = (function()
-      local keys = {
-        { "<M-,>", "<Cmd>BufferLineCyclePrev<CR>", desc = "Prev buffer" },
-        { "<M-.>", "<Cmd>BufferLineCycleNext<CR>", desc = "Next buffer" },
-        { "<M-<>", "<Cmd>BufferLineMovePrev<CR>",  desc = "Move buffer left" },
-        { "<M->>", "<Cmd>BufferLineMoveNext<CR>",  desc = "Move buffer right" },
-      }
-      for i = 1, 9 do
-        table.insert(keys, { "<Leader>" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>", desc = "Buffer " .. i })
-      end
-      return keys
-    end)(),
-    opts = {
-      options = {
-        diagnostics = "nvim_lsp",
-        always_show_bufferline = false,
-        numbers = "ordinal",
-        offsets = {
-          { filetype = "neo-tree", text = "File Explorer", highlight = "Directory" },
-        },
-      },
-    },
-  },
-
-  -- neo-tree: file explorer
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    cmd = "Neotree",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "MunifTanjim/nui.nvim",
-    },
-    keys = {
-      { "<M-n>", "<Cmd>Neotree toggle<CR>",        desc = "NeoTree toggle" },
-      { "<M-N>", "<Cmd>Neotree reveal<CR>",         desc = "NeoTree reveal" },
-    },
-    opts = {
-      filesystem = {
-        follow_current_file = { enabled = true },
-        use_libuv_file_watcher = true,
-        filtered_items = {
-          hide_dotfiles = false,
-          hide_gitignored = false,
-        },
-      },
-      window = { width = 35 },
-    },
-  },
+  -- No statusline plugin. laststatus=0 in core/options.lua; mode, position and
+  -- filename land in the cmdline row that already exists. tmux owns the only bar.
 
   -- nvim-web-devicons
   {
     "nvim-tree/nvim-web-devicons",
     lazy = true,
-  },
-
-
-  -- indent-blankline
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = { "BufReadPost", "BufNewFile" },
-    main = "ibl",
-    opts = {
-      indent = { char = "│" },
-      scope = { enabled = true },
-    },
-  },
-
-  -- nvim-scrollbar
-  {
-    "petertriho/nvim-scrollbar",
-    event = "VeryLazy",
-    dependencies = { "kevinhwang91/nvim-hlslens" },
-    opts = {
-      handlers = { cursor = false },
-    },
-    config = function(_, opts)
-      require("scrollbar").setup(opts)
-      require("scrollbar.handlers.search").setup()
-    end,
   },
 
   -- nvim-highlight-colors: color code highlighting (norcalli/nvim-colorizer は未メンテ)
@@ -170,7 +79,6 @@ return {
     },
   },
 
-
   -- which-key: keybinding helper
   {
     "folke/which-key.nvim",
@@ -181,56 +89,60 @@ return {
     },
   },
 
-  -- oil.nvim: edit filesystem like a buffer (rename/delete/create via normal editing)
+  -- oil.nvim: edit the filesystem like a buffer. Default explorer now that
+  -- neo-tree is gone; yazi covers the "browse around" case.
   {
     "stevearc/oil.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    cmd = "Oil",
+    lazy = false,
     keys = {
       { "-", "<Cmd>Oil<CR>", desc = "Open Oil (parent dir)" },
     },
     opts = {
-      default_file_explorer = false, -- keep neo-tree as default
+      default_file_explorer = true,
       view_options = { show_hidden = true },
       float = { padding = 2 },
+    },
+  },
+
+  -- snacks.explorer: the persistent left sidebar tree.
+  -- Uses snacks, which is already loaded for lazygit/terminal/dashboard, so this
+  -- costs no new plugin. (oil was the alternative but is a buffer-based editor,
+  -- not a sidebar: selecting a file replaces the tree window itself.)
+  {
+    "folke/snacks.nvim",
+    opts = {
+      explorer = { enabled = true },
+      picker = {
+        enabled = true, -- required: the explorer is a picker rendered as a sidebar
+        sources = {
+          explorer = {
+            layout = { preset = "sidebar", preview = false },
+            auto_close = false,
+            follow_file = true, -- reveal the current buffer as you move around
+            hidden = true,
+            ignored = false,
+          },
+        },
+      },
+    },
+    keys = {
+      { "<M-n>", function() Snacks.explorer() end,              desc = "Explorer (toggle sidebar)" },
+      { "<M-N>", function() Snacks.explorer.reveal() end,       desc = "Explorer (reveal current file)" },
     },
   },
 
   -- yazi.nvim: Rust-powered terminal file manager integration
   {
     "mikavilpas/yazi.nvim",
-    event = "VeryLazy",
     dependencies = { "folke/snacks.nvim" },
     keys = {
-      { "<Leader>fy", "<Cmd>Yazi<CR>",        desc = "Yazi (cwd)" },
-      { "<Leader>fY", "<Cmd>Yazi cwd<CR>",    desc = "Yazi (file dir)" },
+      { "<Leader>fy", "<Cmd>Yazi<CR>",     desc = "Yazi (file dir)" },
+      { "<Leader>fY", "<Cmd>Yazi cwd<CR>", desc = "Yazi (cwd)" },
     },
     opts = {
       open_for_directories = false,
       keymaps = { show_help = "<F1>" },
     },
-  },
-
-  -- smart-splits.nvim: seamless navigation between Neovim + WezTerm panes
-  {
-    "mrjones2014/smart-splits.nvim",
-    lazy = false, -- must not lazy-load for WezTerm integration to work
-    opts = {
-      at_edge = "wrap",
-      multiplexer_integration = "wezterm",
-    },
-    config = function(_, opts)
-      require("smart-splits").setup(opts)
-      -- Move between splits/panes (replaces plain <M-hjkl> window switching)
-      vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left,  { desc = "Move to left split" })
-      vim.keymap.set("n", "<C-j>", require("smart-splits").move_cursor_down,  { desc = "Move to lower split" })
-      vim.keymap.set("n", "<C-k>", require("smart-splits").move_cursor_up,    { desc = "Move to upper split" })
-      vim.keymap.set("n", "<C-l>", require("smart-splits").move_cursor_right, { desc = "Move to right split" })
-      -- Resize splits
-      vim.keymap.set("n", "<M-h>", require("smart-splits").resize_left,  { desc = "Resize left" })
-      vim.keymap.set("n", "<M-j>", require("smart-splits").resize_down,  { desc = "Resize down" })
-      vim.keymap.set("n", "<M-k>", require("smart-splits").resize_up,    { desc = "Resize up" })
-      vim.keymap.set("n", "<M-l>", require("smart-splits").resize_right, { desc = "Resize right" })
-    end,
   },
 }

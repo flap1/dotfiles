@@ -138,6 +138,20 @@ vim.g.loaded_ruby_provider = 0
 -- Python provider: pynvim installed via `uv tool install pynvim`
 vim.g.python3_host_prog = vim.fn.exepath("pynvim-python")
 
--- Disable netrw (using neo-tree instead)
+-- Disable netrw (oil.nvim is the file explorer)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+
+-- No tabline: tmux's window list is the only row of tabs on screen.
+vim.o.showtabline = 0
+
+-- No statusline either. The cmdline row is already on screen, so put the same
+-- information there instead of spending a second row on it.
+vim.o.laststatus = 0
+vim.o.showmode = true  -- -- INSERT -- in the cmdline
+vim.o.ruler = true     -- line:col at the right of the cmdline
+vim.o.showcmd = true   -- pending keys / visual selection size
+-- Filename on demand: <C-g>. Git state: lazygit (<Leader>gl) or the tmux bar.
+
+-- Without a statusline, splits need a visible seam.
+vim.opt.fillchars:append({ horiz = "─", horizup = "┴", horizdown = "┬", vert = "│" })
