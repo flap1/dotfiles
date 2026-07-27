@@ -1,4 +1,7 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(git stash)",
@@ -42,11 +45,46 @@
       "Bash(git -C redacted-org-tools log --oneline -5)",
       "Bash(git -C redacted-org-tools fetch origin --quiet)",
       "Bash(git -C redacted-org-tools log origin/main --oneline -- packages/mcp/src/tools/triggers.ts)",
-      "Bash(aws logs:*)"
+      "Bash(aws logs:*)",
+      "Bash(npm view:*)",
+      "mcp__redacted-org-sandbox__redacted-org_topics_list",
+      "mcp__redacted-org-redacted-vendor__redacted-org_topics_list",
+      "mcp__redacted-org-redacted-vendor__redacted-org_schemas_list",
+      "mcp__redacted-org-redacted-vendor__redacted-org_topics_get",
+      "WebSearch",
+      "WebFetch",
+      "Read(**)",
+      "Bash(sudo -n ss -tlnp 'sport = :15432')",
+      "Read(//proc/2793960/net/**)",
+      "Bash(rtk read *)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('\\\\n'.join\\(f'{k}: {v}' for k,v in d.get\\('scripts',{}\\).items\\(\\) if 'seed' in k.lower\\(\\)\\)\\)\")"
     ]
   },
-  "effortLevel": "medium",
+  "model": "opus[1m]",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "code-review-graph update --skip-flows",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "hooks": [
@@ -55,7 +93,103 @@
             "command": "bash ~/.claude/hooks/st-session-start.sh"
           }
         ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "code-review-graph status",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/home/flap1/.claude/hooks/context-mode-cache-heal.mjs\""
+          }
+        ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "codex@openai-codex": true,
+    "context-mode@context-mode": false,
+    "typescript-lsp@claude-plugins-official": true,
+    "ponytail@ponytail": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "lua-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    },
+    "context-mode": {
+      "source": {
+        "source": "github",
+        "repo": "mksglu/context-mode"
+      }
+    },
+    "thedotmack": {
+      "source": {
+        "source": "github",
+        "repo": "thedotmack/claude-mem"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
+  },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "🐇 Dashing",
+      "🐿️ Scurrying",
+      "🦔 Waddling",
+      "🦦 Diving",
+      "🐊 Charging",
+      "🦊 Sneaking",
+      "🐹 Scampering",
+      "🦎 Skittering",
+      "🦡 Burrowing",
+      "🦛 Charging",
+      "🦒 Striding",
+      "🐃 Stampeding",
+      "🐐 Climbing",
+      "🐟 Darting",
+      "🦞 Scuttling",
+      "🦀 Scuttling",
+      "🦕 Lumbering",
+      "🦖 Stomping",
+      "🦆 Splashing",
+      "🐓 Strutting",
+      "🦌 Galloping",
+      "🐘 Stomping",
+      "🦈 Zooming",
+      "🐢 Crawling",
+      "🐆 Sprinting",
+      "🦓 Galloping",
+      "🦘 Bounding",
+      "🦙 Trotting"
+    ]
+  },
+  "effortLevel": "medium",
+  "advisorModel": "fable",
+  "tui": "fullscreen",
+  "switchModelsOnFlag": true,
+  "agentPushNotifEnabled": true,
+  "editorMode": "vim",
+  "vimInsertModeRemaps": { "jk": "<Esc>" }
 }
