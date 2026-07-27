@@ -54,8 +54,36 @@ alias vi="$EDITOR"
 alias vim="$EDITOR"
 alias sv="sudo $EDITOR"
 
-# MCP neovim-server: always expose a socket so Claude Code can connect
-function nvim() { command nvim --listen /tmp/nvim "$@"; }
+# ── tailnet exposure ──────────────────────────────────────────────────
+# This box is on a tailnet as `redacted-org`. Any port bound to the tailscale
+# address is reachable from any tailnet device as http://redacted-org:PORT with
+# no per-port configuration, forever. That is the whole point: prefer binding
+# the server correctly over forwarding ports one at a time.
+#
+# TSIP is that address. Start dev servers on it:
+#   vite --host $TSIP        next dev -H $TSIP        python3 -m http.server -b $TSIP
+# Binding 0.0.0.0 also works but additionally exposes the service to the LAN.
+export TSIP="$(tailscale ip -4 2>/dev/null)"
+
+# tsx PORT — expose an already-running 127.0.0.1 service on the tailnet
+# without restarting it. For the case where you forgot the --host flag.
+# Runs in the foreground; Ctrl-C to stop.
+tsx() {
+  [ -z "$1" ] && { echo "usage: tsx PORT [LOCAL_PORT]" >&2; return 1; }
+  local ts_port="$1" local_port="${2:-$1}"
+  echo "http://$(hostname -s):${ts_port}  ->  127.0.0.1:${local_port}   (Ctrl-C to stop)"
+  socat "TCP-LISTEN:${ts_port},bind=${TSIP},fork,reuseaddr" "TCP:127.0.0.1:${local_port}"
+}
+
+# No nvim wrapper. It used to force `--listen /tmp/nvim` for an MCP
+# neovim-server that no longer exists, and a fixed socket path means only one
+# nvim can run at a time — the second one dies with "address already in use".
+# That is fatal with parallel worktrees.
+#
+# nvim already listens without being asked: v:servername is
+# $XDG_RUNTIME_DIR/nvim.<pid>.0, and child processes see it in $NVIM.
+# If something ever needs a deterministic path again, key it per pane
+# (e.g. --listen "$XDG_RUNTIME_DIR/nvim-${TMUX_PANE#%}"), never a global one.
 
 # git
 alias lg='lazygit'
