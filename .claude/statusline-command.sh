@@ -1,6 +1,12 @@
 #!/bin/sh
 input=$(cat)
 
+# The statusline payload is the only place the rate limits are exposed, and only
+# a live session receives it. Leave the latest copy where claude-ls can read it.
+printf '%s' "$input" |
+  jq -c '{five_hour: .rate_limits.five_hour, seven_day: .rate_limits.seven_day}' \
+  > "$HOME/.cache/claude-rate-limits.json" 2>/dev/null || true
+
 # directory (truncate to last 5 segments, ~ for home)
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // empty')
 short_path=""
