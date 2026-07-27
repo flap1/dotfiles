@@ -1,4 +1,7 @@
--- Editing plugins: flash, surround, comment, cmp, snippets, etc.
+-- Editing plugins: motion, surround, completion, snippets.
+--
+-- Motion is flash-only: treehopper/edgemotion/CamelCaseMotion all covered the
+-- same "jump somewhere visible" job and were removed.
 
 return {
   -- flash.nvim: fast jump (replaces lightspeed/hop/leap)
@@ -28,25 +31,6 @@ return {
     "kylechui/nvim-surround",
     event = "VeryLazy",
     opts = {},
-  },
-
-  -- nvim-autopairs
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    opts = {
-      check_ts = true,
-    },
-    config = function(_, opts)
-      local npairs = require("nvim-autopairs")
-      npairs.setup(opts)
-      -- Integration with nvim-cmp
-      local cmp_ok, cmp = pcall(require, "cmp")
-      if cmp_ok then
-        local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-        cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-      end
-    end,
   },
 
   -- dial.nvim: increment/decrement enhanced
@@ -82,180 +66,8 @@ return {
     event = "VeryLazy",
   },
 
-  -- treesj: smart split/join (replaces unmaintained nvim-trevJ)
-  {
-    "Wansmer/treesj",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    keys = {
-      { "<LocalLeader>j", function() require("treesj").toggle() end, desc = "TreeSJ toggle split/join" },
-    },
-    opts = { use_default_keymaps = false },
-  },
-
-  -- guess-indent: auto detect indentation
-  {
-    "nmac427/guess-indent.nvim",
-    event = { "BufNewFile", "BufReadPre" },
-    opts = {},
-  },
-
-  -- suda: sudo write/read
-  { "lambdalisue/suda.vim", cmd = { "SudaRead", "SudaWrite" } },
-
-  -- mkdir: auto create directories
-  {
-    "jghauser/mkdir.nvim",
-    event = "VeryLazy",
-    config = function() require("mkdir") end,
-  },
-
-  -- auto-save (okuuva fork: actively maintained, replaces Pocco81)
-  {
-    "okuuva/auto-save.nvim",
-    event = "VeryLazy",
-    opts = {
-      enabled = true,
-      trigger_events = {
-        immediate_save = { "BufLeave", "FocusLost" },
-        defer_save = { "InsertLeave", "TextChanged" },
-      },
-      debounce_delay = 2000,
-    },
-  },
-
-  -- nvim-hlslens: search highlight with count
-  {
-    "kevinhwang91/nvim-hlslens",
-    event = "VeryLazy",
-    opts = {
-      calm_down = true,
-      nearest_only = true,
-    },
-    config = function(_, opts)
-      require("hlslens").setup(opts)
-      local kopts = { noremap = true, silent = true }
-      vim.keymap.set("n", "n",
-        "<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>", kopts)
-      vim.keymap.set("n", "N",
-        "<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>", kopts)
-      vim.keymap.set("n", "*",
-        "*<Cmd>lua require('hlslens').start()<CR>", kopts)
-      vim.keymap.set("n", "#",
-        "#<Cmd>lua require('hlslens').start()<CR>", kopts)
-    end,
-  },
-
-  -- nvim-asterisk: enhanced */# search
-  {
-    "haya14busa/vim-asterisk",
-    event = "VeryLazy",
-    config = function()
-      vim.keymap.set({ "n", "x" }, "*",  "<Plug>(asterisk-z*)",  {})
-      vim.keymap.set({ "n", "x" }, "#",  "<Plug>(asterisk-z#)",  {})
-      vim.keymap.set({ "n", "x" }, "g*", "<Plug>(asterisk-gz*)", {})
-      vim.keymap.set({ "n", "x" }, "g#", "<Plug>(asterisk-gz#)", {})
-    end,
-  },
-
-  -- vim-edgemotion: jump to edge of block
-  {
-    "haya14busa/vim-edgemotion",
-    event = "VeryLazy",
-    config = function()
-      vim.keymap.set({ "n", "x" }, "<C-j>", "<Plug>(edgemotion-j)", {})
-      vim.keymap.set({ "n", "x" }, "<C-k>", "<Plug>(edgemotion-k)", {})
-    end,
-  },
-
-  -- CamelCaseMotion: move inside camelCase/snake_case words
-  {
-    "bkad/CamelCaseMotion",
-    event = "VeryLazy",
-    config = function()
-      vim.keymap.set({ "n", "x", "o" }, "<Leader>w", "<Plug>CamelCaseMotion_w", {})
-      vim.keymap.set({ "n", "x", "o" }, "<Leader>b", "<Plug>CamelCaseMotion_b", {})
-      vim.keymap.set({ "n", "x", "o" }, "<Leader>e", "<Plug>CamelCaseMotion_e", {})
-    end,
-  },
-
-  -- fold-cycle: cycle through fold levels
-  {
-    "jghauser/fold-cycle.nvim",
-    event = "VeryLazy",
-    opts = {},
-    keys = {
-      { "<Tab>",   function() require("fold-cycle").open() end,          desc = "Fold open" },
-      { "<S-Tab>", function() require("fold-cycle").close() end,         desc = "Fold close" },
-      { "zC",      function() require("fold-cycle").close_all() end,     desc = "Fold close all" },
-    },
-  },
-
-  -- nvim-neoclip: clipboard history
-  {
-    "AckslD/nvim-neoclip.lua",
-    dependencies = { "nvim-telescope/telescope.nvim", "kkharji/sqlite.lua" },
-    event = "VeryLazy",
-    opts = {
-      enable_persistent_history = true,
-    },
-    config = function(_, opts)
-      require("neoclip").setup(opts)
-      require("telescope").load_extension("neoclip")
-    end,
-    keys = {
-      { '<Leader>"', "<Cmd>Telescope neoclip<CR>", desc = "Clipboard history" },
-    },
-  },
-
-  -- replacer.nvim: edit quickfix list
-  {
-    "gabrielpoca/replacer.nvim",
-    keys = {
-      { "<Leader>h", function() require("replacer").run() end, desc = "Replacer (quickfix edit)" },
-    },
-  },
-
-  -- nvim-bqf: better quickfix window
-  {
-    "kevinhwang91/nvim-bqf",
-    ft = "qf",
-    opts = {},
-  },
-
-  -- translate.nvim
-  {
-    "uga-rosa/translate.nvim",
-    cmd = "Translate",
-    keys = {
-      { "<Leader>tj", "<Cmd>Translate JA<CR>", mode = { "n", "x" }, desc = "Translate to Japanese" },
-      { "<Leader>te", "<Cmd>Translate EN<CR>", mode = { "n", "x" }, desc = "Translate to English" },
-    },
-    opts = {
-      default = { command = "translate_shell" },
-    },
-  },
-
-  -- harpoon2: fast file bookmarks (1-key jump to pinned files)
-  {
-    "ThePrimeagen/harpoon",
-    branch = "harpoon2",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    event = "VeryLazy",
-    opts = {
-      settings = { save_on_toggle = true },
-    },
-    keys = {
-      { "<Leader>Ha", function() require("harpoon"):list():add() end,    desc = "Harpoon add" },
-      { "<Leader>Hh", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end, desc = "Harpoon menu" },
-      { "<C-1>", function() require("harpoon"):list():select(1) end, desc = "Harpoon 1" },
-      { "<C-2>", function() require("harpoon"):list():select(2) end, desc = "Harpoon 2" },
-      { "<C-3>", function() require("harpoon"):list():select(3) end, desc = "Harpoon 3" },
-      { "<C-4>", function() require("harpoon"):list():select(4) end, desc = "Harpoon 4" },
-      { "<C-5>", function() require("harpoon"):list():select(5) end, desc = "Harpoon 5" },
-    },
-  },
-
-  -- blink.cmp: completion engine (replaces nvim-cmp, ~6x faster)
+  -- blink.cmp: completion engine.
+  -- Still needed on 0.12: the built-in 'autocomplete' handles only one source.
   {
     "saghen/blink.cmp",
     event = { "InsertEnter", "CmdlineEnter" },
@@ -267,7 +79,9 @@ return {
     opts = {
       keymap = {
         preset = "default",
-        ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
+        -- NOT <C-Space>: tmux owns that as its prefix, so nvim would only see
+        -- it after a double press. <C-g> is unused in insert mode.
+        ["<C-g>"]     = { "show", "show_documentation", "hide_documentation" },
         ["<C-e>"]     = { "hide" },
         ["<CR>"]      = { "accept", "fallback" },
         ["<Tab>"]     = { "snippet_forward", "select_next", "fallback" },

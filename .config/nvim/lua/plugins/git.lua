@@ -19,49 +19,37 @@ return {
         local gs = package.loaded.gitsigns
         local opts = { buffer = bufnr, noremap = true, silent = true }
 
+        -- git is one noun, so it gets one namespace: <Leader>g.
+        -- (These used to live under <Leader>h, which named the *object* rather
+        -- than the tool and left git split across two prefixes.)
         vim.keymap.set("n", "]h", gs.next_hunk, opts)
         vim.keymap.set("n", "[h", gs.prev_hunk, opts)
-        vim.keymap.set({ "n", "v" }, "<Leader>hs", "<Cmd>Gitsigns stage_hunk<CR>", opts)
-        vim.keymap.set({ "n", "v" }, "<Leader>hr", "<Cmd>Gitsigns reset_hunk<CR>", opts)
-        vim.keymap.set("n", "<Leader>hS", gs.stage_buffer, opts)
-        vim.keymap.set("n", "<Leader>hu", gs.undo_stage_hunk, opts)
-        vim.keymap.set("n", "<Leader>hR", gs.reset_buffer, opts)
-        vim.keymap.set("n", "<Leader>hp", gs.preview_hunk, opts)
-        vim.keymap.set("n", "<Leader>hb", function() gs.blame_line({ full = true }) end, opts)
-        vim.keymap.set("n", "<Leader>hB", gs.toggle_current_line_blame, opts)
-        vim.keymap.set("n", "<Leader>hd", gs.diffthis, opts)
-        vim.keymap.set("n", "<Leader>hD", function() gs.diffthis("~") end, opts)
-        -- Text object
+        vim.keymap.set({ "n", "v" }, "<Leader>gs", "<Cmd>Gitsigns stage_hunk<CR>", opts)
+        vim.keymap.set({ "n", "v" }, "<Leader>gr", "<Cmd>Gitsigns reset_hunk<CR>", opts)
+        vim.keymap.set("n", "<Leader>gS", gs.stage_buffer, opts)
+        vim.keymap.set("n", "<Leader>gu", gs.undo_stage_hunk, opts)
+        vim.keymap.set("n", "<Leader>gp", gs.preview_hunk, opts)
+        vim.keymap.set("n", "<Leader>gb", function() gs.blame_line({ full = true }) end, opts)
+        vim.keymap.set("n", "<Leader>gB", gs.toggle_current_line_blame, opts)
+        -- Hunk as a text object: dih, vih, yih.
         vim.keymap.set({ "o", "x" }, "ih", "<Cmd>Gitsigns select_hunk<CR>", opts)
       end,
     },
   },
 
-  -- neogit: Magit-like Git UI
-  {
-    "NeogitOrg/neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "sindrets/diffview.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-    cmd = "Neogit",
-    keys = {
-      { "<Leader>gg", "<Cmd>Neogit<CR>", desc = "Neogit" },
-    },
-    opts = {
-      integrations = { diffview = true, telescope = true },
-    },
-  },
+  -- neogit removed: lazygit (<Leader>gl, via snacks) covers the same job,
+  -- and survives nvim restarts because it is a separate process.
 
-  -- diffview: diff viewer
+  -- diffview: diff viewer. This is the main tool for reading what an agent did.
   {
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
     keys = {
-      { "<Leader>gd", "<Cmd>DiffviewOpen<CR>",   desc = "DiffView open" },
-      { "<Leader>gD", "<Cmd>DiffviewClose<CR>",  desc = "DiffView close" },
+      { "<Leader>gd", "<Cmd>DiffviewOpen<CR>",          desc = "Diffview open" },
+      { "<Leader>gD", "<Cmd>DiffviewClose<CR>",         desc = "Diffview close" },
       { "<Leader>gh", "<Cmd>DiffviewFileHistory %<CR>", desc = "File history" },
+      -- The review diff: what this branch does to main, as one change.
+      { "<Leader>gm", "<Cmd>DiffviewOpen origin/main...HEAD<CR>", desc = "Review branch vs main" },
     },
     opts = {},
   },

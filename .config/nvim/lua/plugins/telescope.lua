@@ -8,39 +8,26 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-lua/popup.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-      "nvim-telescope/telescope-file-browser.nvim",
       "nvim-telescope/telescope-frecency.nvim",
       "nvim-telescope/telescope-symbols.nvim",
       "benfowler/telescope-luasnip.nvim",
-      "nvim-telescope/telescope-bibtex.nvim",
       "jvgrootveld/telescope-zoxide",
     },
+    -- <Leader>f is the `find` namespace. Everything that answers "where is X"
+    -- lives here and nowhere else. Rare pickers (marks, registers, commands,
+    -- snippets) are intentionally unbound — `:Telescope <name>` is enough.
     keys = {
-      -- Files
-      { "<M-f>f", "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", desc = "Find files" },
-      { "<M-f>e", "<Cmd>Telescope frecency<CR>",       desc = "Frecency files" },
-      { "<M-f>z", "<Cmd>Telescope zoxide list<CR>",    desc = "Zoxide dirs" },
-      { "<M-f>o", "<Cmd>Telescope oldfiles<CR>",       desc = "Recent files" },
-      { "<M-f>b", "<Cmd>Telescope file_browser<CR>",   desc = "File browser" },
-      -- Text
-      { "<M-f>j", "<Cmd>Telescope live_grep<CR>",      desc = "Live grep" },
-      { "<M-f>s", "<Cmd>Telescope grep_string<CR>",    desc = "Grep string" },
-      -- Buffers / misc
-      { "<M-f>l", "<Cmd>Telescope buffers<CR>",        desc = "Buffers" },
-      { "<M-f>m", "<Cmd>Telescope marks<CR>",          desc = "Marks" },
-      { "<M-f>r", "<Cmd>Telescope registers<CR>",      desc = "Registers" },
-      { "<M-f>k", "<Cmd>Telescope keymaps<CR>",        desc = "Keymaps" },
-      { "<M-f>c", "<Cmd>Telescope commands<CR>",       desc = "Commands" },
-      { "<M-f>h", "<Cmd>Telescope help_tags<CR>",      desc = "Help" },
-      { "<M-f>n", "<Cmd>Telescope luasnip<CR>",        desc = "Snippets" },
-      { "<M-f>/", "<Cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Buffer fuzzy" },
-      -- Git
-      { "<M-f>gc", "<Cmd>Telescope git_commits<CR>",   desc = "Git commits" },
-      { "<M-f>gs", "<Cmd>Telescope git_status<CR>",    desc = "Git status" },
-      { "<M-f>gb", "<Cmd>Telescope git_branches<CR>",  desc = "Git branches" },
-      -- LSP
-      { "<M-f>ds", "<Cmd>Telescope lsp_document_symbols<CR>",  desc = "Document symbols" },
-      { "<M-f>ws", "<Cmd>Telescope lsp_workspace_symbols<CR>", desc = "Workspace symbols" },
+      { "<Leader>ff", "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", desc = "Files" },
+      { "<Leader>fg", "<Cmd>Telescope live_grep<CR>",   desc = "Grep" },
+      { "<Leader>fw", "<Cmd>Telescope grep_string<CR>", desc = "Grep word under cursor" },
+      { "<Leader>fb", "<Cmd>Telescope buffers<CR>",     desc = "Buffers" },
+      { "<Leader>fr", "<Cmd>Telescope frecency<CR>",    desc = "Recent (frecency)" },
+      { "<Leader>fz", "<Cmd>Telescope zoxide list<CR>", desc = "Directories (zoxide)" },
+      { "<Leader>f/", "<Cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "In this buffer" },
+      { "<Leader>fs", "<Cmd>Telescope lsp_document_symbols<CR>",  desc = "Symbols (file)" },
+      { "<Leader>fS", "<Cmd>Telescope lsp_workspace_symbols<CR>", desc = "Symbols (project)" },
+      { "<Leader>fh", "<Cmd>Telescope help_tags<CR>",   desc = "Help" },
+      { "<Leader>fk", "<Cmd>Telescope keymaps<CR>",     desc = "Keymaps" },
     },
     config = function()
       local telescope = require("telescope")
@@ -76,9 +63,6 @@ return {
             override_file_sorter = true,
             case_mode = "smart_case",
           },
-          file_browser = {
-            hijack_netrw = true,
-          },
           frecency = {
             show_scores = false,
             show_unindexed = true,
@@ -87,7 +71,6 @@ return {
       })
 
       telescope.load_extension("fzf")
-      telescope.load_extension("file_browser")
       telescope.load_extension("frecency")
       telescope.load_extension("luasnip")
       telescope.load_extension("zoxide")

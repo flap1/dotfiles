@@ -18,7 +18,7 @@ return {
         ensure_installed = {
           "lua", "vim", "vimdoc", "bash", "html", "yaml", "python",
           "toml", "c", "markdown", "markdown_inline", "javascript",
-          "typescript", "tsx", "json", "rust", "go", "css",
+          "typescript", "tsx", "json", "rust", "go", "css", "typst",
         },
         auto_install = true,
       })
@@ -101,20 +101,6 @@ return {
     end,
   },
 
-  -- hlargs: highlight function arguments
-  {
-    "m-demare/hlargs.nvim",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {},
-  },
-
-  -- nvim-treehopper: hop to treesitter nodes
-  {
-    "mfussenegger/nvim-treehopper",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    keys = {
-      { "m", mode = { "o", "x" },
-        function() require("tsht").nodes() end, desc = "Treehopper" },
-    },
-  },
+  -- hlargs / treehopper removed: LSP semantic tokens already colour arguments,
+  -- and flash's `S` (treesitter mode) does node selection.
 }
