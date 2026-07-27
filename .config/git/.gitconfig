@@ -61,3 +61,22 @@
 	smudge = git-lfs smudge -- %f
 [push]
 	autoSetupRemote = true
+[safe]
+	directory = /srv/redacted-org/gha-runner-deploy/
+	directory = /srv/redacted-org/gha-runner-deploy/_work/redacted-org-deploy/
+	directory = /srv/redacted-org/gha-runner-deploy/_work/redacted-org-deploy/redacted-org-deploy
+	directory = /srv/redacted-org/redacted-org-ci
+
+[commit]
+	gpgsign = false
+[credential "https://gitlab.com"]
+	helper = 
+	helper = !/home/flap1/.local/share/mise/installs/glab/1.109.0/bin/glab auth git-credential
+[url "git@key-REDACTED.github.com:redacted-org/redacted-org-platform"]
+	insteadOf = https://github.com/redacted-org/redacted-org-platform
+	insteadOf = git@github.com:redacted-org/redacted-org-platform
+	insteadOf = ssh://git@github.com/redacted-org/redacted-org-platform
+[url "git@key-REDACTED.github.com:redacted-org/redacted-org-topics"]
+	insteadOf = https://github.com/redacted-org/redacted-org-topics
+	insteadOf = git@github.com:redacted-org/redacted-org-topics
+	insteadOf = ssh://git@github.com/redacted-org/redacted-org-topics
