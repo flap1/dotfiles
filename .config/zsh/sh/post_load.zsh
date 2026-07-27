@@ -54,3 +54,10 @@ fi
 if command -v starship > /dev/null 2>&1; then
     eval "$(starship init zsh)"
 fi
+
+# -------------------------------------------------------------------------
+# opencode (optional - only loaded when present)
+# -------------------------------------------------------------------------
+if [ -d "$HOME/.opencode/bin" ]; then
+    export PATH="$HOME/.opencode/bin:$PATH"
+fi

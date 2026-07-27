@@ -1,0 +1,1 @@
+/home/flap1/dotfiles/.claude/skills/gstack/canary/SKILL.md
