@@ -54,8 +54,6 @@
       "WebSearch",
       "WebFetch",
       "Read(**)",
-      "Bash(sudo -n ss -tlnp 'sport = :15432')",
-      "Read(//proc/2793960/net/**)",
       "Bash(rtk read *)",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('\\\\n'.join\\(f'{k}: {v}' for k,v in d.get\\('scripts',{}\\).items\\(\\) if 'seed' in k.lower\\(\\)\\)\\)\")"
     ]
