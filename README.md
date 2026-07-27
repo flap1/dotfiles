@@ -2,10 +2,8 @@
 
 ## Env
 
-- zsh
-  - Zinit
-  - Powerlevel10k
-- Alacritty + tmux
+- Windows Terminal over ssh + tmux
+- zsh (Zinit, Starship)
 - Neovim
 
 ## 特殊な変更
@@ -111,23 +109,6 @@ registerを設定できるように. PR出してない
 ## Preparation
 
 ```bash
-### Install WezTerm
-# https://wezfurlong.org/wezterm/install/linux.html
-
-### Set WezTerm as default terminal
-# x-terminal-emulator alacritty priority to 60
-sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/wezterm 50
-
-# Confirmation of setting status
-# if it is larger than other terminals, ok
-sudo update-alternatives --display x-terminal-emulator
-
-# When you want to change priorities on the CLI
-sudo update-alternatives --config x-terminal-emulator
-
-# Revert settings
-sudo update-alternatives --remove "x-terminal-emulator" "/usr/bin/wezterm"
-
 ### Set dotfiles
 bash setup.sh
 
@@ -205,9 +186,6 @@ scoop install 7zip sudo git unzip openssl
 @rem install neovim
 scoop install neovim
 
-@rem install oh-my-posh
-scoop install https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/oh-my-posh.json
-
 @rem install c
 scoop install gcc
 
@@ -218,7 +196,6 @@ git clone https://gitlab.com/flap1/dotfiles ~
 sudo cmd /c %UserProfile%\dotfiles\setup_windows.bat
 ```
 
-- [install wezterm](https://wezfurlong.org/wezterm/install/windows.html)
 
 ### Fonts
 
@@ -239,3 +216,18 @@ Get-ChildItem env: # 環境変数取得
 ```powershell
 git clone https://github.com/wbthomason/packer.nvim "$env:LOCALAPPDATA\nvim-data\site\pack\packer\start\packer.nvim"
 ```
+
+## Keybindings
+
+There is no keymap document here. Both tools list their own bindings at
+runtime, and a checked-in copy silently disagrees with the config the moment
+either changes:
+
+| | |
+|---|---|
+| nvim | `<Leader>fk` (telescope), or which-key after any prefix |
+| tmux | `prefix ?` |
+| lazygit | `?` |
+
+The rules the nvim keymaps follow are stated at the top of
+`.config/nvim/lua/core/keymaps.lua`.

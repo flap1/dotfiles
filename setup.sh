@@ -78,14 +78,8 @@ install_category "Core: Zsh + Starship" \
 install_category "Editor: Neovim" \
     ".config/nvim" "$HOME/.config/nvim"
 
-# -------------------------------------------------------------------------
-# Terminal emulators
-# -------------------------------------------------------------------------
-install_category "Terminal: WezTerm" \
-    ".config/wezterm" "$HOME/.config/wezterm"
-
-install_category "Terminal: Alacritty" \
-    ".config/alacritty/.alacritty.yml" "$HOME/.alacritty.yml"
+# No terminal emulator config. The terminal is Windows Terminal over ssh, and
+# it is configured on the Windows side; tmux owns everything on this end.
 
 # -------------------------------------------------------------------------
 # Development tools
@@ -104,8 +98,9 @@ install_category "Tools: tmux" \
 # -------------------------------------------------------------------------
 # Document creation
 # -------------------------------------------------------------------------
-install_category "Docs: LaTeX + remark" \
-    ".latexmkrc"     "$HOME/.latexmkrc" \
+# LaTeX is not written here any more; Typst replaced it. remark stays for the
+# markdown language server.
+install_category "Docs: remark" \
     ".remarkrc.yml"  "$HOME/.remarkrc.yml"
 
 # -------------------------------------------------------------------------
@@ -114,9 +109,6 @@ install_category "Docs: LaTeX + remark" \
 install_category "App: GNOME + pictures" \
     ".config/gnome"    "$HOME/.config/gnome" \
     ".config/pictures" "$HOME/.config/pictures"
-
-install_category "App: VSCode settings" \
-    ".config/Code/User/settings.json" "$HOME/.config/Code/User/settings.json"
 
 # -------------------------------------------------------------------------
 # Server / ops tools
