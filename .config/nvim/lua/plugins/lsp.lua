@@ -76,36 +76,32 @@ return {
 
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-      -- LspAttach: set keymaps and navic when any LSP attaches
+      -- LspAttach: set buffer-local LSP keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(ev)
           local bufnr = ev.buf
-          local client = vim.lsp.get_client_by_id(ev.data.client_id)
           local opts = { noremap = true, silent = true, buffer = bufnr }
-          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-          vim.keymap.set("n", "?", vim.lsp.buf.hover, opts)
-          vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-          vim.keymap.set("n", "g?", vim.lsp.buf.signature_help, opts)
-          vim.keymap.set("n", ";D", vim.lsp.buf.type_definition, opts)
-          vim.keymap.set("n", ";a", vim.lsp.buf.code_action, opts)
-          vim.keymap.set("n", ";r", vim.lsp.buf.rename, opts)
-          vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-          vim.keymap.set("n", ";e", vim.diagnostic.open_float, opts)
-          vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-          vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-          vim.keymap.set("n", ";f", function()
-            require("conform").format({ bufnr = bufnr, async = true })
-          end, opts)
-          vim.keymap.set("x", ";f", function()
-            require("conform").format({ bufnr = bufnr, async = true })
-          end, opts)
 
-          -- Attach navic for breadcrumbs
-          if client and client.server_capabilities.documentSymbolProvider then
-            local ok, navic = pcall(require, "nvim-navic")
-            if ok then navic.attach(client, bufnr) end
-          end
+          -- `g` is goto: navigation only.
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+          vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+          vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+          vim.keymap.set("n", "gy", vim.lsp.buf.type_definition, opts)
+          -- K (hover) and <C-s> (signature help, insert mode) are Neovim
+          -- defaults as of 0.11 and are left alone.
+
+          -- <Leader>c is code: actions on the buffer, not movement through it.
+          vim.keymap.set("n", "<Leader>ca", vim.lsp.buf.code_action, opts)
+          vim.keymap.set("n", "<Leader>cr", vim.lsp.buf.rename, opts)
+          vim.keymap.set({ "n", "x" }, "<Leader>cf", function()
+            require("conform").format({ bufnr = bufnr, async = true })
+          end, opts)
+          vim.keymap.set("n", "<Leader>cd", vim.diagnostic.open_float, opts)
+
+          -- Diagnostics join the [ / ] family.
+          vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, opts)
+          vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, opts)
         end,
       })
 
@@ -207,10 +203,9 @@ return {
         lsp_fallback = true,
       },
     },
-    keys = {
-      { ";;f", function() require("conform").format({ async = true }) end,
-        mode = { "n", "x" }, desc = "Format buffer" },
-    },
+    -- No keys here: <Leader>cf is bound on LspAttach, and format-on-save
+    -- covers the rest. A second format binding for the no-LSP case is not
+    -- worth a key.
   },
 
   -- nvim-lint: linter
