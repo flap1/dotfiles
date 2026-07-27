@@ -1,16 +1,134 @@
+# lazygit — the git面.
+#
+# Role split (see also nvim's ui.lua and .tmux.conf):
+#   nvim     reads code with LSP context; gitsigns for hunk-level staging while editing
+#   lazygit  shapes history: stage, commit, fixup, rebase, stash, worktrees
+#   gh       scripting, CI logs, merge (the human gate)
+#   delta    the renderer, everywhere
+#
+# Optimised for the two jobs a human cannot delegate in an agent workflow:
+#   1. reading a diff with judgement
+#   2. deciding what becomes a commit
+# Typing git commands is not one of them, so nothing here optimises for that.
+
 git:
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never
+  # Two pagers, cycled with `|` in the diff view.
+  #   delta      — line diff. The default; best for "what changed on this line".
+  #   difftastic — structural diff. Parses the language, so pure reformatting
+  #                collapses to nothing. This is the one that matters when an
+  #                agent refactors and you need to see intent, not churn.
+  pagers:
+    - name: delta
+      colorArg: always
+      # No --width. delta already sizes itself to the panel and re-sizes when
+      # the pane changes; measured at pane widths 100/140/200 it filled to
+      # 99/139/199. Passing --width={{columnWidth}} actively breaks this:
+      # that template expands to 61 here, not the panel width, so the diff
+      # rendered into 97 of 172 available columns and the right side sat empty.
+      # side-by-side comes from ~/.gitconfig and is kept.
+      pager: delta --dark --paging=never
+    - name: difftastic
+      colorArg: always
+      externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on
+  log:
+    order: topo-order
+    # A graph in a narrow side panel is noise; useful only when maximised (`+`).
+    showGraph: when-maximised
+    showWholeGraph: false
+  mainBranches:
+    - main
+    - master
+  commit:
+    autoWrapCommitMessage: true
+    autoWrapWidth: 72
+  # Agent checkpoint commits are prefixed WIP; skip hooks for those.
+  skipHookPrefix: WIP
+  # Review needs more surrounding code than authoring does.
+  diffContextSize: 5
+  # Do NOT hide whitespace changes. An agent reformatting a file is a real
+  # event that should be visible, not silently folded away.
+  ignoreWhitespaceInDiffView: false
+  autoFetch: true
+  autoRefresh: true
+  autoForwardBranches: onlyMainBranches
+  parseEmoji: false
 gui:
-  sidePanelWidth: 0.15
+  nerdFontsVersion: "3"
+  # With parallel agents on worktrees, "where is every branch relative to main"
+  # is the question the status panel should answer. The dashboard is a splash.
+  statusPanelView: allBranchesLog
+  showDivergenceFromBaseBranch: arrowAndNumber
+  showFileTree: true
+  filterMode: fuzzy
+  sidePanelWidth: 0.2
+  animateExplosion: false
+  timeFormat: "2006-01-02"
+  shortTimeFormat: "15:04"
+  # Same palette as nvim (base16 from the redacted-org design system) and the tmux
+  # status bar. Three surfaces, one colour system.
   theme:
+    activeBorderColor:
+      - "#10b981" # primary/green, lifted for dark backgrounds
+      - bold
+    inactiveBorderColor:
+      - "#64748b" # text/subtle
+    searchingActiveBorderColor:
+      - "#f59e0b" # active
+      - bold
+    optionsTextColor:
+      - "#94a3b8" # text/muted
     selectedLineBgColor:
-      - underline
-    selectedRangeBgColor:
-      - underline
+      - "#334155"
+    inactiveViewSelectedLineBgColor:
+      - "#1e293b"
+    unstagedChangesColor:
+      - "#ef4444" # error, lifted
+    cherryPickedCommitFgColor:
+      - "#0f172a"
+    cherryPickedCommitBgColor:
+      - "#10b981"
+    markedBaseCommitFgColor:
+      - "#0f172a"
+    markedBaseCommitBgColor:
+      - "#f59e0b"
+os:
+  # Plain nvim, not the nvim-remote preset. lazygit is meant to be launched from
+  # its own tmux pane, where there is no parent nvim to remote into and the
+  # process outlives the editor. Snacks.lazygit (<Leader>gl) still works; it
+  # just nests an nvim for `e`, which is the accepted cost of the quick path.
+  editPreset: nvim
+# Returning from a subprocess should be instant, not gated on a keypress.
+promptToReturnFromSubprocess: false
+disableStartupPopups: true
 refresher:
   refreshInterval: 3
-os:
-  editCommand: "nvim"
-
+customCommands:
+  # git-absorb: turn each hunk in the working tree into a fixup against whichever
+  # commit last touched those lines, then autosquash.
+  # This is the answer to a branch full of agent checkpoint commits: review the
+  # final state, fix what is wrong, and let absorb put the corrections where they
+  # belong instead of piling "address review comment" commits on top.
+  - key: "A"
+    context: "global"
+    description: "Absorb changes into their originating commits (+rebase)"
+    command: "git absorb --and-rebase"
+    loadingText: "Absorbing..."
+    output: log
+  # The whole-branch review: what does this branch do to main, structurally.
+  # This is the diff a human should read before approving, not the per-commit one.
+  - key: "R"
+    context: "global"
+    description: "Review whole branch vs main (structural diff)"
+    command: "git -c diff.external='difft --color=always --display=inline' diff main...HEAD --ext-diff | less -R"
+    output: terminal
+  - key: "C"
+    context: "global"
+    description: "Watch CI checks for this branch's PR"
+    command: "gh pr checks --watch"
+    output: terminal
+  - key: "P"
+    context: "localBranches"
+    description: "Open a draft PR for this branch"
+    command: "gh pr create --draft --fill --head {{.SelectedLocalBranch.Name}}"
+    loadingText: "Creating draft PR..."
+    output: terminal
