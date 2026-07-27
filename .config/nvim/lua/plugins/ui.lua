@@ -5,7 +5,7 @@
 -- so there is no bufferline and no persistent file tree.
 
 return {
-  -- Colorscheme: the redacted-org design-system palette fed through base16.
+  -- Colorscheme: the design-system palette fed through base16.
   --
   -- base16 is used instead of hand-writing highlight groups: supply 16 colours
   -- and every plugin, treesitter capture and LSP group gets a consistent

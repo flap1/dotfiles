@@ -43,7 +43,7 @@ return {
     opts = {
       -- Bind to the tailscale address instead of the default 127.0.0.1, so the
       -- preview is reachable from any tailnet device (the Windows browser, the
-      -- phone) at http://redacted-org:<port> with no port forwarding. Falls back to
+      -- phone) at http://<this-host>:<port> with no port forwarding. Falls back to
       -- loopback when tailscale is down, which is the old behaviour.
       host = (function()
         local ip = vim.fn.systemlist("tailscale ip -4")[1]

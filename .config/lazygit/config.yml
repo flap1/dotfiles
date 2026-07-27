@@ -64,7 +64,7 @@ gui:
   animateExplosion: false
   timeFormat: "2006-01-02"
   shortTimeFormat: "15:04"
-  # Same palette as nvim (base16 from the redacted-org design system) and the tmux
+  # Same palette as nvim (base16 from the design system) and the tmux
   # status bar. Three surfaces, one colour system.
   theme:
     activeBorderColor:
