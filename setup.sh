@@ -98,7 +98,8 @@ install_category "Tools: Git config" \
     ".config/git/.gitconfig" "$HOME/.gitconfig"
 
 install_category "Tools: tmux" \
-    ".config/tmux/.tmux.conf" "$HOME/.tmux.conf"
+    ".config/tmux/.tmux.conf" "$HOME/.tmux.conf" \
+    ".config/tmux/status.sh"  "$HOME/.tmux-status.sh"
 
 # -------------------------------------------------------------------------
 # Document creation
@@ -129,7 +130,8 @@ install_category "Server: Ansible" \
 install_category "AI: Claude Code (hooks + skills + settings)" \
     ".claude/hooks"        "$HOME/.claude/hooks" \
     ".claude/skills"       "$HOME/.claude/skills" \
-    ".claude/settings.json" "$HOME/.claude/settings.json"
+    ".claude/settings.json" "$HOME/.claude/settings.json" \
+    ".claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
 
 # -------------------------------------------------------------------------
 # Directories
