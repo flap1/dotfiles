@@ -118,7 +118,8 @@ fi
 # the 7d window were dropped for that reason; /cost still reports them.
 G='\033[38;2;5;150;105m'    # primary   #059669
 A='\033[38;2;245;158;11m'   # active    #f59e0b
-R='\033[38;2;220;38;38m'    # error     #dc2626
+R='\033[38;2;239;68;68m'    # error, lifted #ef4444 — #dc2626 measures 3.70:1
+                            # against #0f172a, under AA. Same lift as nvim/lazygit.
 M='\033[38;2;148;163;184m'  # muted     #94a3b8
 S='\033[38;2;100;116;139m'  # subtle    #64748b
 X='\033[0m'
@@ -136,12 +137,36 @@ fi
 [ -n "$model" ] && out="${out} ${S}${model}${X}"
 
 # The number is always shown; the colour only changes once it is worth acting on.
+#
+# The block glyph carries the same signal as the colour, in shape. Colour alone
+# is the standard failure here: roughly 8% of men have some colour blindness and
+# most of it is red-green, which is exactly the amber-to-red step below. It also
+# survives a monochrome terminal, a screenshot, and being seen out of the corner
+# of an eye, where a hue change registers late and a rising bar does not.
+#
+# Thresholds stay at 70/90 rather than the more common 50/75. A bar that starts
+# shouting at half full is one you stop reading, and nothing useful happens at
+# 50% anyway: 70 is roughly where it is worth deciding whether to /clear, and 90
+# is where compaction is imminent.
 if [ -n "$used_pct" ]; then
   used_int=$(printf "%.0f" "$used_pct")
   ctx_c="$S"
   [ "$used_int" -ge 70 ] && ctx_c="$A"
   [ "$used_int" -ge 90 ] && ctx_c="$R"
-  out="${out} ${ctx_c}${used_int}%ctx${X}"
+  # The steps are not evenly spaced: they are placed so the glyph changes at
+  # exactly the same points the colour does, at 70 and at 90. An even split put
+  # 89 and 90 both on ▇, so at the one boundary that matters the shape said
+  # nothing and the redundancy was lost precisely where it was needed.
+  if   [ "$used_int" -ge 90 ]; then ctx_bar="█"
+  elif [ "$used_int" -ge 80 ]; then ctx_bar="▇"
+  elif [ "$used_int" -ge 70 ]; then ctx_bar="▆"
+  elif [ "$used_int" -ge 56 ]; then ctx_bar="▅"
+  elif [ "$used_int" -ge 42 ]; then ctx_bar="▄"
+  elif [ "$used_int" -ge 28 ]; then ctx_bar="▃"
+  elif [ "$used_int" -ge 14 ]; then ctx_bar="▂"
+  else                              ctx_bar="▁"
+  fi
+  out="${out} ${ctx_c}${ctx_bar}${used_int}%ctx${X}"
 fi
 
 if [ -n "$rate_5h" ]; then
