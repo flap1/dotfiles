@@ -41,6 +41,7 @@ return {
       ensure_installed = {
         "lua_ls", "rust_analyzer", "clangd", "astro",
         "pyright", "ts_ls", "jsonls", "yamlls", "remark_ls",
+        "tinymist",
       },
       automatic_enable = false, -- we call vim.lsp.enable() manually below
     },
@@ -136,7 +137,20 @@ return {
 
       vim.lsp.config("remark_ls", {
         root_markers = { ".remarkrc.yml", ".remarkrc.js", ".git" },
-        filetypes = { "markdown", "telekasten" },
+        filetypes = { "markdown" },
+      })
+
+      vim.lsp.config("tinymist", {
+        -- attach even outside a git repo; typst notes often live as loose files
+        root_markers = { ".git", "typst.toml" },
+        single_file_support = true,
+        settings = {
+          -- typstyle ships inside tinymist, no separate install
+          formatterMode = "typstyle",
+          exportPdf = "onType",
+          -- treesitter already highlights typst; semantic tokens fight it
+          semanticTokens = "disable",
+        },
       })
 
       vim.lsp.config("pyright", {
@@ -151,6 +165,7 @@ return {
       vim.lsp.enable({
         "lua_ls", "clangd", "astro",
         "pyright", "ts_ls", "jsonls", "yamlls", "remark_ls",
+        "tinymist",
       })
     end,
   },
