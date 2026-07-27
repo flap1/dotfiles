@@ -24,10 +24,30 @@
     line-numbers = true
 
 [merge]
-    conflictstyle = diff3
+    conflictstyle = zdiff3
 
 [diff]
     colorMoved = default
+    # histogram produces smaller, more readable hunks than the default myers,
+    # which matters most when reviewing machine-generated changes.
+    algorithm = histogram
+
+# Record how a conflict was resolved and replay it automatically the next time
+# the same conflict appears. Parallel agents on worktrees rebase constantly and
+# hit the same conflict repeatedly; this makes it a one-time cost.
+[rerere]
+    enabled = true
+    autoUpdate = true
+
+[absorb]
+    # In an agent flow you rarely stage by hand, so `git absorb` should just
+    # take the working tree.
+    autoStageIfNothingStaged = true
+
+# Structural diff, on demand. `git dt` shows what changed semantically, with
+# pure reformatting collapsed away. Same tool lazygit cycles to with `|`.
+[difftool "difftastic"]
+    cmd = difft "$LOCAL" "$REMOTE"
 
 [alias]
     s = status -sb
@@ -47,12 +67,25 @@
     sync = !git checkout $(git remote show origin | grep 'HEAD branch' | awk '{print $NF}') && git pull
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
     l = log --oneline --graph --decorate -n 10
+    # Structural diff (difftastic) instead of line diff.
+    dt = -c diff.external=difft diff
+    # The review diff: what this branch does to main, as one change.
+    # This is the diff a human reads before approving, not the per-commit one.
+    review = "!git diff $(git merge-base HEAD ${1:-main})...HEAD #"
+    # Same, structurally.
+    reviewt = "!git -c diff.external=difft diff --ext-diff $(git merge-base HEAD ${1:-main})...HEAD #"
 
 [url "ssh://git@"]
     insteadOf = https://
 
+# Machine- and employer-specific config: deploy-key host aliases, safe.directory
+# entries for CI checkouts, credential helpers. Kept outside this repo entirely
+# rather than gitignored inside it, because the repo is public and a file that
+# only a .gitignore separates from being published is one `git add -f` away.
+# The path was relative before, which resolved next to this file rather than in
+# $HOME, so the include silently matched nothing.
 [include]
-    path = .gitconfig.local
+    path = ~/.gitconfig.local
 
 [filter "lfs"]
 	process = git-lfs filter-process
@@ -61,22 +94,5 @@
 	smudge = git-lfs smudge -- %f
 [push]
 	autoSetupRemote = true
-[safe]
-	directory = /srv/redacted-org/gha-runner-deploy/
-	directory = /srv/redacted-org/gha-runner-deploy/_work/redacted-org-deploy/
-	directory = /srv/redacted-org/gha-runner-deploy/_work/redacted-org-deploy/redacted-org-deploy
-	directory = /srv/redacted-org/redacted-org-ci
-
 [commit]
 	gpgsign = false
-[credential "https://gitlab.com"]
-	helper = 
-	helper = !/home/flap1/.local/share/mise/installs/glab/1.109.0/bin/glab auth git-credential
-[url "git@key-REDACTED.github.com:redacted-org/redacted-org-platform"]
-	insteadOf = https://github.com/redacted-org/redacted-org-platform
-	insteadOf = git@github.com:redacted-org/redacted-org-platform
-	insteadOf = ssh://git@github.com/redacted-org/redacted-org-platform
-[url "git@key-REDACTED.github.com:redacted-org/redacted-org-topics"]
-	insteadOf = https://github.com/redacted-org/redacted-org-topics
-	insteadOf = git@github.com:redacted-org/redacted-org-topics
-	insteadOf = ssh://git@github.com/redacted-org/redacted-org-topics

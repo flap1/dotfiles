@@ -55,9 +55,9 @@ alias vim="$EDITOR"
 alias sv="sudo $EDITOR"
 
 # ── tailnet exposure ──────────────────────────────────────────────────
-# This box is on a tailnet as `redacted-org`. Any port bound to the tailscale
-# address is reachable from any tailnet device as http://redacted-org:PORT with
-# no per-port configuration, forever. That is the whole point: prefer binding
+# This box is on a tailnet, so any port bound to its tailscale address is
+# reachable from any tailnet device as http://<this-host>:PORT with no
+# per-port configuration, forever. That is the whole point: prefer binding
 # the server correctly over forwarding ports one at a time.
 #
 # TSIP is that address. Start dev servers on it:
@@ -91,10 +91,16 @@ alias ga='git add -A'
 alias gc='git commit -m'
 alias gp='git push'
 alias gl='git pull'
+alias glr='git pull --rebase origin develop'
 alias gpo='git push -u origin HEAD'
 alias glom='git pull origin main'
 alias gloms='git pull origin main && git submodule update --init --recursive'
 alias gll='git log --oneline --graph --decorate -n 10'
+# pull.rebase=true + rebase.autoStash=true (global git config) 有効化済み
+# -> 未コミット変更があっても checkout/pull で自動 stash/restore されるため
+#    stash 手動操作(git stash && checkout && pull && stash apply)は不要
+alias gcd='git checkout develop && git pull'
+alias gcm='git checkout main && git pull'
 
 # docker
 alias lzd='lazydocker'

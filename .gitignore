@@ -21,3 +21,11 @@ out
 ## claude
 /.claude/skills/st-plan/.cache
 /.claude/skills/st/.cache
+
+## private / machine-local overrides
+# This repo is public. Anything naming an employer, an internal host path or a
+# credential lives in these instead, and they are never tracked.
+/.claude/settings.local.json
+/.claude/PROMPT.md
+/.claude/hooks/st-backpressure.sh
+/.config/git/.gitconfig.local

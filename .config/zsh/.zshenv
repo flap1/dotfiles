@@ -23,6 +23,7 @@ typeset -xT SUDO_PATH sudo_path
 path=(
   $HOME/.local/share/zinit/polaris/bin(N-/)
   $HOME/.local/share/mise/shims(N-/)
+  $HOME/.local/share/pnpm(N-/)
   $HOME/.local/bin(N-/)
   $HOME/bin(N-/)
   $HOME/.cargo/bin(N-/)
@@ -52,4 +53,4 @@ export NEO4J_HOME=$HOME/.local/share/neo4j
 export NEO4J_CONF=$HOME/.config/neo4j
 export GOBIN=$HOME/.go/bin
 . "$HOME/.cargo/env"
-. "/home/flap1/.local/share/bob/env/env.sh"
+. "$HOME/.local/share/bob/env/env.sh"
