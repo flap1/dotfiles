@@ -31,6 +31,7 @@ printf '%s %s\n' "$busy" "$total" > "$cache"
 } < /proc/meminfo
 mem=$(( (memtotal - memavail) * 100 / memtotal ))
 
-# Nerd Font glyphs rather than CPU:/MEM: labels. 󰘚 is the one this config
-# already used for memory, so 󰻠 is taken from the same Material Design set.
-printf '󰻠 %s%%  󰍚 %s%%' "$cpu" "$mem"
+# Labels, not icons: the Nerd Font CPU and RAM glyphs are both a chip outline,
+# so at status-bar size they were indistinguishable. Two letters carry the
+# distinction that the pictures could not, and drop the font dependency.
+printf 'CPU %s%%  MEM %s%%' "$cpu" "$mem"
