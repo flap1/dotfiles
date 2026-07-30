@@ -196,6 +196,24 @@ git clone https://gitlab.com/flap1/dotfiles ~
 sudo cmd /c %UserProfile%\dotfiles\setup_windows.bat
 ```
 
+### Windows Terminal
+
+`.config/windows-terminal/settings.json` を Terminal の LocalState にコピーする。
+symlink は elevation か Developer Mode が必要で、hardlink は Terminal が設定保存
+時にファイルを書き直した瞬間に外れるため、方向を明示したコピー同期にしている。
+
+```powershell
+# dotfiles -> Windows Terminal
+powershell -File setup_windows.ps1
+
+# Windows Terminal -> dotfiles (GUI で変えた分を取り込む)
+powershell -File setup_windows.ps1 -Pull
+```
+
+Shift+Enter は `sendInput` で ESC + CR を送るバインドにしてある。Claude Code が
+alt+enter として解釈して改行になる (`/terminal-setup` は iTerm2 と VSCode 用で
+Windows Terminal は対象外)。
+
 
 ### Fonts
 
