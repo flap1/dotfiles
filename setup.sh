@@ -104,7 +104,7 @@ install_category "Tools: tmux" \
 
 # Three things tmux session restore needs that are not symlinks. Idempotent.
 install_tmux_runtime() {
-    read -rp "Install [Tools: tmux runtime (mise trust + shim + systemd PATH)]? (y/n): " yn
+    read -rp "Install [Tools: tmux runtime (mise trust + shim + systemd unit)]? (y/n): " yn
     case $yn in
         [Yy]*) ;;
         *) echo "Skipped [Tools: tmux runtime]."; return ;;
@@ -121,22 +121,45 @@ install_tmux_runtime() {
     ln -sfn "$HOME/.local/share/mise/shims/tmux" "$HOME/.local/bin/tmux"
     echo "  -> $HOME/.local/bin/tmux"
 
-    # tmux-continuum generates ~/.config/systemd/user/tmux.service, whose
-    # ExecStart is an absolute path -- but every plugin script is a child of the
-    # tmux server and calls bare `tmux`, and systemd's default PATH does not
-    # include ~/.local/bin. Without this the server comes up and no plugin
-    # loads: no restore on boot, no periodic save, no save on shutdown, and no
-    # error anywhere. A drop-in rather than the unit itself, because continuum
-    # rewrites the unit.
-    local dropin="$HOME/.config/systemd/user/tmux.service.d"
-    mkdir -p "$dropin"
-    cat > "$dropin/path.conf" <<EOF
+    # tmux-continuum writes this unit when @continuum-boot is on, but only if it
+    # does not exist (write_unit_file_unless_exists) -- an existing one is left
+    # alone and merely kept enabled. So own it outright rather than layering
+    # drop-ins on a generated file.
+    #
+    # Two differences from what continuum generates. PATH, because every plugin
+    # script is a child of the tmux server and calls bare `tmux`, and systemd's
+    # default PATH has no ~/.local/bin: without it the server comes up and not one
+    # plugin loads -- no restore on boot, no periodic save, no save on shutdown,
+    # and no error anywhere. And no DISPLAY=:0, which continuum hardcodes: there
+    # is no X server at :0 here, and every restored pane inherits it and then
+    # believes there is a GUI.
+    local unit="$HOME/.config/systemd/user/tmux.service"
+    mkdir -p "$(dirname "$unit")"
+    cat > "$unit" <<EOF
+[Unit]
+Description=tmux default session (detached)
+Documentation=man:tmux(1)
+
 [Service]
+Type=forking
 Environment=PATH=$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-UnsetEnvironment=DISPLAY
+ExecStart=$HOME/.local/bin/tmux new-session -d
+
+ExecStop=$HOME/.tmux/plugins/tmux-resurrect/scripts/save.sh
+ExecStop=$HOME/.local/bin/tmux kill-server
+# Stopping takes the panes with it. Only what is listed in @resurrect-processes
+# comes back, so a server that has to survive belongs in its own unit, not in a
+# pane.
+KillMode=control-group
+
+RestartSec=2
+
+[Install]
+WantedBy=default.target
 EOF
-    echo "  -> $dropin/path.conf"
+    echo "  -> $unit"
     systemctl --user daemon-reload
+    systemctl --user enable tmux.service
 }
 install_tmux_runtime
 
