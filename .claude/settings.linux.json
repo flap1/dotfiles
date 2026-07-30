@@ -14,7 +14,10 @@
     "exactly one user-level settings file plus one local override, and the local",
     "override on this box already carries per-project permissions and MCP servers",
     "that are not in version control. So this file is merged into it, not linked",
-    "over it. The merge is idempotent -- rerunning setup.sh is a no-op."
+    "over it. The merge is idempotent -- rerunning setup.sh is a no-op.",
+    "",
+    "statusLine runs node rather than the file directly: no exec bit to lose on a",
+    "Windows checkout, and no dependence on how the shebang resolves under mise."
   ],
   "permissions": {
     "allow": [
@@ -76,6 +79,6 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "~/.claude/statusline-command.sh"
+    "command": "node \"$HOME/.claude/statusline.mjs\""
   }
 }

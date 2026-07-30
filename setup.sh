@@ -210,7 +210,7 @@ install_category "AI: Claude Code (hooks + skills + settings + instructions)" \
     ".claude/hooks"        "$HOME/.claude/hooks" \
     ".claude/skills"       "$HOME/.claude/skills" \
     ".claude/settings.json" "$HOME/.claude/settings.json" \
-    ".claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh" \
+    ".claude/statusline.mjs" "$HOME/.claude/statusline.mjs" \
     ".claude/CLAUDE.md"    "$HOME/.claude/CLAUDE.md" \
     ".claude/RTK.md"       "$HOME/.claude/RTK.md"
 
