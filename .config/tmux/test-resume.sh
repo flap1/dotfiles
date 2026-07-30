@@ -1,12 +1,15 @@
 #!/bin/sh
-# bin/tmux-claude-resume の回帰チェック。使い捨てのソケットで systemd の boot 条件
+# セッション永続化の回帰チェック。使い捨てのソケットで systemd の boot 条件
 # (絶対パスの tmux + サニタイズ PATH) を再現し、save -> kill -> 起動 -> restore を
 # 一周させて中身を検算する。実サーバには触らない。
 #
+# 守っているのは fork した resurrect 側の 2 つ（foreground_pgroup ストラテジと、空の
+# pane_title でフィールドが畳まれないこと）と、boot 環境でプラグインが読めること。
+# 過去に壊れたのは全部ここ: tmux の format 誤り、basename が "-zsh" をオプション
+# 扱い、pane_pid 自身がプログラムのペインの取りこぼし、空タイトルによる dir のずれ。
+#
 # claude のペインは検査しない。sessionId を持つ本物の claude を起こす必要があり、
-# 会話を 1 つ作ってしまうため。ここが守るのは「どのプロセスがそのペインのものか」の
-# 判定で、過去に壊れたのは全部そこ（tmux の format 誤り、basename が "-zsh" を
-# オプション扱い、pane_pid 自身がプログラムのペインの取りこぼし）。
+# 会話を 1 つ作ってしまうため。
 set -eu
 
 sock=resume-test
@@ -20,10 +23,10 @@ trap '"$tmux" -L "$sock" kill-server 2>/dev/null || true; rm -rf "$dir"' EXIT
 
 cat > "$conf" <<EOF
 set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'flap1/tmux-resurrect'
 set -g @resurrect-dir '$dir/state'
 set -g @resurrect-processes '"~btop"'
-set -g @resurrect-hook-post-save-layout '$HOME/bin/tmux-claude-resume'
+set -g @resurrect-save-command-strategy 'foreground_pgroup'
 run '~/.tmux/plugins/tpm/tpm'
 EOF
 

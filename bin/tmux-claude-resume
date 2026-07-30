@@ -1,28 +1,14 @@
 #!/bin/sh
 # tmux-resurrect の post-save-layout フック。引数は保存直後の state ファイル。
-# 各ペインの「復元時に実行するコマンド」フィールドを /proc から決め直す。
+# claude のペインの「復元時に実行するコマンド」を `claude --resume <sessionId>` に
+# 差し替える。resurrect が保存するのは cmdline なので、素の `claude` は復元しても
+# 新規会話になってしまう。
 #
-# なぜ上流に任せないか。resurrect の save_command_strategies はどれも壊れている:
-#   ps.sh          grep "^${PANE_PID}" が前方一致。ppid 2255 が 22551 にも当たり、
-#                  無関係な子孫の cmdline が複数行出て state ファイルが壊れる
-#   linux_procfs   pgrep -P の複数行をそのまま cat に渡していて cat がエラーを吐く
-#   pgrep.sh       -l が短い名前しか出さず、フルコマンド行が失われる
-# どれも「ペインの子は 1 つ」を前提にしている。この箱では MCP サーバをバックグラウンド
-# に持つシェルが普通にいるので成り立たない。プラグイン側を直しても `prefix + U` で
-# 戻るので、ここで上書きする。
-#
-# 何が「ペインで動いているもの」かの定義は tty のフォアグラウンドプロセスグループ。
-# /proc/<pane_pid>/stat の tpgid がそれ。first-match と違ってバックグラウンドジョブを
-# 掴まないし、pane_pid 自身がプログラムのペイン（シェルを介さず起動したもの）でも
-# tpgid == 自分の pgrp になるだけで同じ規則で扱える。前面がそのペインのシェルなら
-# 復元するものは無い。
-#
-# claude のペインはさらに `claude --resume <sessionId>` に置き換える。resurrect が
-# 保存するのは cmdline なので、素の `claude` は復元しても新規会話になる。
-# 突き合わせは `claude agents --json` の pid の pgid とペインの tpgid。claude が
-# ラッパの子でもプロセスグループは共有するので一致し、tmux のペインに居ない claude
-# (VSCode 拡張のものなど) はどのペインにも一致しない。これがあるので起動を包む
-# 必要はない。sessionId で戻すので名前からの導出も要らない。
+# 突き合わせは `claude agents --json` の pid の pgid と、ペインの tpgid（tty の
+# フォアグラウンドプロセスグループ）。claude がラッパの子でもプロセスグループは
+# 共有するので一致し、tmux のペインに居ない claude（VSCode 拡張のものなど）は
+# どのペインにも一致しない。これがあるので起動を包む必要はなく、sessionId で
+# 戻すので名前からの導出も要らない。
 #
 # ponytail: 状態を持たない。毎回 live なプロセスから引き直す
 set -eu
@@ -36,50 +22,27 @@ tab=$(printf '\t')
 # そこから f3=pgrp f6=tpgid
 stat_field() { sed 's/.*) //' "/proc/$1/stat" 2>/dev/null | cut -d' ' -f"$2"; }
 
-cmdline() { tr '\0' ' ' < "/proc/$1/cmdline" 2>/dev/null | sed 's/ *$//'; }
-
-# 空の pane_title はフィールドをずらす。save.sh の `IFS=$'\t' read` はタブが IFS
-# whitespace なので連続タブを 1 つに畳み、pane_title 以降が 1 つずつ左へ寄る
-# (dir に pane_active が入り、pane_command に pane_pid が漏れる)。フィールド数は
-# 変わらないので f11 の差し替えは無事だが、restore.sh は同じ read で dir を読むため
-# 空タイトルのペインは違うディレクトリに復元される。上流の未マージ PR #564 と同じ
-# 約束 (空なら "_") で、f7 以降を live tmux の値で書き直して回避する。
-panes=$(tmux list-panes -a -F "#{pane_pid}$tab#{session_name}$tab#{window_index}$tab#{pane_index}$tab#{?pane_title,#{pane_title},_}$tab#{pane_current_path}$tab#{pane_active}$tab#{pane_current_command}")
-[ -n "$panes" ] || exit 0
-
-# "<tpgid>\t<session>\t<window>\t<pane>" 。tpgid はそのペインの前面プロセスグループ
+# "<tpgid>\t<session>\t<window>\t<pane>"
 pane_groups=$(
-	printf '%s\n' "$panes" | while IFS="$tab" read -r pid session window index rest; do
-		tpgid=$(stat_field "$pid" 6) || continue
-		[ -n "$tpgid" ] && [ "$tpgid" -gt 0 ] || continue
-		printf '%s\t%s\t%s\t%s\n' "$tpgid" "$session" "$window" "$index"
-	done
+	tmux list-panes -a -F "#{pane_pid}$tab#{session_name}$tab#{window_index}$tab#{pane_index}" |
+		while IFS="$tab" read -r pid session window index; do
+			tpgid=$(stat_field "$pid" 6) || continue
+			[ -n "$tpgid" ] && [ "$tpgid" -gt 0 ] || continue
+			printf '%s\t%s\t%s\t%s\n' "$tpgid" "$session" "$window" "$index"
+		done
 )
 [ -n "$pane_groups" ] || exit 0
 
-# "<session>\t<window>\t<pane>\t<title>\t<dir>\t<active>\t<command>"。dir の空白は
-# save.sh と同じくエスケープする
-meta_map=$(printf '%s\n' "$panes" | cut -f2- | awk -F"$tab" -v OFS="$tab" '
-	{ gsub(/ /, "\\ ", $5); print }')
-
-group_of() { printf '%s\n' "$pane_groups" | awk -F"$tab" -v g="$1" -v OFS="$tab" \
-	'$1 == g { print $2, $3, $4; exit }'; }
-
-# 前面プロセスグループの先頭 pid。グループリーダが生きていればそれ
-leader_of() { ps -eo pid=,pgid= | awk -v g="$1" '$2 == g { print $1; exit }'; }
-
-# 前面がそのペインのシェルなら復元対象なし。ログインシェルは argv[0] が "-zsh"
-shell_base=$(basename "$(tmux show -gv default-shell 2>/dev/null || echo /bin/sh)")
-
-# claude のペイン: sessionId で resume する。--resume 以外の引数は生かし、競合する
-# --session-id / --continue / --name は落とす（--name は値も食う）。background の
-# agent は claude の子で pgid を共有するため、kind で除かないと親のペインを奪う
+# --resume 以外の引数は生かし、競合する --session-id / --continue / --name は落とす
+# （--name は値も食う）。background の agent は claude の子で pgid を共有するため、
+# kind で除かないと親のペインを奪う
 claude_map=$(
 	claude agents --json 2>/dev/null |
 		jq -r '.[] | select(.kind == "interactive") | [.pid, .sessionId] | @tsv' |
 		while IFS="$tab" read -r pid sid; do
 			pgid=$(stat_field "$pid" 3) || continue
-			key=$(group_of "${pgid:-0}")
+			key=$(printf '%s\n' "$pane_groups" | awk -F"$tab" -v g="${pgid:-0}" -v OFS="$tab" \
+				'$1 == g { print $2, $3, $4; exit }')
 			[ -n "$key" ] || continue
 			args=$(tr '\0' '\n' < "/proc/$pid/cmdline" | tail -n +2 | awk '
 				skip { skip = 0; next }
@@ -91,49 +54,18 @@ claude_map=$(
 			printf '%s\t%s\n' "$key" "claude --resume $sid$args"
 		done
 )
-
-# 残りのペイン: 前面プロセスグループのコマンド行
-fg_map=$(
-	printf '%s\n' "$pane_groups" | while IFS="$tab" read -r tpgid session window index; do
-		cmd=''
-		leader=$(leader_of "$tpgid")
-		if [ -n "$leader" ]; then
-			cmd=$(cmdline "$leader")
-			# 先頭トークンがシェルそのものなら空にする。ログインシェルは argv[0]
-			# が "-zsh" で、先に '-' を落とさないと basename がオプション扱いする
-			case $(basename "$(printf '%s' "${cmd%% *}" | sed 's/^-//')") in
-				"$shell_base") cmd='' ;;
-			esac
-		fi
-		printf '%s\t%s\t%s\t%s\n' "$session" "$window" "$index" "$cmd"
-	done
-)
+[ -n "$claude_map" ] || exit 0
 
 # state ファイルの pane 行は f1=pane f2=session f3=window f6=pane_index で、
-# 最終フィールド f11 が ":<復元するコマンド>"。それを差し替える。
-# 加えて、上流のストラテジが吐いた複数行の残骸をレコード型で捨てる
-awk -F"$tab" -v OFS="$tab" -v claude_map="$claude_map" -v fg_map="$fg_map" -v meta_map="$meta_map" '
-	function load(src,   n, lines, f, i) {
-		n = split(src, lines, "\n")
+# 最終フィールド f11 が ":<復元するコマンド>"
+awk -F"$tab" -v OFS="$tab" -v claude_map="$claude_map" '
+	BEGIN {
+		n = split(claude_map, lines, "\n")
 		for (i = 1; i <= n; i++) {
-			if (split(lines[i], f, "\t") < 4) continue
+			if (split(lines[i], f, "\t") != 4) continue
 			cmd[f[1] OFS f[2] OFS f[3]] = f[4]
 		}
 	}
-	BEGIN {
-		load(fg_map); load(claude_map)   # claude_map が後で勝つ
-		n = split(meta_map, lines, "\n")
-		for (i = 1; i <= n; i++) {
-			if (split(lines[i], f, "\t") != 7) continue   # タイトルにタブが入った行は諦める
-			k = f[1] OFS f[2] OFS f[3]
-			title[k] = f[4]; dir[k] = f[5]; active[k] = f[6]; command[k] = f[7]
-		}
-	}
-	$1 != "pane" && $1 != "window" && $1 != "state" && $1 != "grouped_session" { next }
-	$1 == "pane" {
-		k = $2 OFS $3 OFS $6
-		if (k in title) { $7 = title[k]; $8 = ":" dir[k]; $9 = active[k]; $10 = command[k] }
-		if (k in cmd)   { $11 = ":" cmd[k] }
-	}
+	$1 == "pane" && (($2 OFS $3 OFS $6) in cmd) { $11 = ":" cmd[$2 OFS $3 OFS $6] }
 	{ print }
 ' "$state" > "$state.tmp" && mv "$state.tmp" "$state"
