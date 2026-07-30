@@ -140,6 +140,25 @@ EOF
 }
 install_tmux_runtime
 
+# A shared library, so it is built rather than symlinked. For servers that offer
+# no way to choose a listen address and would otherwise sit on 0.0.0.0 -- which
+# on a shared machine means the LAN. Used from a unit as
+# Environment=LD_PRELOAD=~/.local/lib/bind-localhost.so
+install_bind_localhost() {
+    command -v gcc >/dev/null || { echo "Skipped [Tools: bind-localhost]: no gcc."; return; }
+    read -rp "Install [Tools: bind-localhost.so]? (y/n): " yn
+    case $yn in
+        [Yy]*) ;;
+        *) echo "Skipped [Tools: bind-localhost]."; return ;;
+    esac
+    mkdir -p "$HOME/.local/lib"
+    gcc -shared -fPIC -O2 -Wall -Wextra \
+        -o "$HOME/.local/lib/bind-localhost.so" "$DOTFILES_DIR/lib/bind-localhost.c" -ldl
+    echo "  -> $HOME/.local/lib/bind-localhost.so"
+    "$DOTFILES_DIR/lib/test-bind-localhost.sh" || true
+}
+install_bind_localhost
+
 # -------------------------------------------------------------------------
 # Document creation
 # -------------------------------------------------------------------------
