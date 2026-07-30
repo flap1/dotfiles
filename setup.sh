@@ -94,8 +94,12 @@ install_category "Tools: Git config" \
 # The tmux pin here is load-bearing rather than a preference. tmux.conf targets
 # 3.7 (escape-time, and the comments reason about 3.7 defaults), and the
 # systemd --user unit that restores sessions after a reboot runs
-# ~/.local/bin/tmux by absolute path. Point that at the mise shim once:
+# ~/.local/bin/tmux by absolute path. Two one-time steps after symlinking:
+#     mise trust ~/dotfiles/.config/mise/config.toml
 #     ln -sfn ~/.local/share/mise/shims/tmux ~/.local/bin/tmux
+# The trust is not optional. mise trusts ~/.config/mise/config.toml implicitly,
+# but the symlink resolves into the repo, and an untrusted config makes every
+# shim -- including tmux -- fail outright rather than fall back.
 # Distro tmux must NOT be installed alongside: an older client silently kills a
 # newer server, which is how the whole restore path broke once.
 install_category "Tools: mise" \
