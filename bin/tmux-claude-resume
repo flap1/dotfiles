@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # tmux-resurrect の post-save-layout フック。引数は保存直後の state ファイル。
 # claude のペインの「復元時に実行するコマンド」を `claude --resume <sessionId>` に
 # 差し替える。resurrect が保存するのは cmdline なので、素の `claude` は復元しても
@@ -34,8 +34,28 @@ pane_groups=$(
 [ -n "$pane_groups" ] || exit 0
 
 # --resume 以外の引数は生かし、競合する --session-id / --continue / --name は落とす
-# （--name は値も食う）。background の agent は claude の子で pgid を共有するため、
-# kind で除かないと親のペインを奪う
+# （--name は値も食う。-c は claude では --continue の短縮形）。復元は send-keys で
+# シェルに流されるので、残す引数は %q でクォートする。background の agent は claude
+# の子で pgid を共有するため、kind で除かないと親のペインを奪う
+resume_command() {
+	local pid=$1 sid=$2 argv=() args=() skip=0 a
+	mapfile -d '' -t argv < "/proc/$pid/cmdline" 2>/dev/null || return 1
+	for a in "${argv[@]:1}"; do
+		if [ "$skip" = 1 ]; then skip=0; continue; fi
+		case $a in
+			--resume | --session-id | --name) skip=1; continue ;;
+			--resume=* | --session-id=* | --name=*) continue ;;
+			--continue | -c) continue ;;
+		esac
+		args+=("$a")
+	done
+	if [ "${#args[@]}" -gt 0 ]; then
+		printf 'claude --resume %s %s\n' "$sid" "$(printf '%q ' "${args[@]}")"
+	else
+		printf 'claude --resume %s\n' "$sid"
+	fi
+}
+
 claude_map=$(
 	claude agents --json 2>/dev/null |
 		jq -r '.[] | select(.kind == "interactive") | [.pid, .sessionId] | @tsv' |
@@ -44,23 +64,19 @@ claude_map=$(
 			key=$(printf '%s\n' "$pane_groups" | awk -F"$tab" -v g="${pgid:-0}" -v OFS="$tab" \
 				'$1 == g { print $2, $3, $4; exit }')
 			[ -n "$key" ] || continue
-			args=$(tr '\0' '\n' < "/proc/$pid/cmdline" | tail -n +2 | awk '
-				skip { skip = 0; next }
-				/^(--resume|--session-id|--name)$/ { skip = 1; next }
-				/^(--resume=|--session-id=|--name=)/ { next }
-				/^(--continue|-c)$/ { next }
-				{ printf " %s", $0 }
-			')
-			printf '%s\t%s\n' "$key" "claude --resume $sid$args"
+			command=$(resume_command "$pid" "$sid") || continue
+			printf '%s\t%s\n' "$key" "${command% }"
 		done
 )
 [ -n "$claude_map" ] || exit 0
 
 # state ファイルの pane 行は f1=pane f2=session f3=window f6=pane_index で、
-# 最終フィールド f11 が ":<復元するコマンド>"
-awk -F"$tab" -v OFS="$tab" -v claude_map="$claude_map" '
+# 最終フィールド f11 が ":<復元するコマンド>"。
+# 環境変数で渡すのは、awk が -v の代入値をエスケープ解釈してクォートの
+# バックスラッシュを食うため
+CLAUDE_MAP=$claude_map awk -F"$tab" -v OFS="$tab" '
 	BEGIN {
-		n = split(claude_map, lines, "\n")
+		n = split(ENVIRON["CLAUDE_MAP"], lines, "\n")
 		for (i = 1; i <= n; i++) {
 			if (split(lines[i], f, "\t") != 4) continue
 			cmd[f[1] OFS f[2] OFS f[3]] = f[4]

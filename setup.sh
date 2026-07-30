@@ -91,23 +91,53 @@ install_category "Tools: bin + git template" \
 install_category "Tools: Git config" \
     ".config/git/.gitconfig" "$HOME/.gitconfig"
 
-# The tmux pin here is load-bearing rather than a preference. tmux.conf targets
-# 3.7 (escape-time, and the comments reason about 3.7 defaults), and the
-# systemd --user unit that restores sessions after a reboot runs
-# ~/.local/bin/tmux by absolute path. Two one-time steps after symlinking:
-#     mise trust ~/dotfiles/.config/mise/config.toml
-#     ln -sfn ~/.local/share/mise/shims/tmux ~/.local/bin/tmux
-# The trust is not optional. mise trusts ~/.config/mise/config.toml implicitly,
-# but the symlink resolves into the repo, and an untrusted config makes every
-# shim -- including tmux -- fail outright rather than fall back.
-# Distro tmux must NOT be installed alongside: an older client silently kills a
-# newer server, which is how the whole restore path broke once.
+# The tmux pin in here is load-bearing rather than a preference: tmux.conf targets
+# 3.7, and a distro tmux must not be installed alongside it, because an older
+# client kills a newer server outright instead of failing -- that is how session
+# restore broke once, silently.
 install_category "Tools: mise" \
     ".config/mise/config.toml" "$HOME/.config/mise/config.toml"
 
 install_category "Tools: tmux" \
     ".config/tmux/.tmux.conf" "$HOME/.tmux.conf" \
     ".config/tmux/status.sh"  "$HOME/.tmux-status.sh"
+
+# Three things tmux session restore needs that are not symlinks. Idempotent.
+install_tmux_runtime() {
+    read -rp "Install [Tools: tmux runtime (mise trust + shim + systemd PATH)]? (y/n): " yn
+    case $yn in
+        [Yy]*) ;;
+        *) echo "Skipped [Tools: tmux runtime]."; return ;;
+    esac
+
+    # mise trusts ~/.config/mise/config.toml implicitly, but the symlink above
+    # resolves into this repo, and an untrusted config does not degrade: every
+    # shim fails, tmux included, which takes the terminal with it.
+    mise trust "$DOTFILES_DIR/.config/mise/config.toml"
+    mise install
+
+    # The systemd unit below runs this path literally, and it is also what the
+    # tmux server's children find on PATH.
+    ln -sfn "$HOME/.local/share/mise/shims/tmux" "$HOME/.local/bin/tmux"
+    echo "  -> $HOME/.local/bin/tmux"
+
+    # tmux-continuum generates ~/.config/systemd/user/tmux.service, whose
+    # ExecStart is an absolute path -- but every plugin script is a child of the
+    # tmux server and calls bare `tmux`, and systemd's default PATH does not
+    # include ~/.local/bin. Without this the server comes up and no plugin
+    # loads: no restore on boot, no periodic save, no save on shutdown, and no
+    # error anywhere. A drop-in rather than the unit itself, because continuum
+    # rewrites the unit.
+    local dropin="$HOME/.config/systemd/user/tmux.service.d"
+    mkdir -p "$dropin"
+    cat > "$dropin/path.conf" <<EOF
+[Service]
+Environment=PATH=$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+EOF
+    echo "  -> $dropin/path.conf"
+    systemctl --user daemon-reload
+}
+install_tmux_runtime
 
 # -------------------------------------------------------------------------
 # Document creation
