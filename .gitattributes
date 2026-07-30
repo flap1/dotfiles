@@ -10,3 +10,9 @@
 # moment anyone runs it through Git Bash or WSL, and it fails inside the
 # heredoc rather than at the shebang, which is a bad place to debug from.
 *.sh text eol=lf
+
+# Same reasoning for everything else that only ever runs on the Linux side. A
+# systemd unit with CRLF fails to parse, and the failure names the directive
+# rather than the line ending.
+*.py text eol=lf
+*.service text eol=lf
