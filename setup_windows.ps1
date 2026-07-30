@@ -227,6 +227,74 @@ function Set-WindowsTerminalLink {
     Write-Host '  linked (settings edited in the GUI now show up as repo changes)'
 }
 
+function Install-ClaudeCodeConfig {
+    param(
+        [Parameter(Mandatory)][string]$RepoClaude,
+        [Parameter(Mandatory)][string]$UserClaude
+    )
+
+    # ~/.claude cannot be linked wholesale: it also holds credentials, session
+    # transcripts and history that belong to this machine only. So skills -- a
+    # directory, and identical on every box -- gets a junction, and settings.json
+    # is composed from the shared file plus a Windows layer.
+    #
+    # Composed rather than linked because a file cannot be a junction and both
+    # alternatives fail here: a symlink needs elevation or Developer Mode, and a
+    # hardlink detaches the moment Claude Code rewrites the file, which it does
+    # whenever you change a setting from /config.
+    #
+    # Nothing is stripped. settings.json is cross-platform by construction -- the
+    # hooks and status line that need rtk, code-review-graph and bash live in
+    # settings.linux.json and are applied by setup.sh on that side.
+
+    Set-DirectoryJunction -Target (Join-Path $RepoClaude 'skills') -Link (Join-Path $UserClaude 'skills')
+
+    $shared = Join-Path $RepoClaude 'settings.json'
+    $overlay = Join-Path $RepoClaude 'settings.windows.json'
+    $target = Join-Path $UserClaude 'settings.json'
+
+    Write-Host "$target <- settings.json + settings.windows.json"
+
+    if (-not (Test-Path -LiteralPath $shared)) {
+        Write-Host "  skipped: $shared does not exist in this checkout"
+        return
+    }
+
+    $settings = Get-Content -LiteralPath $shared -Raw -Encoding UTF8 | ConvertFrom-Json
+
+    if (Test-Path -LiteralPath $overlay) {
+        $windows = Get-Content -LiteralPath $overlay -Raw -Encoding UTF8 | ConvertFrom-Json
+        foreach ($prop in $windows.PSObject.Properties) {
+            if ($prop.Name -eq '$comment') { continue }
+            # Top level only. A deep merge would let the overlay half-override a
+            # nested object, which is harder to reason about than replacing the
+            # whole key and being able to see what you replaced.
+            $settings | Add-Member -NotePropertyName $prop.Name -NotePropertyValue $prop.Value -Force
+            Write-Host "  overlaid $($prop.Name)"
+        }
+    }
+
+    $json = $settings | ConvertTo-Json -Depth 20
+
+    if (Test-Path -LiteralPath $target) {
+        if ([IO.File]::ReadAllText($target).TrimEnd() -eq $json.TrimEnd()) {
+            Write-Host '  already current'
+            return
+        }
+        # Hand edits made through /config live only here, so keep a copy.
+        $backup = New-TimestampedCopy -Path $target
+        Write-Host "  backed up -> $backup"
+    } else {
+        $parent = Split-Path $target -Parent
+        if (-not (Test-Path -LiteralPath $parent)) {
+            New-Item -ItemType Directory -Path $parent -Force | Out-Null
+        }
+    }
+
+    [IO.File]::WriteAllText($target, $json + "`n", (New-Object Text.UTF8Encoding($false)))
+    Write-Host '  written'
+}
+
 # XDG_CONFIG_HOME is set to ~/.config on this box, so nvim reads ~/.config/nvim
 # rather than the Windows-native ~/AppData/Local/nvim.
 Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path $env:USERPROFILE '.config\nvim')
@@ -234,6 +302,8 @@ Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path 
 Set-GitSshCommand
 
 Set-WindowsTerminalLink -Target (Join-Path $repo '.config\windows-terminal\LocalState') -LocalState $wtLocalState
+
+Install-ClaudeCodeConfig -RepoClaude (Join-Path $repo '.claude') -UserClaude (Join-Path $env:USERPROFILE '.claude')
 
 if ($Gitconfig) {
     Add-GitconfigInclude -Shared (Join-Path $repo '.config\git\.gitconfig') -Gitconfig (Join-Path $env:USERPROFILE '.gitconfig')

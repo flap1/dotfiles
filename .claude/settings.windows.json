@@ -1,0 +1,21 @@
+{
+  "$comment": [
+    "Windows-only overlay, merged over .claude/settings.json by setup_windows.ps1.",
+    "Top-level keys here win. Anything cross-platform belongs in settings.json,",
+    "not in this file.",
+    "",
+    "sshConfigs is read by the Claude Desktop app only -- the CLI and the VS Code",
+    "extension ignore it. It pre-populates the environment dropdown so an SSH",
+    "session on syntopic is one click, with no dialog to fill in. Desktop resolves",
+    "the host through ~/.ssh/config, so the ProxyJump through cloudflared that the",
+    "syntopic alias already carries is honoured; there is nothing to duplicate here."
+  ],
+  "sshConfigs": [
+    {
+      "id": "syntopic",
+      "name": "syntopic",
+      "sshHost": "syntopic",
+      "sshIdentityFile": "~/.ssh/id_ed25519"
+    }
+  ]
+}

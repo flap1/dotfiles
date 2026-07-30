@@ -3,3 +3,10 @@
 # setup_windows.ps1 sees a difference on every run, copies, and -Pull hands the
 # file back as LF -- an endless flip that buries real changes in noise.
 .config/windows-terminal/LocalState/settings.json text eol=lf
+
+# setup.sh only ever runs on the Linux box, but core.autocrlf=true gives the
+# Windows checkout a CRLF copy. Editing it from there and committing is fine --
+# git normalises on the way in -- but a heredoc in a CRLF script breaks the
+# moment anyone runs it through Git Bash or WSL, and it fails inside the
+# heredoc rather than at the shebang, which is a bad place to debug from.
+*.sh text eol=lf

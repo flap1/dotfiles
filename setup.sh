@@ -214,6 +214,64 @@ install_category "AI: Claude Code (hooks + skills + settings + instructions)" \
     ".claude/CLAUDE.md"    "$HOME/.claude/CLAUDE.md" \
     ".claude/RTK.md"       "$HOME/.claude/RTK.md"
 
+# settings.json above is cross-platform on purpose, so the hooks and the status
+# line that only work here are not in it. They live in settings.linux.json and
+# are merged into ~/.claude/settings.local.json, which cannot be symlinked
+# because it also holds per-project permissions and MCP servers that are not in
+# version control. Idempotent: rerunning prints "already current".
+install_claude_linux_settings() {
+    local layer="$DOTFILES_DIR/.claude/settings.linux.json"
+    local target="$HOME/.claude/settings.local.json"
+
+    [ -f "$layer" ] || { echo "Skipped [AI: Claude Code Linux layer]: $layer missing."; return; }
+    command -v node >/dev/null || { echo "Skipped [AI: Claude Code Linux layer]: no node."; return; }
+
+    read -rp "Install [AI: Claude Code Linux layer (hooks + statusLine)]? (y/n): " yn
+    case $yn in
+        [Yy]*) ;;
+        *) echo "Skipped [AI: Claude Code Linux layer]."; return ;;
+    esac
+
+    LAYER="$layer" TARGET="$target" node <<'NODE'
+const fs = require('fs');
+const layer = JSON.parse(fs.readFileSync(process.env.LAYER, 'utf8'));
+delete layer['$comment'];
+
+const target = process.env.TARGET;
+const before = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '{}';
+const out = JSON.parse(before);
+
+for (const [key, value] of Object.entries(layer)) {
+  // permissions.allow is the one key both sides own: this file adds rtk, the
+  // machine-local file accumulates per-project grants. Union them rather than
+  // letting either side win, and keep it sorted-stable so reruns are no-ops.
+  if (key === 'permissions') {
+    out.permissions = out.permissions || {};
+    const have = new Set(out.permissions.allow || []);
+    for (const rule of value.allow || []) have.add(rule);
+    out.permissions.allow = [...have];
+  } else {
+    // hooks and statusLine are owned outright by this file. Replacing rather
+    // than merging is what makes a rerun idempotent, and what lets a hook be
+    // removed here and actually disappear.
+    out[key] = value;
+  }
+}
+
+const after = JSON.stringify(out, null, 2) + '\n';
+if (after === before) { console.log('  already current'); process.exit(0); }
+if (fs.existsSync(target)) {
+  const backup = target + '.' + new Date().toISOString().replace(/\D/g, '').slice(0, 14);
+  fs.copyFileSync(target, backup);
+  console.log('  backed up -> ' + backup);
+}
+fs.mkdirSync(require('path').dirname(target), { recursive: true });
+fs.writeFileSync(target, after);
+console.log('  -> ' + target);
+NODE
+}
+install_claude_linux_settings
+
 # -------------------------------------------------------------------------
 # Directories
 # -------------------------------------------------------------------------
