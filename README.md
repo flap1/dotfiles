@@ -193,21 +193,28 @@ git clone https://gitlab.com/flap1/dotfiles ~
 ```
 
 ```powershell
-sudo cmd /c %UserProfile%\dotfiles\setup_windows.bat
+powershell -File %UserProfile%\dotfiles\setup_windows.ps1
 ```
 
-### Windows Terminal
+昇格は不要。ディレクトリは symlink ではなく junction で張る (`mklink /d` は
+elevation か Developer Mode を要求するが junction は要求しない)。hardlink は
+使わない。git や Windows Terminal は保存時にファイルを置き換えるので、その瞬間に
+link が外れて古い設定が残り続ける。
 
-`.config/windows-terminal/settings.json` を Terminal の LocalState にコピーする。
-symlink は elevation か Developer Mode が必要で、hardlink は Terminal が設定保存
-時にファイルを書き直した瞬間に外れるため、方向を明示したコピー同期にしている。
+やること:
+
+- `.config/nvim` → `~/.config/nvim` に junction (このマシンは `XDG_CONFIG_HOME`
+  が `~/.config` なので Windows native の `~/AppData/Local/nvim` ではない)
+- `.config/windows-terminal/settings.json` → Terminal の LocalState にコピー
+- `-Gitconfig` を付けた時だけ `.config/git/.gitconfig` を `~/.gitconfig` に
+  include で取り込む。既定で off なのは共有 gitconfig が `core.pager = delta` と
+  `core.editor = nvim` を設定するため。未インストールの環境では git が壊れる
+  (`scoop install delta neovim` 後に有効化する)。include は先頭に入れるので、
+  `~/.gitconfig` にある機械固有の設定 (git-lfs, credential helper) が勝つ
 
 ```powershell
-# dotfiles -> Windows Terminal
-powershell -File setup_windows.ps1
-
 # Windows Terminal -> dotfiles (GUI で変えた分を取り込む)
-powershell -File setup_windows.ps1 -Pull
+powershell -File %UserProfile%\dotfiles\setup_windows.ps1 -Pull
 ```
 
 Shift+Enter は `sendInput` で ESC + CR を送るバインドにしてある。Claude Code が
