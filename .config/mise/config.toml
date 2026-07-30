@@ -1,0 +1,12 @@
+[tools]
+bun = "latest"
+glab = { version = "latest", exe = "glab" }
+go = "latest"
+java = "temurin-21.0.11+10.0.LTS"
+node = "lts"
+pnpm = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+terraform = "latest"
+tmux = "3.7b"
+uv = "0.10.8"

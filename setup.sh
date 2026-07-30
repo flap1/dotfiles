@@ -91,6 +91,16 @@ install_category "Tools: bin + git template" \
 install_category "Tools: Git config" \
     ".config/git/.gitconfig" "$HOME/.gitconfig"
 
+# The tmux pin here is load-bearing rather than a preference. tmux.conf targets
+# 3.7 (escape-time, and the comments reason about 3.7 defaults), and the
+# systemd --user unit that restores sessions after a reboot runs
+# ~/.local/bin/tmux by absolute path. Point that at the mise shim once:
+#     ln -sfn ~/.local/share/mise/shims/tmux ~/.local/bin/tmux
+# Distro tmux must NOT be installed alongside: an older client silently kills a
+# newer server, which is how the whole restore path broke once.
+install_category "Tools: mise" \
+    ".config/mise/config.toml" "$HOME/.config/mise/config.toml"
+
 install_category "Tools: tmux" \
     ".config/tmux/.tmux.conf" "$HOME/.tmux.conf" \
     ".config/tmux/status.sh"  "$HOME/.tmux-status.sh"
