@@ -50,6 +50,9 @@ check "tpm loads under the boot environment" \
 "$tmux" -L "$sock" split-window -h -c /tmp            # シェルだけのペイン
 "$tmux" -L "$sock" split-window -v -c /var/log 'btop' # シェルを介さないプログラム
 sleep 4
+# 空の pane_title は save.sh の `IFS=$'\t' read` に連続タブを畳ませ、以降のフィールドを
+# 1 つ左に寄せる。restore.sh も同じ read を通るので dir が壊れる
+"$tmux" -L "$sock" select-pane -t 2 -T ''
 "$tmux" -L "$sock" run-shell "$HOME/.tmux/plugins/tmux-resurrect/scripts/save.sh quiet"
 sleep 3
 
@@ -58,6 +61,9 @@ cmd_of() { awk -F'\t' -v i="$1" '$1 == "pane" && $6 == i { print substr($11, 2) 
 check "idle shell saves nothing"          "$(cmd_of 0)" ""
 check "second idle shell saves nothing"   "$(cmd_of 1)" ""
 check "program as the pane itself"        "$(cmd_of 2)" "btop"
+# f8 は ":<dir>"。畳みが起きるとここに pane_active (0/1) が入る
+check "empty title does not shift dir" \
+	"$(awk -F'\t' '$1 == "pane" && $6 == 2 { print $8 }' "$dir/state/last")" ":/var/log"
 # 上流のストラテジは無関係な子孫の cmdline を複数行吐く。1 レコード 1 行を守れているか
 check "one record per line" \
 	"$(awk -F'\t' '$1 != "pane" && $1 != "window" && $1 != "state" && $1 != "grouped_session"' "$dir/state/last" | wc -l)" "0"

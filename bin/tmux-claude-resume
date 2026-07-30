@@ -38,16 +38,29 @@ stat_field() { sed 's/.*) //' "/proc/$1/stat" 2>/dev/null | cut -d' ' -f"$2"; }
 
 cmdline() { tr '\0' ' ' < "/proc/$1/cmdline" 2>/dev/null | sed 's/ *$//'; }
 
+# 空の pane_title はフィールドをずらす。save.sh の `IFS=$'\t' read` はタブが IFS
+# whitespace なので連続タブを 1 つに畳み、pane_title 以降が 1 つずつ左へ寄る
+# (dir に pane_active が入り、pane_command に pane_pid が漏れる)。フィールド数は
+# 変わらないので f11 の差し替えは無事だが、restore.sh は同じ read で dir を読むため
+# 空タイトルのペインは違うディレクトリに復元される。上流の未マージ PR #564 と同じ
+# 約束 (空なら "_") で、f7 以降を live tmux の値で書き直して回避する。
+panes=$(tmux list-panes -a -F "#{pane_pid}$tab#{session_name}$tab#{window_index}$tab#{pane_index}$tab#{?pane_title,#{pane_title},_}$tab#{pane_current_path}$tab#{pane_active}$tab#{pane_current_command}")
+[ -n "$panes" ] || exit 0
+
 # "<tpgid>\t<session>\t<window>\t<pane>" 。tpgid はそのペインの前面プロセスグループ
 pane_groups=$(
-	tmux list-panes -a -F "#{pane_pid}$tab#{session_name}$tab#{window_index}$tab#{pane_index}" |
-		while IFS="$tab" read -r pid session window index; do
-			tpgid=$(stat_field "$pid" 6) || continue
-			[ -n "$tpgid" ] && [ "$tpgid" -gt 0 ] || continue
-			printf '%s\t%s\t%s\t%s\n' "$tpgid" "$session" "$window" "$index"
-		done
+	printf '%s\n' "$panes" | while IFS="$tab" read -r pid session window index rest; do
+		tpgid=$(stat_field "$pid" 6) || continue
+		[ -n "$tpgid" ] && [ "$tpgid" -gt 0 ] || continue
+		printf '%s\t%s\t%s\t%s\n' "$tpgid" "$session" "$window" "$index"
+	done
 )
 [ -n "$pane_groups" ] || exit 0
+
+# "<session>\t<window>\t<pane>\t<title>\t<dir>\t<active>\t<command>"。dir の空白は
+# save.sh と同じくエスケープする
+meta_map=$(printf '%s\n' "$panes" | cut -f2- | awk -F"$tab" -v OFS="$tab" '
+	{ gsub(/ /, "\\ ", $5); print }')
 
 group_of() { printf '%s\n' "$pane_groups" | awk -F"$tab" -v g="$1" -v OFS="$tab" \
 	'$1 == g { print $2, $3, $4; exit }'; }
@@ -99,7 +112,7 @@ fg_map=$(
 # state ファイルの pane 行は f1=pane f2=session f3=window f6=pane_index で、
 # 最終フィールド f11 が ":<復元するコマンド>"。それを差し替える。
 # 加えて、上流のストラテジが吐いた複数行の残骸をレコード型で捨てる
-awk -F"$tab" -v OFS="$tab" -v claude_map="$claude_map" -v fg_map="$fg_map" '
+awk -F"$tab" -v OFS="$tab" -v claude_map="$claude_map" -v fg_map="$fg_map" -v meta_map="$meta_map" '
 	function load(src,   n, lines, f, i) {
 		n = split(src, lines, "\n")
 		for (i = 1; i <= n; i++) {
@@ -107,8 +120,20 @@ awk -F"$tab" -v OFS="$tab" -v claude_map="$claude_map" -v fg_map="$fg_map" '
 			cmd[f[1] OFS f[2] OFS f[3]] = f[4]
 		}
 	}
-	BEGIN { load(fg_map); load(claude_map) }   # claude_map が後で勝つ
+	BEGIN {
+		load(fg_map); load(claude_map)   # claude_map が後で勝つ
+		n = split(meta_map, lines, "\n")
+		for (i = 1; i <= n; i++) {
+			if (split(lines[i], f, "\t") != 7) continue   # タイトルにタブが入った行は諦める
+			k = f[1] OFS f[2] OFS f[3]
+			title[k] = f[4]; dir[k] = f[5]; active[k] = f[6]; command[k] = f[7]
+		}
+	}
 	$1 != "pane" && $1 != "window" && $1 != "state" && $1 != "grouped_session" { next }
-	$1 == "pane" && (($2 OFS $3 OFS $6) in cmd) { $11 = ":" cmd[$2 OFS $3 OFS $6] }
+	$1 == "pane" {
+		k = $2 OFS $3 OFS $6
+		if (k in title) { $7 = title[k]; $8 = ":" dir[k]; $9 = active[k]; $10 = command[k] }
+		if (k in cmd)   { $11 = ":" cmd[k] }
+	}
 	{ print }
 ' "$state" > "$state.tmp" && mv "$state.tmp" "$state"
