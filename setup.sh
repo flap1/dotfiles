@@ -133,6 +133,7 @@ install_tmux_runtime() {
     cat > "$dropin/path.conf" <<EOF
 [Service]
 Environment=PATH=$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+UnsetEnvironment=DISPLAY
 EOF
     echo "  -> $dropin/path.conf"
     systemctl --user daemon-reload
