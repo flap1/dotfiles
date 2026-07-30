@@ -272,6 +272,36 @@ NODE
 }
 install_claude_linux_settings
 
+# Receives screenshots from the Windows side so a Claude Code session over ssh
+# can be shown a picture. See .config/paste-shot/README.md for why this is
+# needed at all and why it is a socket rather than scp.
+install_paste_shot() {
+    read -rp "Install [AI: paste-shot receiver]? (y/n): " yn
+    case $yn in
+        [Yy]*) ;;
+        *) echo "Skipped [AI: paste-shot receiver]."; return ;;
+    esac
+
+    mkdir -p "$HOME/.config/systemd/user"
+    # Symlinked rather than copied: a `git pull` that changes the unit should
+    # only need a daemon-reload, not a rerun of this script.
+    ln -sfn "$DOTFILES_DIR/.config/paste-shot/paste-shot.service" \
+            "$HOME/.config/systemd/user/paste-shot.service"
+    echo "  -> $HOME/.config/systemd/user/paste-shot.service"
+
+    systemctl --user daemon-reload
+    systemctl --user enable --now paste-shot.service
+    if systemctl --user is-active --quiet paste-shot.service; then
+        echo "  active on ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/paste-shot.sock"
+    else
+        echo "  NOT running -- journalctl --user -u paste-shot.service"
+    fi
+
+    echo "  the Windows side needs this under Host $(hostname) in ~/.ssh/config:"
+    echo "      LocalForward 127.0.0.1:47291 ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/paste-shot.sock"
+}
+install_paste_shot
+
 # -------------------------------------------------------------------------
 # Directories
 # -------------------------------------------------------------------------

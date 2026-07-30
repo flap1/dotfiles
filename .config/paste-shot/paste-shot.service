@@ -1,0 +1,37 @@
+[Unit]
+Description=Receive screenshots from the Windows side for Claude Code
+Documentation=file:%h/dotfiles/.config/paste-shot/README.md
+
+[Service]
+Type=simple
+# -u so a rejected upload shows up in journalctl at the moment it happens
+# rather than whenever Python decides to flush.
+ExecStart=/usr/bin/python3 -u %h/dotfiles/.config/paste-shot/receiver.py
+Restart=on-failure
+RestartSec=2
+
+# The socket lives in $XDG_RUNTIME_DIR (%t) and the shots in ~/.cache. Nothing
+# else on the box has any business reaching either, and this service parses
+# input that arrives from another machine, so give it the smallest surface that
+# still lets it write those two places.
+#
+# ProtectSystem=strict makes everything read-only, %t included, so both writable
+# paths have to be named. ProtectHome=read-only still lets the unit read its own
+# source out of ~/dotfiles.
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.cache/claude-shots %t
+RestrictAddressFamilies=AF_UNIX
+NoNewPrivileges=yes
+MemoryDenyWriteExecute=yes
+
+# Deliberately absent: ProtectKernelTunables, ProtectKernelModules and
+# ProtectControlGroups. Each implies a CapabilityBoundingSet change, and a user
+# unit cannot touch the bounding set -- systemd fails the start outright with
+# 218/CAPABILITIES rather than degrading, which is what happened the first time
+# this unit was written. Their protection is redundant here anyway: an
+# unprivileged process holds no capabilities to begin with.
+
+[Install]
+WantedBy=default.target

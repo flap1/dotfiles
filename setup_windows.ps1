@@ -295,6 +295,59 @@ function Install-ClaudeCodeConfig {
     Write-Host '  written'
 }
 
+function Install-PasteShot {
+    param([Parameter(Mandatory)][string]$ScriptDir)
+
+    # Ctrl+Alt+V in Windows Terminal hands a screenshot to a Claude Code session
+    # running over ssh. See .config/paste-shot/README.md.
+
+    $script = Join-Path $ScriptDir 'paste-shot.ahk'
+    $link = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Startup\paste-shot.lnk'
+
+    Write-Host "$link -> $script"
+
+    if (-not (Test-Path -LiteralPath $script)) {
+        Write-Host "  skipped: $script does not exist in this checkout"
+        return
+    }
+
+    # The winget package installs per-user; the Program Files paths are there
+    # for a machine-wide install done by hand.
+    $ahk = @(
+        "$env:LOCALAPPDATA\Programs\AutoHotkey\v2\AutoHotkey64.exe",
+        "$env:ProgramFiles\AutoHotkey\v2\AutoHotkey64.exe",
+        "${env:ProgramFiles(x86)}\AutoHotkey\v2\AutoHotkey64.exe"
+    ) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+
+    if (-not $ahk) {
+        Write-Host '  skipped: AutoHotkey v2 not found. winget install AutoHotkey.AutoHotkey'
+        return
+    }
+
+    # The shortcut runs the interpreter with the script as an argument rather
+    # than the .ahk directly. Launching the .ahk relies on the file association,
+    # which points at the UX launcher and picks an interpreter version at run
+    # time -- this script is v2-only and says so, so pin it here instead of
+    # finding out at boot.
+    $shell = New-Object -ComObject WScript.Shell
+    if (Test-Path -LiteralPath $link) {
+        $existing = $shell.CreateShortcut($link)
+        if ($existing.TargetPath -eq $ahk -and $existing.Arguments -eq "`"$script`"") {
+            Write-Host '  already registered'
+            return
+        }
+        Write-Host '  updating existing shortcut'
+    }
+
+    $shortcut = $shell.CreateShortcut($link)
+    $shortcut.TargetPath = $ahk
+    $shortcut.Arguments = "`"$script`""
+    $shortcut.WorkingDirectory = $ScriptDir
+    $shortcut.Description = 'Ctrl+Alt+V sends a screenshot to Claude Code over ssh'
+    $shortcut.Save()
+    Write-Host '  registered (starts at login; run it now with the same command to use it today)'
+}
+
 # XDG_CONFIG_HOME is set to ~/.config on this box, so nvim reads ~/.config/nvim
 # rather than the Windows-native ~/AppData/Local/nvim.
 Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path $env:USERPROFILE '.config\nvim')
@@ -304,6 +357,8 @@ Set-GitSshCommand
 Set-WindowsTerminalLink -Target (Join-Path $repo '.config\windows-terminal\LocalState') -LocalState $wtLocalState
 
 Install-ClaudeCodeConfig -RepoClaude (Join-Path $repo '.claude') -UserClaude (Join-Path $env:USERPROFILE '.claude')
+
+Install-PasteShot -ScriptDir (Join-Path $repo '.config\paste-shot')
 
 if ($Gitconfig) {
     Add-GitconfigInclude -Shared (Join-Path $repo '.config\git\.gitconfig') -Gitconfig (Join-Path $env:USERPROFILE '.gitconfig')
