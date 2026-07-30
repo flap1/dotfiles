@@ -1,0 +1,8 @@
+# This directory is junctioned into place as Windows Terminal's LocalState, so
+# everything Terminal writes there lands here. Only settings.json is worth
+# tracking; the rest is runtime state that changes on every close, plus the
+# timestamped backups this repo's setup script leaves behind.
+state.json
+elevated-state.json
+*.bak
+settings.json.*

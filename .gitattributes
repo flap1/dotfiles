@@ -2,4 +2,4 @@
 # every save. With core.autocrlf=true the working tree copy becomes CRLF, so
 # setup_windows.ps1 sees a difference on every run, copies, and -Pull hands the
 # file back as LF -- an endless flip that buries real changes in noise.
-.config/windows-terminal/settings.json text eol=lf
+.config/windows-terminal/LocalState/settings.json text eol=lf

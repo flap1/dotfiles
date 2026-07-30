@@ -24,12 +24,6 @@
       throw those away.
     - Anything about to be displaced is moved aside with a timestamp first.
 
-.PARAMETER Pull
-    Copy Windows Terminal's live settings.json back into this repo instead of
-    pushing the repo copy out, and skip everything else. This is how edits made
-    through the Terminal settings GUI get captured; without it they are lost on
-    the next run.
-
 .PARAMETER Gitconfig
     Also pull .config/git/.gitconfig into ~/.gitconfig by reference. Off by
     default: that config sets core.pager=delta and core.editor=nvim, so on a box
@@ -40,19 +34,18 @@
     powershell -File setup_windows.ps1
 
 .EXAMPLE
-    powershell -File setup_windows.ps1 -Pull
+    powershell -File setup_windows.ps1 -Gitconfig
 #>
 
 [CmdletBinding()]
 param(
-    [switch]$Pull,
     [switch]$Gitconfig
 )
 
 $ErrorActionPreference = 'Stop'
 
 $repo = $PSScriptRoot
-$wtSettings = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
+$wtLocalState = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState'
 
 function New-TimestampedCopy {
     param([Parameter(Mandatory)][string]$Path)
@@ -144,71 +137,106 @@ function Add-GitconfigInclude {
     Write-Host '  include added at the top'
 }
 
-function Sync-WindowsTerminal {
-    param(
-        [Parameter(Mandatory)][string]$Repo,
-        [Parameter(Mandatory)][string]$Live,
-        [switch]$Pull
-    )
+function Set-GitSshCommand {
+    Write-Host 'git core.sshCommand -> Windows OpenSSH'
 
-    if ($Pull) {
-        $src = $Live
-        $dst = $Repo
-    } else {
-        $src = $Repo
-        $dst = $Live
-    }
-
-    Write-Host "windows-terminal: $src -> $dst"
-
-    if (-not (Test-Path -LiteralPath $src)) {
-        Write-Host "  skipped: $src not found"
+    $sshExe = Join-Path $env:WINDIR 'System32\OpenSSH\ssh.exe'
+    if (-not (Test-Path -LiteralPath $sshExe)) {
+        Write-Host "  skipped: $sshExe not found"
         return
     }
 
-    # LocalState only exists once Terminal has been launched at least once.
-    $dstParent = Split-Path $dst -Parent
-    if (-not (Test-Path -LiteralPath $dstParent)) {
-        Write-Host "  skipped: $dstParent not found (launch Windows Terminal once first)"
+    # Git for Windows ships its own MSYS-built ssh, and Git Bash puts it first on
+    # PATH. The two implementations do not agree: the MSYS one treats backslashes
+    # in ~/.ssh/config as literal characters and keeps its keys in a different
+    # agent, so a host that works in PowerShell can fail in Git Bash for reasons
+    # nothing reports. Pin git to the Windows binary so there is one ssh.
+    $wanted = ($sshExe -replace '\\', '/')
+    $current = git config --global --get core.sshCommand 2>$null
+    if ($current -eq $wanted) {
+        Write-Host '  already set'
         return
     }
 
-    # Refuse to propagate a file Terminal would reject, so a broken edit on one
-    # side cannot take out the other side too.
-    try {
-        Get-Content -LiteralPath $src -Raw -Encoding UTF8 | ConvertFrom-Json | Out-Null
-    } catch {
-        throw "Source is not valid JSON, refusing to copy: $src`n$($_.Exception.Message)"
-    }
-
-    if (Test-Path -LiteralPath $dst) {
-        if ((Get-FileHash $src).Hash -eq (Get-FileHash $dst).Hash) {
-            Write-Host '  already in sync'
-            return
-        }
-        $backup = New-TimestampedCopy -Path $dst
-        Write-Host "  backed up -> $backup"
-    }
-
-    Copy-Item -LiteralPath $src -Destination $dst -Force
-    Write-Host '  copied (Terminal picks it up on save; reopen a tab if not)'
+    git config --global core.sshCommand $wanted
+    Write-Host "  set to $wanted"
 }
 
-$wtRepoSettings = Join-Path $repo '.config\windows-terminal\settings.json'
+function Set-WindowsTerminalLink {
+    param(
+        [Parameter(Mandatory)][string]$Target,
+        [Parameter(Mandatory)][string]$LocalState
+    )
 
-if ($Pull) {
-    Sync-WindowsTerminal -Repo $wtRepoSettings -Live $wtSettings -Pull
-    return
+    Write-Host "$LocalState -> $Target"
+
+    # Linking settings.json on its own is the documented trap: Terminal replaces
+    # the file when the settings GUI saves, which detaches a link and stops
+    # hot-reload from seeing editor changes. Linking the whole LocalState
+    # directory survives that, and makes the sync bidirectional -- GUI edits land
+    # in the repo with nothing to run afterwards.
+    $existing = Get-Item -LiteralPath $LocalState -Force -ErrorAction SilentlyContinue
+    if ($existing -and ($existing.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        $current = $null
+        if ($existing.Target) { $current = $existing.Target[0] }
+        if ($current -and (Test-Path -LiteralPath $current) -and
+            (Resolve-Path -LiteralPath $current).Path -eq (Resolve-Path -LiteralPath $Target).Path) {
+            Write-Host '  already linked'
+            return
+        }
+    }
+
+    # Terminal holds settings.json open to watch it, so the directory cannot be
+    # renamed out from under a running instance. Refusing here beats a half-moved
+    # LocalState.
+    if (Get-Process WindowsTerminal -ErrorAction SilentlyContinue) {
+        Write-Host '  skipped: Windows Terminal is running. Close every window and'
+        Write-Host '           rerun this from another host (VS Code terminal, or Win+R'
+        Write-Host '           powershell) to link it.'
+        return
+    }
+
+    if (-not (Test-Path -LiteralPath $Target)) {
+        Write-Host "  skipped: $Target does not exist in this checkout"
+        return
+    }
+
+    if ($existing) {
+        if ($existing.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+            [IO.Directory]::Delete($LocalState)
+            Write-Host '  replaced existing link'
+        } else {
+            # The live settings.json is the one thing in here that is not
+            # reproducible, so carry it over rather than trusting the repo copy
+            # to be current.
+            $liveSettings = Join-Path $LocalState 'settings.json'
+            $repoSettings = Join-Path $Target 'settings.json'
+            if ((Test-Path -LiteralPath $liveSettings) -and
+                (-not (Test-Path -LiteralPath $repoSettings) -or
+                 (Get-FileHash $liveSettings).Hash -ne (Get-FileHash $repoSettings).Hash)) {
+                Copy-Item -LiteralPath $liveSettings -Destination $repoSettings -Force
+                Write-Host '  copied the live settings.json into the repo first'
+            }
+            $backup = "$LocalState." + (Get-Date -Format 'yyyyMMddHHmmss')
+            Move-Item -LiteralPath $LocalState -Destination $backup
+            Write-Host "  moved aside -> $backup"
+        }
+    }
+
+    New-Item -ItemType Junction -Path $LocalState -Target $Target | Out-Null
+    Write-Host '  linked (settings edited in the GUI now show up as repo changes)'
 }
 
 # XDG_CONFIG_HOME is set to ~/.config on this box, so nvim reads ~/.config/nvim
 # rather than the Windows-native ~/AppData/Local/nvim.
 Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path $env:USERPROFILE '.config\nvim')
 
+Set-GitSshCommand
+
+Set-WindowsTerminalLink -Target (Join-Path $repo '.config\windows-terminal\LocalState') -LocalState $wtLocalState
+
 if ($Gitconfig) {
     Add-GitconfigInclude -Shared (Join-Path $repo '.config\git\.gitconfig') -Gitconfig (Join-Path $env:USERPROFILE '.gitconfig')
 } else {
     Write-Host 'gitconfig: skipped (pass -Gitconfig; needs delta and nvim installed)'
 }
-
-Sync-WindowsTerminal -Repo $wtRepoSettings -Live $wtSettings

@@ -205,17 +205,31 @@ link が外れて古い設定が残り続ける。
 
 - `.config/nvim` → `~/.config/nvim` に junction (このマシンは `XDG_CONFIG_HOME`
   が `~/.config` なので Windows native の `~/AppData/Local/nvim` ではない)
-- `.config/windows-terminal/settings.json` → Terminal の LocalState にコピー
+- `.config/windows-terminal/LocalState` → Terminal の LocalState に junction。
+  **Terminal を全部閉じてから実行する必要がある**（起動中は settings.json を
+  掴んでいてディレクトリを rename できないので、スクリプトが検出して中断する）
+- `git core.sshCommand` を Windows OpenSSH に固定
 - `-Gitconfig` を付けた時だけ `.config/git/.gitconfig` を `~/.gitconfig` に
   include で取り込む。既定で off なのは共有 gitconfig が `core.pager = delta` と
   `core.editor = nvim` を設定するため。未インストールの環境では git が壊れる
   (`scoop install delta neovim` 後に有効化する)。include は先頭に入れるので、
   `~/.gitconfig` にある機械固有の設定 (git-lfs, credential helper) が勝つ
 
-```powershell
-# Windows Terminal -> dotfiles (GUI で変えた分を取り込む)
-powershell -File %UserProfile%\dotfiles\setup_windows.ps1 -Pull
-```
+### なぜ settings.json 単体ではなく LocalState ごと張るのか
+
+settings.json だけを link するのは既知の罠。Terminal は GUI 保存時にファイルを
+**置き換える**ので link が外れ、エディタで直接編集しても hot-reload が効かなくなる。
+LocalState ごと junction すれば両方回避でき、しかも双方向になる（GUI で変えた分が
+そのまま repo の差分として出る。取り込みコマンドは不要）。runtime state は
+`LocalState/.gitignore` で除外している。
+
+### なぜ ssh を Windows OpenSSH に固定するのか
+
+Git for Windows は MSYS ビルドの ssh を同梱し、Git Bash では PATH の先頭に来る。
+この2実装は挙動が違う: MSYS 側は `~/.ssh/config` の `C:\...` を literal な文字列
+として扱って include を黙って無視し、鍵も別の agent に持つ。PowerShell では通る
+ホストが Git Bash では通らない、しかも何も報告されない。git を Windows のバイナリに
+固定して ssh を1つにする。
 
 Shift+Enter は `sendInput` で ESC + CR を送るバインドにしてある。Claude Code が
 alt+enter として解釈して改行になる (`/terminal-setup` は iTerm2 と VSCode 用で
