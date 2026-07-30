@@ -297,8 +297,28 @@ install_paste_shot() {
         echo "  NOT running -- journalctl --user -u paste-shot.service"
     fi
 
-    echo "  the Windows side needs this under Host $(hostname) in ~/.ssh/config:"
+    # The receiver dies with the last login session unless lingering is on, and
+    # it dies quietly: the socket is simply not there next time, which reads as
+    # "the forward is broken" rather than "the service is not running".
+    if [ "$(loginctl show-user "$USER" -p Linger --value 2>/dev/null)" != "yes" ]; then
+        echo "  WARNING: lingering is off, so this stops when you log out."
+        echo "           loginctl enable-linger $USER"
+    fi
+
+    # Printed rather than left to be worked out. sshd resolves neither ~ nor a
+    # relative path for a forwarded socket -- direct-streamlocal takes an
+    # absolute path only, verified -- so the line has to name the uid, and
+    # nobody should have to go looking for it.
+    echo
+    echo "  Add this under Host $(hostname) in ~/.ssh/config on the Windows side:"
+    echo
     echo "      LocalForward 127.0.0.1:47291 ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/paste-shot.sock"
+    echo
+    echo "  Or print the same line from the Windows side, without reading this:"
+    echo
+    sed "s/HOST/$(hostname)/" <<'HINT'
+      ssh HOST 'echo "LocalForward 127.0.0.1:47291 ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/paste-shot.sock"'
+HINT
 }
 install_paste_shot
 
