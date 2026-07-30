@@ -1,6 +1,7 @@
-[user]
-	name = flap1
-	email = sho1seto@gmail.com
+# No [user] section here on purpose. This repo is public, and an identity baked
+# into it means anyone who clones and links it commits as its author until they
+# notice. Set name and email in ~/.gitconfig.local, which is included further
+# down.
 
 [init]
 	defaultBranch = main
