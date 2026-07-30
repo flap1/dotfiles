@@ -10,8 +10,8 @@ return {
     opts = {
       ui = { border = "rounded" },
       ensure_installed = {
-        -- formatters
-        "stylua", "prettier", "ruff",
+        -- formatters (ruff は mise global。shfmt/shellcheck も同様)
+        "stylua", "prettier",
         -- linters
         "markdownlint",
       },
@@ -40,7 +40,7 @@ return {
     opts = {
       ensure_installed = {
         "lua_ls", "rust_analyzer", "clangd", "astro",
-        "pyright", "ts_ls", "jsonls", "yamlls", "remark_ls",
+        "pyright", "ts_ls", "jsonls", "yamlls",
         "tinymist",
       },
       automatic_enable = false, -- we call vim.lsp.enable() manually below
@@ -131,10 +131,12 @@ return {
         root_markers = { "compile_commands.json", "compile_flags.txt", ".clangd", ".git" },
       })
 
-      vim.lsp.config("remark_ls", {
-        root_markers = { ".remarkrc.yml", ".remarkrc.js", ".git" },
-        filetypes = { "markdown" },
-      })
+      -- remark_ls は入れていない: .remarkrc + per-project の remark plugin が
+      -- 無いと何も lint せず、workspace/configuration が null で返って
+      -- unified-language-server が毎回 crash する。markdown は markdownlint
+      -- (nvim-lint) + prettier (conform) で足りている。
+      -- ponytail: 必要になったら .remarkrc を置いた repo で
+      -- settings = { remark = { requireConfig = true } } 付きで復活させる
 
       vim.lsp.config("tinymist", {
         -- attach even outside a git repo; typst notes often live as loose files
@@ -160,7 +162,7 @@ return {
       -- Enable all servers except rust_analyzer (handled by rustaceanvim)
       vim.lsp.enable({
         "lua_ls", "clangd", "astro",
-        "pyright", "ts_ls", "jsonls", "yamlls", "remark_ls",
+        "pyright", "ts_ls", "jsonls", "yamlls",
         "tinymist",
       })
     end,
