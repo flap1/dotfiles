@@ -1,0 +1,109 @@
+#!/bin/sh
+# tmux-resurrect の post-save-layout フック。引数は保存直後の state ファイル。
+# 各ペインの「復元時に実行するコマンド」フィールドを /proc から決め直す。
+#
+# なぜ上流に任せないか。resurrect の save_command_strategies はどれも壊れている:
+#   ps.sh          grep "^${PANE_PID}" が前方一致。ppid 2255 が 22551 にも当たり、
+#                  無関係な子孫の cmdline が複数行出て state ファイルが壊れる
+#   linux_procfs   pgrep -P の複数行をそのまま cat に渡していて cat がエラーを吐く
+#   pgrep.sh       -l が短い名前しか出さず、フルコマンド行が失われる
+# どれも「ペインの子は 1 つ」を前提にしている。この箱では MCP サーバなどを
+# バックグラウンドに持つシェルが普通にいるので、その前提が成り立たない。
+# プラグイン側を書き換えると `prefix + U` で戻るので、ここで上書きする。
+#
+# 何が「ペインで動いているもの」かの定義は tty のフォアグラウンドプロセスグループ。
+# /proc/<pane_pid>/stat の tpgid がそれで、pgrp と同じならシェルが前面 = 復元対象なし。
+# バックグラウンドジョブを掴んでしまう first-match とはここが違う。
+#
+# claude のペインはさらに `claude --resume <sessionId>` に置き換える。resurrect が
+# 保存するのは cmdline なので、素の `claude` は復元しても新規会話になる。
+# pid -> sessionId は Claude Code 自身が書く ~/.claude/sessions/<pid>.json から取る
+# （`claude agents --json` と同じ情報。node を起動しないので save ごとに呼んでも安い）。
+# claude はラッパ越しだとフォアグラウンドグループのリーダではないので、こちらは
+# /proc の親を遡ってペインに当てる。これがあるので起動を包む必要はない。
+#
+# ponytail: 状態を持たない。毎回 live なプロセスから引き直す
+set -eu
+
+state=${1:?usage: tmux-claude-resume <resurrect state file>}
+[ -f "$state" ] || exit 0
+
+tab=$(printf '\t')
+panes=$(tmux list-panes -a -F "#{pane_pid}$tab#{session_name}$tab#{window_index}$tab#{pane_index}" 2>/dev/null) || exit 0
+
+# /proc/<pid>/stat は comm が空白と括弧を含みうるので、最後の ')' より後だけ使う。
+# そこから f2=ppid f3=pgrp f6=tpgid
+stat_field() { sed 's/.*) //' "/proc/$1/stat" 2>/dev/null | cut -d' ' -f"$2"; }
+
+cmdline() { tr '\0' ' ' < "/proc/$1/cmdline" 2>/dev/null | sed 's/ *$//'; }
+
+# ペインの tty のフォアグラウンドプロセスグループのコマンド行。シェルが前面なら空
+foreground_command() {
+	pgrp=$(stat_field "$1" 3) || return 0
+	tpgid=$(stat_field "$1" 6) || return 0
+	[ -n "$tpgid" ] && [ "$tpgid" != "$pgrp" ] || return 0
+	fg=$(ps -eo pid=,pgid= | awk -v g="$tpgid" '$2 == g { print $1; exit }')
+	[ -n "$fg" ] && cmdline "$fg"
+}
+
+# pid の属するペインを /proc の親を遡って探す。"<session>\t<window>\t<pane>" を返す
+pane_of() {
+	p=$1
+	while [ "$p" -gt 1 ]; do
+		hit=$(printf '%s\n' "$panes" | awk -F"$tab" -v p="$p" -v OFS="$tab" \
+			'$1 == p { print $2, $3, $4; exit }')
+		[ -n "$hit" ] && { printf '%s' "$hit"; return 0; }
+		p=$(stat_field "$p" 2) || return 1
+		[ -n "$p" ] || return 1
+	done
+}
+
+# claude のペイン: sessionId で resume する。--resume 以外の引数は生かし、
+# 競合する --session-id / --continue / --name は落とす（--name は値も食う）
+claude_map=$(
+	for f in "${CLAUDE_CONFIG_DIR:-$HOME/.claude}"/sessions/*.json; do
+		[ -f "$f" ] || continue
+		pid=$(basename "$f" .json)
+		# 死んだセッションの json は残る。entrypoint=cli 以外（claude-vscode など）は
+		# tmux のペインに居ない
+		[ -d "/proc/$pid" ] || continue
+		case $(tr -d ' ' < "$f") in *'"entrypoint":"cli"'*) ;; *) continue ;; esac
+		sid=$(sed -n 's/.*"sessionId":"\([^"]*\)".*/\1/p' "$f")
+		[ -n "$sid" ] || continue
+		key=$(pane_of "$pid") || continue
+		[ -n "$key" ] || continue
+		args=$(tr '\0' '\n' < "/proc/$pid/cmdline" | tail -n +2 | awk '
+			skip { skip = 0; next }
+			/^(--resume|--session-id|--name)$/ { skip = 1; next }
+			/^(--resume=|--session-id=|--name=)/ { next }
+			/^(--continue|-c)$/ { next }
+			{ printf " %s", $0 }
+		')
+		printf '%s\t%s\n' "$key" "claude --resume $sid$args"
+	done
+)
+
+# 残りのペイン: tty のフォアグラウンドのコマンド行
+fg_map=$(
+	printf '%s\n' "$panes" | while IFS="$tab" read -r pid session window index; do
+		[ -n "${pid:-}" ] || continue
+		printf '%s\t%s\t%s\t%s\n' "$session" "$window" "$index" "$(foreground_command "$pid")"
+	done
+)
+
+# state ファイルの pane 行は f1=pane f2=session f3=window f6=pane_index で、
+# 最終フィールド f11 が ":<復元するコマンド>"。それを差し替える。
+# 加えて、上流のストラテジが吐いた複数行の残骸をレコード型で捨てる
+awk -F"$tab" -v OFS="$tab" -v claude_map="$claude_map" -v fg_map="$fg_map" '
+	function load(src,   n, lines, f, i) {
+		n = split(src, lines, "\n")
+		for (i = 1; i <= n; i++) {
+			if (split(lines[i], f, "\t") < 4) continue
+			cmd[f[1] OFS f[2] OFS f[3]] = f[4]
+		}
+	}
+	BEGIN { load(fg_map); load(claude_map) }   # claude_map が後で勝つ
+	$1 != "pane" && $1 != "window" && $1 != "state" && $1 != "grouped_session" { next }
+	$1 == "pane" && (($2 OFS $3 OFS $6) in cmd) { $11 = ":" cmd[$2 OFS $3 OFS $6] }
+	{ print }
+' "$state" > "$state.tmp" && mv "$state.tmp" "$state"
