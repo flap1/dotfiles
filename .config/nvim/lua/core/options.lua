@@ -80,21 +80,20 @@ vim.o.undodir = vim.fn.stdpath("state") .. "/undo/"
 vim.fn.mkdir(vim.o.undodir, "p")
 
 -- Clipboard
--- SSH環境ではOSC52でローカルクリップボードに書き込む（Neovim 0.10+）
-if vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil then
-  vim.g.clipboard = {
-    name = "OSC52",
-    copy = {
-      ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-      ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-    },
-    paste = {
-      ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-      ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
-    },
-  }
+-- Windows Terminal over SSH: 書き込みは OSC52、読み出しは無名レジスタ。
+-- ponytail: paste に osc52.paste を使うと WT が返事を返さないので
+-- "waiting for osc 52 response" で固まる。read は端末に聞かない。
+local osc52 = require("vim.ui.clipboard.osc52")
+local function paste()
+  return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
 end
-vim.o.clipboard = "unnamedplus"
+vim.g.clipboard = {
+  name = "OSC52",
+  copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+  paste = { ["+"] = paste, ["*"] = paste },
+}
+-- clipboard は空のまま。y のコピーは autocmds.lua の TextYankPost が担当。
+-- Windows からの貼り付けは Ctrl+Shift+V（端末の bracketed paste）で、"+p ではない
 
 -- Bells
 vim.o.errorbells = false

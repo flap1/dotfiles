@@ -33,11 +33,17 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
   callback = function() vim.cmd("startinsert") end,
 })
 
--- Highlight on yank
+-- Highlight on yank, and mirror the yank to the system clipboard.
+-- ponytail: clipboard=unnamedplus ではなくこれ。unnamedplus は x/d/c も + に流すので
+-- 1文字消すだけで Windows のクリップボードが飛ぶ。y だけを送る。
+-- regname を無名に限定するのは "+y と二重送信しないため（そっちは g.clipboard 経由）。
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = group,
   callback = function()
-    vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
+    vim.hl.on_yank({ higroup = "Visual", timeout = 200 })
+    if vim.v.event.operator == "y" and vim.v.event.regname == "" then
+      vim.fn.setreg("+", vim.v.event.regcontents, vim.v.event.regtype)
+    end
   end,
 })
 
