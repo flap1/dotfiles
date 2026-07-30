@@ -91,9 +91,32 @@ Installed by `setup.sh` (Linux) and `setup_windows.ps1` (Windows). The forward
 lives in `~/.ssh/config`:
 
 ```sshconfig
-Host syntopic
-    LocalForward 127.0.0.1:47291 /run/user/1001/paste-shot.sock
+Host <your host>
+    LocalForward 127.0.0.1:47291 /run/user/<your uid>/paste-shot.sock
 ```
+
+That uid is the one value here that is not derived, and it has to be: sshd
+resolves neither `~` nor a relative path for a forwarded socket. Checked rather
+than assumed -- forwards to `~/.cache/paste-shot.sock` and to
+`.cache/paste-shot.sock` are both accepted by the client and then answer
+nothing, while the absolute path works. `direct-streamlocal` takes an absolute
+path only.
+
+Nobody has to go looking for it though. `setup.sh` prints the finished line, and
+so does this, run from the Windows side:
+
+```sh
+ssh <your host> 'echo "LocalForward 127.0.0.1:47291 ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/paste-shot.sock"'
+```
+
+Everything else follows the account on its own: the receiver takes its socket
+from `$XDG_RUNTIME_DIR`, the unit refers to `%h`, and the sender asks the
+receiver where shots go rather than being told.
+
+One prerequisite that is easy to miss: the receiver is a systemd **user**
+service, so without `loginctl enable-linger <you>` it stops at logout -- and it
+stops quietly, because the symptom is an absent socket, which reads as a broken
+forward rather than a stopped service. `setup.sh` warns when lingering is off.
 
 Port `47291` appears in three places -- the ssh config, the receiver's default,
 and the two Windows scripts. Change all of them or none.
