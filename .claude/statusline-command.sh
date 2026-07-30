@@ -8,16 +8,33 @@ printf '%s' "$input" |
   > "$HOME/.cache/claude-rate-limits.json" 2>/dev/null || true
 
 # directory (truncate to last 5 segments, ~ for home)
-cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // empty')
+# printf, not echo, everywhere $input is piped. Under Git Bash /bin/sh is bash
+# in POSIX mode, where echo expands backslash escapes -- so a Windows path in
+# the JSON reached jq with C:\Users turned into C:Users and \t turned into a
+# tab, and jq then failed to parse it. bash on Linux does not do this, which is
+# why it only ever broke on one platform.
+cwd=$(printf "%s" "$input" | jq -r '.workspace.current_dir // .cwd // empty')
 short_path=""
 if [ -n "$cwd" ]; then
+  # Windows reports current_dir as C:\Users\name\... -- backslashes, and a drive
+  # letter. $HOME under Git Bash is /c/Users/name, so the prefix never matches
+  # and every path renders in full. Normalise the separators, then compare
+  # against both spellings of home: cygpath -m gives C:/Users/name, and on Linux
+  # cygpath does not exist so this collapses back to $HOME alone.
+  # '\134' rather than a literal backslash in the SET: GNU tr warns that an
+  # unescaped trailing backslash is not portable, and the octal escape says the
+  # same thing without depending on how the shell quoted it.
+  cwd=$(printf '%s' "$cwd" | tr '\134' '/')
+  home_win=$(cygpath -m "$HOME" 2>/dev/null) || home_win="$HOME"
   short_path="${cwd#$HOME}"
+  [ "$short_path" = "$cwd" ] && short_path="${cwd#$home_win}"
   [ "$short_path" != "$cwd" ] && short_path="~$short_path"
-  seg_count=$(printf '%s' "$short_path" | tr -cd '/' | wc -c)
-  if [ "$seg_count" -gt 3 ]; then
-    short_path=$(printf '%s' "$short_path" | rev | cut -d'/' -f1-3 | rev)
-    short_path="...$short_path"
-  fi
+  # awk, not rev | cut | rev. Git Bash ships no rev, so on Windows the old
+  # idiom failed with "command not found" and left the path blank. It is also
+  # one process instead of three, on a script that runs on every render.
+  short_path=$(printf '%s' "$short_path" | awk -F/ '
+    NF > 4 { printf "...%s/%s/%s", $(NF-2), $(NF-1), $NF; next }
+            { printf "%s", $0 }')
 fi
 
 # git branch & status
@@ -54,21 +71,65 @@ fi
 # size is already visible as the ctx meter -- a 1M session simply sits at a
 # lower percentage. Dropping the space keeps it one token to the eye.
 #   "Opus 5 (1M context)" -> Opus5    "Haiku 4.5" -> Haiku4.5    "Opus" -> Opus
-model=$(echo "$input" | jq -r '.model.display_name // empty' | sed 's/ *(.*)//; s/ //g')
+model=$(printf "%s" "$input" | jq -r '.model.display_name // empty' | sed 's/ *(.*)//; s/ //g')
+
+# reasoning effort, hung off the model as one token
+#
+# .effort.level is the live session value, so a mid-session /effort shows up
+# here; it is absent entirely on models that take no effort parameter, and
+# ultracode reports as xhigh rather than a level of its own. Two letters
+# because it sits next to the model name and the first letter is ambiguous
+# between low and… nothing, but "lo" and "hi" are not.
+effort=$(printf "%s" "$input" | jq -r '.effort.level // empty')
+case "$effort" in
+  low)    effort=lo  ;;
+  medium) effort=md  ;;
+  high)   effort=hi  ;;
+  xhigh)  effort=xh  ;;
+  max)    effort=max ;;
+  *)      effort=""  ;;
+esac
+[ -n "$model" ] && [ -n "$effort" ] && model="${model}·${effort}"
+
+# which account is paying for this session
+#
+# Not in the payload -- Claude Code does not report it -- so it comes from
+# ~/.claude.json, where the CLI keeps the login. Worth the extra read: with a
+# personal Max account and a company Team account reachable from the same
+# machine, which one a session is spending is otherwise invisible until /usage,
+# and by then it has already spent it.
+#
+# Rendered as who@plan, both shortened. "@" because it reads as an address;
+# "·" is already the model/effort qualifier. The local part of the address is enough
+# to tell two accounts apart, and the tier is what actually differs between
+# them: default_claude_max_20x -> max20x, and a Team seat falls back to the
+# organisation type.
+account=""
+if [ -f "$HOME/.claude.json" ]; then
+  account=$(jq -r '
+    .oauthAccount // {} | . as $a
+    | (($a.emailAddress // "") | split("@")[0]) as $who
+    | (($a.organizationRateLimitTier // $a.organizationType // "")
+        | sub("^default_claude_"; "") | sub("^claude_"; "") | sub("_"; "")) as $plan
+    | if   $who == ""  then empty
+      elif $plan == "" then $who
+      else $who + "@" + $plan end
+  ' "$HOME/.claude.json" 2>/dev/null)
+fi
 
 # context used %
-used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+used_pct=$(printf "%s" "$input" | jq -r '.context_window.used_percentage // empty')
 
 # cost
-cost_usd=$(echo "$input" | jq -r '.cost.total_cost_usd // empty')
+cost_usd=$(printf "%s" "$input" | jq -r '.cost.total_cost_usd // empty')
 cost_str=""
 if [ -n "$cost_usd" ]; then
   cost_str=$(printf '$%.2f' "$cost_usd")
 fi
 
 # lines edited this session
-lines_added=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
-lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
+lines_added=$(printf "%s" "$input" | jq -r '.cost.total_lines_added // 0')
+lines_removed=$(printf "%s" "$input" | jq -r '.cost.total_lines_removed // 0')
 lines_str=""
 if [ "$lines_added" -gt 0 ] || [ "$lines_removed" -gt 0 ]; then
   lines_str="+${lines_added}/-${lines_removed}L"
@@ -96,8 +157,8 @@ fmt_left() { # $1 = seconds remaining
 }
 
 rate_5h=""
-resets_at=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
-pct_5h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
+resets_at=$(printf "%s" "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
+pct_5h=$(printf "%s" "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 pct_5h_int=""
 if [ -n "$resets_at" ]; then
   now=$(date +%s)
@@ -111,8 +172,8 @@ if [ -n "$resets_at" ]; then
 fi
 
 rate_7d=""
-resets_at_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
-pct_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+resets_at_7d=$(printf "%s" "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
+pct_7d=$(printf "%s" "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 pct_7d_int=""
 if [ -n "$resets_at_7d" ]; then
   now=$(date +%s)
@@ -139,13 +200,18 @@ fi
 # mode is not in this script's input either. That line is a fixed cost, so this
 # one stays short enough not to wrap and add a third. Cost, lines changed and
 # the 7d window were dropped for that reason; /cost still reports them.
-G='\033[38;2;5;150;105m'    # primary   #059669
-A='\033[38;2;245;158;11m'   # active    #f59e0b
-R='\033[38;2;239;68;68m'    # error, lifted #ef4444 — #dc2626 measures 3.70:1
+# Real escape characters, not the two-character string \033, so the line can be
+# emitted with printf '%s' at the end. %b would expand backslashes in the data
+# as well as in these constants, and a Windows path is full of them: C:\Users
+# put \U through %b and killed the whole line with "missing unicode digit".
+E=$(printf '\033')
+G="${E}[38;2;5;150;105m"    # primary   #059669
+A="${E}[38;2;245;158;11m"   # active    #f59e0b
+R="${E}[38;2;239;68;68m"    # error, lifted #ef4444 — #dc2626 measures 3.70:1
                             # against #0f172a, under AA. Same lift as nvim/lazygit.
-M='\033[38;2;148;163;184m'  # muted     #94a3b8
-S='\033[38;2;100;116;139m'  # subtle    #64748b
-X='\033[0m'
+M="${E}[38;2;148;163;184m"  # muted     #94a3b8
+S="${E}[38;2;100;116;139m"  # subtle    #64748b
+X="${E}[0m"
 
 out=""
 [ -n "$short_path" ] && out="${out}${G}${short_path}${X}"
@@ -158,6 +224,7 @@ if [ -n "$git_part" ]; then
 fi
 
 [ -n "$model" ] && out="${out} ${S}${model}${X}"
+[ -n "$account" ] && out="${out} ${S}${account}${X}"
 
 # The number is always shown; the colour only changes once it is worth acting on.
 #
@@ -189,11 +256,15 @@ gauge() { # $1 = label, $2 = integer percent, $3 = text after the number
   elif [ "$_p" -ge 14 ]; then _c="$S"; _b="▂"
   else                        _c="$S"; _b="▁"
   fi
-  printf ' %b%s%s%s%b' "$_c" "$1" "$_b" "$3" "$X"
+  printf ' %s%s%s%s%s' "$_c" "$1" "$_b" "$3" "$X"
 }
 
 [ -n "$used_pct" ] && out="${out}$(gauge ctx "$(printf "%.0f" "$used_pct")" "$(printf "%.0f" "$used_pct")%")"
 [ -n "$pct_5h_int" ] && out="${out}$(gauge 5h "$pct_5h_int" "$rate_5h")"
 [ -n "$pct_7d_int" ] && out="${out}$(gauge 7d "$pct_7d_int" "$rate_7d")"
 
-printf '%b' "$out"
+# %s, not %b. $out carries data -- a Windows path, a branch name -- and %b would
+# treat any backslash in it as an escape: C:\Users\flap1 came out C:Users\flap1
+# with the \f rendered as a form feed. The colours are real ESC bytes now, so
+# nothing here needs expanding.
+printf '%s' "$out"

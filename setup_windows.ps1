@@ -30,6 +30,13 @@
     without them every `git log` and every commit breaks. Turn it on once the
     Windows side actually has the toolchain (scoop install delta neovim).
 
+.PARAMETER StatusLine
+    Also configure Claude Code's status line. Off by default because it is far
+    too slow here: the script shells out about twenty times per render and every
+    process launched through the MSYS2 runtime costs roughly 100ms, so one render
+    measures 2.2s against 0.1s on Linux. See Install-ClaudeCodeConfig for the
+    numbers and for what would actually fix it.
+
 .EXAMPLE
     powershell -File setup_windows.ps1
 
@@ -39,7 +46,8 @@
 
 [CmdletBinding()]
 param(
-    [switch]$Gitconfig
+    [switch]$Gitconfig,
+    [switch]$StatusLine
 )
 
 $ErrorActionPreference = 'Stop'
@@ -230,7 +238,8 @@ function Set-WindowsTerminalLink {
 function Install-ClaudeCodeConfig {
     param(
         [Parameter(Mandatory)][string]$RepoClaude,
-        [Parameter(Mandatory)][string]$UserClaude
+        [Parameter(Mandatory)][string]$UserClaude,
+        [switch]$StatusLine
     )
 
     # ~/.claude cannot be linked wholesale: it also holds credentials, session
@@ -244,8 +253,15 @@ function Install-ClaudeCodeConfig {
     # whenever you change a setting from /config.
     #
     # Nothing is stripped. settings.json is cross-platform by construction -- the
-    # hooks and status line that need rtk, code-review-graph and bash live in
-    # settings.linux.json and are applied by setup.sh on that side.
+    # hooks that need rtk and code-review-graph live in settings.linux.json and
+    # are applied by setup.sh on that side.
+    #
+    # The status line is the exception, and it is added here rather than shipped
+    # in either layer. The script itself is portable -- it needs sh and jq, both
+    # of which this box has once jq is installed -- but the command differs:
+    # Linux runs it directly, Windows has to hand it to bash, and the path has
+    # to be absolute because it is not this script's business to guess whether
+    # Claude Code expands ~ on Windows.
 
     Set-DirectoryJunction -Target (Join-Path $RepoClaude 'skills') -Link (Join-Path $UserClaude 'skills')
 
@@ -272,6 +288,54 @@ function Install-ClaudeCodeConfig {
             $settings | Add-Member -NotePropertyName $prop.Name -NotePropertyValue $prop.Value -Force
             Write-Host "  overlaid $($prop.Name)"
         }
+    }
+
+    # Not $statusline: PowerShell variable names are case-insensitive, so that
+    # name is the -StatusLine switch and assigning a path to it blows up the
+    # parameter binding on the next call.
+    $statuslineScript = Join-Path $RepoClaude 'statusline-command.sh'
+    $bash = @(
+        "$env:ProgramFiles\Git\bin\bash.exe",
+        "${env:ProgramFiles(x86)}\Git\bin\bash.exe",
+        "$env:USERPROFILE\scoop\apps\git\current\bin\bash.exe"
+    ) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    $jq = Get-Command jq.exe -ErrorAction SilentlyContinue
+
+    if (-not (Test-Path -LiteralPath $statuslineScript)) {
+        Write-Host '  statusLine: skipped, no statusline-command.sh in this checkout'
+    } elseif (-not $bash) {
+        Write-Host '  statusLine: skipped, no bash.exe (install Git for Windows)'
+    } elseif (-not $jq) {
+        # The script is all jq. Without it Claude Code would run the status line
+        # on every render, get a page of "jq: command not found", and show an
+        # empty bar with no clue why.
+        Write-Host '  statusLine: skipped, jq not installed (scoop install jq)'
+    } elseif (-not $StatusLine) {
+        # Off by default, and not for want of trying: it works, it is just far
+        # too slow to leave on. The script shells out about twenty times per
+        # render -- fourteen jq calls, five git calls, and the rest -- and every
+        # process launched through the MSYS2 runtime costs roughly 100ms here
+        # because POSIX fork() has to be emulated. Measured on this box:
+        #
+        #   jq --version   84ms      git --version  131ms
+        #   node --version 84ms      bash -c true   144ms
+        #
+        #   one render, Windows  2166 / 2292 / 2245 ms
+        #   one render, Linux         107 / 82 / 101 ms
+        #
+        # A status line that takes two seconds is worse than none: Claude Code
+        # would spend its time re-running it and showing a stale bar. This is
+        # not a Git Bash problem and no other POSIX layer fixes it -- the cost
+        # is the process count. The fix is to stop spawning: one pass over the
+        # payload instead of fourteen, and `git status --porcelain=v2 --branch`
+        # instead of five git calls. Pass -StatusLine to turn it on anyway.
+        Write-Host '  statusLine: off (2.2s per render here; see the note in this function)'
+    } else {
+        $settings | Add-Member -NotePropertyName 'statusLine' -NotePropertyValue ([pscustomobject]@{
+            type    = 'command'
+            command = '"{0}" "{1}"' -f ($bash -replace '\\', '/'), ($statuslineScript -replace '\\', '/')
+        }) -Force
+        Write-Host '  statusLine: wired through bash (slow -- see the note in this function)'
     }
 
     $json = $settings | ConvertTo-Json -Depth 20
@@ -356,7 +420,7 @@ Set-GitSshCommand
 
 Set-WindowsTerminalLink -Target (Join-Path $repo '.config\windows-terminal\LocalState') -LocalState $wtLocalState
 
-Install-ClaudeCodeConfig -RepoClaude (Join-Path $repo '.claude') -UserClaude (Join-Path $env:USERPROFILE '.claude')
+Install-ClaudeCodeConfig -RepoClaude (Join-Path $repo '.claude') -UserClaude (Join-Path $env:USERPROFILE '.claude') -StatusLine:$StatusLine
 
 Install-PasteShot -ScriptDir (Join-Path $repo '.config\paste-shot')
 
