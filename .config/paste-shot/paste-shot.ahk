@@ -40,10 +40,35 @@ PORT := 47291
 ; the remote account moves.
 global RemoteDir := ""
 
-#HotIf WinActive("ahk_exe WindowsTerminal.exe")
+; Which terminals this is active in. Add yours here.
+;
+; The list exists because taking over Ctrl+V is only safe in a terminal that
+; already binds it to paste. There, nothing downstream ever saw the key, so
+; intercepting the image case takes away nothing -- and a terminal cannot paste
+; a picture anyway. In a terminal that leaves Ctrl+V alone, the key reaches the
+; application, and taking it would break things like nvim visual-block.
+;
+; Checked here: Windows Terminal binds it (Terminal.PasteFromClipboard) and so
+; does WezTerm on Windows (`wezterm show-keys` reports CTRL V ->
+; PasteFrom(Clipboard)). Others vary, so test rather than assume: run `cat -v`
+; in the terminal and press Ctrl+V. If the clipboard contents appear, the
+; terminal swallowed the key and it is safe to add. If ^V appears, it is not --
+; use Ctrl+Alt+V there instead, which shadows nothing and works anywhere.
+TERMINALS := ["WindowsTerminal.exe", "wezterm-gui.exe"]
+
+InTerminal() {
+    global TERMINALS
+    for exe in TERMINALS
+        if WinActive("ahk_exe " exe)
+            return true
+    return false
+}
+
+#HotIf InTerminal()
 ; $ so the pass-through Send below cannot re-trigger this hotkey.
 $^v:: PasteOrShot()
-; Force the picture even when the clipboard also carries text.
+; Force the picture even when the clipboard also carries text. Safe in any
+; terminal, because nothing standard is bound to it.
 ^!v:: PasteShot()
 #HotIf
 
