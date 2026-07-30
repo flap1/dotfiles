@@ -76,6 +76,7 @@ symptom to live with.
 | Others cannot install it | distributed by scp from one person's 0700 home | it is in this repo; `git pull` |
 | Screenshots readable by every account on the box | a 0755 directory on a shared machine | unix socket in `$XDG_RUNTIME_DIR` (0700), shots 0600 in a 0700 directory |
 | Text paste breaks | Ctrl+V taken over unconditionally | intercepted only when the clipboard is an image and nothing else; every other case is passed through unchanged |
+| Only works in one terminal | the window class was hardcoded | `TERMINALS` in the .ahk is a list; the comment above it gives the test for whether a terminal is safe to add |
 | Edit two lines in Notepad | hardcoded per person | the sender asks the receiver where shots go |
 
 ## Parts
@@ -86,9 +87,13 @@ symptom to live with.
 | `paste-shot.service` | Linux | systemd user unit for the above |
 | `paste-shot.ahk` | Windows | the hotkey |
 | `paste-shot.ps1` | Windows | clipboard to PNG to POST; usable on its own for debugging |
+| `setup_paste_shot.sh` | Linux | installs the unit, starts it, prints the ssh config line |
+| `setup_paste_shot.ps1` | Windows | registers the hotkey at login |
 
-Installed by `setup.sh` (Linux) and `setup_windows.ps1` (Windows). The forward
-lives in `~/.ssh/config`:
+Installed by `setup_paste_shot.sh` on the remote box and
+`setup_paste_shot.ps1` on Windows -- deliberately not part of the general setup
+scripts, since this solves one specific problem and most machines do not need it.
+The forward lives in `~/.ssh/config`:
 
 ```sshconfig
 Host <your host>
