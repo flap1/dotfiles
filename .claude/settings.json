@@ -81,7 +81,8 @@
     "typescript-lsp@claude-plugins-official": true,
     "ponytail@ponytail": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "lua-lsp@claude-plugins-official": true
+    "lua-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -145,10 +146,11 @@
   "effortLevel": "medium",
   "advisorModel": "fable",
   "tui": "fullscreen",
-  "switchModelsOnFlag": true,
-  "agentPushNotifEnabled": true,
   "editorMode": "vim",
   "vimInsertModeRemaps": {
     "jk": "<Esc>"
-  }
+  },
+  "switchModelsOnFlag": true,
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true
 }
