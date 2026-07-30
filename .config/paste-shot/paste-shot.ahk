@@ -3,14 +3,23 @@
 
 ; Hand a Windows screenshot to a Claude Code session running over ssh.
 ;
-; Ctrl+Alt+V in Windows Terminal: types the remote path the picture is about to
-; have, and uploads it in the background. Claude reads the file when you send
-; the message.
+; Ctrl+V in Windows Terminal: if the clipboard holds a picture and nothing else,
+; the remote path it is about to have is typed and the upload runs in the
+; background. Anything else is an ordinary paste. Same rule VS Code uses, so
+; there is nothing extra to remember.
 ;
-; Why not Ctrl+V. Taking over the standard paste means every Windows Terminal
-; window is affected, including the ones with no Claude in them, and a bug in
-; here breaks pasting text everywhere. A chord of its own costs one extra
-; modifier and cannot break anything that already works.
+; Taking over Ctrl+V is safe here specifically because Windows Terminal already
+; binds it to Terminal.PasteFromClipboard -- nothing downstream ever sees the
+; key, so nvim's visual-block is not being taken away; it was already gone. And
+; a terminal cannot paste a picture anyway, so intercepting the image case
+; costs nothing that worked before. Every other case is passed straight
+; through: if this script is not running, or errors, Ctrl+V behaves exactly as
+; it does today.
+;
+; Text wins when the clipboard holds both. Copying a range out of Excel or a
+; table out of a browser puts an image and text on the clipboard together, and
+; in a terminal the text is what you meant. Ctrl+Alt+V forces the picture for
+; the times that guess is wrong.
 ;
 ; Why the path is typed before the upload finishes. The upload takes about a
 ; second, almost all of it PowerShell starting; the transfer itself is ~150ms.
@@ -32,15 +41,35 @@ PORT := 47291
 global RemoteDir := ""
 
 #HotIf WinActive("ahk_exe WindowsTerminal.exe")
+; $ so the pass-through Send below cannot re-trigger this hotkey.
+$^v:: PasteOrShot()
+; Force the picture even when the clipboard also carries text.
 ^!v:: PasteShot()
 #HotIf
+
+PasteOrShot() {
+    if (HasImage() && !HasText()) {
+        PasteShot()
+        return
+    }
+    ; Byte-for-byte what Windows Terminal would have done on its own.
+    Send("^v")
+}
+
+; CF_DIB and CF_DIBV5. Asking the clipboard directly costs microseconds;
+; Clipboard.GetImage on the PowerShell side would answer the same question
+; only after paying a second to start.
+HasImage() => DllCall("IsClipboardFormatAvailable", "UInt", 8)
+            || DllCall("IsClipboardFormatAvailable", "UInt", 17)
+
+; CF_UNICODETEXT.
+HasText() => DllCall("IsClipboardFormatAvailable", "UInt", 13)
 
 PasteShot() {
     global RemoteDir, PORT
 
-    ; CF_DIB. Clipboard.GetImage on the PowerShell side would tell us the same
-    ; thing, but only after paying a second to start it.
-    if !DllCall("IsClipboardFormatAvailable", "UInt", 8) {
+    if !HasImage() {
+        ; Reachable only through Ctrl+Alt+V; the Ctrl+V path has already checked.
         Flash("clipboard has no image")
         return
     }

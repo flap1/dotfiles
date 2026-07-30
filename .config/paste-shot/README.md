@@ -1,7 +1,7 @@
 # paste-shot
 
-`Ctrl+Alt+V` in Windows Terminal hands a screenshot to a Claude Code session
-running on the Linux box over ssh.
+`Ctrl+V` in Windows Terminal hands a screenshot to a Claude Code session running
+on the Linux box over ssh. Text pastes are untouched.
 
 ## Why this exists
 
@@ -28,13 +28,34 @@ What follows is the part that did not have to be bad.
 ## What it does
 
 ```
-Ctrl+Alt+V
-  -> clipboard has an image?         no  -> tooltip, nothing else happens
+Ctrl+V
+  -> image on the clipboard, and no text?   no -> ordinary Ctrl+V, nothing else
   -> decide the name from the clock
   -> SendText the remote path into the prompt      (instant, no clipboard)
   -> upload in the background over the ssh forward (~150ms)
   -> receiver writes <name>.part, renames to <name>
+
+Ctrl+Alt+V   same, but forced -- for when the clipboard carries both
 ```
+
+Same rule VS Code uses, so there is nothing extra to remember. It is safe to
+take Ctrl+V here for two reasons that are specific to this setup: Windows
+Terminal already binds it to `Terminal.PasteFromClipboard`, so nothing
+downstream ever saw the key and nvim's visual-block was already gone; and a
+terminal cannot paste a picture, so intercepting the image case costs nothing
+that worked before. Everything else is passed straight through, and with the
+script not running Ctrl+V behaves exactly as it always did.
+
+Text wins when the clipboard holds both, because copying a range out of Excel
+or a table out of a browser puts an image and text there together and the text
+is what you meant. Verified:
+
+| clipboard | decision |
+| --- | --- |
+| image only (`Win+Shift+S`) | paste-shot |
+| text only | ordinary `Ctrl+V` |
+| image + text | ordinary `Ctrl+V` |
+| empty | ordinary `Ctrl+V` |
 
 The path is typed before the bytes arrive. That is safe because the receiver
 renames into place: the path either does not exist yet or is a complete file,
@@ -54,7 +75,7 @@ symptom to live with.
 | Files pile up forever | no cleanup | anything older than a week is dropped on each write |
 | Others cannot install it | distributed by scp from one person's 0700 home | it is in this repo; `git pull` |
 | Screenshots readable by every account on the box | a 0755 directory on a shared machine | unix socket in `$XDG_RUNTIME_DIR` (0700), shots 0600 in a 0700 directory |
-| Text paste breaks; fires in unrelated windows | Ctrl+V taken over globally | its own chord, scoped to Windows Terminal, shadowing nothing |
+| Text paste breaks | Ctrl+V taken over unconditionally | intercepted only when the clipboard is an image and nothing else; every other case is passed through unchanged |
 | Edit two lines in Notepad | hardcoded per person | the sender asks the receiver where shots go |
 
 ## Parts
@@ -83,7 +104,8 @@ Everything fails fast and says why; nothing hangs.
 
 | Tooltip | Meaning |
 | --- | --- |
-| `clipboard has no image` | copying a file in Explorer does not put an image on the clipboard. Snip it |
+| nothing happens, the text pastes | the clipboard had text on it too, so it was treated as a text paste. `Ctrl+Alt+V` forces the picture |
+| `clipboard has no image` | from `Ctrl+Alt+V`. Copying a file in Explorer does not put an image on the clipboard; snip it |
 | `no receiver on 127.0.0.1:47291` | no ssh session is up, or the forward is missing from `~/.ssh/config`, or the unit is down |
 | `receiver unreachable` | the session dropped mid-upload. The path was already typed; it will not resolve |
 | `receiver rejected it` | `journalctl --user -u paste-shot.service` |
