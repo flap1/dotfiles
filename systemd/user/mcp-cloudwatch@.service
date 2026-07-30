@@ -11,7 +11,7 @@ ExecStart=/usr/bin/supergateway \
   --port ${MCP_PORT} \
   --host 127.0.0.1 \
   --baseUrl http://127.0.0.1:${MCP_PORT}
-Environment=PATH=/home/flap1/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin
+Environment=PATH=%h/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin
 Restart=on-failure
 RestartSec=5
 
