@@ -49,6 +49,7 @@
     {
         "defaults":
         {
+            "colorScheme": "Emerald Slate",
             "font":
             {
                 "face": "UDEV Gothic NFLG",
@@ -89,6 +90,31 @@
             }
         ]
     },
-    "schemes": [],
+    "schemes":
+    [
+        {
+            "name": "Emerald Slate",
+            "background": "#0B0D12",
+            "foreground": "#E2E8F0",
+            "cursorColor": "#10B981",
+            "selectionBackground": "#334155",
+            "black": "#0F172A",
+            "red": "#EF4444",
+            "green": "#059669",
+            "yellow": "#F59E0B",
+            "blue": "#10B981",
+            "purple": "#A855F7",
+            "cyan": "#0EA5E9",
+            "white": "#E2E8F0",
+            "brightBlack": "#64748B",
+            "brightRed": "#F87171",
+            "brightGreen": "#10B981",
+            "brightYellow": "#FBBF24",
+            "brightBlue": "#34D399",
+            "brightPurple": "#C084FC",
+            "brightCyan": "#38BDF8",
+            "brightWhite": "#FFFFFF"
+        }
+    ],
     "themes": []
 }

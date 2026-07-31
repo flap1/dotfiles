@@ -460,6 +460,12 @@ Set-UserEditor -Editor 'nvim'
 # rather than the Windows-native ~/AppData/Local/nvim.
 Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path $env:USERPROFILE '.config\nvim')
 
+# yazi does not consult XDG_CONFIG_HOME on Windows the way nvim does -- confirmed
+# with `yazi --debug`, which reports %APPDATA%\yazi\config even with XDG set. So
+# this one links the native location rather than ~/.config. YAZI_CONFIG_HOME would
+# also work, but that is a machine-wide env var to keep in sync; a junction is not.
+Set-DirectoryJunction -Target (Join-Path $repo '.config\yazi') -Link (Join-Path $env:APPDATA 'yazi\config')
+
 Set-GitSshCommand
 
 Set-WindowsTerminalLink -Target (Join-Path $repo '.config\windows-terminal\LocalState') -LocalState $wtLocalState

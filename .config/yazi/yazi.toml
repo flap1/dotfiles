@@ -1,0 +1,25 @@
+#:schema https://yazi-rs.github.io/schemas/yazi.json
+# vim:fileencoding=utf-8
+
+# : Openers {{{
+
+# The preset's `edit` opener on Windows is literally `code %s` -- yazi has no
+# $EDITOR fallback on this platform the way it does on unix, so Enter on any
+# text file launched VS Code regardless of what the rest of this box uses.
+#
+# nvim is the editor everywhere else in this repo, and block = true is what
+# makes it the right one here: a TUI editor has to take over the terminal yazi
+# is drawing in and hand it back on exit. `code` used orphan = true because it
+# detaches into a GUI window; doing that with nvim would start it on a terminal
+# nobody owns.
+#
+# Only `edit` is overridden. play / open / reveal / extract keep their preset
+# definitions, so a video still goes to the system player and Reveal still opens
+# Explorer with the file selected.
+[opener]
+edit = [
+	{ run = 'nvim %s',            desc = "nvim", for = "windows", block = true },
+	{ run = '${EDITOR:-nvim} %s', desc = "nvim", for = "unix",    block = true },
+]
+
+# : }}}
