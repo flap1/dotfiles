@@ -1,19 +1,16 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
-    [
+    "actions": [
         {
-            "command": 
-            {
+            "command": {
                 "action": "sendInput",
                 "input": "\u001b\r"
             },
             "id": "User.sendInput.altEnter"
         },
         {
-            "command": 
-            {
+            "command": {
                 "action": "sendInput",
                 "input": "yazi\r"
             },
@@ -21,8 +18,7 @@
             "name": "yazi (this pane)"
         },
         {
-            "command": 
-            {
+            "command": {
                 "action": "sendInput",
                 "input": "ssh syntopic-tmux\r"
             },
@@ -30,8 +26,7 @@
             "name": "ssh: syntopic + tmux (this pane)"
         },
         {
-            "command": 
-            {
+            "command": {
                 "action": "sendInput",
                 "input": "ssh -N syntopic-fwd\r"
             },
@@ -39,8 +34,7 @@
             "name": "ssh: syntopic tunnels only (-N)"
         },
         {
-            "command": 
-            {
+            "command": {
                 "action": "newTab",
                 "profile": "syntopic (tmux)"
             },
@@ -48,8 +42,7 @@
             "name": "new tab: syntopic (tmux)"
         },
         {
-            "command": 
-            {
+            "command": {
                 "action": "newTab",
                 "profile": "yazi"
             },
@@ -60,19 +53,10 @@
     "copyFormatting": "none",
     "copyOnSelect": false,
     "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-    "keybindings": 
-    [
-        {
-            "id": "User.newTab.18DA0430",
-            "keys": "ctrl+shift+t"
-        },
+    "keybindings": [
         {
             "id": "User.newTab.D9060DFE",
             "keys": "ctrl+shift+y"
-        },
-        {
-            "id": "User.wt.E6753E40",
-            "keys": "ctrl+shift+o"
         },
         {
             "id": "Terminal.CopyToClipboard",
@@ -93,27 +77,26 @@
         {
             "id": "User.sendInput.altEnter",
             "keys": "shift+enter"
+        },
+        {
+            "id": "User.newTab.18DA0430",
+            "keys": "ctrl+shift+s"
         }
     ],
-    "newTabMenu": 
-    [
+    "newTabMenu": [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": 
-    {
-        "defaults": 
-        {
+    "profiles": {
+        "defaults": {
             "colorScheme": "Emerald Slate",
-            "font": 
-            {
+            "font": {
                 "face": "UDEV Gothic NFLG",
                 "size": 11
             }
         },
-        "list": 
-        [
+        "list": [
             {
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
@@ -124,7 +107,7 @@
                 "commandline": "%SystemRoot%\\System32\\cmd.exe",
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
-                "name": "\u30b3\u30de\u30f3\u30c9 \u30d7\u30ed\u30f3\u30d7\u30c8"
+                "name": "コマンド プロンプト"
             },
             {
                 "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
@@ -148,7 +131,7 @@
                 "commandline": "powershell.exe -NoLogo -NoExit -Command yazi",
                 "guid": "{7b1f4e2a-9c3d-4a56-8e10-2f6d9b4c1a77}",
                 "hidden": false,
-                "icon": "\ud83d\udcc1",
+                "icon": "📁",
                 "name": "yazi",
                 "startingDirectory": "%USERPROFILE%"
             },
@@ -156,13 +139,12 @@
                 "commandline": "C:\\\\Windows\\\\System32\\\\OpenSSH\\\\ssh.exe syntopic-tmux",
                 "guid": "{3d8c5a91-6e42-4b07-9f31-8a5e2c7d0b64}",
                 "hidden": false,
-                "icon": "\ud83d\udda5\ufe0f",
+                "icon": "🖥️",
                 "name": "syntopic (tmux)"
             }
         ]
     },
-    "schemes": 
-    [
+    "schemes": [
         {
             "background": "#0B0D12",
             "black": "#0F172A",
