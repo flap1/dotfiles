@@ -256,6 +256,18 @@ function Install-ClaudeCodeConfig {
     # hooks that need rtk and code-review-graph live in settings.linux.json and
     # are applied by setup.sh on that side.
     #
+    # Three layers, each narrower than the last: settings.json is every machine,
+    # settings.windows.json is every Windows machine, settings.local.json is this
+    # one. The last is gitignored, so it is where a setting goes when it is true
+    # of the hardware rather than of the platform -- voice dictation needs a
+    # microphone, and nothing in the repo knows which boxes have one.
+    #
+    # Note that Claude Code has no user-scope local file of its own: its
+    # .claude/settings.local.json is project-scoped, read relative to the
+    # repository you are in. So the local layer cannot simply be dropped in
+    # ~/.claude and left to Claude Code; it is merged here, which also means it
+    # applies from every directory rather than only from $HOME.
+    #
     # The status line is the exception, and it is added here rather than shipped
     # in either layer. The script itself is portable -- it needs sh and jq, both
     # of which this box has once jq is installed -- but the command differs:
@@ -266,10 +278,13 @@ function Install-ClaudeCodeConfig {
     Set-DirectoryJunction -Target (Join-Path $RepoClaude 'skills') -Link (Join-Path $UserClaude 'skills')
 
     $shared = Join-Path $RepoClaude 'settings.json'
-    $overlay = Join-Path $RepoClaude 'settings.windows.json'
+    $overlays = @(
+        (Join-Path $RepoClaude 'settings.windows.json'),
+        (Join-Path $RepoClaude 'settings.local.json')
+    )
     $target = Join-Path $UserClaude 'settings.json'
 
-    Write-Host "$target <- settings.json + settings.windows.json"
+    Write-Host "$target <- settings.json + settings.windows.json + settings.local.json"
 
     if (-not (Test-Path -LiteralPath $shared)) {
         Write-Host "  skipped: $shared does not exist in this checkout"
@@ -278,15 +293,21 @@ function Install-ClaudeCodeConfig {
 
     $settings = Get-Content -LiteralPath $shared -Raw -Encoding UTF8 | ConvertFrom-Json
 
-    if (Test-Path -LiteralPath $overlay) {
-        $windows = Get-Content -LiteralPath $overlay -Raw -Encoding UTF8 | ConvertFrom-Json
-        foreach ($prop in $windows.PSObject.Properties) {
+    # Applied in order, so the local layer gets the last word over the Windows
+    # one. A missing layer is normal rather than an error: settings.local.json is
+    # gitignored and so absent on a fresh clone by definition.
+    foreach ($overlay in $overlays) {
+        if (-not (Test-Path -LiteralPath $overlay)) { continue }
+
+        $name = Split-Path $overlay -Leaf
+        $layer = Get-Content -LiteralPath $overlay -Raw -Encoding UTF8 | ConvertFrom-Json
+        foreach ($prop in $layer.PSObject.Properties) {
             if ($prop.Name -eq '$comment') { continue }
             # Top level only. A deep merge would let the overlay half-override a
             # nested object, which is harder to reason about than replacing the
             # whole key and being able to see what you replaced.
             $settings | Add-Member -NotePropertyName $prop.Name -NotePropertyValue $prop.Value -Force
-            Write-Host "  overlaid $($prop.Name)"
+            Write-Host "  overlaid $($prop.Name) from $name"
         }
     }
 

@@ -94,5 +94,6 @@
   },
   "switchModelsOnFlag": true,
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "language": "Japanese"
 }
