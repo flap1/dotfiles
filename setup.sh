@@ -206,71 +206,117 @@ install_category "Server: Ansible" \
 # -------------------------------------------------------------------------
 # AI tools
 # -------------------------------------------------------------------------
-install_category "AI: Claude Code (hooks + skills + settings + instructions)" \
+install_category "AI: Claude Code (hooks + skills + instructions)" \
     ".claude/hooks"        "$HOME/.claude/hooks" \
     ".claude/skills"       "$HOME/.claude/skills" \
-    ".claude/settings.json" "$HOME/.claude/settings.json" \
     ".claude/statusline.mjs" "$HOME/.claude/statusline.mjs" \
     ".claude/CLAUDE.md"    "$HOME/.claude/CLAUDE.md" \
     ".claude/RTK.md"       "$HOME/.claude/RTK.md"
 
-# settings.json above is cross-platform on purpose, so the hooks and the status
-# line that only work here are not in it. They live in settings.linux.json and
-# are merged into ~/.claude/settings.local.json, which cannot be symlinked
-# because it also holds per-project permissions and MCP servers that are not in
-# version control. Idempotent: rerunning prints "already current".
-install_claude_linux_settings() {
-    local layer="$DOTFILES_DIR/.claude/settings.linux.json"
-    local target="$HOME/.claude/settings.local.json"
+# ~/.claude/settings.json is composed, not symlinked, for the same reason
+# setup_windows.ps1 composes it: Claude Code rewrites that file whenever you
+# change anything from /config or /model, so a symlink hands machine-local
+# choices straight into the shared repo. That is not hypothetical -- the symlink
+# this replaced turned one /model on a server into a tracked change to the file
+# every other machine reads.
+#
+# Three layers, each narrower than the last, matching the Windows side:
+#
+#   .claude/settings.json        every machine
+#   .claude/settings.linux.json  every Linux machine: rtk hooks, statusLine
+#   .claude/settings.local.json  this machine only; gitignored, often absent
+#
+# The layers land in ~/.claude/settings.json rather than settings.local.json,
+# which is where the Linux layer used to go. Claude Code has no user-scope local
+# settings file: its .claude/settings.local.json is project-scoped, resolved
+# against the repository you started in. $HOME is not a repository here, so that
+# file was read only by sessions started from $HOME, and every session started
+# in a project ran without the rtk hooks or the status line. User scope has no
+# such condition.
+#
+# Idempotent: rerunning prints "already current".
+install_claude_settings() {
+    local shared="$DOTFILES_DIR/.claude/settings.json"
+    local target="$HOME/.claude/settings.json"
 
-    [ -f "$layer" ] || { echo "Skipped [AI: Claude Code Linux layer]: $layer missing."; return; }
-    command -v node >/dev/null || { echo "Skipped [AI: Claude Code Linux layer]: no node."; return; }
+    [ -f "$shared" ] || { echo "Skipped [AI: Claude Code settings]: $shared missing."; return; }
+    command -v node >/dev/null || { echo "Skipped [AI: Claude Code settings]: no node."; return; }
 
-    read -rp "Install [AI: Claude Code Linux layer (hooks + statusLine)]? (y/n): " yn
+    read -rp "Install [AI: Claude Code settings (shared + linux + local)]? (y/n): " yn
     case $yn in
         [Yy]*) ;;
-        *) echo "Skipped [AI: Claude Code Linux layer]."; return ;;
+        *) echo "Skipped [AI: Claude Code settings]."; return ;;
     esac
 
-    LAYER="$layer" TARGET="$target" node <<'NODE'
+    SHARED="$shared" \
+    LINUX="$DOTFILES_DIR/.claude/settings.linux.json" \
+    LOCAL="$DOTFILES_DIR/.claude/settings.local.json" \
+    TARGET="$HOME/.claude/settings.json" node <<'NODE'
 const fs = require('fs');
-const layer = JSON.parse(fs.readFileSync(process.env.LAYER, 'utf8'));
-delete layer['$comment'];
+const path = require('path');
 
-const target = process.env.TARGET;
-const before = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '{}';
-const out = JSON.parse(before);
+const read = (p) => {
+  if (!p || !fs.existsSync(p)) return null;
+  const o = JSON.parse(fs.readFileSync(p, 'utf8'));
+  delete o['$comment'];
+  return o;
+};
 
-for (const [key, value] of Object.entries(layer)) {
-  // permissions.allow is the one key both sides own: this file adds rtk, the
-  // machine-local file accumulates per-project grants. Union them rather than
-  // letting either side win, and keep it sorted-stable so reruns are no-ops.
-  if (key === 'permissions') {
-    out.permissions = out.permissions || {};
-    const have = new Set(out.permissions.allow || []);
-    for (const rule of value.allow || []) have.add(rule);
-    out.permissions.allow = [...have];
-  } else {
-    // hooks and statusLine are owned outright by this file. Replacing rather
-    // than merging is what makes a rerun idempotent, and what lets a hook be
-    // removed here and actually disappear.
+const out = read(process.env.SHARED);
+// A missing layer is normal rather than an error: settings.local.json is
+// gitignored, so a fresh clone has none by definition.
+const layers = [
+  ['settings.linux.json', read(process.env.LINUX)],
+  ['settings.local.json', read(process.env.LOCAL)],
+];
+
+for (const [name, layer] of layers) {
+  if (!layer) continue;
+  for (const [key, value] of Object.entries(layer)) {
+    // permissions is the one key every layer has a stake in: the shared file
+    // carries the baseline, the Linux layer adds rtk, and the local file
+    // accumulates grants for this box. Letting the last layer win would
+    // silently drop rtk, so union the rule lists instead. Order is preserved
+    // and duplicates collapse, which keeps a rerun a no-op.
+    if (key === 'permissions') {
+      out.permissions = out.permissions || {};
+      for (const kind of ['allow', 'deny', 'ask']) {
+        if (!value[kind]) continue;
+        out.permissions[kind] = [...new Set([...(out.permissions[kind] || []), ...value[kind]])];
+      }
+      continue;
+    }
+    // Everything else is top level only. A deep merge would let a layer
+    // half-override a nested object, which is harder to reason about than
+    // replacing the whole key and being able to see what you replaced.
     out[key] = value;
+    console.log(`  overlaid ${key} from ${name}`);
   }
 }
 
+const target = process.env.TARGET;
+// A symlink left by an older run has to go, or writeFileSync follows it and
+// writes through to the repo -- the exact failure this function exists to end.
+if (fs.existsSync(target) && fs.lstatSync(target).isSymbolicLink()) {
+  fs.unlinkSync(target);
+  console.log('  removed the old symlink into the repo');
+}
+
+const before = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
 const after = JSON.stringify(out, null, 2) + '\n';
 if (after === before) { console.log('  already current'); process.exit(0); }
-if (fs.existsSync(target)) {
+if (before !== null) {
+  // Hand edits made through /config live only here, so keep a copy.
   const backup = target + '.' + new Date().toISOString().replace(/\D/g, '').slice(0, 14);
   fs.copyFileSync(target, backup);
   console.log('  backed up -> ' + backup);
 }
-fs.mkdirSync(require('path').dirname(target), { recursive: true });
+fs.mkdirSync(path.dirname(target), { recursive: true });
 fs.writeFileSync(target, after);
 console.log('  -> ' + target);
 NODE
 }
-install_claude_linux_settings
+install_claude_settings
 
 
 # -------------------------------------------------------------------------
