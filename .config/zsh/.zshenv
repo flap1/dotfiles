@@ -29,6 +29,13 @@ path=(
   $HOME/.cargo/bin(N-/)
   $HOME/.go/bin(N-/)
   $HOME/.local/share/nvim/mason/bin(N-/)
+  # bob's own env.sh is sourced at the bottom of this file, which is too late:
+  # the EDITOR check below runs first and would fall back to vim on a box where
+  # bob is the only nvim. Listing it here fixes the order, and the (N-/) guard
+  # means a box without bob just skips it. Sourcing env.sh later is then a no-op,
+  # since it checks PATH before prepending -- and it is left in place because it
+  # is bob's file to change, not ours.
+  $HOME/.local/share/bob/nvim-bin(N-/)
   $path
 )
 export PATH
