@@ -24,15 +24,6 @@
             "command": 
             {
                 "action": "sendInput",
-                "input": "ssh -N syntopic-fwd\r"
-            },
-            "id": "User.sendInput.43F59A5E",
-            "name": "ssh: syntopic tunnels only (-N)"
-        },
-        {
-            "command": 
-            {
-                "action": "sendInput",
                 "input": "ssh syntopic-tmux\r"
             },
             "id": "User.sendInput.5995FA1B",
@@ -41,11 +32,29 @@
         {
             "command": 
             {
-                "action": "wt",
-                "commandline": "new-tab -p \"yazi\" ; split-pane -p \"syntopic (tmux)\" ; focus-pane -t 0"
+                "action": "sendInput",
+                "input": "ssh -N syntopic-fwd\r"
             },
-            "id": "User.wt.E6753E40",
-            "name": "layout: yazi + syntopic"
+            "id": "User.sendInput.43F59A5E",
+            "name": "ssh: syntopic tunnels only (-N)"
+        },
+        {
+            "command": 
+            {
+                "action": "newTab",
+                "profile": "syntopic (tmux)"
+            },
+            "id": "User.newTab.18DA0430",
+            "name": "new tab: syntopic (tmux)"
+        },
+        {
+            "command": 
+            {
+                "action": "newTab",
+                "profile": "yazi"
+            },
+            "id": "User.newTab.D9060DFE",
+            "name": "new tab: yazi"
         }
     ],
     "copyFormatting": "none",
@@ -54,28 +63,36 @@
     "keybindings": 
     [
         {
-            "id": "Terminal.CopyToClipboard",
-            "keys": "ctrl+c"
+            "id": "User.newTab.18DA0430",
+            "keys": "ctrl+shift+t"
+        },
+        {
+            "id": "User.newTab.D9060DFE",
+            "keys": "ctrl+shift+y"
         },
         {
             "id": "User.wt.E6753E40",
             "keys": "ctrl+shift+o"
         },
         {
-            "id": "Terminal.PasteFromClipboard",
-            "keys": "ctrl+v"
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+c"
         },
         {
             "id": "Terminal.FindText",
             "keys": "ctrl+shift+f"
         },
         {
-            "id": "User.sendInput.altEnter",
-            "keys": "shift+enter"
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+v"
         },
         {
             "id": "Terminal.DuplicatePaneAuto",
             "keys": "alt+shift+d"
+        },
+        {
+            "id": "User.sendInput.altEnter",
+            "keys": "shift+enter"
         }
     ],
     "newTabMenu": 
@@ -170,6 +187,6 @@
             "yellow": "#F59E0B"
         }
     ],
-    "startupActions": "new-tab -p \"yazi\" ; split-pane -p \"syntopic (tmux)\" ; focus-pane -t 0",
+    "startupActions": "new-tab -p \"yazi\"",
     "themes": []
 }
