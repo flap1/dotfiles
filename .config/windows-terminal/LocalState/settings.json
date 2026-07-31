@@ -1,62 +1,101 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions":
+    "actions": 
     [
         {
-            "command":
+            "command": 
             {
                 "action": "sendInput",
                 "input": "\u001b\r"
             },
             "id": "User.sendInput.altEnter"
+        },
+        {
+            "command": 
+            {
+                "action": "sendInput",
+                "input": "yazi\r"
+            },
+            "id": "User.sendInput.577023DF",
+            "name": "yazi (this pane)"
+        },
+        {
+            "command": 
+            {
+                "action": "sendInput",
+                "input": "ssh -N syntopic-fwd\r"
+            },
+            "id": "User.sendInput.43F59A5E",
+            "name": "ssh: syntopic tunnels only (-N)"
+        },
+        {
+            "command": 
+            {
+                "action": "sendInput",
+                "input": "ssh syntopic-tmux\r"
+            },
+            "id": "User.sendInput.5995FA1B",
+            "name": "ssh: syntopic + tmux (this pane)"
+        },
+        {
+            "command": 
+            {
+                "action": "wt",
+                "commandline": "new-tab -p \"yazi\" ; split-pane -p \"syntopic (tmux)\" ; focus-pane -t 0"
+            },
+            "id": "User.wt.E6753E40",
+            "name": "layout: yazi + syntopic"
         }
     ],
     "copyFormatting": "none",
     "copyOnSelect": false,
-    "experimental.rendering.software": false,
     "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-    "keybindings":
+    "keybindings": 
     [
         {
             "id": "Terminal.CopyToClipboard",
             "keys": "ctrl+c"
         },
         {
-            "id": "Terminal.FindText",
-            "keys": "ctrl+shift+f"
+            "id": "User.wt.E6753E40",
+            "keys": "ctrl+shift+o"
         },
         {
             "id": "Terminal.PasteFromClipboard",
             "keys": "ctrl+v"
         },
         {
-            "id": "Terminal.DuplicatePaneAuto",
-            "keys": "alt+shift+d"
+            "id": "Terminal.FindText",
+            "keys": "ctrl+shift+f"
         },
         {
             "id": "User.sendInput.altEnter",
             "keys": "shift+enter"
+        },
+        {
+            "id": "Terminal.DuplicatePaneAuto",
+            "keys": "alt+shift+d"
         }
     ],
-    "newTabMenu":
+    "newTabMenu": 
     [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles":
+    "profiles": 
     {
-        "defaults":
+        "defaults": 
         {
             "colorScheme": "Emerald Slate",
-            "font":
+            "font": 
             {
                 "face": "UDEV Gothic NFLG",
                 "size": 11
             }
         },
-        "list":
+        "list": 
         [
             {
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
@@ -87,34 +126,50 @@
                 "hidden": false,
                 "name": "Ubuntu",
                 "source": "Microsoft.WSL"
+            },
+            {
+                "commandline": "powershell.exe -NoLogo -NoExit -Command yazi",
+                "guid": "{7b1f4e2a-9c3d-4a56-8e10-2f6d9b4c1a77}",
+                "hidden": false,
+                "icon": "\ud83d\udcc1",
+                "name": "yazi",
+                "startingDirectory": "%USERPROFILE%"
+            },
+            {
+                "commandline": "C:\\\\Windows\\\\System32\\\\OpenSSH\\\\ssh.exe syntopic-tmux",
+                "guid": "{3d8c5a91-6e42-4b07-9f31-8a5e2c7d0b64}",
+                "hidden": false,
+                "icon": "\ud83d\udda5\ufe0f",
+                "name": "syntopic (tmux)"
             }
         ]
     },
-    "schemes":
+    "schemes": 
     [
         {
-            "name": "Emerald Slate",
             "background": "#0B0D12",
-            "foreground": "#E2E8F0",
-            "cursorColor": "#10B981",
-            "selectionBackground": "#334155",
             "black": "#0F172A",
-            "red": "#EF4444",
-            "green": "#059669",
-            "yellow": "#F59E0B",
             "blue": "#10B981",
-            "purple": "#A855F7",
-            "cyan": "#0EA5E9",
-            "white": "#E2E8F0",
             "brightBlack": "#64748B",
-            "brightRed": "#F87171",
-            "brightGreen": "#10B981",
-            "brightYellow": "#FBBF24",
             "brightBlue": "#34D399",
-            "brightPurple": "#C084FC",
             "brightCyan": "#38BDF8",
-            "brightWhite": "#FFFFFF"
+            "brightGreen": "#10B981",
+            "brightPurple": "#C084FC",
+            "brightRed": "#F87171",
+            "brightWhite": "#FFFFFF",
+            "brightYellow": "#FBBF24",
+            "cursorColor": "#10B981",
+            "cyan": "#0EA5E9",
+            "foreground": "#E2E8F0",
+            "green": "#059669",
+            "name": "Emerald Slate",
+            "purple": "#A855F7",
+            "red": "#EF4444",
+            "selectionBackground": "#334155",
+            "white": "#E2E8F0",
+            "yellow": "#F59E0B"
         }
     ],
+    "startupActions": "new-tab -p \"yazi\" ; split-pane -p \"syntopic (tmux)\" ; focus-pane -t 0",
     "themes": []
 }

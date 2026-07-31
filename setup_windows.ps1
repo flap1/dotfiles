@@ -453,7 +453,9 @@ function Set-UserEditor {
 # and nvim is what ~/.config/nvim in this repo is configured for. delta is the
 # other half of that gitconfig -- core.pager and interactive.diffFilter both
 # point at it, so pulling in the shared git config without it breaks `git log`.
-Install-ScoopPackage -Name @('neovim', 'delta') -Binary @{ neovim = 'nvim' }
+# yazi is here because this repo ships its config and Windows Terminal starts a
+# pane in it: without the binary that pane opens on a "not recognized" error.
+Install-ScoopPackage -Name @('neovim', 'delta', 'yazi') -Binary @{ neovim = 'nvim' }
 Set-UserEditor -Editor 'nvim'
 
 # XDG_CONFIG_HOME is set to ~/.config on this box, so nvim reads ~/.config/nvim
