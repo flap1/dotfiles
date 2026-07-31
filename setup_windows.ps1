@@ -25,10 +25,18 @@
     - Anything about to be displaced is moved aside with a timestamp first.
 
 .PARAMETER Gitconfig
-    Also pull .config/git/.gitconfig into ~/.gitconfig by reference. Off by
-    default: that config sets core.pager=delta and core.editor=nvim, so on a box
-    without them every `git log` and every commit breaks. Turn it on once the
-    Windows side actually has the toolchain (scoop install delta neovim).
+    Force .config/git/.gitconfig into ~/.gitconfig by reference even when the
+    toolchain check below says no. That config sets core.pager=delta and
+    core.editor=nvim, so on a box without them every `git log` and every commit
+    breaks -- which is why this used to be an opt-in switch you had to remember.
+    It is no longer needed in the normal case: this script installs delta and
+    neovim itself, and includes the shared config automatically once both
+    resolve. Keep the switch for the box where they come from somewhere other
+    than scoop and the check cannot see them.
+
+.PARAMETER SkipInstall
+    Do not install anything through scoop; only wire up links and config. Use
+    this on a metered connection, or to re-run the linking half quickly.
 
 .EXAMPLE
     powershell -File setup_windows.ps1
@@ -39,7 +47,8 @@
 
 [CmdletBinding()]
 param(
-    [switch]$Gitconfig
+    [switch]$Gitconfig,
+    [switch]$SkipInstall
 )
 
 $ErrorActionPreference = 'Stop'
@@ -331,6 +340,101 @@ function Install-ClaudeCodeConfig {
     Write-Host '  written'
 }
 
+function Install-ScoopPackage {
+    param(
+        [Parameter(Mandatory)][string[]]$Name,
+        # The command each package is expected to put on PATH, when it differs
+        # from the package name. neovim ships `nvim`, and asking scoop whether it
+        # installed something is slower and less honest than asking PATH.
+        [hashtable]$Binary = @{}
+    )
+
+    if ($SkipInstall) {
+        Write-Host 'scoop packages: skipped (-SkipInstall)'
+        return
+    }
+
+    if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+        Write-Host 'scoop packages: skipped, scoop is not on PATH'
+        return
+    }
+
+    foreach ($pkg in $Name) {
+        $exe = $pkg
+        if ($Binary.ContainsKey($pkg)) { $exe = $Binary[$pkg] }
+
+        Write-Host "scoop package $pkg (provides $exe)"
+
+        if (Get-Command $exe -ErrorAction SilentlyContinue) {
+            Write-Host '  already on PATH'
+            continue
+        }
+
+        # Not -ErrorAction Stop: a bucket being unreachable should cost this one
+        # package, not the rest of the setup. The PATH refresh below then leaves
+        # the toolchain check to notice it is still missing and act accordingly.
+        scoop install $pkg
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "  install failed (exit $LASTEXITCODE); continuing"
+            continue
+        }
+        Write-Host '  installed'
+    }
+
+    # scoop puts its shims on PATH for *new* processes. This one is already
+    # running, so without this every check after an install would report the
+    # package as still missing and silently take the wrong branch.
+    $shims = Join-Path $env:USERPROFILE 'scoop\shims'
+    if ((Test-Path -LiteralPath $shims) -and ($env:PATH -notlike "*$shims*")) {
+        $env:PATH = "$shims;$env:PATH"
+    }
+}
+
+function Set-UserEditor {
+    param([Parameter(Mandatory)][string]$Editor)
+
+    Write-Host "EDITOR -> $Editor"
+
+    # Mirrors the guard in .config/zsh/.zshenv, which only exports EDITOR=nvim
+    # when `command -v nvim` succeeds and otherwise leaves vim in place. Setting
+    # it unconditionally here would be worse than on Linux: there is no vim
+    # fallback on a bare Windows box, so every tool that shells out to $EDITOR
+    # would fail rather than degrade.
+    if (-not (Get-Command $Editor -ErrorAction SilentlyContinue)) {
+        Write-Host "  skipped: $Editor is not on PATH"
+        return
+    }
+
+    # User scope, not Process: the point is that a terminal opened tomorrow --
+    # and anything Claude Code launches through Ctrl+G -- sees it. Machine scope
+    # would need elevation and would speak for other accounts on this box.
+    $current = [Environment]::GetEnvironmentVariable('EDITOR', 'User')
+    if ($current -eq $Editor) {
+        Write-Host '  already set'
+    } else {
+        [Environment]::SetEnvironmentVariable('EDITOR', $Editor, 'User')
+        if ($current) {
+            Write-Host "  set (was $current); open a new terminal to pick it up"
+        } else {
+            Write-Host '  set; open a new terminal to pick it up'
+        }
+    }
+
+    # So the rest of this run, and this shell, agree with what was just written.
+    $env:EDITOR = $Editor
+
+    # VISUAL is deliberately left alone. It wins over EDITOR everywhere that
+    # honours both, and the Linux side never sets it, so setting it here would
+    # be a Windows-only override of a variable the shared config cannot see.
+}
+
+# The editor comes first: the gitconfig include below refuses to run without it,
+# and nvim is what ~/.config/nvim in this repo is configured for. delta is the
+# other half of that gitconfig -- core.pager and interactive.diffFilter both
+# point at it, so pulling in the shared git config without it breaks `git log`.
+Install-ScoopPackage -Name @('neovim', 'delta') -Binary @{ neovim = 'nvim' }
+Set-UserEditor -Editor 'nvim'
+
 # XDG_CONFIG_HOME is set to ~/.config on this box, so nvim reads ~/.config/nvim
 # rather than the Windows-native ~/AppData/Local/nvim.
 Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path $env:USERPROFILE '.config\nvim')
@@ -341,8 +445,19 @@ Set-WindowsTerminalLink -Target (Join-Path $repo '.config\windows-terminal\Local
 
 Install-ClaudeCodeConfig -RepoClaude (Join-Path $repo '.claude') -UserClaude (Join-Path $env:USERPROFILE '.claude')
 
-if ($Gitconfig) {
+# The shared git config is only safe once its toolchain is here: core.pager and
+# interactive.diffFilter point at delta, core.editor at nvim, and git does not
+# degrade when they are missing -- `git log` dies on a broken pager and every
+# commit dies on a missing editor. Install-ScoopPackage above normally satisfies
+# both, so ask PATH rather than making anyone remember a switch.
+$editorReady = [bool](Get-Command nvim -ErrorAction SilentlyContinue)
+$pagerReady = [bool](Get-Command delta -ErrorAction SilentlyContinue)
+
+if ($Gitconfig -or ($editorReady -and $pagerReady)) {
     Add-GitconfigInclude -Shared (Join-Path $repo '.config\git\.gitconfig') -Gitconfig (Join-Path $env:USERPROFILE '.gitconfig')
 } else {
-    Write-Host 'gitconfig: skipped (pass -Gitconfig; needs delta and nvim installed)'
+    $missing = @()
+    if (-not $editorReady) { $missing += 'nvim' }
+    if (-not $pagerReady) { $missing += 'delta' }
+    Write-Host "gitconfig: skipped, not on PATH: $($missing -join ', ') (pass -Gitconfig to force)"
 }
