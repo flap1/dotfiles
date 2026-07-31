@@ -11,8 +11,8 @@
     "syntopic alias already carries is honoured; there is nothing to duplicate here.",
     "",
     "Anything true of this machine rather than of Windows -- voice dictation, which",
-    "needs a microphone this box happens to have -- goes in the untracked",
-    "~/.claude/settings.local.json layer instead, which is applied after this one."
+    "needs a microphone this box happens to have -- goes in the gitignored",
+    "settings.local.json next to this file, which is applied after this one."
   ],
   "sshConfigs": [
     {
