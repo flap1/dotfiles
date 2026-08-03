@@ -18,6 +18,7 @@ setopt hist_expand           # 補完時にヒストリを自動的に展開
 
 # setopt INC_APPEND_HISTORY         # 履歴をインクリメンタルに追加
 setopt share_history              # 他のセッションの履歴をリアルタイムで共有する
+setopt hist_fcntl_lock            # 履歴ファイルの書き込みを fcntl でロック (share_history の同時追記競合対策)
 
 setopt list_packed           # コンパクトに補完リストを表示
 setopt auto_remove_slash     # 補完で末尾に補われた / を自動的に削除
