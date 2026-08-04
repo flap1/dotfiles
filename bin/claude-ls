@@ -6,6 +6,13 @@
 #   claude-ls --print    the table once, for scripts and `watch claude-ls --print`
 #   claude-ls --counts   "<state> <n>" per line, for the tmux status bar
 #   claude-ls --rows     internal: raw rows for the picker's reload
+#   claude-ls --header   internal: the picker's header for the same
+#
+# The picker is modal, the way a list you read is easier to drive than a search
+# box you type into: j/k move, / or f opens the search, esc leaves it, esc again
+# closes. fzf fires a single-character binding even while the input is visible,
+# so the navigation keys have to be unbound on the way in and rebound on the way
+# out -- the shape upstream settled on in junegunn/fzf#4215.
 #
 # Four sources, because no single one has all of it:
 #   claude agents --json               who exists (pid, sessionId, cwd, name)
@@ -23,9 +30,16 @@
 #   gone?  mid-turn with nothing for half an hour: killed, or a dead tool call
 set -eu
 
+# zinit installs fzf, so it is only on PATH inside an interactive zsh. tmux's
+# display-popup runs the command with the *server's* environment, where it is
+# missing -- and a picker that cannot find its picker exits before it draws
+# anything, which looks exactly like the popup refusing to open.
+PATH="$PATH:$HOME/.local/share/zsh/zinit/plugins/junegunn---fzf"
+
 mode=${1:-picker}
 interval=5
 stale_after=1800   # seconds before an unfinished turn is called gone?
+nav='j,k,q,f,/'    # keys that only mean something while the input is hidden
 
 esc=$(printf '\033')
 r="$esc[0m"; dim="$esc[2m"; ylw="$esc[1;33m"; mag="$esc[1;35m"
@@ -176,11 +190,26 @@ paint() {
 
 # ---------------------------------------------------------------- header
 
-header() {
-  acct=$(claude auth status --json 2>/dev/null |
-    jq -r '"\(.email // "?") \(.subscriptionType // "?")\(if .orgName then " @" + .orgName else "" end)"' \
-    2>/dev/null || echo 'not logged in')
+# `claude auth status` spawns node and costs the better part of a second, and it
+# answers with something that changes about never -- too slow to sit on the
+# picker's five-second header refresh, so it is kept on disk for an hour.
+account() {
+  cache="$HOME/.cache/claude-ls-account"
+  # find prints nothing for a file that is missing as well as one that is stale,
+  # which is the same answer as far as this is concerned.
+  if [ -z "$(find "$cache" -mmin -60 2>/dev/null)" ]; then
+    acct=$(claude auth status --json 2>/dev/null |
+      jq -r '"\(.email // "?") \(.subscriptionType // "?")\(if .orgName then " @" + .orgName else "" end)"' \
+      2>/dev/null || true)
+    # Only a real answer is worth caching: an empty one would be repeated for an
+    # hour rather than retried on the next refresh.
+    if [ -n "$acct" ]; then printf '%s\n' "$acct" > "$cache"; fi
+  fi
+  acct=$(cat "$cache" 2>/dev/null || true)
+  printf '%s' "${acct:-not logged in}"
+}
 
+header() {
   limits=$(jq -r --argjson now "$now" '
       def pct: if . == null then "?" else (floor | tostring) + "%" end;
       def left: if . == null then "" else
@@ -195,14 +224,25 @@ header() {
     "$HOME/.cache/claude-rate-limits.json" 2>/dev/null ||
     echo 'limits: unknown until a session renders its statusline')
 
-  printf '%s%s   %s%s\n' "$cyn" "$acct" "$limits" "$r"
+  printf '%s%s   %s%s\n' "$cyn" "$(account)" "$limits" "$r"
+}
+
+picker_header() {
+  header
+  printf '%s%s%s\n' "$dim" \
+    'j/k move   / search   enter jump   ctrl-d/u scroll   ctrl-a agents   q close' "$r"
 }
 
 # ---------------------------------------------------------------- modes
 
+# --header is the one mode that wants no rows, and it is the one the picker runs
+# every few seconds -- so it answers before the expensive part.
+if [ "$mode" = --header ]; then
+  picker_header
+  exit 0
+fi
+
 all=$(rows)
-counts=$(printf '%s\n' "$all" | cut -f4 | sort | uniq -c |
-         awk '{ printf "%s %s  ", $2, $1 }')
 
 # cut -f1-7 drops the last-message column in the picker: the preview underneath
 # shows the conversation itself, so the column only repeated its final line.
@@ -296,28 +336,45 @@ esac
 JUMP
 
 # fzf has no timer event, so refreshing is pushed in from outside over the
-# --listen port, which fzf exports to action children as $FZF_PORT.
+# --listen port, which fzf exports to action children as $FZF_PORT. The header
+# goes with the rows: its rate-limit countdown is the part of this screen that
+# rots fastest, and a popup left open all afternoon would keep quoting the
+# figures it opened with.
 cat > "$tmp/refresh" <<'REFRESH'
 #!/bin/sh
 [ -n "${FZF_PORT:-}" ] || exit 0
-while sleep 5; do
+while sleep "${1:-5}"; do
   # $0 lives in the picker's tmpdir, which its EXIT trap removes -- the cheapest
   # liveness check there is. A failing curl alone was not enough: the loop
   # outlived fzf in practice.
   [ -e "$0" ] || exit 0
-  curl -s -XPOST "localhost:$FZF_PORT" -d "reload(claude-ls --rows)" >/dev/null || exit 0
+  curl -s -XPOST "localhost:$FZF_PORT" \
+       -d "reload(claude-ls --rows)+transform-header(claude-ls --header)" \
+       >/dev/null || exit 0
 done
 REFRESH
 chmod +x "$tmp/preview" "$tmp/jump" "$tmp/refresh"
 
+# follow pins the preview to the end of its output: the newest message is the
+# last line, and without it every session opens showing its oldest.
+#
+# The esc binding ends on search(): hide-input disables searching as well as
+# hiding it, and a disabled search never re-runs, so clearing the query alone
+# would leave the last filter's result on screen with nothing to explain it.
 printf '%s\n' "$all" | cut -f1-7 | column -t -s "$tab" | paint 4 |
-  fzf --ansi --reverse --with-nth=3.. \
-      --header "$(header)"'
-'"$counts"'  enter: jump   ctrl-a: agent view   esc: close   refresh '"${interval}s" \
-      --preview-window=down,65%,wrap \
+  fzf --ansi --reverse --with-nth=3.. --no-input \
+      --header "$(picker_header)" \
+      --preview-window=down,65%,wrap,follow \
       --preview "$tmp/preview {1}" \
       --listen \
-      --bind "start:execute-silent($tmp/refresh &)" \
+      --bind "start:execute-silent($tmp/refresh $interval &)" \
       --bind "enter:execute-silent($tmp/jump {3})" \
+      --bind 'j:down,k:up,q:abort' \
+      --bind "f:show-input+unbind($nav)" \
+      --bind "/:show-input+unbind($nav)" \
+      --bind "esc:transform:[ \"\$FZF_INPUT_STATE\" = enabled ] \
+                            && echo 'rebind($nav)+clear-query+hide-input+search()' \
+                            || echo abort" \
+      --bind 'ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up' \
       --bind 'ctrl-a:execute(claude agents)' \
-      --bind 'ctrl-r:reload(claude-ls --rows)'
+      --bind 'ctrl-r:reload(claude-ls --rows)+transform-header(claude-ls --header)'
