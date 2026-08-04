@@ -59,9 +59,14 @@ transcript_of() {
 # 400 lines covers any single turn. The title is its own ai-title entry, rewritten
 # whenever Claude renames the session, so the last one is the current one -- but
 # it can sit far above the tail, hence the separate tac|grep in row().
+#
+# A live transcript is not always valid jsonl: concurrent appends leave runs of
+# NUL where a line should be, so `jq -s` aborts on the whole file over one bad
+# line. tr drops the NUL padding, `inputs | fromjson?` drops whatever is still
+# unparseable, and the rest of the session still reads.
 digest() {
-  tail -n 400 "$1" 2>/dev/null | jq -sr '
-    [ .[] | select(.type == "assistant" or .type == "user") ] as $m
+  tail -n 400 "$1" 2>/dev/null | tr -d '\000' | jq -Rrn '
+    [ inputs | fromjson? | select(.type == "assistant" or .type == "user") ] as $m
     | ( $m | last ) as $l
     | [ $m[] | .message.content[]? | select(.type == "tool_use") ] as $calls
     | [ $m[] | .message.content[]? | select(.type == "tool_result") | .tool_use_id ] as $answered
@@ -118,7 +123,7 @@ row() {   # pid sid cwd status -> one tab-separated row
   IFS="$tab" read -r at kind summary <<EOF
 $([ -n "$file" ] && digest "$file")
 EOF
-  title=$(tac "$file" 2>/dev/null | grep -m1 '"type":"ai-title"' |
+  title=$(tac "$file" 2>/dev/null | tr -d '\000' | grep -am1 '"type":"ai-title"' |
           jq -r '(.aiTitle // "") | .[0:28]' 2>/dev/null || true)
 
   at=${at:-0}
@@ -235,9 +240,9 @@ f=$(ls -t "$HOME/.claude/projects"/*/"$1.jsonl" 2>/dev/null | head -1)
 # Runs of tool calls collapse into one dim line: reading "Bash / tool_result"
 # forty times says nothing, "Bashx6 Edit" says what the turn did. An unanswered
 # question is repeated at the top, where it cannot scroll away.
-tail -n 4000 "$f" | jq -sr '
+tail -n 4000 "$f" | tr -d '\000' | jq -Rrn '
   def dim: "[2m" + . + "[0m";
-  [ .[] | select(.type == "assistant" or .type == "user") ] as $m
+  [ inputs | fromjson? | select(.type == "assistant" or .type == "user") ] as $m
   | ( [ $m[] | .message.content[]? | select(.type == "tool_result") | .tool_use_id ] ) as $answered
   | ( [ $m[] | .message.content[]? | select(.type == "tool_use")
         | select(.name == "AskUserQuestion")
