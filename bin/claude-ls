@@ -324,11 +324,9 @@ tail -n 4000 "$f" | tr -d '\000' | jq -Rrn '
   | ($head + $body)[]' 2>/dev/null
 PREVIEW
 
-# Enter moves the client to the row's pane and closes the popup -- you go there to
-# work, and a list left on top of where you just landed only hides it. It prints
-# the action for fzf to run rather than aborting from the binding, so that a row
-# with nowhere to jump to (vscode, detached) leaves the list up instead of closing
-# on a move that did not happen.
+# Enter moves the client to the row's pane. Whether the list then closes is jump's
+# call, printed as an action for fzf to run rather than fixed in the binding: it
+# closes only a popup, only on a jump that landed. See there.
 cat > "$tmp/jump" <<'JUMP'
 #!/bin/sh
 t=$1
@@ -346,10 +344,16 @@ c=$(tmux list-clients -F '#{client_tty} #{session_id}' 2>/dev/null |
     awk -v s="\$${TMUX##*,}" '$2 == s { print $1; exit }')
 
 case "$t" in
-  *:*.*) tmux switch-client ${c:+-c "$c"} -t "${t%%:*}" \; select-window -t "${t#*:}" \; select-pane -t "$t" &&
-         echo abort ;;
+  *:*.*) tmux switch-client ${c:+-c "$c"} -t "${t%%:*}" \; select-window -t "${t#*:}" \; select-pane -t "$t" || exit 0 ;;
   *) exit 0 ;;   # vscode / detached / no pane: nothing to switch to
 esac
+
+# A popup is in the way of the pane it just moved you to, so it closes. A claude-ls
+# started by hand in a pane is a window you opened and are keeping -- closing it
+# would hand the terminal back to the shell, which is not what the jump asked for.
+# The popup is not a pane, so the absent TMUX_PANE is what tells them apart; run
+# outside tmux there is nothing to close over either.
+if [ -n "${TMUX:-}" ] && [ -z "${TMUX_PANE:-}" ]; then echo abort; fi
 JUMP
 
 # fzf has no timer event, so refreshing is pushed in from outside over the
