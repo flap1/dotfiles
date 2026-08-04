@@ -324,8 +324,11 @@ tail -n 4000 "$f" | tr -d '\000' | jq -Rrn '
   | ($head + $body)[]' 2>/dev/null
 PREVIEW
 
-# Enter moves the client underneath the popup and leaves the list up, so rows can
-# be visited one after another without reopening. Esc closes.
+# Enter moves the client to the row's pane and closes the popup -- you go there to
+# work, and a list left on top of where you just landed only hides it. It prints
+# the action for fzf to run rather than aborting from the binding, so that a row
+# with nowhere to jump to (vscode, detached) leaves the list up instead of closing
+# on a move that did not happen.
 cat > "$tmp/jump" <<'JUMP'
 #!/bin/sh
 t=$1
@@ -343,7 +346,8 @@ c=$(tmux list-clients -F '#{client_tty} #{session_id}' 2>/dev/null |
     awk -v s="\$${TMUX##*,}" '$2 == s { print $1; exit }')
 
 case "$t" in
-  *:*.*) tmux switch-client ${c:+-c "$c"} -t "${t%%:*}" \; select-window -t "${t#*:}" \; select-pane -t "$t" ;;
+  *:*.*) tmux switch-client ${c:+-c "$c"} -t "${t%%:*}" \; select-window -t "${t#*:}" \; select-pane -t "$t" &&
+         echo abort ;;
   *) exit 0 ;;   # vscode / detached / no pane: nothing to switch to
 esac
 JUMP
@@ -381,7 +385,7 @@ printf '%s\n' "$all" | cut -f1-7 | column -t -s "$tab" | paint 4 |
       --preview "$tmp/preview {1}" \
       --listen \
       --bind "start:execute-silent($tmp/refresh $interval &)" \
-      --bind "enter:execute-silent($tmp/jump {3})" \
+      --bind "enter:transform($tmp/jump {3})" \
       --bind 'j:down,k:up,q:abort' \
       --bind "f:show-input+unbind($nav)" \
       --bind "/:show-input+unbind($nav)" \
