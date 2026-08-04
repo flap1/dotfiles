@@ -329,8 +329,21 @@ PREVIEW
 cat > "$tmp/jump" <<'JUMP'
 #!/bin/sh
 t=$1
+
+# switch-client has to be told which client to move. A popup is not a pane, so it
+# carries no TMUX_PANE, and without one tmux falls back to whichever client it saw
+# activity on last -- with a second terminal attached that is regularly the other
+# one, and the jump happens over there. The binding cannot pass the client in
+# either: display-popup expands no format in -e or in its command.
+#
+# What the popup does carry is $TMUX, whose third field is the session id it was
+# opened from. The client attached to that session is the one that opened it. Two
+# clients on one session are showing the same window anyway, so either will do.
+c=$(tmux list-clients -F '#{client_tty} #{session_id}' 2>/dev/null |
+    awk -v s="\$${TMUX##*,}" '$2 == s { print $1; exit }')
+
 case "$t" in
-  *:*.*) tmux switch-client -t "${t%%:*}" \; select-window -t "${t#*:}" \; select-pane -t "$t" ;;
+  *:*.*) tmux switch-client ${c:+-c "$c"} -t "${t%%:*}" \; select-window -t "${t#*:}" \; select-pane -t "$t" ;;
   *) exit 0 ;;   # vscode / detached / no pane: nothing to switch to
 esac
 JUMP
