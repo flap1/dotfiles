@@ -13,8 +13,8 @@ API キー不要、ChatGPT subscription 枠で課金される (`~/.codex/auth.js
 
 ### 1. プロンプトを組む
 
-文面の原則は `image-gen-prompts` skill に従う。そのうえで **Codex 側の
-image-gen skill が使うラベル形式に整えて渡す**。整えて渡さないと Codex 側が
+文面の原則は `image-gen-prompts` skill に従う。そのうえで Codex 側の
+image-gen skill が使うラベル形式に整えて渡す。整えて渡さないと Codex 側が
 自前で書き直しにかかって往復が増える。
 
 埋めない行は落とす。全部埋める必要はない。
@@ -53,7 +53,7 @@ mkdir -p /tmp/imgen && codex exec -C /tmp/imgen --skip-git-repo-check \
 ### 3. 見る
 
 出た PNG を `Read` する。Claude Code は画像を表示できるので、自分で仕上がりを
-確認してから次に進む。**確認せずに「できました」と言わない。**
+確認してから次に進む。確認せずに「できました」と言わない。
 
 ### 4. 直す
 
@@ -62,7 +62,7 @@ codex exec -C /tmp/imgen resume --last "<変更点>"
 ```
 
 同じ thread なら直近5枚まで元画像を参照して img2img になる。新規 exec だと
-参照が切れて別物が出る。指示は「**X だけ変えて Y は維持**」の形にする。
+参照が切れて別物が出る。指示は「X だけ変えて Y は維持」の形にする。
 
 ### 5. 置く
 
@@ -80,7 +80,7 @@ codex exec -C /tmp/imgen resume --last "<変更点>"
 
 ## subscription 枠を使わない場合
 
-ドラフトを大量に回すなら API 直叩き。ただし**安くはない** (2026-08 時点、1024x1024):
+ドラフトを大量に回すなら API 直叩き。ただし安くはない (2026-08 時点、1024x1024):
 
 | model | low / medium | high | batch |
 |---|---|---|---|
