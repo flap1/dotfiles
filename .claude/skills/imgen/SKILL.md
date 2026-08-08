@@ -100,10 +100,9 @@ curl -s https://api.openai.com/v1/images/generations \
 文字入り・日本語混じりの図版は Gemini が強い。`gemini-3-pro-image` (Nano Banana Pro)
 $0.134/枚 (1K/2K)、廉価版の `gemini-3.1-flash-image` (Nano Banana 2) $0.067/枚 (1K)。
 
-## 出典 (2026-08 確認)
+## 出典
 
-- [OpenAI API pricing](https://developers.openai.com/api/docs/pricing) — 画像モデルの単価
-- [GPT Image Generation Models Prompting Guide](https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide) — gpt-image-2 の公式プロンプト指針
-- [Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing) — Nano Banana 系の単価
+単価は動く。使う前に見る。
 
-gpt-image-2 は 2026-04-21 公開で、Codex CLI の既定モデル (それ以前は gpt-image-1.5)。
+- [OpenAI API pricing](https://developers.openai.com/api/docs/pricing)
+- [Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing)

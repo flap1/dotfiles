@@ -117,20 +117,13 @@ Anthropic が公開しているシステムプロンプトは、文書・説明�
 >    span quoted. Count em-dashes and "not just X" constructions explicitly.
 > Then rewrite. Do not invent facts or numbers — mark anything missing as [VERIFY].
 
-## 6. 出典 (2026-08 確認)
+## 6. 出典
 
-- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
-  — WikiProject AI Cleanup が実際の編集から継続更新している兆候カタログ。世代別の語彙、
-  否定の対句、分詞の尾ひれ、be動詞の回避、体裁の癖はここが出所
-- [Kobak et al., Delving into LLM-assisted writing in biomedical publications through excess
-  vocabulary (Science Advances, 2025)](https://www.science.org/doi/10.1126/sciadv.adt3813)
-  — PubMed の1500万件 (2010-2024) から、ChatGPT 公開後に頻度が跳ねた語を統計的に特定。
-  2024年の抄録の少なくとも 13.5% が LLM を通っていると推定 (分野によっては 40%)
-- [Claude のシステムプロンプト (Anthropic 公式)](https://platform.claude.com/docs/en/release-notes/system-prompts)
-  — モデルごとに全文公開されている。文章の作法を明示的に指示していて、下の「散文で書く」
-  「太字を減らす」はここが根拠。リークを漁る必要はない
+シグネチャ語は世代で入れ替わる。半年ごとに下を見て §1 の語彙を入れ替える。
 
-シグネチャ語は世代で入れ替わる。半年ごとに上の3つを見直す。
+- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) — 兆候カタログ。継続更新
+- [Kobak et al., excess vocabulary (Science Advances, 2025)](https://www.science.org/doi/10.1126/sciadv.adt3813) — 超過語の統計
+- [Claude のシステムプロンプト (Anthropic 公式)](https://platform.claude.com/docs/en/release-notes/system-prompts) — 体裁の指示の全文
 
 ## 7. 例外 — 直さなくてよいもの
 

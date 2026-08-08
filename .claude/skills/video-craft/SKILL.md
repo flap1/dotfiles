@@ -93,13 +93,11 @@ description: プロダクトデモ動画・説明動画を作る/直すときの
 | 目的のない装飾モーション | ノイズ | 消す |
 | 調査数字・出典の羅列 | デモの筋と関係ない知的装飾 | 主張は画で証明する |
 
-## 出典 (2026-08 確認)
+## 出典
 
-- [Japanese Timed Text Style Guide (Netflix Partner Help Center)](https://partnerhelp.netflixstudios.com/hc/en-us/articles/215767517-Japanese-Timed-Text-Style-Guide)
-  — 横13字/縦11字、4字/秒。SDH は16字・7字
+- [Japanese Timed Text Style Guide (Netflix)](https://partnerhelp.netflixstudios.com/hc/en-us/articles/215767517-Japanese-Timed-Text-Style-Guide)
 - Mayer, Cognitive Theory of Multimedia Learning (限定容量・冗長・空間的接近・segmenting)
 - VIDEO SALON「テロップ大学」失敗例と改善例 (文字数・整列・役割)
 - Apple製品動画の kinetic typography (RSVP: 同位置に短句を順次)
-- Material Design Motion (200-300ms, ease方向) — 2026-08 時点で本文が JS 描画のため取得できず、
-  数値は未再確認。触るときに Web で開いて確かめる
+- Material Design Motion (200-300ms, ease方向)
 - SaaSデモ動画のベストプラクティス (痛みから開く・60-90秒・無音成立)

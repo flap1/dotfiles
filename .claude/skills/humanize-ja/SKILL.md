@@ -72,6 +72,7 @@ description: LLMっぽい日本語を人の文章に直すチェックリスト�
 
 - SynTopic sbir/prompts/sbir_prompt.md PART G「AIっぽさ」を消す を汎用化
 - 体裁と尾ひれの項は [[humanize-en]] 経由で
-  [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
-  から。ただし出所は英語の観察なので、日本語版は訳した仮説として扱う。
-  日本語の兆候を統計的に調べた一次資料は 2026-08 時点で見当たらない
+  [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) から
+
+日本語の兆候を統計的に調べた資料は無い。上は英語の観察の翻案なので、当たらない項目が
+あれば消してよい。

@@ -10,10 +10,8 @@ description: 画像生成 (ChatGPT/gpt-image, Midjourney 等) に渡すプロン
 ## 大原則: 詳細化には予算がある
 
 「詳細なほど良い」は誤り。プロンプト内の全ての語は注意を奪い合い、
-語が増えるほど個々の制約が表現される確率は下がる。Midjourney 公式は
-「短く単純なプロンプトが最も良い結果を出す。長い列挙や細かい指示は避けよ」とだけ言っている
-(約60語という数字は公式ではなくコミュニティの経験則)。長いプロンプトで実際に起きるのは
-自動短縮ではなく、後方のキーワードの重みが 0 に落ちて無視されること。
+語が増えるほど個々の制約が表現される確率は下がる。長いプロンプトでは後方のキーワードの
+重みが 0 に落ちて無視される。Midjourney 公式も「短く単純に。長い列挙や細かい指示は避けよ」。
 制約は増えるほど衝突しやすくなり、モデルは矛盾した指定を部分的にしか満たさず、
 ちぐはぐな絵が出る。よく選ばれた2〜3の指示は、衝突する12の指示に勝る。
 
@@ -70,8 +68,7 @@ description: 画像生成 (ChatGPT/gpt-image, Midjourney 等) に渡すプロン
 【禁止】 クリシェの名指し
 ```
 
-この枠は用途を先に置いていて上の語順とは違うが、ラベルで区画になっているぶん
-順序の影響は小さい。
+ラベルで区画になっているので、この枠の中では順序の影響は小さい。
 
 ## 効く詳細化 (固定する層の書き方)
 
@@ -155,14 +152,8 @@ description: 画像生成 (ChatGPT/gpt-image, Midjourney 等) に渡すプロン
 - 実在ロゴ・実在人物・正確な文字列をテキスト記述で再現させようとする
 - 1枚目を無検品で採用する / 直しを諦めて全部描き直させる
 
-## 出典 (2026-08 確認)
+## 出典
 
 - [GPT Image Generation Models Prompting Guide (OpenAI 公式)](https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide)
-  — gpt-image-2 (2026-04-21 公開) に対応した現行版。背景→主役→細部→制約の順、用途を明記、
-  low は速さ重視・high は忠実度重視という使い分けを推奨している
 - [Prompt Basics (Midjourney 公式)](https://docs.midjourney.com/hc/en-us/articles/32023408776205-Prompt-Basics)
-  — 「短く単純に、長い列挙は避ける」まで。語数の目安は書いていない
-- [Towards Sustainable Creativity Support (arXiv 2504.07879)](https://arxiv.org/html/2504.07879v1)
-  — 全部を縛ると生成が「レンダリング」に退化するという「委ねる層」の根拠
-
-ブログ記事の二次まとめ (chatsmith / PixVerse) は落とした。上の3つで足りる。
+- [Towards Sustainable Creativity Support (arXiv 2504.07879)](https://arxiv.org/html/2504.07879v1) — 「委ねる層」の根拠
