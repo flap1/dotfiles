@@ -148,10 +148,11 @@ OpenAI 公式も「正確なブランドマークは承認済みアセットか�
 - 実在ロゴ・実在人物・正確な文字列をテキスト記述で再現させようとする
 - 1枚目を無検品で採用する / 直しを諦めて全部描き直させる
 
-## 出典
+## 出典 (2026-08 確認)
 
 - [GPT Image Generation Models Prompting Guide (OpenAI 公式)](https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide)
-- [Gpt-image-1.5 Prompting Guide (OpenAI 公式)](https://developers.openai.com/cookbook/examples/multimodal/image-gen-1.5-prompting_guide)
+  — gpt-image-2 (2026-04-21 公開) に対応した現行版。背景→主役→細部→制約の順、用途を明記、
+  low は速さ重視・high は忠実度重視という使い分けを推奨している
 - [Prompt Basics (Midjourney 公式)](https://docs.midjourney.com/hc/en-us/articles/32023408776205-Prompt-Basics)
 - [10 Common Mistakes to Avoid When Writing AI Image Prompts (chatsmith)](https://chatsmith.io/blogs/ai-guide/writing-ai-image-prompts-mistakes-00052)
 - [GPT Image 2 Prompt Guide (PixVerse, 2026)](https://pixverse.ai/en/blog/gpt-image-2-review-and-prompt-guide)

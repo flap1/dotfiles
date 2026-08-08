@@ -75,17 +75,35 @@ codex exec -C /tmp/imgen resume --last "<変更点>"
 - 1回あたり 3〜4万トークン食う。Codex 側の image-gen skill が丸ごとロードされる
   ため。subscription の週次枠を消費するので連射しない
 - 非 OpenAI provider (`--oss` 等) では `image_gen` が無効になる
+- 保存先は `CODEX_HOME` 配下 (既定 `~/.codex/generated_images/`)
+- ChatGPT auth 専用。Free プランでは使えない
 
 ## subscription 枠を使わない場合
 
-ドラフトを大量に回すなら API 直叩きのほうが速くて安い。
-`quality:"low"` の 1024x1024 が $0.006/枚。
+ドラフトを大量に回すなら API 直叩き。ただし**安くはない** (2026-08 時点、1024x1024):
+
+| model | low / medium | high | batch |
+|---|---|---|---|
+| gpt-image-2 | $0.04 | $0.12 | 半額 ($0.02 / $0.06) |
+| gpt-image-1.5 | $0.04 | $0.13 | 半額 |
+| gpt-image-1-mini | $0.01 | $0.03 | 半額 ($0.005 / $0.015) |
+
+ドラフト用の最安は `gpt-image-1-mini` の low。仕上げだけ `gpt-image-2` の high に回す。
 
 ```bash
 curl -s https://api.openai.com/v1/images/generations \
   -H "Authorization: Bearer $OPENAI_API_KEY" -H 'Content-Type: application/json' \
-  -d '{"model":"gpt-image-2","prompt":"...","size":"1024x1024","quality":"low"}' \
+  -d '{"model":"gpt-image-1-mini","prompt":"...","size":"1024x1024","quality":"low"}' \
   | jq -r '.data[0].b64_json' | base64 -d > out.png
 ```
 
-文字入り・日本語混じりの図版は Gemini の `gemini-3-pro-image` ($0.134/枚) が強い。
+文字入り・日本語混じりの図版は Gemini が強い。`gemini-3-pro-image` (Nano Banana Pro)
+$0.134/枚 (1K/2K)、廉価版の `gemini-3.1-flash-image` (Nano Banana 2) $0.067/枚 (1K)。
+
+## 出典 (2026-08 確認)
+
+- [OpenAI API pricing](https://developers.openai.com/api/docs/pricing) — 画像モデルの単価
+- [GPT Image Generation Models Prompting Guide](https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide) — gpt-image-2 の公式プロンプト指針
+- [Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing) — Nano Banana 系の単価
+
+gpt-image-2 は 2026-04-21 公開で、Codex CLI の既定モデル (それ以前は gpt-image-1.5)。

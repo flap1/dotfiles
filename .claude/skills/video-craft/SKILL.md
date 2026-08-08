@@ -40,8 +40,10 @@ description: プロダクトデモ動画・説明動画を作る/直すときの
 
 ### 文字数と表示時間
 
-- 1行 **13字以内** (全角。Netflix日本語規格)。詰めても16字まで。2行は最後の手段、3行は禁止
-- 読速の基準は **4字/秒** (日本語)。表示時間 = 文字数÷4 + 1秒。最短でも2秒
+- 1行 **13字以内** (全角。Netflix 日本語規格の横書き上限。縦書きは11字、SDH は16字)。
+  2行は最後の手段、3行は禁止
+- 読速の基準は **4字/秒** (Netflix 日本語字幕の上限。SDH でも7字/秒)。
+  表示時間 = 文字数÷4 + 1秒。最短でも2秒
 - UIが同時に動いているカットでは、さらに長めに (読む+見るの両方が必要なため)
 - 長い文は削る。構造を入れ替え、語を差し替えてでも短くする (VIDEO SALON テロップ大学)。
   「発言そのまま」ではなく「要約テロップ」にする
@@ -91,9 +93,10 @@ description: プロダクトデモ動画・説明動画を作る/直すときの
 | 目的のない装飾モーション | ノイズ | 消す |
 | 調査数字・出典の羅列 | デモの筋と関係ない知的装飾 | 主張は画で証明する |
 
-## 出典
+## 出典 (2026-08 確認)
 
-- Netflix Japanese Timed Text Style Guide (13字/行, 4字/秒)
+- [Japanese Timed Text Style Guide (Netflix Partner Help Center)](https://partnerhelp.netflixstudios.com/hc/en-us/articles/215767517-Japanese-Timed-Text-Style-Guide)
+  — 横13字/縦11字、4字/秒。SDH は16字・7字
 - Mayer, Cognitive Theory of Multimedia Learning (限定容量・冗長・空間的接近・segmenting)
 - VIDEO SALON「テロップ大学」失敗例と改善例 (文字数・整列・役割)
 - Apple製品動画の kinetic typography (RSVP: 同位置に短句を順次)
