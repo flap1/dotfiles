@@ -18,6 +18,11 @@ description: LLMっぽい英語を人の文章に直すチェックリストと�
 ## 1. 英語LLMの兆候チェックリスト
 
 ### 語彙 — 出たら疑う
+
+疑うのは動詞と形容詞。2024年の超過語 379 個は 66% が動詞・14% が形容詞で、COVID 期の
+名詞中心とは逆だった。痕跡は話題ではなく言い回しに出る。実測の超過比は delves 28.0倍、
+underscores 13.8倍、showcasing 10.7倍 (Kobak et al.)。名詞の珍しさは兆候にならない。
+
 - [ ] **LLMシグネチャ語 (第1世代・2023〜2024)**: delve, intricate, underscore, tapestry, testament,
       pivotal, realm, meticulous, boast, garner, landscape (比喩), navigate (比喩),
       leverage (動詞), seamless(ly), robust, streamline, empower, unlock, harness, foster,
@@ -48,6 +53,10 @@ description: LLMっぽい英語を人の文章に直すチェックリストと�
 - [ ] **締めの説教段落**: "By doing X, teams can finally focus on what matters most." 削る
 
 ### 体裁 — 文章ではなく見た目に出る指紋
+
+Anthropic が公開しているシステムプロンプトは、文書・説明は箇条書きと番号付きリストと
+過剰な太字を使わず散文で書けと明示している。下は指示違反ではなく守り損ねの形。
+
 - [ ] **見出しの Title Case**: "How We Built The Map" のように主要語を全部大文字にする癖。
       通常の英文記事は sentence case
 - [ ] **太字の乱用**: 段落中のキーワードを機械的に太字にする。特に "Key takeaway:" 型
@@ -115,11 +124,13 @@ description: LLMっぽい英語を人の文章に直すチェックリストと�
   否定の対句、分詞の尾ひれ、be動詞の回避、体裁の癖はここが出所
 - [Kobak et al., Delving into LLM-assisted writing in biomedical publications through excess
   vocabulary (Science Advances, 2025)](https://www.science.org/doi/10.1126/sciadv.adt3813)
-  — PubMed の1500万件の抄録から、ChatGPT 公開後に頻度が跳ねた語 (delve, intricate,
-  underscore 等) を統計的に特定。2024年の抄録の少なくとも 13.5% が LLM を通っていると推定
+  — PubMed の1500万件 (2010-2024) から、ChatGPT 公開後に頻度が跳ねた語を統計的に特定。
+  2024年の抄録の少なくとも 13.5% が LLM を通っていると推定 (分野によっては 40%)
+- [Claude のシステムプロンプト (Anthropic 公式)](https://platform.claude.com/docs/en/release-notes/system-prompts)
+  — モデルごとに全文公開されている。文章の作法を明示的に指示していて、下の「散文で書く」
+  「太字を減らす」はここが根拠。リークを漁る必要はない
 
-シグネチャ語は世代で入れ替わる。このリストは 2026-08 時点のもので、放置すると古い語だけ
-狩る効かないリストになる。半年ごとに上の2つを見直す。
+シグネチャ語は世代で入れ替わる。半年ごとに上の3つを見直す。
 
 ## 7. 例外 — 直さなくてよいもの
 

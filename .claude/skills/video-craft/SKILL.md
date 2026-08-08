@@ -100,5 +100,6 @@ description: プロダクトデモ動画・説明動画を作る/直すときの
 - Mayer, Cognitive Theory of Multimedia Learning (限定容量・冗長・空間的接近・segmenting)
 - VIDEO SALON「テロップ大学」失敗例と改善例 (文字数・整列・役割)
 - Apple製品動画の kinetic typography (RSVP: 同位置に短句を順次)
-- Material Design Motion (200-300ms, ease方向)
+- Material Design Motion (200-300ms, ease方向) — 2026-08 時点で本文が JS 描画のため取得できず、
+  数値は未再確認。触るときに Web で開いて確かめる
 - SaaSデモ動画のベストプラクティス (痛みから開く・60-90秒・無音成立)
