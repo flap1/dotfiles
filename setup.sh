@@ -4,6 +4,12 @@ set -e
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# What this run installs, for `dotfiles doctor` to check later. Truncated here
+# so a declined category drops out instead of being reported broken forever.
+MANIFEST="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/manifest"
+mkdir -p "$(dirname "$MANIFEST")"
+: >"$MANIFEST"
+
 # Create symbolic link with timestamp and move existing file or directory if necessary.
 # Returns 0 on success, 1 if skipped.
 create_symlink() {
@@ -43,6 +49,7 @@ create_symlink() {
         echo "Retrying with sudo..."
         sudo ln -sf "$src" "$dst"
     fi
+    echo "$dst" >>"$MANIFEST"
     echo "  -> $dst"
 }
 
@@ -117,7 +124,10 @@ install_tmux_runtime() {
     mise install
 
     # The systemd unit below runs this path literally, and it is also what the
-    # tmux server's children find on PATH.
+    # tmux server's children find on PATH. mkdir first: on a fresh machine
+    # ~/.local/bin does not exist, and under `set -e` the failed ln aborted the
+    # whole installer, so every category below this line never ran.
+    mkdir -p "$HOME/.local/bin"
     ln -sfn "$HOME/.local/share/mise/shims/tmux" "$HOME/.local/bin/tmux"
     echo "  -> $HOME/.local/bin/tmux"
 
@@ -158,8 +168,16 @@ RestartSec=2
 WantedBy=default.target
 EOF
     echo "  -> $unit"
-    systemctl --user daemon-reload
-    systemctl --user enable tmux.service
+    # A container or an ssh session with no user bus has nothing to enable
+    # against. Under `set -e` that aborted the installer and every category
+    # below never ran, so the unit is written either way and only the enabling
+    # is conditional.
+    if systemctl --user show-environment > /dev/null 2>&1; then
+        systemctl --user daemon-reload
+        systemctl --user enable tmux.service
+    else
+        echo "  (no user systemd bus; unit written but not enabled)"
+    fi
 }
 install_tmux_runtime
 
@@ -509,6 +527,17 @@ NODE
 }
 install_codex_settings
 
+
+# -------------------------------------------------------------------------
+# Gates
+# -------------------------------------------------------------------------
+# lefthook, not core.hooksPath: the global hooksPath already points at the
+# lefthook dispatcher, and a per-repo hooksPath would disable it here.
+if command -v lefthook > /dev/null; then
+    (cd "$DOTFILES_DIR" && lefthook install)
+else
+    echo "Skipped [gates]: lefthook not installed."
+fi
 
 # -------------------------------------------------------------------------
 # Directories

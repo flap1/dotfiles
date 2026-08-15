@@ -1,0 +1,11 @@
+pre-commit:
+  parallel: true
+  commands:
+    secrets:
+      run: gitleaks git --staged --redact --no-banner
+    shellcheck:
+      glob: "{*.sh,bin/*}"
+      run: shellcheck {staged_files}
+    shfmt:
+      glob: "bin/*"
+      run: shfmt -i 4 -ci -s -d {staged_files}

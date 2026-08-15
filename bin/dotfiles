@@ -1,0 +1,172 @@
+#!/usr/bin/env bash
+# State of this repository on this machine.
+#
+# Replaces bin/check-update and bin/check-update-dotfiles: those only looked
+# outbound, iterated an array without [@] so only the first entry was checked,
+# ran `git add -A` from a checking command, and were called from nowhere.
+
+set -uo pipefail
+
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles"
+STAMP="$STATE/last-update-check"
+MANIFEST="$STATE/manifest"
+
+if [ -t 1 ]; then
+    R=$'\033[31m' Y=$'\033[33m' G=$'\033[32m' M=$'\033[90m' X=$'\033[0m'
+else
+    R='' Y='' G='' M='' X=''
+fi
+
+git_() { git -C "$DOTFILES_DIR" "$@"; }
+
+usage() {
+    cat <<'EOF'
+usage: dotfiles <command>
+
+  status   what is out of sync, in both directions
+  pull     fast-forward to origin, then say whether setup.sh needs rerunning
+  doctor   check that this machine still matches what setup.sh installed
+  check    quiet; prints one line if origin is ahead. For shell startup.
+EOF
+}
+
+cmd_status() {
+    local dirty ahead behind
+    dirty=$(git_ status --porcelain | wc -l)
+    git_ fetch --quiet origin 2>/dev/null || echo "${Y}origin unreachable; counts are from the last fetch${X}"
+    read -r behind ahead < <(git_ rev-list --left-right --count origin/main...HEAD 2>/dev/null || echo "0 0")
+
+    [ "$dirty" -gt 0 ] && echo "${Y}$dirty uncommitted file(s)${X}"
+    [ "$ahead" -gt 0 ] && echo "${Y}$ahead commit(s) not pushed${X}"
+    [ "$behind" -gt 0 ] && echo "${R}$behind commit(s) on origin not pulled${X}  -> dotfiles pull"
+    if [ "$dirty" -eq 0 ] && [ "$ahead" -eq 0 ] && [ "$behind" -eq 0 ]; then
+        echo "${G}in sync with origin${X}"
+    fi
+    return 0
+}
+
+cmd_pull() {
+    local before after
+    before=$(git_ rev-parse HEAD)
+    git_ pull --ff-only origin main || {
+        echo "${R}not a fast-forward; resolve by hand${X}" >&2
+        return 1
+    }
+    after=$(git_ rev-parse HEAD)
+    mkdir -p "$STATE" 2>/dev/null && date +%s >"$STAMP"
+    [ "$before" = "$after" ] && {
+        echo "${G}already up to date${X}"
+        return 0
+    }
+
+    # Only say it when the pull touched something setup.sh installs; a reminder
+    # on every pull stops being read.
+    if git_ diff --name-only "$before" "$after" |
+        grep -qE '^(setup\.sh|install/|\.claude/|\.cursor/|\.codex/|\.config/)'; then
+        echo "${Y}installed files changed -- rerun ./setup.sh${X}"
+    fi
+}
+
+# The manifest is written by setup.sh, so doctor checks what this machine
+# actually installed. Deriving the list from setup.sh instead would flag every
+# declined category and every mkdir target as broken.
+cmd_doctor() {
+    local problems=0
+
+    echo "${M}symlinks${X}"
+    if [ ! -f "$MANIFEST" ]; then
+        echo "  ${Y}no manifest${X}  run ./setup.sh once to record what is installed"
+        problems=$((problems + 1))
+    else
+        local link
+        while read -r link; do
+            [ -z "$link" ] && continue
+            if [ ! -L "$link" ]; then
+                echo "  ${Y}replaced${X}   $link"
+                problems=$((problems + 1))
+            elif [ ! -e "$link" ]; then
+                echo "  ${R}dangling${X}   $link -> $(readlink "$link")"
+                problems=$((problems + 1))
+            fi
+        done <"$MANIFEST"
+        [ "$problems" -eq 0 ] && echo "  ${G}ok${X}         $(wc -l <"$MANIFEST" | tr -d ' ') link(s)"
+    fi
+
+    echo "${M}composed files${X}"
+    doctor_composed "$HOME/.claude/settings.json" "$DOTFILES_DIR/.claude/settings.json" claude
+    doctor_composed \
+        "${CURSOR_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/cursor}/cli-config.json" \
+        "$DOTFILES_DIR/.cursor/cli-config.json" cursor
+
+    echo "${M}gates${X}"
+    if grep -q lefthook "$DOTFILES_DIR/.git/hooks/pre-commit" 2>/dev/null; then
+        echo "  ${G}ok${X}         lefthook installed"
+    else
+        echo "  ${Y}absent${X}     lefthook not installed here -- rerun ./setup.sh"
+        problems=$((problems + 1))
+    fi
+    if command -v gitleaks >/dev/null; then
+        echo "  ${G}ok${X}         gitleaks"
+    else
+        echo "  ${Y}absent${X}     gitleaks -- the pre-commit scan passes without scanning"
+        problems=$((problems + 1))
+    fi
+
+    echo
+    [ "$problems" -eq 0 ] && echo "${G}no problems found${X}" || echo "${Y}$problems problem(s)${X}"
+    return 0
+}
+
+# Most of a composed file belongs to the CLI, so compare only the keys the
+# repository sets. permissions is unioned by the composer and never matches.
+doctor_composed() {
+    local live=$1 layer=$2 name=$3
+    [ -f "$live" ] || {
+        echo "  ${Y}absent${X}     $name"
+        return
+    }
+    command -v jq >/dev/null || {
+        echo "  ${M}skipped${X}    $name (no jq)"
+        return
+    }
+    local drifted
+    drifted=$(jq -r --slurpfile l "$layer" '
+    ($l[0] | keys_unsorted[]) as $k
+    | select($k != "permissions")
+    | select(.[$k] != $l[0][$k])
+    | $k' "$live" 2>/dev/null | paste -sd, -)
+    if [ -n "$drifted" ]; then
+        echo "  ${Y}drifted${X}    $name: $drifted -- rerun ./setup.sh"
+    else
+        echo "  ${G}ok${X}         $name"
+    fi
+}
+
+cmd_check() {
+    local last now behind
+    now=$(date +%s)
+    last=$(cat "$STAMP" 2>/dev/null || echo 0)
+    [ $((now - last)) -lt 86400 ] && return 0
+
+    mkdir -p "$STATE" 2>/dev/null || return 0
+    echo "$now" >"$STAMP"
+
+    git_ fetch --quiet origin 2>/dev/null || return 0
+    behind=$(git_ rev-list --count HEAD..origin/main 2>/dev/null || echo 0)
+    [ "$behind" -gt 0 ] && echo "${Y}dotfiles: $behind commit(s) on origin${X}  -> dotfiles pull"
+    return 0
+}
+
+case "${1:-}" in
+    status) cmd_status ;;
+    pull) cmd_pull ;;
+    doctor) cmd_doctor ;;
+    check) cmd_check ;;
+    -h | --help | help | "") usage ;;
+    *)
+        echo "unknown command: $1" >&2
+        usage >&2
+        exit 1
+        ;;
+esac

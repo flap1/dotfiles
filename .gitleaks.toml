@@ -1,0 +1,10 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+[rules.allowlist]
+# VSCode keybindings.json, removed from the tree in 2022 but still in history:
+# every `"key": "ctrl+shift+..."` reads as a generic API key. Scoped to the
+# path so a real finding elsewhere still fails the scan.
+paths = ['''\.config/Code/User/keybindings\.json''']

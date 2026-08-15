@@ -61,3 +61,12 @@ fi
 if [ -d "$HOME/.opencode/bin" ]; then
     export PATH="$HOME/.opencode/bin:$PATH"
 fi
+
+# -------------------------------------------------------------------------
+# dotfiles: once-a-day inbound check
+# -------------------------------------------------------------------------
+# Backgrounded and silent unless origin is ahead. It fetches, so it must never
+# be in the foreground of a prompt.
+if command -v dotfiles >/dev/null; then
+    (dotfiles check &) 2>/dev/null
+fi

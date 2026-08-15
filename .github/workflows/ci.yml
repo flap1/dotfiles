@@ -1,0 +1,70 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - uses: mfinelli/setup-shfmt@v3
+      - name: shellcheck
+        run: |
+          mapfile -t files < <(
+            git ls-files '*.sh' 'bin/*' \
+              | while read -r f; do
+                  head -c 2 "$f" | grep -q '#!' && head -1 "$f" | grep -qE 'sh$|bash' && echo "$f"
+                done
+          )
+          printf '%s\n' "${files[@]}"
+          shellcheck "${files[@]}"
+      - name: shfmt
+        run: shfmt -i 2 -ci -s -d bin/dotfiles
+
+  # setup.sh is answered `n` throughout, so this proves the script runs to
+  # completion and the composers no-op on a second pass -- not that the
+  # symlinks land. Installing for real needs a throwaway HOME, which is what
+  # the container gives us.
+  setup:
+    runs-on: ubuntu-latest
+    container: ubuntu:24.04
+    steps:
+      - run: |
+          apt-get update
+          apt-get install -y git nodejs jq gettext-base curl ca-certificates
+      - uses: actions/checkout@v4
+      - name: run twice, second must not change anything
+        run: |
+          set -euo pipefail
+          export HOME=/tmp/fakehome
+          mkdir -p "$HOME"
+          cp -r "$GITHUB_WORKSPACE" "$HOME/dotfiles"
+          cd "$HOME/dotfiles"
+
+          yes y | ./setup.sh >/tmp/first.log 2>&1 || true
+          find "$HOME" -path "$HOME/dotfiles" -prune -o -print | sort >/tmp/first.state
+
+          yes y | ./setup.sh >/tmp/second.log 2>&1 || true
+          find "$HOME" -path "$HOME/dotfiles" -prune -o -print | sort >/tmp/second.state
+
+          if ! diff -u /tmp/first.state /tmp/second.state; then
+            echo "second run changed the filesystem: setup.sh is not idempotent"
+            exit 1
+          fi
+          grep -c 'already current' /tmp/second.log
