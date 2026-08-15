@@ -47,7 +47,7 @@ alias 777='chmod 777'
 
 # grep
 # alias grep='rg -S'
-alias gre='grep -H -n -I --color=auto' #  ファイル名表示, 行数表示, バイナリファイルは処理しない
+alias gre='grep -H -n -I --color=auto' # filename, line number, skip binaries
 
 # vi/vim
 alias vi="$EDITOR"
@@ -96,9 +96,9 @@ alias gpo='git push -u origin HEAD'
 alias glom='git pull origin main'
 alias gloms='git pull origin main && git submodule update --init --recursive'
 alias gll='git log --oneline --graph --decorate -n 10'
-# pull.rebase=true + rebase.autoStash=true (global git config) 有効化済み
-# -> 未コミット変更があっても checkout/pull で自動 stash/restore されるため
-#    stash 手動操作(git stash && checkout && pull && stash apply)は不要
+# pull.rebase and rebase.autoStash are on in the global git config, so
+# checkout and pull stash and restore uncommitted work by themselves.
+# Doing it by hand is unnecessary.
 alias gcd='git checkout develop && git pull'
 alias gcm='git checkout main && git pull'
 

@@ -56,7 +56,7 @@ return {
     lazy = true,
   },
 
-  -- nvim-highlight-colors: color code highlighting (norcalli/nvim-colorizer は未メンテ)
+  -- nvim-highlight-colors: color code highlighting (norcalli/nvim-colorizer is unmaintained)
   {
     "brenoprata10/nvim-highlight-colors",
     event = { "BufReadPost", "BufNewFile" },

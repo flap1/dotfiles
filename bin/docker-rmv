@@ -1,11 +1,9 @@
 #!/bin/bash
 
-# DanglingなDockerボリューム（使用されていないボリューム）を削除するスクリプト
+# Remove dangling docker volumes, then show which volumes are still in use.
 
-# 1. DanglingなDockerボリュームを削除
-echo "DanglingなDockerボリュームを削除します..."
-docker volume rm $(docker volume ls -qf dangling=true)
+echo "Removing dangling volumes..."
+docker volume ls -qf dangling=true | xargs -r docker volume rm
 
-# 2. 使用されているコンテナと関連するDockerボリュームを表示
-echo "使用されているコンテナと関連するDockerボリュームを表示します..."
-docker ps --format "{{.ID}}" | xargs -I {} docker inspect --format '{{ .Mounts }}' {}
+echo "Volumes still attached to a container:"
+docker ps --format "{{.ID}}" | xargs -r -I {} docker inspect --format '{{ .Mounts }}' {}

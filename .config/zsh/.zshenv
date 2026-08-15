@@ -15,9 +15,9 @@ export ZSHDIR=$ZHOMEDIR/sh
 export ZDATADIR=$XDG_DATA_HOME/zsh
 export ZCACHEDIR=$XDG_CACHE_HOME/zsh
 
-setopt no_global_rcs # /etc/z* を読み込まない
+setopt no_global_rcs # do not read /etc/z*
 
-typeset -U path PATH manpath sudo_path # 重複パスを排除
+typeset -U path PATH manpath sudo_path # drop duplicate path entries
 typeset -xT SUDO_PATH sudo_path
 
 path=(

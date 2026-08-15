@@ -2,88 +2,70 @@
 ## Options
 ## =========================================================================
 
-unsetopt promptcr            # 改行のない出力をプロンプトで上書きするのを防ぐ
-setopt extended_history      # 履歴ファイルに開始時刻と経過時間を記録
-setopt append_history        # 履歴を追加 (毎回 .zhistory を作るのではなく)
-setopt hist_ignore_all_dups  # 重複するコマンド行は古い方を削除
-setopt hist_ignore_dups      # 直前と同じコマンドラインはヒストリに追加しない
-setopt hist_ignore_space     # スペースで始まるコマンド行はヒストリリストから削除
-# (→ 先頭にスペースを入れておけば、ヒストリに保存されない)
-unsetopt hist_verify         # ヒストリを呼び出してから実行する間に一旦編集可能を止める
-setopt hist_reduce_blanks    # 余分な空白は詰めて記録<-teratermで履歴かおかしくなる
-setopt hist_save_no_dups     # ヒストリファイルに書き出すときに、古いコマンドと同じものは無視する。
-setopt hist_no_store         # historyコマンドは履歴に登録しない
-setopt hist_expand           # 補完時にヒストリを自動的に展開
-# setopt hist_find_no_dups     # 履歴検索中、(連続してなくとも)重複を飛ばす
+unsetopt promptcr
 
-# setopt INC_APPEND_HISTORY         # 履歴をインクリメンタルに追加
-setopt share_history              # 他のセッションの履歴をリアルタイムで共有する
-setopt hist_fcntl_lock            # 履歴ファイルの書き込みを fcntl でロック (share_history の同時追記競合対策)
+# History
+setopt extended_history
+setopt append_history
+setopt hist_ignore_all_dups
+setopt hist_ignore_dups
+setopt hist_ignore_space     # a leading space keeps the line out of history
+unsetopt hist_verify         # run recalled lines instead of editing them first
+setopt hist_reduce_blanks
+setopt hist_save_no_dups
+setopt hist_no_store         # `history` itself is not worth recording
+setopt hist_expand
+setopt share_history
+setopt hist_fcntl_lock       # share_history means concurrent appends
 
-setopt list_packed           # コンパクトに補完リストを表示
-setopt auto_remove_slash     # 補完で末尾に補われた / を自動的に削除
-setopt auto_param_slash      # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
-setopt mark_dirs             # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
-setopt list_types            # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
-unsetopt menu_complete       # 補完の際に、可能なリストを表示してビープを鳴らすのではなく、
-# 最初にマッチしたものをいきなり挿入、はしない
-setopt auto_list             # ^Iで補完可能な一覧を表示する(補完候補が複数ある時に、一覧表示)
-setopt auto_menu             # 補完キー連打で順に補完候補を自動で補完
-setopt auto_param_keys       # カッコの対応などを自動的に補完
-setopt auto_resume           # サスペンド中のプロセスと同じコマンド名を実行した場合はリジューム
-
-#setopt auto_correct          # 補完時にスペルチェック
-setopt correct               # スペルミスを補完
-#setopt correct_all           # コマンドライン全てのスペルチェックをする
-
-setopt auto_cd               # ディレクトリのみで移動
-setopt no_beep               # コマンド入力エラーでBeepを鳴らさない
-#setopt beep
-#setopt brace_ccl             # ブレース展開機能を有効にする -> HEAD@{1}とかが展開されてしまう
-#setopt bsd_echo
+# Completion
+setopt list_packed
+setopt auto_remove_slash
+setopt auto_param_slash
+setopt mark_dirs
+setopt list_types            # the ls -F markers
+unsetopt menu_complete       # list the candidates, do not insert the first
+setopt auto_list
+setopt auto_menu
+setopt auto_param_keys
+setopt auto_resume           # a bare command name resumes its suspended job
+setopt correct
 setopt complete_in_word
-setopt equals                # =COMMAND を COMMAND のパス名に展開
-setopt nonomatch             # グロブ展開でnomatchにならないようにする
-setopt glob
-setopt extended_glob         # 拡張グロブを有効にする
-setopt no_flow_control       # C-s/C-q によるフロー制御を使わない
-setopt hash_cmds             # 各コマンドが実行されるときにパスをハッシュに入れる
-setopt no_hup                # ログアウト時にバックグラウンドジョブをkillしない
-setopt ignore_eof            # C-dでログアウトしない
-#setopt no_checkjobs          # ログアウト時にバックグラウンドジョブを確認しない
+setopt magic_equal_subst     # complete after the = in --prefix=/usr
+setopt always_last_prompt
+setopt nolistambiguous
 
-setopt long_list_jobs        # 内部コマンド jobs の出力をデフォルトで jobs -L にする
-setopt magic_equal_subst     # コマンドラインの引数で --PREFIX=/USR などの = 以降でも補完できる
-setopt mail_warning
-setopt multios               # 複数のリダイレクトやパイプなど、必要に応じて TEE や CAT の機能が使われる
-setopt numeric_glob_sort     # 数字を数値と解釈してソートする
-setopt path_dirs             # コマンド名に / が含まれているとき PATH 中のサブディレクトリを探す
-setopt print_eight_bit       # 補完候補リストの日本語を適正表示
-setopt short_loops           # FOR, REPEAT, SELECT, IF, FUNCTION などで簡略文法が使えるようになる
-
+# Navigation
+setopt auto_cd
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt pushd_to_home
+setopt pushd_silent
+setopt pushdminus            # swap the meaning of + and -
 setopt auto_name_dirs
-#setopt sun_keyboard_hack     # SUNキーボードでの頻出 typo ` をカバーする
-setopt always_last_prompt    # カーソル位置は保持したままファイル名一覧を順次その場で表示
-#setopt cdable_vars          # ディレクトリが見つからない場合に先頭に~をつけて試行する
+
+# Globbing and expansion
+setopt equals                # =command expands to its path
+setopt nonomatch             # an unmatched glob is passed through, not an error
+setopt glob
+setopt extended_glob
+setopt numeric_glob_sort
+setopt path_dirs             # search PATH subdirs for names containing /
 unsetopt sh_word_split
 
-setopt auto_pushd            # 普通に cd するときにもディレクトリスタックにそのディレクトリを入れる
-setopt pushd_ignore_dups     # ディレクトリスタックに重複する物は古い方を削除
-setopt pushd_to_home         # pushd 引数ナシ == pushd $HOME
-setopt pushd_silent          # pushd,popdの度にディレクトリスタックの中身を表示しない
-setopt pushdminus            # + - の動作を入れ替える
-
-setopt rm_star_wait          # rm * を実行する前に確認
-#setopt rm_star_silent        # rm * を実行する前に確認しない
-setopt notify                # バックグラウンドジョブが終了したら(プロンプトの表示を待たずに)すぐに知らせる
-
-setopt clobber               # リダイレクトで上書きを許可
-#setopt no_unset              # 未定義変数の使用禁止
-setopt interactive_comments  # コマンド入力中のコメントを認める
-setopt chase_links           # シンボリックリンクはリンク先のパスに変換してから実行
-#setopt print_exit_value      # 戻り値が 0 以外の場合終了コードを表示
-#setopt single_line_zle       # デフォルトの複数行コマンドライン編集ではなく、１行編集モードになる
-#setopt xtrace                # コマンドラインがどのように展開され実行されたかを表示する
-
-setopt nolistambiguous # メニューを出す
-
+# Shell behaviour
+setopt no_beep
+setopt no_flow_control       # C-s and C-q are not flow control here
+setopt hash_cmds
+setopt no_hup                # background jobs survive logout
+setopt ignore_eof            # C-d does not end the session
+setopt long_list_jobs
+setopt mail_warning
+setopt multios
+setopt print_eight_bit
+setopt short_loops
+setopt rm_star_wait          # pause before `rm *`
+setopt notify                # report a finished job without waiting for a prompt
+setopt clobber
+setopt interactive_comments
+setopt chase_links           # resolve symlinks before running

@@ -34,16 +34,15 @@ zinit light-mode for \
 # -------------------------------------------------------------------------
 # Core Plugins (Turbo mode)
 #
-# ロード順序（同一 zinit for ブロック内では記述順に実行される）:
-#   1. zsh-completions  blockf で fpath に正しく登録
-#   2. enhancd          cd をフック & compdef _cd __enhancd::cd を発行
-#   3. fzf-tab          compinit 後・autosuggestions 前が必須
+# Load order (within one `zinit for` block, the written order is the run order):
+#   1. zsh-completions  blockf registers it in fpath correctly
+#   2. enhancd          hooks cd and issues compdef _cd __enhancd::cd
+#   3. fzf-tab          must come after compinit and before autosuggestions
 #   4. fast-syntax-highlighting
 #      atinit: zicompinit; zicdreplay
-#        → 1-3 がロード済みの状態で compinit が走る
-#        → enhancd の compdef もここでリプレイされる
-#      atload: gh/uv completion を登録（compdef が使えるのでここで）
-#   5. zsh-autosuggestions  atload で遅延起動
+#        compinit runs with 1-3 already loaded, and enhancd's compdef replays
+#      atload: register the gh and uv completions, where compdef is available
+#   5. zsh-autosuggestions  started late from atload
 # -------------------------------------------------------------------------
 zinit wait lucid light-mode for \
     blockf \

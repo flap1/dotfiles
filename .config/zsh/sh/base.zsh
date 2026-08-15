@@ -3,19 +3,19 @@
 ## =========================================================================
 
 HOSTNAME="$HOST"
-HISTFILE="${ZDATADIR}/zsh_history" # ヒストリ保存ファイル
-HISTSIZE=10000                    # メモリ内の履歴の数
-SAVEHIST=100000                   # 保存される履歴の数
+HISTFILE="${ZDATADIR}/zsh_history" # history file
+HISTSIZE=10000                    # lines kept in memory
+SAVEHIST=100000                   # lines kept on disk
 HISTORY_IGNORE="(ls|cd|pwd|zsh|exit|cd ..)"
-LISTMAX=1000                      # 補完リストを尋ねる数 (1=黙って表示, 0=ウィンドウから溢れるときは尋ねる)
+LISTMAX=1000                      # ask before listing this many (1 = never ask, 0 = ask when it overflows)
 KEYTIMEOUT=1
 
-# ls /usr/local/etc などと打っている際に、C-w で単語ごとに削除
+# C-w deletes one path segment at a time:
 # default  : ls /usr/local → ls /usr/ → ls /usr → ls /
-# この設定 : ls /usr/local → ls /usr/ → ls /
+#   ls /usr/local/etc -> ls /usr/local -> ls /usr
 WORDCHARS='*?_-[]~&;!#$%^(){}<>|'
 
-# カレントディレクトリ中にサブディレクトリが無い場合に cd が検索するディレクトリのリスト
+# where cd looks when the current directory has no such subdirectory
 cdpath=("$HOME" .. $HOME/*)
 
 # define in post execution. because compinit is slow and plugin manager automatic load compinit.

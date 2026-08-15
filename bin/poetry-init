@@ -1,21 +1,18 @@
 #!/bin/bash
 
-# poetry init コマンドを手動で実行して、pyproject.toml ファイルを作成
+# Build a pyproject.toml by hand, then hand it to poetry.
 poetry init
 
-# プロジェクト名の入力
-read -p "Enter project name: " project_name
+read -r -p "Enter project name: " project_name
 
-# 年度と git ユーザ名の取得
+# year and git user, for the copyright line
 current_year=$(date +'%Y')
 git_username=$(git config user.name)
 
-# 著作権情報の設定
 default_copyright="$current_year, $git_username"
-read -p "Enter copyright information [$default_copyright]: " copyright
+read -r -p "Enter copyright information [$default_copyright]: " copyright
 copyright=${copyright:-$default_copyright}
 
-# 依存関係の追加
 poetry add --dev pytest
 poetry add --dev black
 poetry add --dev isort
@@ -29,23 +26,19 @@ poetry add --dev flake8-bugbear
 poetry add --dev flake8-builtins
 poetry add --dev taskipy
 
-# ドキュメントのソースパスの入力
 default_docs_source_path="./docs/source"
-read -p "Enter documentation source path [$default_docs_source_path]: " docs_source_path
+read -r -p "Enter documentation source path [$default_docs_source_path]: " docs_source_path
 docs_source_path=${docs_source_path:-$default_docs_source_path}
 
-# ドキュメントのビルドパスの入力
 default_docs_build_path="./docs/build"
-read -p "Enter documentation build path [$default_docs_build_path]: " docs_build_path
+read -r -p "Enter documentation build path [$default_docs_build_path]: " docs_build_path
 docs_build_path=${docs_build_path:-$default_docs_build_path}
 
-# ドキュメントのデプロイパスの入力
 default_docs_deploy_path="./public"
-read -p "Enter documentation deploy path [$default_docs_deploy_path]: " docs_deploy_path
+read -r -p "Enter documentation deploy path [$default_docs_deploy_path]: " docs_deploy_path
 docs_deploy_path=${docs_deploy_path:-$default_docs_deploy_path}
 
-# pyproject.toml ファイルの追記
-cat << EOF >> pyproject.toml
+cat <<EOF >>pyproject.toml
 
 [tool.isort]
 line_length = 120
@@ -108,4 +101,3 @@ docs-deploy = "sphinx-apidoc -F -o $docs_source_path $project_name && sphinx-bui
 EOF
 
 echo "pyproject.toml file has been created."
-

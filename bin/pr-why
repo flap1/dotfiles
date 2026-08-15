@@ -1,0 +1,61 @@
+#!/bin/sh
+# Why is this PR not mergeable?
+#
+# Usage: pr-why <owner/repo> <pr-number>
+#
+# GitHub's API says *that* a PR conflicts (mergeable: CONFLICTING) but never
+# which files. git merge-tree computes the merge in memory -- no worktree, no
+# index, nothing to clean up afterwards -- and names the conflicted paths.
+set -e
+
+repo=$1
+pr=$2
+[ -n "$repo" ] && [ -n "$pr" ] || {
+    echo "usage: pr-why <owner/repo> <pr-number>" >&2
+    exit 2
+}
+
+# Splitting is the point: @tsv emits one line of tab-separated fields and
+# set -- turns them into $1..$4. A branch name cannot contain whitespace.
+# shellcheck disable=SC2046
+set -- $(gh pr view "$pr" --repo "$repo" \
+    --json mergeStateStatus,mergeable,reviewDecision,baseRefName \
+    -q '[.mergeStateStatus, .mergeable, (.reviewDecision // "-"), .baseRefName] | @tsv')
+state=$1 mergeable=$2 review=$3 base=$4
+
+printf '%s#%s -> %s\n\n' "$repo" "$pr" "$base"
+printf '  merge state   %s\n' "$state"
+printf '  mergeable     %s\n' "$mergeable"
+printf '  review        %s\n' "${review:--}"
+printf '\nchecks:\n'
+gh pr checks "$pr" --repo "$repo" || true
+
+if [ "$mergeable" = CONFLICTING ]; then
+    r=$(ghq list --full-path -e "$repo")
+    git -C "$r" fetch -q origin "$base"
+    b=$(git -C "$r" rev-parse FETCH_HEAD)
+    git -C "$r" fetch -q origin "pull/$pr/head"
+    h=$(git -C "$r" rev-parse FETCH_HEAD)
+    printf '\nconflicting files:\n'
+    # Output is <tree oid> / conflicted paths / blank line / merge chatter, but a
+    # custom merge driver can print to stdout ahead of all of it -- so anchor on
+    # the oid line rather than on line 1. Exits 1 on conflicts, as expected here.
+    git -C "$r" merge-tree --write-tree --name-only "$b" "$h" 2>/dev/null |
+        awk 'seen && /^$/ { exit } seen { print "  " $0 } /^[0-9a-f]{40}$/ { seen = 1 }' || true
+fi
+
+printf '\npress any key to return\n'
+if [ -t 0 ]; then
+    # dash's read has no -n/-s, so drop to raw mode via stty+dd for a single
+    # byte -- this lets an arrow key (an ESC + 2 more bytes) close the screen
+    # too, not just Enter. The second dd with a 0.1s timeout drains those
+    # trailing bytes so gh-dash doesn't see them as a stray keypress on resume.
+    saved_tty=$(stty -g)
+    stty raw -echo
+    dd bs=1 count=1 2>/dev/null >/dev/null
+    stty min 0 time 1
+    dd bs=1024 count=1 2>/dev/null >/dev/null
+    stty "$saved_tty"
+else
+    read -r _ 2>/dev/null || true
+fi

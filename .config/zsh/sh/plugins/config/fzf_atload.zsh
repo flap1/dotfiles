@@ -1,6 +1,6 @@
 
 
-# lsみながらcdrする
+# cdr with a directory listing in the preview
 function select_cdr(){
     local selected_dir=$(cdr -l | awk '{ print $2 }' | \
       # fzf --preview 'f() { sh -c "ls -hFGl $1" }; f {}')

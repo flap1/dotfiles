@@ -16,7 +16,7 @@ function rm-trash() {
 		for j in $@; do
 			# skip -
 			if [ $j[1,1] != "-" ]; then
-				# 対象が ~/.local/share/Trash/ 以下なファイルならば /bin/rm を呼び出したいな
+				# anything already under ~/.local/share/Trash/ should go to /bin/rm instead
 				if [ -e $j ]; then
 					echo "mv $j ~/.local/share/Trash/$date/"
 					command mv $j ~/.local/share/Trash/$date/

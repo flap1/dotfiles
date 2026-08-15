@@ -27,6 +27,14 @@ rebuilding it forces a re-login; the cost is that Cursor's side cannot
 propagate a deletion. Codex is spliced by `[table]` header rather than by
 value, because `[projects."/abs/path"]` keys break a hand-rolled TOML writer.
 
+A third kind of file lives here that `install.sh` never writes: a skill under
+`.claude/skills/` that an upstream owns. `~/.claude/skills` is a symlink to this
+repository, so `npx skills add --copy` lands a foreign tree inside it and the
+next `npx skills update -g` replaces that tree wholesale. An edit made in place
+is lost without warning; extend one by writing a separate skill beside it that
+references it. `.claude/skills/VENDOR` is the list, and `dotfiles doctor` reads
+it.
+
 `.claude/CLAUDE.md` is not this file. It is symlinked to `~/.claude/CLAUDE.md`
 and loads into every session on this machine, so repository-specific guidance
 belongs here at the root and nowhere else.

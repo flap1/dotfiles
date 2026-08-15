@@ -34,9 +34,10 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
 })
 
 -- Highlight on yank, and mirror the yank to the system clipboard.
--- ponytail: clipboard=unnamedplus ではなくこれ。unnamedplus は x/d/c も + に流すので
--- 1文字消すだけで Windows のクリップボードが飛ぶ。y だけを送る。
--- regname を無名に限定するのは "+y と二重送信しないため（そっちは g.clipboard 経由）。
+-- Not clipboard=unnamedplus: that sends x/d/c to + as well, so deleting one
+-- character destroys the Windows clipboard. Only y is sent. Limiting regname
+-- to the unnamed register avoids sending "+y twice, which goes via
+-- g.clipboard.
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = group,
   callback = function()

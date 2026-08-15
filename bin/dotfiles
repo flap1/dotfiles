@@ -101,6 +101,9 @@ cmd_doctor() {
         "$DOTFILES_DIR/.cursor/cli-config.json" cursor ||
         problems=$((problems + 1))
 
+    echo "${M}vendored skills${X}"
+    doctor_vendored || problems=$((problems + 1))
+
     echo "${M}gates${X}"
     # A global core.hooksPath wins over .git/hooks, so ask git where the hook
     # it would actually run lives before looking for lefthook in it.
@@ -148,6 +151,33 @@ doctor_composed() {
         return 1
     fi
     echo "  ${G}ok${X}         $name"
+}
+
+# A vendored skill is committed, so git already reports a local edit. What git
+# cannot say is which directories belong to an upstream and therefore lose that
+# edit wholesale on the next `npx skills update`. The manifest says it. The
+# licence is checked separately because the installer drops it and this
+# repository is public.
+doctor_vendored() {
+    local manifest="$DOTFILES_DIR/.claude/skills/VENDOR"
+    [ -f "$manifest" ] || {
+        echo "  ${Y}absent${X}     no VENDOR manifest"
+        return 1
+    }
+    local bad=0 name upstream dir
+    while IFS=$'\t' read -r name upstream _; do
+        case "$name" in '' | '#'*) continue ;; esac
+        dir="$DOTFILES_DIR/.claude/skills/$name"
+        if [ ! -d "$dir" ]; then
+            echo "  ${R}missing${X}    $name -- listed here but not installed"
+            bad=1
+        elif [ ! -f "$dir/LICENSE" ]; then
+            echo "  ${Y}unlicensed${X} $name -- $upstream ships one, the installer drops it"
+            bad=1
+        fi
+    done <"$manifest"
+    [ "$bad" -eq 0 ] || return 1
+    echo "  ${G}ok${X}         $(grep -cve '^#' -e '^$' "$manifest") vendored"
 }
 
 cmd_check() {

@@ -80,9 +80,9 @@ vim.o.undodir = vim.fn.stdpath("state") .. "/undo/"
 vim.fn.mkdir(vim.o.undodir, "p")
 
 -- Clipboard
--- Windows Terminal over SSH: 書き込みは OSC52、読み出しは無名レジスタ。
--- ponytail: paste に osc52.paste を使うと WT が返事を返さないので
--- "waiting for osc 52 response" で固まる。read は端末に聞かない。
+-- Windows Terminal over SSH: write through OSC52, read from the unnamed
+-- register. Using osc52.paste hangs on "waiting for osc 52 response" because
+-- WT never answers, so reads do not ask the terminal.
 local osc52 = require("vim.ui.clipboard.osc52")
 local function paste()
   return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
@@ -92,8 +92,8 @@ vim.g.clipboard = {
   copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
   paste = { ["+"] = paste, ["*"] = paste },
 }
--- clipboard は空のまま。y のコピーは autocmds.lua の TextYankPost が担当。
--- Windows からの貼り付けは Ctrl+Shift+V（端末の bracketed paste）で、"+p ではない
+-- clipboard stays empty: TextYankPost in autocmds.lua copies on y. Pasting
+-- from Windows is Ctrl+Shift+V, the terminal's bracketed paste, not "+p.
 
 -- Bells
 vim.o.errorbells = false

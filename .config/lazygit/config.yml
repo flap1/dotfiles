@@ -1,4 +1,4 @@
-# lazygit — the git面.
+# lazygit
 #
 # Role split (see also nvim's ui.lua and .tmux.conf):
 #   nvim     reads code with LSP context; gitsigns for hunk-level staging while editing

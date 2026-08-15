@@ -1,0 +1,31 @@
+#!/bin/sh
+# Check a PR out without touching the working clone.
+#
+# Usage: pr-worktree <owner/repo> <pr-number>
+#
+# One fixed worktree per repo under ~/.worktrees, reused and re-pointed, so
+# nothing accumulates. Detached HEAD, so no local branch is created either.
+# LEFTHOOK=0 because post-checkout hooks that build (cargo, npm) turn a review
+# checkout into a cold full build. CARGO_TARGET_DIR points at the main clone so
+# a build in here reuses its artifacts instead of growing a second target/.
+#
+# Drops into a shell in the worktree; exit returns to the caller.
+set -e
+
+repo=$1
+pr=$2
+[ -n "$repo" ] && [ -n "$pr" ] || {
+    echo "usage: pr-worktree <owner/repo> <pr-number>" >&2
+    exit 2
+}
+
+ghq get -q "$repo"
+r=$(ghq list --full-path -e "$repo")
+w="$HOME/.worktrees/$repo"
+
+[ -d "$w" ] || git -C "$r" worktree add --detach "$w" HEAD
+git -C "$w" fetch -q origin "pull/$pr/head"
+LEFTHOOK=0 git -C "$w" checkout --detach FETCH_HEAD
+
+cd "$w"
+CARGO_TARGET_DIR="$r/target" exec "$SHELL"

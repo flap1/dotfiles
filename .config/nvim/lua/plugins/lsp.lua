@@ -10,7 +10,7 @@ return {
     opts = {
       ui = { border = "rounded" },
       ensure_installed = {
-        -- formatters (ruff は mise global。shfmt/shellcheck も同様)
+        -- formatters (ruff, shfmt and shellcheck all come from mise)
         "stylua", "prettier",
         -- linters
         "markdownlint",
@@ -131,12 +131,10 @@ return {
         root_markers = { "compile_commands.json", "compile_flags.txt", ".clangd", ".git" },
       })
 
-      -- remark_ls は入れていない: .remarkrc + per-project の remark plugin が
-      -- 無いと何も lint せず、workspace/configuration が null で返って
-      -- unified-language-server が毎回 crash する。markdown は markdownlint
-      -- (nvim-lint) + prettier (conform) で足りている。
-      -- ponytail: 必要になったら .remarkrc を置いた repo で
-      -- settings = { remark = { requireConfig = true } } 付きで復活させる
+      -- No remark_ls. Without a .remarkrc and per-project remark plugins it
+      -- lints nothing, and unified-language-server crashes every time because
+      -- workspace/configuration comes back null. markdownlint (nvim-lint) and
+      -- prettier (conform) cover markdown.
 
       vim.lsp.config("tinymist", {
         -- attach even outside a git repo; typst notes often live as loose files
