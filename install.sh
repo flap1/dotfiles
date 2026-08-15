@@ -493,6 +493,10 @@ compose_cursor_settings
 # subcommands, so it cannot cover `codex doctor` or `codex login`. Layering at
 # install time is what is left.
 #
+# Role files under .codex/agents/ are mine only, so they are symlinked. Their
+# config_file paths in the spliced config.toml are rewritten to absolute ones
+# because 0.147's TUI rejects a relative AgentRoleToml.config_file.
+#
 # The merge is by section, not by value. TOML top-level tables are delimited by
 # a [header] at column zero, so the repository's sections can replace the live
 # file's sections as whole blocks of text, and every section the repository
@@ -557,8 +561,13 @@ for (const s of mine.sections) {
   console.log(`  ${live.sections.some((l) => l.header === s.header) ? 'replaced' : 'added'} ${s.header}`);
 }
 
-const body = mine.pre.join('\n').replace(/\n+$/, '') + '\n\n' +
+const home = path.dirname(target);
+let body = mine.pre.join('\n').replace(/\n+$/, '') + '\n\n' +
   merged.map((s) => s.header + '\n' + s.body.join('\n').replace(/\n+$/, '')).join('\n\n') + '\n';
+body = body.replace(
+  /^config_file = "agents\/([^"]+)"$/gm,
+  (_, file) => `config_file = ${JSON.stringify(path.join(home, 'agents', file))}`,
+);
 
 const before = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
 if (body === before) { console.log('  already current'); process.exit(0); }
@@ -572,6 +581,8 @@ fs.writeFileSync(target, body);
 console.log('  -> ' + target);
 NODE
 }
+link_category "AI: Codex agents" \
+    ".codex/agents" "${CODEX_HOME:-$HOME/.codex}/agents"
 compose_codex_settings
 
 
