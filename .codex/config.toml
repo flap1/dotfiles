@@ -1,0 +1,35 @@
+# Codex settings that belong to me rather than to the CLI.
+#
+# ~/.codex/config.toml is a shared file: Codex writes [projects.*] trust
+# levels, [notice.model_migrations], [tui.model_availability_nux] and
+# [marketplaces.*] timestamps into it as you work. Symlinking the whole file
+# would push that churn -- and the absolute paths in [projects.*] -- into every
+# machine that reads this repository.
+#
+# Codex does have a layering mechanism (`-p <name>` reads
+# $CODEX_HOME/<name>.config.toml on top of the base), but it is flag-only:
+# putting `profile = "..."` in config.toml makes `codex doctor` report "failed
+# to load Codex config" on 0.147.0, and the flag is rejected outside runtime
+# subcommands. So the layering happens at install time instead, in
+# install_codex_settings(), which splices the sections below into the live file
+# and leaves every other section untouched.
+
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+approvals_reviewer = "auto_review"
+
+[agents]
+default_subagent_model = "gpt-5.6-terra"
+default_subagent_reasoning_effort = "medium"
+
+[features.multi_agent_v2]
+enabled = true
+max_concurrent_threads_per_session = 20
+
+[mcp_servers.code-review-graph]
+command = "uvx"
+args = ["code-review-graph", "serve"]
+type = "stdio"
+
+[mcp_servers.code-review-graph.tools.build_or_update_graph_tool]
+approval_mode = "approve"

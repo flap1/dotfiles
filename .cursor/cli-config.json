@@ -1,0 +1,25 @@
+{
+  "approvalMode": "unrestricted",
+  "permissions": {
+    "allow": [
+      "Shell(ls)"
+    ],
+    "deny": [
+      "Shell(rm -rf **)",
+      "Shell(sudo **)",
+      "Shell(git checkout **)",
+      "Shell(git reset --hard**)",
+      "Shell(git stash pop**)",
+      "Shell(git push --force**)",
+      "Read(**/.env)",
+      "Read(**/id_*)"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.cursor/statusline.mjs",
+    "padding": 0,
+    "updateIntervalMs": 1000,
+    "timeoutMs": 2000
+  }
+}

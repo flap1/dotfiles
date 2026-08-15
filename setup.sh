@@ -318,6 +318,211 @@ NODE
 }
 install_claude_settings
 
+install_category "AI: Cursor Agent (status line)" \
+    ".cursor/statusline.mjs" "$HOME/.cursor/statusline.mjs"
+
+# ~/.config/cursor/cli-config.json is composed for the same reason the Claude
+# settings are, but the composition runs the other way round, and that is
+# deliberate: here the live file is the base and the repository layers go on
+# top, where the Claude version rebuilds the file from the repository and
+# discards what was there.
+#
+# The reason is that the Cursor CLI keeps things in this file that exist
+# nowhere else -- authInfo, the OAuth identity behind `agent login`, plus
+# privacyCache and serverConfigCache. Rebuilding the file from the repository
+# would delete them and force a re-login on every setup run, and committing
+# them would put an email address and user id into a shared repository.
+#
+# The cost of taking the live file as the base is that this cannot remove a
+# key: drop approvalMode from the layer and whatever the CLI last wrote stays.
+# Removal is a hand edit, once, on each machine.
+#
+# Path resolution matches the binary: CURSOR_CONFIG_DIR, else
+# $XDG_CONFIG_HOME/cursor, else ~/.cursor. Guessing ~/.cursor unconditionally
+# -- which is what the published documentation says -- writes a file that
+# nothing reads on any machine that sets XDG_CONFIG_HOME.
+install_cursor_settings() {
+    local shared="$DOTFILES_DIR/.cursor/cli-config.json"
+    local dir
+
+    [ -f "$shared" ] || { echo "Skipped [AI: Cursor settings]: $shared missing."; return; }
+    command -v node >/dev/null || { echo "Skipped [AI: Cursor settings]: no node."; return; }
+
+    if [ -n "${CURSOR_CONFIG_DIR:-}" ]; then
+        dir="$CURSOR_CONFIG_DIR"
+    elif [ -n "${XDG_CONFIG_HOME:-}" ]; then
+        dir="$XDG_CONFIG_HOME/cursor"
+    else
+        dir="$HOME/.cursor"
+    fi
+
+    read -rp "Install [AI: Cursor settings (layered onto $dir/cli-config.json)]? (y/n): " yn
+    case $yn in
+        [Yy]*) ;;
+        *) echo "Skipped [AI: Cursor settings]."; return ;;
+    esac
+
+    SHARED="$shared" \
+    LOCAL="$DOTFILES_DIR/.cursor/cli-config.local.json" \
+    TARGET="$dir/cli-config.json" node <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const read = (p) => {
+  if (!p || !fs.existsSync(p)) return null;
+  const o = JSON.parse(fs.readFileSync(p, 'utf8'));
+  delete o['$comment'];
+  return o;
+};
+
+const target = process.env.TARGET;
+// A symlink from an older run would make writeFileSync write through into the
+// repository, which is the failure this function exists to prevent.
+if (fs.existsSync(target) && fs.lstatSync(target).isSymbolicLink()) {
+  fs.unlinkSync(target);
+  console.log('  removed the old symlink into the repo');
+}
+
+// The live file is the base. On a machine that has never run the CLI there is
+// no live file, and starting from {} is right: the CLI fills in its own keys
+// on first launch.
+const out = read(target) || {};
+
+for (const [name, layer] of [
+  ['cli-config.json', read(process.env.SHARED)],
+  ['cli-config.local.json', read(process.env.LOCAL)],
+]) {
+  if (!layer) continue;
+  for (const [key, value] of Object.entries(layer)) {
+    // permissions is the one key both the repository and the machine have a
+    // stake in, so the rule lists union instead of the last writer winning.
+    // Same treatment as the Claude side, and for the same reason.
+    if (key === 'permissions') {
+      out.permissions = out.permissions || {};
+      for (const kind of ['allow', 'deny']) {
+        if (!value[kind]) continue;
+        out.permissions[kind] = [...new Set([...(out.permissions[kind] || []), ...value[kind]])];
+      }
+      continue;
+    }
+    out[key] = value;
+    console.log(`  overlaid ${key} from ${name}`);
+  }
+}
+
+const before = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
+const after = JSON.stringify(out, null, 2) + '\n';
+if (after === before) { console.log('  already current'); process.exit(0); }
+if (before !== null) {
+  const backup = target + '.' + new Date().toISOString().replace(/\D/g, '').slice(0, 14);
+  fs.copyFileSync(target, backup);
+  console.log('  backed up -> ' + backup);
+}
+fs.mkdirSync(path.dirname(target), { recursive: true });
+fs.writeFileSync(target, after);
+console.log('  -> ' + target);
+NODE
+}
+install_cursor_settings
+
+# ~/.codex/config.toml holds my settings and the CLI's bookkeeping in one file:
+# [projects.*] trust levels, [notice.model_migrations],
+# [tui.model_availability_nux] and [marketplaces.*] timestamps all accumulate
+# there as you work, and [projects.*] keys are absolute paths that mean nothing
+# on another machine.
+#
+# Codex can layer config -- `codex -p <name>` reads $CODEX_HOME/<name>.config.toml
+# on top of the base -- but only from the command line. Setting `profile` in
+# config.toml makes 0.147.0 fail to load config at all (`codex doctor` reports
+# "failed to load Codex config"), and the flag is refused outside the runtime
+# subcommands, so it cannot cover `codex doctor` or `codex login`. Layering at
+# install time is what is left.
+#
+# The merge is by section, not by value. TOML top-level tables are delimited by
+# a [header] at column zero, so the repository's sections can replace the live
+# file's sections as whole blocks of text, and every section the repository
+# does not mention survives untouched. Nothing re-serialises a TOML value,
+# which is where a hand-rolled merge would get the quoting of a key like
+# [projects."/home/me/x"] wrong.
+install_codex_settings() {
+    local shared="$DOTFILES_DIR/.codex/config.toml"
+    local target="${CODEX_HOME:-$HOME/.codex}/config.toml"
+
+    [ -f "$shared" ] || { echo "Skipped [AI: Codex settings]: $shared missing."; return; }
+    command -v node >/dev/null || { echo "Skipped [AI: Codex settings]: no node."; return; }
+
+    read -rp "Install [AI: Codex settings (spliced into $target)]? (y/n): " yn
+    case $yn in
+        [Yy]*) ;;
+        *) echo "Skipped [AI: Codex settings]."; return ;;
+    esac
+
+    SHARED="$shared" TARGET="$target" node <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+// Split a TOML document into a preamble (everything before the first table
+// header) and an ordered list of [header, body] sections. A header is a line
+// whose first character is '[' -- inside a multi-line array a continuation
+// line can also start with '[', so only column zero counts, which is where
+// TOML requires the header to be.
+function split(text) {
+  const pre = [];
+  const sections = [];
+  let cur = null;
+  for (const line of text.split('\n')) {
+    if (/^\[/.test(line)) {
+      cur = { header: line.trim(), body: [] };
+      sections.push(cur);
+    } else if (cur) {
+      cur.body.push(line);
+    } else {
+      pre.push(line);
+    }
+  }
+  return { pre, sections };
+}
+
+const target = process.env.TARGET;
+if (fs.existsSync(target) && fs.lstatSync(target).isSymbolicLink()) {
+  fs.unlinkSync(target);
+  console.log('  removed the old symlink into the repo');
+}
+
+const mine = split(fs.readFileSync(process.env.SHARED, 'utf8'));
+const live = fs.existsSync(target)
+  ? split(fs.readFileSync(target, 'utf8'))
+  : { pre: [], sections: [] };
+
+// The preamble is the bare top-level keys (model, model_reasoning_effort,
+// approvals_reviewer). It is entirely mine, so it replaces the live one.
+const owned = new Set(mine.sections.map((s) => s.header));
+const merged = [
+  ...mine.sections,
+  ...live.sections.filter((s) => !owned.has(s.header)),
+];
+
+for (const s of mine.sections) {
+  console.log(`  ${live.sections.some((l) => l.header === s.header) ? 'replaced' : 'added'} ${s.header}`);
+}
+
+const body = mine.pre.join('\n').replace(/\n+$/, '') + '\n\n' +
+  merged.map((s) => s.header + '\n' + s.body.join('\n').replace(/\n+$/, '')).join('\n\n') + '\n';
+
+const before = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
+if (body === before) { console.log('  already current'); process.exit(0); }
+if (before !== null) {
+  const backup = target + '.' + new Date().toISOString().replace(/\D/g, '').slice(0, 14);
+  fs.copyFileSync(target, backup);
+  console.log('  backed up -> ' + backup);
+}
+fs.mkdirSync(path.dirname(target), { recursive: true });
+fs.writeFileSync(target, body);
+console.log('  -> ' + target);
+NODE
+}
+install_codex_settings
+
 
 # -------------------------------------------------------------------------
 # Directories

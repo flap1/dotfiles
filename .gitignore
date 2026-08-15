@@ -29,6 +29,7 @@ out
 /.claude/PROMPT.md
 /.claude/hooks/st-backpressure.sh
 /.config/git/.gitconfig.local
+/.cursor/cli-config.local.json
 
 ## VSCode: retired in favour of the terminal stack, and its remote-SSH host
 ## map names the employer.
