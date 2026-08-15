@@ -5,11 +5,11 @@
 --
 --   1. Frequency buys keys. Many times a minute → unprefixed or one modifier.
 --      Many times an hour → <Leader> + 1-2 keys. Rarer than that → no binding;
---      type the `:command`, or find it through which-key.
+--      type the `:command`.
 --   2. One noun per namespace, named by its initial letter. Nothing else may
 --      squat there.
 --        <Leader>b buffer   <Leader>f find    <Leader>g git
---        <Leader>c code     <Leader>a ai      <Leader>x diagnostics
+--        <Leader>c code     <Leader>a ai
 --      <LocalLeader> has exactly one job: register operations.
 --   3. [ and ] are "previous/next of a kind". Every navigable kind uses them.
 --   4. g is goto. LSP *navigation* lives there; LSP *actions* live in <Leader>c.
@@ -65,7 +65,7 @@ vim.keymap.set("n", "\\", "<Cmd>vsplit<CR>", opts) -- `-` belongs to oil
 vim.keymap.set({ "n", "t" }, "<M-o>", "<C-w>o", opts)
 
 -- Previous / next of a kind. Plugins add to this same family:
---   ]h hunk (gitsigns)   ]d diagnostic (lsp)   ]t todo (todo-comments)
+--   ]h hunk (gitsigns)   ]d diagnostic (lsp)
 vim.keymap.set("n", "[b", "<Cmd>bprevious<CR>", opts)
 vim.keymap.set("n", "]b", "<Cmd>bnext<CR>", opts)
 vim.keymap.set("n", "[q", "<Cmd>cprevious<CR>", opts)

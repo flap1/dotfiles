@@ -22,12 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - run: sudo apt-get update && sudo apt-get install -y shellcheck zsh
       - uses: mfinelli/setup-shfmt@v3
+      - name: policy
+        run: bash scripts/policy.sh
       - name: shellcheck
         run: |
           mapfile -t files < <(
-            git ls-files '*.sh' 'bin/*' 'packages/*' \
+            git ls-files '*.sh' 'bin/*' 'packages/*' 'lib/*' 'scripts/*' '.git_template/hooks/*' \
               | while read -r f; do
                   head -c 2 "$f" | grep -q '#!' && head -1 "$f" | grep -qE 'sh$|bash' && echo "$f"
                 done
@@ -35,11 +37,31 @@ jobs:
           printf '%s\n' "${files[@]}"
           shellcheck "${files[@]}"
       - name: shfmt
-        run: shfmt -i 4 -ci -s -d bin/dotfiles bootstrap.sh
+        run: |
+          shfmt -i 4 -ci -s -d \
+            bootstrap.sh \
+            bin \
+            packages \
+            lib \
+            scripts \
+            .git_template/hooks
+      - name: zshenv does not require cargo or bob
+        run: |
+          tmp=$(mktemp -d)
+          mkdir -p "$tmp/.config"
+          cp .zshenv "$tmp/.zshenv"
+          cp -a .config/zsh "$tmp/.config/zsh"
+          out=$(HOME="$tmp" zsh -f -c "source $tmp/.zshenv; echo ok" 2>&1)
+          echo "$out"
+          if echo "$out" | grep -q 'no such file or directory'; then
+            echo "zshenv sourced a missing file"
+            exit 1
+          fi
+          echo "$out" | grep -qx 'ok'
 
-  # A throwaway HOME in a bare container, so this is the fresh-machine path
-  # rather than a rehearsal of it.
-  bootstrap:
+  # Throwaway HOME: the path a machine takes after tools exist.
+  # bootstrap.sh itself needs sudo apt and is not this job.
+  install:
     runs-on: ubuntu-latest
     container: ubuntu:24.04
     steps:
@@ -55,14 +77,22 @@ jobs:
           cp -r "$GITHUB_WORKSPACE" "$HOME/dotfiles"
           cd "$HOME/dotfiles"
 
-          ./install.sh --yes >/tmp/first.log 2>&1
+          ./install.sh --yes >/tmp/first.log 2>&1 || { cat /tmp/first.log; exit 1; }
           find "$HOME" -path "$HOME/dotfiles" -prune -o -print | sort >/tmp/first.state
 
-          ./install.sh --yes >/tmp/second.log 2>&1
+          ./install.sh --yes >/tmp/second.log 2>&1 || { cat /tmp/second.log; exit 1; }
           find "$HOME" -path "$HOME/dotfiles" -prune -o -print | sort >/tmp/second.state
 
           if ! diff -u /tmp/first.state /tmp/second.state; then
             echo "second run changed the filesystem: install.sh is not idempotent"
             exit 1
           fi
-          grep -c 'already current' /tmp/second.log
+          if ! grep -q 'already current' /tmp/second.log; then
+            echo "second run did not report composed files already current"
+            cat /tmp/second.log
+            exit 1
+          fi
+          if grep -E '^[[:space:]]*hooksPath' "$HOME/.gitconfig"; then
+            echo "installed gitconfig still sets core.hooksPath"
+            exit 1
+          fi

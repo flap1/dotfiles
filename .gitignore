@@ -1,5 +1,7 @@
 ## bin
+# mise provides these; a tracked symlink to /usr/bin is a machine path.
 /bin/fd
+/bin/bat
 
 ## neovim
 /.config/nvim/plugin/**
@@ -21,6 +23,9 @@ out
 ## claude
 /.claude/skills/st-plan/.cache
 /.claude/skills/st/.cache
+# Upstream trees listed in .claude/skills/VENDOR. Installed by
+# `npx skills update -g`, replaced wholesale, never committed.
+/.claude/skills/hallmark/
 
 ## private / machine-local overrides
 # This repo is public. Anything naming an employer, an internal host path or a

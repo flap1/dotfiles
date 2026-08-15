@@ -1,1 +1,0 @@
-/home/flap1/dotfiles/.claude/skills/gstack/autoplan/SKILL.md

@@ -25,8 +25,8 @@ usage() {
 usage: dotfiles <command>
 
   status   what is out of sync, in both directions
-  pull     fast-forward to origin, then say whether setup.sh needs rerunning
-  doctor   check that this machine still matches what setup.sh installed
+  pull     fast-forward to origin, then say whether install.sh needs rerunning
+  doctor   check that this machine still matches what install.sh installed
   check    quiet; prints one line if origin is ahead. For shell startup.
 EOF
 }
@@ -105,11 +105,15 @@ cmd_doctor() {
     doctor_vendored || problems=$((problems + 1))
 
     echo "${M}gates${X}"
-    # A global core.hooksPath wins over .git/hooks, so ask git where the hook
-    # it would actually run lives before looking for lefthook in it.
-    local hookdir
-    hookdir=$(git_ config --get core.hooksPath || echo "$DOTFILES_DIR/.git/hooks")
-    hookdir=${hookdir/#\~/$HOME}
+    # Gates belong to this repository. A leftover global core.hooksPath is a
+    # defect (lefthook 2.x will refuse to install anywhere else).
+    local hookdir global_hooks
+    hookdir="$DOTFILES_DIR/.git/hooks"
+    global_hooks=$(git config --global --get core.hooksPath 2>/dev/null || true)
+    if [ -n "$global_hooks" ]; then
+        echo "  ${R}hooksPath${X}  global core.hooksPath=$global_hooks -- unset it"
+        problems=$((problems + 1))
+    fi
     if grep -q lefthook "$hookdir/pre-commit" 2>/dev/null; then
         echo "  ${G}ok${X}         lefthook via $hookdir"
     else
@@ -153,30 +157,28 @@ doctor_composed() {
     echo "  ${G}ok${X}         $name"
 }
 
-# A vendored skill is committed, so git already reports a local edit. What git
-# cannot say is which directories belong to an upstream and therefore lose that
-# edit wholesale on the next `npx skills update`. The manifest says it. The
-# licence is checked separately because the installer drops it and this
-# repository is public.
+# A vendored skill is installed, not committed. git cannot see it. The
+# manifest says which directories belong to an upstream and therefore lose
+# a local edit wholesale on the next `npx skills update`. Missing is a
+# warning: a fresh clone has none until `npx skills update -g`.
 doctor_vendored() {
     local manifest="$DOTFILES_DIR/.claude/skills/VENDOR"
     [ -f "$manifest" ] || {
         echo "  ${Y}absent${X}     no VENDOR manifest"
         return 1
     }
-    local bad=0 name upstream dir
-    while IFS=$'\t' read -r name upstream _; do
+    local missing=0 name dir
+    while IFS=$'\t' read -r name _; do
         case "$name" in '' | '#'*) continue ;; esac
         dir="$DOTFILES_DIR/.claude/skills/$name"
         if [ ! -d "$dir" ]; then
-            echo "  ${R}missing${X}    $name -- listed here but not installed"
-            bad=1
-        elif [ ! -f "$dir/LICENSE" ]; then
-            echo "  ${Y}unlicensed${X} $name -- $upstream ships one, the installer drops it"
-            bad=1
+            echo "  ${Y}missing${X}    $name -- npx skills update -g"
+            missing=1
         fi
     done <"$manifest"
-    [ "$bad" -eq 0 ] || return 1
+    if [ "$missing" -eq 1 ]; then
+        return 0
+    fi
     echo "  ${G}ok${X}         $(grep -cve '^#' -e '^$' "$manifest") vendored"
 }
 

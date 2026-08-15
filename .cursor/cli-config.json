@@ -1,5 +1,4 @@
 {
-  "approvalMode": "unrestricted",
   "permissions": {
     "allow": [
       "Shell(ls)"

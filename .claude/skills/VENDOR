@@ -5,9 +5,11 @@
 # on the next update without warning. Extend a vendored skill by writing a
 # separate skill beside it that references it. Never edit one in place.
 #
-# The commit is a record, not a lock -- `skills update` resolves the source by
-# name through skills.sh and does not write a lockfile for global installs. It
-# is here so a diff of this directory can be traced back to something.
+# The commit is a record of which upstreams this machine is allowed to
+# install, not a lock -- `skills update` resolves the source by name through
+# skills.sh and does not write a lockfile for global installs. The trees
+# themselves are gitignored: a hundred files of someone else's markdown is
+# not this repository.
 #
 # name<TAB>upstream<TAB>commit<TAB>version<TAB>license
 hallmark	https://github.com/Nutlope/hallmark	13ac0ec7e148655948100b6396439e481361d690	1.1.0	MIT

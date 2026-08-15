@@ -6,7 +6,7 @@
 #
 # Idempotent. Re-running after a pull is the supported way to apply changes.
 
-set -e
+set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 ARGS=()
@@ -43,10 +43,5 @@ bash "$DOTFILES_DIR/packages/system.sh" "${ARGS[@]}"
 
 # mise is on PATH only after system.sh installs it, and not in this shell.
 export PATH="$HOME/.local/bin:$PATH"
-if command -v mise >/dev/null; then
-    mise install
-else
-    echo "mise not on PATH after packages/system.sh; skipping tool install." >&2
-fi
 
 bash "$DOTFILES_DIR/install.sh" "${ARGS[@]}"

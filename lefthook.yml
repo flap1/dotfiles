@@ -4,8 +4,10 @@ pre-commit:
     secrets:
       run: gitleaks git --staged --redact --no-banner
     shellcheck:
-      glob: "{*.sh,bin/*}"
+      glob: "{*.sh,bin/*,packages/*,lib/*,.git_template/hooks/*,scripts/*}"
       run: shellcheck {staged_files}
     shfmt:
-      glob: "bin/*"
+      glob: "{bootstrap.sh,bin/*,packages/*,lib/*,scripts/*,.git_template/hooks/*}"
       run: shfmt -i 4 -ci -s -d {staged_files}
+    policy:
+      run: bash scripts/policy.sh

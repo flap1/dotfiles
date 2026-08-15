@@ -4,7 +4,7 @@ vim.opt.guifont = { "UDEV Gothic 35NFLG" }
 
 -- Encoding
 vim.o.encoding = "utf-8"
-vim.o.fileencodings = "utf-8,iso-2022-jp,euc-jp,sjis"
+vim.o.fileencoding = "utf-8"
 
 -- History / Session
 vim.o.shada = "'50,<1000,s100,\"1000,!"
@@ -63,17 +63,6 @@ vim.o.swapfile = false
 vim.o.hidden = true
 vim.o.modeline = false
 
--- Backup
-vim.o.backup = true
-vim.o.backupdir = vim.fn.stdpath("state") .. "/backup/"
-vim.fn.mkdir(vim.o.backupdir, "p")
-vim.o.backupskip = ""
-
--- Swap
-vim.o.directory = vim.fn.stdpath("state") .. "/swap/"
-vim.fn.mkdir(vim.o.directory, "p")
-vim.o.updatecount = 100
-
 -- Undo
 vim.o.undofile = true
 vim.o.undodir = vim.fn.stdpath("state") .. "/undo/"
@@ -106,8 +95,7 @@ vim.opt.tags = "./tags," .. vim.go.tags
 vim.o.switchbuf = "useopen,uselast"
 
 -- Spell
-vim.opt.spell = true
-vim.opt.spelllang = { "en_us" }
+vim.opt.spell = false
 
 -- Diff
 vim.o.diffopt = vim.o.diffopt .. ",vertical,internal,algorithm:patience,iwhite,indent-heuristic"
@@ -127,8 +115,8 @@ vim.o.sidescrolloff = 8
 -- Colors
 vim.o.termguicolors = true
 
--- Shell: load zshenv for PATH
-vim.o.shellcmdflag = "-ic"
+-- Shell: login env is already in the parent; do not start an interactive zsh.
+vim.o.shellcmdflag = "-c"
 
 -- Providers: disable unused ones to suppress warnings
 vim.g.loaded_node_provider = 0

@@ -1,8 +1,0 @@
-#/bin/bash
-
-clear
-tmux split-window -v -c "#{pane_current_path}"
-tmux split-window -h -c "#{pane_current_path}"
-tmux resize-pane -D 5 
-tmux resize-pane -R 25
-tmux select-pane -t 1

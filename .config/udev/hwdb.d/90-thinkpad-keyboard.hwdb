@@ -1,17 +1,17 @@
-evdev:atkbd:dmi:bvn*:bvr*:bd*:svn*:pn*:pvr* # 
- KEYBOARD_KEY_b8=grave # rightalt to zenkakuhankaku
- KEYBOARD_KEY_70=grave # hiragana/katakana to zenkakuhankaku
- KEYBOARD_KEY_3a=leftctrl # capslock to leftctrl
- KEYBOARD_KEY_79=backspace # henkan to backspace
- KEYBOARD_KEY_7b=esc # muhenkan to esc
+evdev:atkbd:dmi:bvn*:bvr*:bd*:svn*:pn*:pvr* #
+ KEYBOARD_KEY_b8=grave # Right Alt -> grave (IME toggle)
+ KEYBOARD_KEY_70=grave # KEY_KATAKANAHIRAGANA -> grave
+ KEYBOARD_KEY_3a=leftctrl # CapsLock -> Left Ctrl
+ KEYBOARD_KEY_79=backspace # KEY_HENKAN -> Backspace
+ KEYBOARD_KEY_7b=esc # KEY_MUHENKAN -> Esc
 
-## memo
-# b8 rightalt
-# 1d leftctrl
-# 0e backspace
-# 29 grave(zenkakuhankaku)
-# 01 esc
-# 70 katakanahiragana
-# 79 henkan
-# 7b muhenkan
-# 3a capslock
+# scan codes
+# b8 Right Alt
+# 1d Left Ctrl
+# 0e Backspace
+# 29 grave (IME toggle)
+# 01 Esc
+# 70 KEY_KATAKANAHIRAGANA
+# 79 KEY_HENKAN
+# 7b KEY_MUHENKAN
+# 3a CapsLock

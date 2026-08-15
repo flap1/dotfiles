@@ -1,6 +1,6 @@
 evdev:input:b*v05D5p624C*
- KEYBOARD_KEY_700e6=grave # rightalt to zenkakuhankaku
- KEYBOARD_KEY_70088=grave # hiragana/katakana to zenkakuhankaku
- KEYBOARD_KEY_70039=leftctrl # capslock to leftctrl
- KEYBOARD_KEY_7008a=backspace # henkan to backspace
- KEYBOARD_KEY_7008b=esc # muhenkan to esc
+ KEYBOARD_KEY_700e6=grave # Right Alt -> grave (IME toggle)
+ KEYBOARD_KEY_70088=grave # KEY_KATAKANAHIRAGANA -> grave
+ KEYBOARD_KEY_70039=leftctrl # CapsLock -> Left Ctrl
+ KEYBOARD_KEY_7008a=backspace # KEY_HENKAN -> Backspace
+ KEYBOARD_KEY_7008b=esc # KEY_MUHENKAN -> Esc

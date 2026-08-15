@@ -39,7 +39,7 @@ return {
     dependencies = { "mason-org/mason.nvim" },
     opts = {
       ensure_installed = {
-        "lua_ls", "rust_analyzer", "clangd", "astro",
+        "lua_ls", "rust_analyzer", "clangd",
         "pyright", "ts_ls", "jsonls", "yamlls",
         "tinymist",
       },
@@ -159,7 +159,7 @@ return {
 
       -- Enable all servers except rust_analyzer (handled by rustaceanvim)
       vim.lsp.enable({
-        "lua_ls", "clangd", "astro",
+        "lua_ls", "clangd",
         "pyright", "ts_ls", "jsonls", "yamlls",
         "tinymist",
       })
@@ -220,26 +220,5 @@ return {
         end,
       })
     end,
-  },
-
-  -- fidget: LSP progress UI
-  {
-    "j-hui/fidget.nvim",
-    event = "LspAttach",
-    opts = {
-      notification = { window = { winblend = 0 } },
-    },
-  },
-
-  -- trouble: diagnostics list
-  {
-    "folke/trouble.nvim",
-    cmd = { "Trouble", "TroubleToggle" },
-    opts = { use_diagnostic_signs = true },
-    keys = {
-      { "<Leader>xx", "<Cmd>Trouble diagnostics toggle<CR>", desc = "Diagnostics (Trouble)" },
-      { "<Leader>xX", "<Cmd>Trouble diagnostics toggle filter.buf=0<CR>", desc = "Buffer Diagnostics" },
-      { "<Leader>xq", "<Cmd>Trouble qflist toggle<CR>", desc = "Quickfix (Trouble)" },
-    },
   },
 }

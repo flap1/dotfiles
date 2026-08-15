@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Remove dangling docker volumes, then show which volumes are still in use.
-
-echo "Removing dangling volumes..."
-docker volume ls -qf dangling=true | xargs -r docker volume rm
-
-echo "Volumes still attached to a container:"
-docker ps --format "{{.ID}}" | xargs -r -I {} docker inspect --format '{{ .Mounts }}' {}

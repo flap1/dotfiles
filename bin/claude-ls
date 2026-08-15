@@ -30,11 +30,8 @@
 #   gone?  mid-turn with nothing for half an hour: killed, or a dead tool call
 set -eu
 
-# zinit installs fzf, so it is only on PATH inside an interactive zsh. tmux's
-# display-popup runs the command with the *server's* environment, where it is
-# missing -- and a picker that cannot find its picker exits before it draws
-# anything, which looks exactly like the popup refusing to open.
-PATH="$PATH:$HOME/.local/share/zsh/zinit/plugins/junegunn---fzf"
+# tmux popups inherit the server PATH, which has no interactive zsh hooks.
+PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
 
 mode=${1:-picker}
 interval=5

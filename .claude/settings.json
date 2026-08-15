@@ -4,13 +4,6 @@
   },
   "permissions": {
     "allow": [
-      "Bash(git stash)",
-      "Bash(git merge origin/develop --no-edit)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(docker compose:*)",
-      "Bash(npm view:*)",
       "WebSearch",
       "WebFetch",
       "Read(**)"
@@ -51,39 +44,6 @@
         "repo": "DietrichGebert/ponytail"
       }
     }
-  },
-  "spinnerVerbs": {
-    "mode": "replace",
-    "verbs": [
-      "🐇 Dashing",
-      "🐿️ Scurrying",
-      "🦔 Waddling",
-      "🦦 Diving",
-      "🐊 Charging",
-      "🦊 Sneaking",
-      "🐹 Scampering",
-      "🦎 Skittering",
-      "🦡 Burrowing",
-      "🦛 Charging",
-      "🦒 Striding",
-      "🐃 Stampeding",
-      "🐐 Climbing",
-      "🐟 Darting",
-      "🦞 Scuttling",
-      "🦀 Scuttling",
-      "🦕 Lumbering",
-      "🦖 Stomping",
-      "🦆 Splashing",
-      "🐓 Strutting",
-      "🦌 Galloping",
-      "🐘 Stomping",
-      "🦈 Zooming",
-      "🐢 Crawling",
-      "🐆 Sprinting",
-      "🦓 Galloping",
-      "🦘 Bounding",
-      "🦙 Trotting"
-    ]
   },
   "effortLevel": "medium",
   "advisorModel": "fable",

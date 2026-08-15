@@ -1,32 +1,16 @@
 local ls = require("luasnip")
--- some shorthands...
 local s = ls.snippet
-local sn = ls.snippet_node
 local t = ls.text_node
 local i = ls.insert_node
 local f = ls.function_node
-local c = ls.choice_node
-local d = ls.dynamic_node
-local r = ls.restore_node
-local l = require("luasnip.extras").lambda
-local rep = require("luasnip.extras").rep
-local p = require("luasnip.extras").partial
-local m = require("luasnip.extras").match
-local n = require("luasnip.extras").nonempty
-local dl = require("luasnip.extras").dynamic_lambda
-local fmt = require("luasnip.extras.fmt").fmt
-local fmta = require("luasnip.extras.fmt").fmta
-local types = require("luasnip.util.types")
-local conds = require("luasnip.extras.expand_conditions")
 
 return {
   s("badge_link", {
     t({ "- [" }),
     i(1, { "repo/name" }),
-    f(function(args, snip)
+    f(function(args)
       return string.format(
-        "](https://github.com/%s) ![](https://img.shields.io/github/stars/%s) ![](https://img.shields.io/github/last-commit/%s) ![](https://img.shields.io/github/commit-activity/y/%s)"
-        ,
+        "](https://github.com/%s) ![](https://img.shields.io/github/stars/%s) ![](https://img.shields.io/github/last-commit/%s) ![](https://img.shields.io/github/commit-activity/y/%s)",
         args[1][1],
         args[1][1],
         args[1][1],
@@ -34,6 +18,15 @@ return {
       )
     end, { 1 }),
   }),
-  s("link", { t("["), i(1), t("]("), i(2), t(")"), i(0), }),
-  s("clink", { t("["), i(1), t("]("), f(function(_, snip) return vim.fn.getreg("+") end), t(")"), i(0) }),
+  s("link", { t("["), i(1), t("]("), i(2), t(")"), i(0) }),
+  s("clink", {
+    t("["),
+    i(1),
+    t("]("),
+    f(function()
+      return vim.fn.getreg("+")
+    end),
+    t(")"),
+    i(0),
+  }),
 }

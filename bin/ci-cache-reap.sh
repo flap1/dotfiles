@@ -26,9 +26,9 @@
 #   ci-cache-reap.sh --force    # go
 set -euo pipefail
 
-HOST=${CI_CACHE_HOST:-flap1@95.216.27.150}
-ROOT=${CI_CACHE_ROOT:-/var/cache/woodpecker}
-REPO=${CI_CACHE_REPO:-$HOME/ghq/github.com/syntopic/topic}
+HOST=${CI_CACHE_HOST:?set CI_CACHE_HOST}
+ROOT=${CI_CACHE_ROOT:?set CI_CACHE_ROOT}
+REPO=${CI_CACHE_REPO:?set CI_CACHE_REPO}
 FORCE=0
 [ "${1:-}" = "--force" ] && FORCE=1
 

@@ -1,0 +1,29 @@
+# Load order is the file order. fzf-tab wraps the completer, so it must
+# run after compinit and before widgets that wrap the line editor.
+# Pins are git revisions: sheldon's lockfile records this machine's paths
+# and is not portable.
+shell = "zsh"
+
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+rev = "2798b16c74f80cda2094cfed4516db8048d3e6ca"
+apply = ["fpath"]
+
+[plugins.compinit]
+inline = "autoload -Uz compinit && compinit -C"
+
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+rev = "24105b15714bfec37989ed5c5b6e60f572253019"
+
+[plugins.fast-syntax-highlighting]
+github = "zdharma-continuum/fast-syntax-highlighting"
+rev = "3d574ccf48804b10dca52625df13da5edae7f553"
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+rev = "85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5"
+
+[plugins.zsh-autopair]
+github = "hlissner/zsh-autopair"
+rev = "449a7c3d095bc8f3d78cf37b9549f8bb4c383f3d"

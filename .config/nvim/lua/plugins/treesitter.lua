@@ -1,5 +1,3 @@
--- Treesitter: syntax, highlight, textobjects
-
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -8,12 +6,8 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
-      "HiPhish/rainbow-delimiters.nvim",
     },
     config = function()
-      -- main branch: require("nvim-treesitter.configs") is removed.
-      -- Parsers are installed via TSInstall / opts.ensure_installed.
-      -- Highlight/indent are enabled via vim.treesitter API.
       require("nvim-treesitter").setup({
         ensure_installed = {
           "lua", "vim", "vimdoc", "bash", "html", "yaml", "python",
@@ -23,17 +17,14 @@ return {
         auto_install = true,
       })
 
-      -- Enable highlight and indent via Neovim native API
       vim.api.nvim_create_autocmd("FileType", {
         callback = function()
-          local ok = pcall(vim.treesitter.start)
-          if not ok then return end
+          pcall(vim.treesitter.start)
         end,
       })
     end,
   },
 
-  -- nvim-treesitter-textobjects (main branch)
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     branch = "main",
@@ -72,35 +63,4 @@ return {
       })
     end,
   },
-
-  -- rainbow-delimiters: colorize brackets
-  {
-    "HiPhish/rainbow-delimiters.nvim",
-    event = { "BufReadPost", "BufNewFile" },
-    config = function()
-      local rainbow = require("rainbow-delimiters")
-      require("rainbow-delimiters.setup").setup({
-        strategy = {
-          [""] = rainbow.strategy["global"],
-          vim = rainbow.strategy["local"],
-        },
-        query = {
-          [""] = "rainbow-delimiters",
-          lua = "rainbow-blocks",
-        },
-        highlight = {
-          "RainbowDelimiterRed",
-          "RainbowDelimiterYellow",
-          "RainbowDelimiterBlue",
-          "RainbowDelimiterOrange",
-          "RainbowDelimiterGreen",
-          "RainbowDelimiterViolet",
-          "RainbowDelimiterCyan",
-        },
-      })
-    end,
-  },
-
-  -- hlargs / treehopper removed: LSP semantic tokens already colour arguments,
-  -- and flash's `S` (treesitter mode) does node selection.
 }

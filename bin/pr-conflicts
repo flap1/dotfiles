@@ -5,8 +5,12 @@
 # merge-tree per already-known-conflicting PR, not a fresh mergeable check.
 set -e
 
-GH=/home/flap1/.local/bin/gh
-JQ=/usr/bin/jq
+GH=$(command -v gh)
+JQ=$(command -v jq)
+[ -n "$GH" ] && [ -n "$JQ" ] || {
+    echo "pr-conflicts needs gh and jq on PATH" >&2
+    exit 1
+}
 
 prs=$("$GH" search prs --involves=@me --state=open --label=conflict \
     --json repository,number -L 100)

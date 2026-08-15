@@ -12,7 +12,7 @@
         "prefix": "start_shellscript",
         "description": "create new shellscript",
         "body": [
-            "#!/bin/bin/env bash",
+            "#!/usr/bin/env bash",
             "set -ue",
             "set -o pipefail",
             "",
@@ -39,7 +39,7 @@
         "prefix": "exists_variable_zsh",
         "description": "check the variable exists",
         "body": [
-            "if (( ${+${1}} ));",
+            "if (( ${+${1}} )); then",
             "\t$2",
             "fi"
         ]

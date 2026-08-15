@@ -1,36 +1,50 @@
 #!/bin/bash
+# Clone the plugins tmux.conf names. tpm is still the loader; this exists
+# so a systemd-started server has resurrect on disk before the first attach.
 
-set -e
+set -euo pipefail
 
-TPM_DIR="$HOME/.tmux/plugins/tpm"
+ASSUME_YES=0
+while [ $# -gt 0 ]; do
+    case $1 in
+        -y | --yes) ASSUME_YES=1 ;;
+        -h | --help)
+            echo "usage: tmux.sh [-y|--yes]"
+            exit 0
+            ;;
+        *)
+            echo "unknown option: $1" >&2
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+if [ "$ASSUME_YES" != 1 ]; then
+    read -rp "Install tmux plugins (tpm, resurrect, continuum, catppuccin)? (y/n): " yn
+    case $yn in
+        [Yy]*) ;;
+        *)
+            echo "Skipped tmux plugins."
+            exit 0
+            ;;
+    esac
+fi
+
 PLUGINS_DIR="$HOME/.tmux/plugins"
-
-clone_or_update() {
-    local name=$1
-    local url=$2
-    local dest=$3
-    if [ -d "$dest/.git" ]; then
-        echo "$name: already installed, skipping."
-    else
-        echo "Installing $name..."
-        git clone --depth=1 "$url" "$dest"
-    fi
-}
-
-read -rp "Install tmux plugins (TPM + catppuccin + cpu + sensible + resurrect + continuum)? (y/n): " yn
-case $yn in
-    [Yy]*) ;;
-    *) echo "Skipped tmux plugins."; exit 0 ;;
-esac
-
 mkdir -p "$PLUGINS_DIR"
 
-clone_or_update "tpm"            "https://github.com/tmux-plugins/tpm"           "$TPM_DIR"
-clone_or_update "tmux-sensible"  "https://github.com/tmux-plugins/tmux-sensible"  "$PLUGINS_DIR/tmux-sensible"
-clone_or_update "tmux-resurrect" "https://github.com/tmux-plugins/tmux-resurrect" "$PLUGINS_DIR/tmux-resurrect"
-clone_or_update "tmux-continuum" "https://github.com/tmux-plugins/tmux-continuum" "$PLUGINS_DIR/tmux-continuum"
-clone_or_update "tmux-cpu"       "https://github.com/tmux-plugins/tmux-cpu"       "$PLUGINS_DIR/tmux-cpu"
-clone_or_update "catppuccin/tmux" "https://github.com/catppuccin/tmux"            "$PLUGINS_DIR/tmux"
+clone() {
+    local dest=$1 url=$2
+    if [ -d "$dest/.git" ]; then
+        echo "$(basename "$dest"): present"
+        return
+    fi
+    git clone --depth=1 "$url" "$dest"
+}
 
-echo "tmux plugins installed to $PLUGINS_DIR"
-echo "Start tmux and run: tmux source ~/.tmux.conf"
+clone "$PLUGINS_DIR/tpm" "https://github.com/tmux-plugins/tpm"
+clone "$PLUGINS_DIR/tmux-sensible" "https://github.com/tmux-plugins/tmux-sensible"
+clone "$PLUGINS_DIR/tmux-resurrect" "https://github.com/flap1/tmux-resurrect"
+clone "$PLUGINS_DIR/tmux-continuum" "https://github.com/tmux-plugins/tmux-continuum"
+clone "$PLUGINS_DIR/tmux" "https://github.com/catppuccin/tmux"

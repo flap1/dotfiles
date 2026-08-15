@@ -5,6 +5,8 @@
 
 [init]
 	defaultBranch = main
+	# New repos only. Never core.hooksPath: that would replace hooks in
+	# every clone on this machine, including other people's lefthook.
 	templatedir = ~/.git_template
 
 [pull]
@@ -14,7 +16,6 @@
 [core]
     pager = delta
     editor = nvim
-    hooksPath = ~/.git_template/hooks
 
 [interactive]
     diffFilter = delta --color-only
@@ -59,13 +60,10 @@
     d = diff
     dc = diff --cached -U2
     rh = reset --soft HEAD .
-    p = !git push origin `git rev-parse --abbrev-ref HEAD`
+    p = push
     go = "switch -c"
-    dm = "!git branch --merged | grep -v main | grep -v master | grep -v '*' | xargs -n 1 git branch -d"
     please = push --force-with-lease
     uncommit = reset --mixed HEAD~
-    refrech = fetch --prune
-    sync = !git checkout $(git remote show origin | grep 'HEAD branch' | awk '{print $NF}') && git pull
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
     l = log --oneline --graph --decorate -n 10
     # Structural diff (difftastic) instead of line diff.
@@ -76,15 +74,7 @@
     # Same, structurally.
     reviewt = "!git -c diff.external=difft diff --ext-diff $(git merge-base HEAD ${1:-main})...HEAD #"
 
-[url "ssh://git@"]
-    insteadOf = https://
-
-# Machine- and employer-specific config: deploy-key host aliases, safe.directory
-# entries for CI checkouts, credential helpers. Kept outside this repo entirely
-# rather than gitignored inside it, because the repo is public and a file that
-# only a .gitignore separates from being published is one `git add -f` away.
-# The path was relative before, which resolved next to this file rather than in
-# $HOME, so the include silently matched nothing.
+# Identity, deploy-key hosts, credential helpers: ~/.gitconfig.local (untracked).
 [include]
     path = ~/.gitconfig.local
 

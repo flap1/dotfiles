@@ -1,9 +1,0 @@
-#!/bin/bash
-
-mapfile -t dangling_images < <(sudo docker images -f "dangling=true" -q)
-
-if [ ${#dangling_images[@]} -gt 0 ]; then
-    sudo docker rmi "${dangling_images[@]}"
-else
-    echo "No dangling images found. Skipping removal."
-fi
