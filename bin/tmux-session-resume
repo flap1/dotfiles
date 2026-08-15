@@ -1,0 +1,365 @@
+#!/usr/bin/env bash
+# tmux-resurrect post-save-layout hook; the argument is the state file just
+# written. Resurrect saves the foreground cmdline, which for a conversation
+# UI is the launcher, not the conversation. Restore must name the conversation
+# (`claude --resume`, `agent --resume`, `codex resume`); a bare launcher
+# starts a new one, and --continue / --last pick the wrong one as soon as
+# two panes exist.
+#
+# Identity is read off the live process, never derived from a pane title or
+# cwd. Claude publishes pid+sessionId (`claude agents --json`, kind
+# interactive only). Cursor and Codex do not, so the conversation is the
+# file the process itself has open: Cursor's store.db, Codex's rollout
+# jsonl. Matching is pgid against the pane's tpgid, so a wrapper still
+# matches and a process outside tmux matches nothing.
+#
+# A pane recognised as a conversation UI whose identity cannot be read is
+# blanked rather than restored: an empty command is a shell, a launcher
+# without an id is a new conversation. The identity source failing as a
+# whole (claude agents down, /proc unreadable) leaves the saved command
+# untouched, because blanking every pane would be guessing.
+#
+# Stateless: read from the live processes every time.
+set -eu
+
+state=${1:?usage: tmux-session-resume <resurrect state file>}
+[ -f "$state" ] || exit 0
+
+tab=$(printf '\t')
+uuid_re='[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
+
+# comm in /proc/<pid>/stat can contain spaces and parentheses, so only the
+# text after the last ')' is parsed: f3=pgrp, f6=tpgid.
+stat_field() { sed 's/.*) //' "/proc/$1/stat" 2>/dev/null | cut -d' ' -f"$2"; }
+
+# The tpgid names the foreground group; the leader is the pid that equals
+# that group, which is also the tpgid value when the leader is still alive.
+group_leader() {
+    local g=$1 p pgrp
+    pgrp=$(stat_field "$g" 3) || return 1
+    [ "$pgrp" = "$g" ] && {
+        printf '%s\n' "$g"
+        return 0
+    }
+    for p in /proc/[0-9]*; do
+        p=${p#/proc/}
+        pgrp=$(stat_field "$p" 3) || continue
+        [ "$pgrp" = "$g" ] && {
+            printf '%s\n' "$p"
+            return 0
+        }
+    done
+    return 1
+}
+
+# "<tpgid>\t<session>\t<window>\t<pane>"
+pane_groups=$(
+    tmux list-panes -a -F "#{pane_pid}$tab#{session_name}$tab#{window_index}$tab#{pane_index}" |
+        while IFS="$tab" read -r pid session window index; do
+            tpgid=$(stat_field "$pid" 6) || continue
+            [ -n "$tpgid" ] && [ "$tpgid" -gt 0 ] || continue
+            printf '%s\t%s\t%s\t%s\n' "$tpgid" "$session" "$window" "$index"
+        done
+)
+[ -n "$pane_groups" ] || exit 0
+
+key_for_pgid() {
+    printf '%s\n' "$pane_groups" | awk -F"$tab" -v g="${1:-0}" -v OFS="$tab" \
+        '$1 == g { print $2, $3, $4; exit }'
+}
+
+read_argv() {
+    local pid=$1
+    argv=()
+    mapfile -d '' -t argv <"/proc/$pid/cmdline" 2>/dev/null || return 1
+    [ "${#argv[@]}" -gt 0 ]
+}
+
+# worker-server, sandboxes, and claude-ls share a name with a conversation
+# UI and are not one. Subcommands are classified after that veto.
+classify_argv() {
+    local a base exec_seen=0
+    for a in "${argv[@]}"; do
+        case $a in
+            worker-server | */claude-ls | claude-ls | \
+                *codex-linux-sandbox* | *codex-code-mode-host*)
+                printf '%s\n' skip
+                return 0
+                ;;
+        esac
+    done
+    base=${argv[0]##*/}
+    case $base in
+        claude)
+            printf '%s\n' claude
+            return 0
+            ;;
+        agent)
+            printf '%s\n' agent
+            return 0
+            ;;
+        codex) ;;
+        node | nodejs)
+            base=
+            for a in "${argv[@]:1}"; do
+                case $a in */codex | codex)
+                    base=codex
+                    break
+                    ;;
+                esac
+            done
+            [ "$base" = codex ] || {
+                printf '%s\n' other
+                return 0
+            }
+            ;;
+        *)
+            printf '%s\n' other
+            return 0
+            ;;
+    esac
+    for a in "${argv[@]:1}"; do
+        case $a in
+            -*) continue ;;
+            exec)
+                exec_seen=1
+                break
+                ;;
+            *) break ;;
+        esac
+    done
+    if [ "$exec_seen" = 1 ]; then
+        printf '%s\n' codex_exec
+    else
+        printf '%s\n' codex
+    fi
+}
+
+# Value-taking flags: skip the flag and, when the next argument is a value
+# rather than another flag, skip that too. A bare --resume last on the
+# Cursor wrapper must not eat the next pane argument because there is none;
+# a bare --resume before --model must not eat --model.
+skip_flag_value() {
+    local next=$1
+    case $next in
+        '' | -*) return 1 ;;
+    esac
+    return 0
+}
+
+claude_resume_command() {
+    local sid=$1 args=() skip=0 i a next
+    for i in "${!argv[@]}"; do
+        [ "$i" = 0 ] && continue
+        a=${argv[$i]}
+        if [ "$skip" = 1 ]; then
+            skip=0
+            continue
+        fi
+        case $a in
+            --resume | --session-id | --name)
+                next=${argv[$((i + 1))]-}
+                skip_flag_value "$next" && skip=1
+                continue
+                ;;
+            --resume=* | --session-id=* | --name=* | --continue | -c) continue ;;
+        esac
+        args+=("$a")
+    done
+    if [ "${#args[@]}" -gt 0 ]; then
+        printf 'claude --resume %s %s' "$sid" "$(printf '%q ' "${args[@]}")"
+    else
+        printf 'claude --resume %s' "$sid"
+    fi
+    printf '\n'
+}
+
+agent_resume_command() {
+    local sid=$1 args=() skip=0 i a next
+    for i in "${!argv[@]}"; do
+        [ "$i" = 0 ] && continue
+        a=${argv[$i]}
+        if [ "$skip" = 1 ]; then
+            skip=0
+            continue
+        fi
+        case $a in
+            --use-system-ca) continue ;;
+            --resume | --session-id)
+                next=${argv[$((i + 1))]-}
+                skip_flag_value "$next" && skip=1
+                continue
+                ;;
+            --resume=* | --session-id=* | --continue) continue ;;
+            */cursor-agent/*) continue ;;
+        esac
+        args+=("$a")
+    done
+    if [ "${#args[@]}" -gt 0 ]; then
+        printf 'agent --resume %s %s' "$sid" "$(printf '%q ' "${args[@]}")"
+    else
+        printf 'agent --resume %s' "$sid"
+    fi
+    printf '\n'
+}
+
+codex_resume_command() {
+    local sid=$1 kind=$2 args=() skip=0 i a next
+    for i in "${!argv[@]}"; do
+        [ "$i" = 0 ] && continue
+        a=${argv[$i]}
+        if [ "$skip" = 1 ]; then
+            skip=0
+            continue
+        fi
+        case $a in
+            */codex | codex | resume | exec | --last | --all | --include-non-interactive) continue ;;
+            --cd | -C)
+                next=${argv[$((i + 1))]-}
+                skip_flag_value "$next" && skip=1
+                continue
+                ;;
+            --cd=*) continue ;;
+        esac
+        args+=("$a")
+    done
+    local head
+    if [ "$kind" = codex_exec ]; then
+        head='codex exec resume'
+    else
+        head='codex resume'
+    fi
+    if [ "${#args[@]}" -gt 0 ]; then
+        printf '%s %s %s' "$head" "$(printf '%q ' "${args[@]}")" "$sid"
+    else
+        printf '%s %s' "$head" "$sid"
+    fi
+    printf '\n'
+}
+
+cursor_chat_id() {
+    local pid=$1 fd t id
+    for fd in /proc/"$pid"/fd/*; do
+        t=$(readlink "$fd" 2>/dev/null) || continue
+        case $t in
+            */chats/*/*/store.db) ;;
+            *) continue ;;
+        esac
+        id=$(printf '%s\n' "$t" | sed -E -n "s|.*/chats/[^/]+/($uuid_re)/store.db$|\\1|p")
+        [ -n "$id" ] && {
+            printf '%s\n' "$id"
+            return 0
+        }
+    done
+    return 1
+}
+
+codex_rollout_id() {
+    local pid=$1 want=$2 fd t meta orig src sid
+    for fd in /proc/"$pid"/fd/*; do
+        t=$(readlink "$fd" 2>/dev/null) || continue
+        # YYYY/MM/DD/rollout-*.jsonl: bash * does not cross /.
+        case $t in
+            */sessions/*/*/*/rollout-*.jsonl) ;;
+            *) continue ;;
+        esac
+        [ -r "$t" ] || continue
+        meta=$(head -n 1 "$t" | jq -r '[.payload.originator // "", .payload.thread_source // "", .payload.session_id // ""] | @tsv' \
+            2>/dev/null) || continue
+        IFS=$tab read -r orig src sid <<EOF
+$meta
+EOF
+        [ -n "$sid" ] || continue
+        [ "$src" = subagent ] && continue
+        case $want in
+            codex) [ "$orig" = codex-tui ] || continue ;;
+            codex_exec) [ "$orig" = codex_exec ] || continue ;;
+            *) continue ;;
+        esac
+        printf '%s\n' "$sid"
+        return 0
+    done
+    return 1
+}
+
+map=
+emit() {
+    local key=$1 cmd=${2-}
+    map="${map:+$map$'\n'}$key$tab$cmd"
+}
+
+# Claude: the published listing is the identity source. A row whose kind is
+# not interactive shares the parent's pgid and would take the pane.
+claude_json=$(claude agents --json 2>/dev/null || true)
+claude_source_ok=0
+if [ -n "$claude_json" ]; then
+    claude_source_ok=1
+    while IFS="$tab" read -r pid sid; do
+        [ -n "$pid" ] && [ -n "$sid" ] || continue
+        pgid=$(stat_field "$pid" 3) || continue
+        key=$(key_for_pgid "$pgid")
+        [ -n "$key" ] || continue
+        read_argv "$pid" || continue
+        cmd=$(claude_resume_command "$sid") || continue
+        emit "$key" "${cmd%"${cmd##*[![:space:]]}"}"
+    done <<EOF
+$(printf '%s\n' "$claude_json" | jq -r '.[] | select(.kind == "interactive") | [.pid, .sessionId] | @tsv')
+EOF
+fi
+
+# Cursor / Codex: identity is the open conversation file of the group
+# leader. Descendants (worker-server, sandbox, subagent rollouts) are
+# ignored so they cannot take the pane.
+while IFS="$tab" read -r tpgid session window index; do
+    [ -n "$tpgid" ] || continue
+    key=$(printf '%s\t%s\t%s' "$session" "$window" "$index")
+    case $'\n'"$map"$'\n' in
+        *$'\n'"$key$tab"*) continue ;;
+    esac
+    leader=$(group_leader "$tpgid") || continue
+    read_argv "$leader" || continue
+    kind=$(classify_argv)
+    case $kind in
+        agent)
+            if sid=$(cursor_chat_id "$leader"); then
+                cmd=$(agent_resume_command "$sid") || continue
+                emit "$key" "${cmd%"${cmd##*[![:space:]]}"}"
+            else
+                emit "$key" ""
+            fi
+            ;;
+        codex | codex_exec)
+            if sid=$(codex_rollout_id "$leader" "$kind"); then
+                cmd=$(codex_resume_command "$sid" "$kind") || continue
+                emit "$key" "${cmd%"${cmd##*[![:space:]]}"}"
+            else
+                emit "$key" ""
+            fi
+            ;;
+        claude)
+            [ "$claude_source_ok" = 1 ] && emit "$key" ""
+            ;;
+        skip | other) ;;
+    esac
+done <<EOF
+$pane_groups
+EOF
+
+[ -n "$map" ] || exit 0
+
+# A pane line is f1=pane f2=session f3=window f6=pane_index, f11=":<command>".
+# Values go through the environment rather than -v because awk interprets
+# escapes in a -v assignment and eats the backslashes of the quoting.
+# Three fields and no command means blank the restore command.
+RESUME_MAP=$map awk -F"$tab" -v OFS="$tab" '
+	BEGIN {
+		n = split(ENVIRON["RESUME_MAP"], lines, "\n")
+		for (i = 1; i <= n; i++) {
+			nf = split(lines[i], f, "\t")
+			if (nf < 3) continue
+			cmd[f[1] OFS f[2] OFS f[3]] = (nf >= 4 ? f[4] : "")
+		}
+	}
+	$1 == "pane" && (($2 OFS $3 OFS $6) in cmd) { $11 = ":" cmd[$2 OFS $3 OFS $6] }
+	{ print }
+' "$state" >"$state.tmp" && mv "$state.tmp" "$state"

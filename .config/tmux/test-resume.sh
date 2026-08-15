@@ -11,8 +11,9 @@
 # pane_pid is the program itself being missed, and an empty title shifting
 # dir.
 #
-# claude panes are not checked: that would need a real claude with a sessionId,
-# which creates a conversation.
+# claude / agent / codex panes are not started as the real CLIs: that would
+# create conversations. The hook is given stubs and processes that hold the
+# same identity files the real CLIs hold open.
 set -eu
 
 sock=resume-test
@@ -20,6 +21,8 @@ tmux=$HOME/.local/bin/tmux
 dir=$(mktemp -d)
 conf=$dir/tmux.conf
 path=$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+here=$(cd -- "$(dirname "$0")" && pwd)
+hook=$here/../../bin/tmux-session-resume
 fail=0
 
 trap '"$tmux" -L "$sock" kill-server 2>/dev/null || true; rm -rf "$dir"' EXIT
@@ -30,7 +33,7 @@ set -g @plugin 'flap1/tmux-resurrect'
 set -g @resurrect-dir '$dir/state'
 set -g @resurrect-processes '"~btop" "~tail"'
 set -g @resurrect-save-command-strategy 'foreground_pgroup'
-set -g @resurrect-hook-post-save-layout '$HOME/bin/tmux-claude-resume'
+set -g @resurrect-hook-post-save-layout '$hook'
 run '~/.tmux/plugins/tpm/tpm'
 EOF
 
@@ -92,6 +95,59 @@ printf 'import time\ntime.sleep(99999)\n' >"$loop"
 "$tmux" -L "$sock" split-window -v "python3 '$loop' --session-id zzz --continue"
 # A pipeline. Saving only its head restores something that runs but is not this.
 "$tmux" -L "$sock" split-window -v 'tail -f /dev/null | grep --line-buffered x'
+
+# argv0 is the basename the hook classifies on. A shebang script's argv0 is
+# python3, which classifies as other and leaves the launcher in the save.
+# A copy of python3 named agent/codex, with no extra argv, matches the real
+# CLIs. PYTHONSTARTUP opens the identity file so the path is not an argument.
+# Window 1 is split vertically: window 0 has no height left. `-t 1` would
+# be pane 1 of window 0; the window is `:1`.
+startup=$dir/startup.py
+cat >"$startup" <<'EOF'
+import os, time
+os.open(os.environ["HOLD_PATH"], os.O_RDWR | os.O_CREAT)
+time.sleep(99999)
+EOF
+bin=$dir/bin
+mkdir -p "$bin/chat" "$bin/blank" "$bin/worker" "$bin/tui" "$bin/sub"
+# Follow the python3 symlink; a relative copy is not executable from here.
+/bin/cp -L /usr/bin/python3 "$bin/chat/agent"
+/bin/cp -L /usr/bin/python3 "$bin/blank/agent"
+/bin/cp -L /usr/bin/python3 "$bin/worker/agent"
+/bin/cp -L /usr/bin/python3 "$bin/tui/codex"
+/bin/cp -L /usr/bin/python3 "$bin/sub/codex"
+agent_sid=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+agent_store=$dir/chats/0123456789abcdef0123456789abcdef/$agent_sid/store.db
+mkdir -p "$(dirname "$agent_store")"
+: >"$agent_store"
+decoy_sid=bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+decoy_store=$dir/chats/0123456789abcdef0123456789abcdef/$decoy_sid/store.db
+mkdir -p "$(dirname "$decoy_store")"
+: >"$decoy_store"
+codex_sid=cccccccc-cccc-cccc-cccc-cccccccccccc
+codex_roll=$dir/sessions/2026/08/15/rollout-2026-08-15T00-00-00-$codex_sid.jsonl
+mkdir -p "$(dirname "$codex_roll")"
+printf '%s\n' "{\"type\":\"session_meta\",\"payload\":{\"originator\":\"codex-tui\",\"thread_source\":\"user\",\"session_id\":\"$codex_sid\"}}" >"$codex_roll"
+sub_sid=dddddddd-dddd-dddd-dddd-dddddddddddd
+sub_roll=$dir/sessions/2026/08/15/rollout-2026-08-15T00-00-01-$sub_sid.jsonl
+printf '%s\n' "{\"type\":\"session_meta\",\"payload\":{\"originator\":\"codex-tui\",\"thread_source\":\"subagent\",\"session_id\":\"$sub_sid\"}}" >"$sub_roll"
+
+run_hold() {
+    extra=${3-}
+    "$tmux" -L "$sock" split-window -t :1 -v \
+        "env HOLD_PATH=$1 PYTHONSTARTUP=$startup $2 $extra"
+}
+
+"$tmux" -L "$sock" new-window -d
+run_hold "$agent_store" "$bin/chat/agent"
+run_hold /dev/null "$bin/blank/agent"
+# worker-server must stay in argv so classify_argv vetoes it, but it must not
+# be python's script name or the pane exits and later splits shift index.
+"$tmux" -L "$sock" split-window -t :1 -v \
+    "env HOLD_PATH=$decoy_store PYTHONSTARTUP=$startup $bin/worker/agent -c 'import time; time.sleep(99999)' worker-server"
+run_hold "$codex_roll" "$bin/tui/codex"
+run_hold "$sub_roll" "$bin/sub/codex"
+
 sleep 4
 # An empty pane_title makes save.sh's `IFS=$'\t' read` collapse the run of
 # tabs and shift every later field one to the left. restore.sh reads the same
@@ -102,27 +158,33 @@ sleep 4
 "$tmux" -L "$sock" run-shell "$HOME/.tmux/plugins/tmux-resurrect/scripts/save.sh quiet"
 sleep 3
 
-cmd_of() { awk -F'\t' -v i="$1" '$1 == "pane" && $6 == i { print substr($11, 2) }' "$dir/state/last"; }
+cmd_of() { awk -F'\t' -v w="$1" -v i="$2" '$1 == "pane" && $3 == w && $6 == i { print substr($11, 2) }' "$dir/state/last"; }
 
-check "idle shell saves nothing" "$(cmd_of 0)" ""
-check "second idle shell saves nothing" "$(cmd_of 1)" ""
-check "program as the pane itself" "$(cmd_of 2)" "btop"
+check "idle shell saves nothing" "$(cmd_of 0 0)" ""
+check "second idle shell saves nothing" "$(cmd_of 0 1)" ""
+check "program as the pane itself" "$(cmd_of 0 2)" "btop"
 # f8 is ":<dir>"; if the fields collapse, pane_active (0/1) lands here instead
 check "empty title does not shift dir" \
-    "$(awk -F'\t' '$1 == "pane" && $6 == 2 { print $8 }' "$dir/state/last")" ":/var/log"
+    "$(awk -F'\t' '$1 == "pane" && $3 == 0 && $6 == 2 { print $8 }' "$dir/state/last")" ":/var/log"
 # An argument with a space. Joined on whitespace it restores as two arguments, and sh has no printf %q.
 esc=$(printf '%s' "$spaced" | sed 's/ /\\ /g')
 check "argument containing a space stays one" \
-    "$(cmd_of 3)" "tail -f $esc"
+    "$(cmd_of 0 3)" "tail -f $esc"
 # Does the hook swap the claude pane for its sessionId, keep the other
 # arguments quoted, and drop --session-id with its value and --continue?
 check "claude pane resumes its own session" \
-    "$(cmd_of 4)" "claude --resume $sid $(printf '%s' "$loop" | sed 's/ /\\ /g')"
+    "$(cmd_of 0 4)" "claude --resume $sid $(printf '%s' "$loop" | sed 's/ /\\ /g')"
 # rows one and three share a pgid; without filtering by kind the background sessionId wins
 check "background agent does not claim the pane" \
-    "$(cmd_of 4 | grep -c 22222222)" "0"
+    "$(cmd_of 0 4 | grep -c 22222222)" "0"
+check "cursor pane resumes its own chat" "$(cmd_of 1 1)" "agent --resume $agent_sid"
+check "cursor pane without a chat is blanked" "$(cmd_of 1 2)" ""
+check "cursor worker-server does not resume" \
+    "$(cmd_of 1 3 | grep -c 'agent --resume')" "0"
+check "codex pane resumes its own session" "$(cmd_of 1 4)" "codex resume $codex_sid"
+check "codex subagent pane is blanked" "$(cmd_of 1 5)" ""
 # a pipeline saves nothing rather than half of itself
-check "pipeline saves nothing rather than half" "$(cmd_of 5)" ""
+check "pipeline saves nothing rather than half" "$(cmd_of 0 5)" ""
 # the upstream strategy emits a line per unrelated descendant; this holds one record to one line
 check "one record per line" \
     "$(awk -F'\t' '$1 != "pane" && $1 != "window" && $1 != "state" && $1 != "grouped_session"' "$dir/state/last" | wc -l)" "0"
