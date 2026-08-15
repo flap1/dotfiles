@@ -183,25 +183,11 @@ install_bind_localhost() {
 install_bind_localhost
 
 # -------------------------------------------------------------------------
-# Document creation
-# -------------------------------------------------------------------------
-# LaTeX is not written here any more; Typst replaced it. remark stays for the
-# markdown language server.
-install_category "Docs: remark" \
-    ".remarkrc.yml"  "$HOME/.remarkrc.yml"
-
-# -------------------------------------------------------------------------
 # Application settings
 # -------------------------------------------------------------------------
 install_category "App: GNOME + pictures" \
     ".config/gnome"    "$HOME/.config/gnome" \
     ".config/pictures" "$HOME/.config/pictures"
-
-# -------------------------------------------------------------------------
-# Server / ops tools
-# -------------------------------------------------------------------------
-install_category "Server: Ansible" \
-    ".config/ansible/.ansible.cfg" "$HOME/.ansible.cfg"
 
 # -------------------------------------------------------------------------
 # AI tools
