@@ -399,9 +399,14 @@ link_category "AI: Cursor Agent (status line)" \
 # $XDG_CONFIG_HOME/cursor, else ~/.cursor. Guessing ~/.cursor unconditionally
 # -- which is what the published documentation says -- writes a file that
 # nothing reads on any machine that sets XDG_CONFIG_HOME.
+#
+# A process that does not inherit XDG_CONFIG_HOME still reads ~/.cursor.
+# Overlay both when they differ, or attribution false lives only on the XDG
+# copy and the other path keeps the default (on).
 compose_cursor_settings() {
     local shared="$DOTFILES_DIR/.cursor/cli-config.json"
     local dir
+    local -a targets
 
     [ -f "$shared" ] || { echo "Skipped [AI: Cursor settings]: $shared missing."; return; }
     command -v node >/dev/null || { echo "Skipped [AI: Cursor settings]: no node."; return; }
@@ -414,11 +419,19 @@ compose_cursor_settings() {
         dir="$HOME/.cursor"
     fi
 
-    ask "AI: Cursor settings (layered onto $dir/cli-config.json)" || return 0
+    targets=("$dir/cli-config.json")
+    if [ "$dir" != "$HOME/.cursor" ]; then
+        targets+=("$HOME/.cursor/cli-config.json")
+    fi
 
+    ask "AI: Cursor settings (layered onto ${targets[*]})" || return 0
+
+    local target
+    for target in "${targets[@]}"; do
+    echo "  $target"
     SHARED="$shared" \
     LOCAL="$DOTFILES_DIR/.cursor/cli-config.local.json" \
-    TARGET="$dir/cli-config.json" node <<'NODE'
+    TARGET="$target" node <<'NODE'
 const fs = require('fs');
 const path = require('path');
 
@@ -476,6 +489,7 @@ fs.mkdirSync(path.dirname(target), { recursive: true });
 fs.writeFileSync(target, after);
 console.log('  -> ' + target);
 NODE
+    done
 }
 compose_cursor_settings
 
