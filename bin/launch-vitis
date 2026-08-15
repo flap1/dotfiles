@@ -3,8 +3,8 @@
 settings_file="/tools/Xilinx/Vitis/2023.1/settings64.sh"
 
 if [ -f "$settings_file" ]; then
+    # shellcheck source=/dev/null  # vendor file, path varies by install
     source "$settings_file" && vitis
 else
     echo "Xilinx Vitis settings file not found: $settings_file"
 fi
-

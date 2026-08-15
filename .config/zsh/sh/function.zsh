@@ -864,3 +864,13 @@ ftpane() {
 }
 
 # vim: set filetype=sh foldmethod=marker foldlevel=0:
+
+# -------------------------------------------------------------------------
+# mkcd
+# -------------------------------------------------------------------------
+# A function, not bin/mkcd: a script runs in a child process, so its cd never
+# reaches the shell that called it. The script form never worked.
+mkcd() {
+    [ $# -eq 1 ] || { print -u2 "usage: mkcd <dir>"; return 2 }
+    mkdir -p -- "$1" && builtin cd -- "$1"
+}

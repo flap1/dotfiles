@@ -1,24 +1,32 @@
 #!/bin/bash
+#
+# cd through a tree with fzf, one level per selection, until Esc.
 
-function cd_() {
-    if [[ "$#" != 0 ]]; then
-        builtin cd "$@";
+cd_() {
+    if [[ $# != 0 ]]; then
+        builtin cd "$@" || return
         return
     fi
     while true; do
-        local lsd=$(echo ".." && ls -p | grep '/$' | sed 's;/$;;')
-        local dir="$(printf '%s\n' "${lsd[@]}" |
-            fzf --reverse --preview '
-                __cd_nxt="$(echo {})";
-                __cd_path="$(echo $(pwd)/${__cd_nxt} | sed "s;//;/;")";
-                echo $__cd_path;
-                echo;
-                ls -p --color=always "${__cd_path}";
-        ')"
-        [[ ${#dir} != 0 ]] || return 0
-        builtin cd "$dir" &> /dev/null
+        # A glob rather than `ls -p | grep '/$'`: the pipe splits on newlines,
+        # so a directory whose name contains one breaks it, and */ already
+        # means "directories only". nullglob keeps an empty directory from
+        # offering the literal string "*/".
+        local dirs
+        shopt -s nullglob
+        dirs=(.. */)
+        shopt -u nullglob
+        dirs=("${dirs[@]%/}")
+
+        local dir
+        # The preview runs in fzf's own shell, so $p must not expand here.
+        # shellcheck disable=SC2016
+        dir=$(printf '%s\n' "${dirs[@]}" |
+            fzf --reverse --preview 'p=$(cd -- {} 2>/dev/null && pwd); echo "$p"; echo; ls -p --color=always -- "$p"')
+
+        [[ -n $dir ]] || return 0
+        builtin cd -- "$dir" || return
     done
 }
 
-cd_ $@
-
+cd_ "$@"

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd /mnt/docker/containers
+cd /mnt/docker/containers || exit 1
 nvim

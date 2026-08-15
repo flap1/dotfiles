@@ -1,0 +1,4 @@
+# lefthook generates every hook in this directory. A fix here is overwritten by
+# the next `lefthook install`, so the check is disabled for the generated files
+# only, not repo-wide.
+disable=SC2166
