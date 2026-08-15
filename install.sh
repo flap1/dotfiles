@@ -137,7 +137,6 @@ link_category() {
 # -------------------------------------------------------------------------
 link_category "Core: Zsh + Starship" \
     ".zshenv"                "$HOME/.zshenv" \
-    ".zprofile"              "$HOME/.zprofile" \
     ".config/zsh"            "$HOME/.config/zsh" \
     ".config/starship.toml"  "$HOME/.config/starship.toml"
 

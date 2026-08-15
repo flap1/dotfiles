@@ -1,69 +1,28 @@
-# -------------------------------------------------------------------------
-# profile init
-# -------------------------------------------------------------------------
-if [ "$ZSHRC_PROFILE" != "" ]; then
-  zmodload zsh/zprof
-fi
+# Interactive shells. zsh reads this file itself, so it cannot be removed, and
+# nothing under sh/ is discovered on its own -- hence the list.
+#
+# Order is load-bearing: completion.zsh must be configured before
+# plugins/init.zsh runs compinit, and post_load.zsh uses the functions and
+# aliases defined above it.
+#
+# Environment and PATH belong in .zshenv, not here. Installers append PATH
+# lines to this file; every one so far was already covered by the path=()
+# block in .zshenv, so the fix is to delete them, not to move them.
 
-# -------------------------------------------------------------------------
-# base configuration
-# -------------------------------------------------------------------------
-source-safe() { if [ -f "$1" ]; then source "$1"; fi }
+[ -n "$ZSHRC_PROFILE" ] && zmodload zsh/zprof
+
+source-safe() { [ -f "$1" ] && source "$1" }
+
 source "$ZSHDIR/base.zsh"
-
-# -------------------------------------------------------------------------
-# Mappings
-# -------------------------------------------------------------------------
 source "$ZSHDIR/mappings.zsh"
-
-
-# -------------------------------------------------------------------------
-# Options
-# -------------------------------------------------------------------------
 source "$ZSHDIR/options.zsh"
-
-
-# -------------------------------------------------------------------------
-# Completion
-# -------------------------------------------------------------------------
 source "$ZSHDIR/completion.zsh"
-
-
-# -------------------------------------------------------------------------
-# Function
-# -------------------------------------------------------------------------
 source "$ZSHDIR/function.zsh"
-
-
-# -------------------------------------------------------------------------
-# Aliase
-# -------------------------------------------------------------------------
 source "$ZSHDIR/alias.zsh"
-
-
-# -------------------------------------------------------------------------
-# Plugin
-# -------------------------------------------------------------------------
 source "$ZSHDIR/plugins/init.zsh"
-
-
-# -------------------------------------------------------------------------
-# Post Execution
-# -------------------------------------------------------------------------
 source "$ZSHDIR/post_load.zsh"
 
-
-# -------------------------------------------------------------------------
-# Execute Local Script
-# -------------------------------------------------------------------------
+# Machine-local and gitignored. Secrets live here and nowhere tracked.
 source-safe "$ZHOMEDIR/.zshrc.local"
 
-
-# -------------------------------------------------------------------------
-# profile end
-# -------------------------------------------------------------------------
-if [ "$ZSHRC_PROFILE" != "" ]; then
-  zprof
-fi
-
-. "$HOME/.local/share/../bin/env"
+[ -n "$ZSHRC_PROFILE" ] && zprof
