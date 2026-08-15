@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=/dev/null
 source ~/.config/zsh/sh/function.zsh
 
 check_and_install chrome-gnome-shell
@@ -12,21 +13,21 @@ if [ ! -e ~/.config/pictures/Monterey2.png ]; then
 fi
 
 if [ ! -e ~/.themes/Mojave-Dark ]; then
-	mkdir -p ~/.themes; cd ~/.themes
+	mkdir -p ~/.themes; cd ~/.themes || exit 1
 	gdrive_download https://drive.google.com/file/d/1qrkARtP-eeKN9URP1-pq-8HfvPtr4IFA/view?usp=share_link Mojave-Dark.tar.xz
 	tar -xvf Mojave-Dark.tar.xz
 	rm Mojave-Dark.tar.xz
 fi
 	
 if [ ! -e ~/.icons/McMojave-cursors ]; then
-	mkdir -p ~/.icons; cd ~/.icons
+	mkdir -p ~/.icons; cd ~/.icons || exit 1
 	gdrive_download https://drive.google.com/file/d/1twWJDAxkEfgt2zzry6f8hnRX_nMjCWRK/view?usp=share_link McMojave-cursors.tar.xz
 	tar -xvf McMojave-cursors.tar.xz
 	rm  McMojave-cursors.tar.xz
 fi
 
 if [ ! -e ~/.icons/McMojave-circle ]; then
-	mkdir -p ~/.icons; cd ~/.icons
+	mkdir -p ~/.icons; cd ~/.icons || exit 1
 	gdrive_download https://drive.google.com/file/d/1RWo4ikP_voVbRwEi2h-NXWj4u4wJLesi/view?usp=share_link McMojave-circle.tar.xz
 	tar -xvf McMojave-circle.tar.xz
 	cp -r McMojave-circle McMojave-circle-dark

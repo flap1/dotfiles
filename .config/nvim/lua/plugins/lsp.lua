@@ -4,7 +4,7 @@
 return {
   -- Mason: LSP/formatter/linter installer
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     cmd = "Mason",
     event = { "BufReadPre", "BufNewFile" },
     opts = {
@@ -34,9 +34,9 @@ return {
   -- mason-lspconfig: install LSP servers via mason
   -- automatic_enable = true lets Neovim 0.11+ auto-enable installed servers
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     event = { "BufReadPre", "BufNewFile" },
-    dependencies = { "williamboman/mason.nvim" },
+    dependencies = { "mason-org/mason.nvim" },
     opts = {
       ensure_installed = {
         "lua_ls", "rust_analyzer", "clangd", "astro",
@@ -52,7 +52,7 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "williamboman/mason-lspconfig.nvim",
+      "mason-org/mason-lspconfig.nvim",
       "saghen/blink.cmp",
       "folke/lazydev.nvim",
     },
@@ -172,11 +172,7 @@ return {
   {
     "folke/lazydev.nvim",
     ft = "lua",
-    opts = {
-      library = {
-        { path = "luvit-meta/library", words = { "vim%.uv" } },
-      },
-    },
+    opts = {},
   },
 
   -- conform.nvim: formatter

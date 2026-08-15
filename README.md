@@ -110,7 +110,7 @@ registerを設定できるように. PR出してない
 
 ```bash
 ### Set dotfiles
-bash setup.sh
+bash bootstrap.sh
 
 ### Install packages
 # peco
@@ -157,7 +157,7 @@ cargo install navi
 # install: https://github.com/neovim/neovim/wiki/Installing-Neovim#linux
 rm -rf ~/.local/share/zinit
 sudo apt install zsh pass
-bash setup.sh
+bash bootstrap.sh
 
 # other
 sudo apt install feh # image viewer

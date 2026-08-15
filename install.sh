@@ -1,14 +1,79 @@
 #!/bin/bash
+#
+# Symlinks and composed config. Packages come from packages/ and mise; this
+# script does not install software.
 
 set -e
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-# What this run installs, for `dotfiles doctor` to check later. Truncated here
-# so a declined category drops out instead of being reported broken forever.
 MANIFEST="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/manifest"
+
+ASSUME_YES=0
+DRY_RUN=0
+ONLY=""
+
+usage() {
+    cat <<'EOF'
+usage: install.sh [options]
+
+  -y, --yes           answer yes to every category
+      --only PATTERN  install only categories matching PATTERN (substring)
+      --dry-run       print what would be linked, change nothing
+  -h, --help          this
+
+Run bootstrap.sh instead on a machine that has nothing installed yet.
+EOF
+}
+
+while [ $# -gt 0 ]; do
+    case $1 in
+        -y|--yes) ASSUME_YES=1 ;;
+        --only) ONLY=$2; shift ;;
+        --dry-run) DRY_RUN=1 ;;
+        -h|--help) usage; exit 0 ;;
+        *) echo "unknown option: $1" >&2; usage >&2; exit 1 ;;
+    esac
+    shift
+done
+
+# Fail here rather than after twenty prompts. Every composed config needs node
+# and every check needs jq, and without them this script "succeeds" while
+# silently skipping the half that matters.
+missing=""
+for c in git node jq; do
+    command -v "$c" > /dev/null || missing="$missing $c"
+done
+if [ -n "$missing" ]; then
+    echo "install.sh needs:$missing" >&2
+    echo "Run ./bootstrap.sh first." >&2
+    exit 1
+fi
+
+# One place decides whether a category runs, so -y, --only and --dry-run cannot
+# disagree with each other.
+ask() {
+    local what=$1
+    if [ -n "$ONLY" ] && [[ $what != *"$ONLY"* ]]; then
+        return 1
+    fi
+    if [ "$DRY_RUN" = 1 ]; then
+        echo "would install [$what]"
+        return 1
+    fi
+    if [ "$ASSUME_YES" = 1 ]; then
+        echo "Installing [$what]..."
+        return 0
+    fi
+    local yn
+    read -rp "Install [$what]? (y/n): " yn
+    case $yn in
+        [Yy]*) echo "Installing [$what]..."; return 0 ;;
+        *) echo "Skipped [$what]."; return 1 ;;
+    esac
+}
+
 mkdir -p "$(dirname "$MANIFEST")"
-: >"$MANIFEST"
+[ "$DRY_RUN" = 1 ] || : >"$MANIFEST"
 
 # Create symbolic link with timestamp and move existing file or directory if necessary.
 # Returns 0 on success, 1 if skipped.
@@ -21,13 +86,15 @@ create_symlink() {
 
     if [ -e "$dst" ] || [ -h "$dst" ]; then
         if [ -L "$dst" ]; then
-            read -rp "Remove existing symlink $dst? (y/n): " yn
+            local yn=y
+            [ "$ASSUME_YES" = 1 ] || read -rp "Remove existing symlink $dst? (y/n): " yn
             case $yn in
                 [Yy]*) unlink "$dst" || sudo unlink "$dst" ;;
                 *) echo "Skipped."; return 1 ;;
             esac
         else
-            read -rp "Move $dst to ${dst}.${timestamp}? (y/n): " yn
+            local yn=y
+            [ "$ASSUME_YES" = 1 ] || read -rp "Move $dst to ${dst}.${timestamp}? (y/n): " yn
             case $yn in
                 [Yy]*) mv "$dst" "${dst}.${timestamp}" || sudo mv "$dst" "${dst}.${timestamp}" ;;
                 *) echo "Skipped."; return 1 ;;
@@ -38,7 +105,8 @@ create_symlink() {
     local parent_dir
     parent_dir=$(dirname "$dst")
     if [ ! -d "$parent_dir" ]; then
-        read -rp "Parent directory $parent_dir does not exist. Create it? (y/n): " yn
+        local yn=y
+        [ "$ASSUME_YES" = 1 ] || read -rp "Parent directory $parent_dir does not exist. Create it? (y/n): " yn
         case $yn in
             [Yy]*) mkdir -p "$parent_dir" || sudo mkdir -p "$parent_dir" ;;
             *) echo "Skipped."; return 1 ;;
@@ -53,16 +121,10 @@ create_symlink() {
     echo "  -> $dst"
 }
 
-# Ask whether to install a category, then run symlinks for it.
-install_category() {
+link_category() {
     local category=$1
     shift
-    read -rp "Install [$category]? (y/n): " yn
-    case $yn in
-        [Yy]*) ;;
-        *) echo "Skipped [$category]."; return ;;
-    esac
-    echo "Installing [$category]..."
+    ask "$category" || return 0
     while [ $# -gt 0 ]; do
         local src=$1 dst=$2
         shift 2
@@ -73,7 +135,7 @@ install_category() {
 # -------------------------------------------------------------------------
 # Core: Zsh + Starship configuration
 # -------------------------------------------------------------------------
-install_category "Core: Zsh + Starship" \
+link_category "Core: Zsh + Starship" \
     ".zshenv"                "$HOME/.zshenv" \
     ".zprofile"              "$HOME/.zprofile" \
     ".config/zsh"            "$HOME/.config/zsh" \
@@ -82,7 +144,7 @@ install_category "Core: Zsh + Starship" \
 # -------------------------------------------------------------------------
 # Editor: Neovim
 # -------------------------------------------------------------------------
-install_category "Editor: Neovim" \
+link_category "Editor: Neovim" \
     ".config/nvim" "$HOME/.config/nvim"
 
 # No terminal emulator config. The terminal is Windows Terminal over ssh, and
@@ -91,37 +153,38 @@ install_category "Editor: Neovim" \
 # -------------------------------------------------------------------------
 # Development tools
 # -------------------------------------------------------------------------
-install_category "Tools: bin + git template" \
+link_category "Tools: bin + git template" \
     "bin"            "$HOME/bin" \
     ".git_template"  "$HOME/.git_template"
 
-install_category "Tools: Git config" \
+link_category "Tools: Git config" \
     ".config/git/.gitconfig" "$HOME/.gitconfig"
 
 # The tmux pin in here is load-bearing rather than a preference: tmux.conf targets
 # 3.7, and a distro tmux must not be installed alongside it, because an older
 # client kills a newer server outright instead of failing -- that is how session
 # restore broke once, silently.
-install_category "Tools: mise" \
+link_category "Tools: mise" \
     ".config/mise/config.toml" "$HOME/.config/mise/config.toml"
 
-install_category "Tools: tmux" \
+link_category "Tools: tmux" \
     ".config/tmux/.tmux.conf" "$HOME/.tmux.conf" \
     ".config/tmux/status.sh"  "$HOME/.tmux-status.sh"
 
 # Three things tmux session restore needs that are not symlinks. Idempotent.
-install_tmux_runtime() {
-    read -rp "Install [Tools: tmux runtime (mise trust + shim + systemd unit)]? (y/n): " yn
-    case $yn in
-        [Yy]*) ;;
-        *) echo "Skipped [Tools: tmux runtime]."; return ;;
-    esac
+write_tmux_service() {
+    ask "Tools: tmux runtime (mise trust + shim + systemd unit)" || return 0
+
+    if ! command -v mise > /dev/null; then
+        echo "  (mise not installed; run ./bootstrap.sh)"
+        return 0
+    fi
 
     # mise trusts ~/.config/mise/config.toml implicitly, but the symlink above
     # resolves into this repo, and an untrusted config does not degrade: every
-    # shim fails, tmux included, which takes the terminal with it.
+    # shim fails, tmux included, which takes the terminal with it. Trusting is
+    # config, not installation; bootstrap.sh runs `mise install`.
     mise trust "$DOTFILES_DIR/.config/mise/config.toml"
-    mise install
 
     # The systemd unit below runs this path literally, and it is also what the
     # tmux server's children find on PATH. mkdir first: on a fresh machine
@@ -179,38 +242,34 @@ EOF
         echo "  (no user systemd bus; unit written but not enabled)"
     fi
 }
-install_tmux_runtime
+write_tmux_service
 
 # A shared library, so it is built rather than symlinked. For servers that offer
 # no way to choose a listen address and would otherwise sit on 0.0.0.0 -- which
 # on a shared machine means the LAN. Used from a unit as
 # Environment=LD_PRELOAD=~/.local/lib/bind-localhost.so
-install_bind_localhost() {
+build_bind_localhost() {
     command -v gcc >/dev/null || { echo "Skipped [Tools: bind-localhost]: no gcc."; return; }
-    read -rp "Install [Tools: bind-localhost.so]? (y/n): " yn
-    case $yn in
-        [Yy]*) ;;
-        *) echo "Skipped [Tools: bind-localhost]."; return ;;
-    esac
+    ask "Tools: bind-localhost.so" || return 0
     mkdir -p "$HOME/.local/lib"
     gcc -shared -fPIC -O2 -Wall -Wextra \
         -o "$HOME/.local/lib/bind-localhost.so" "$DOTFILES_DIR/lib/bind-localhost.c" -ldl
     echo "  -> $HOME/.local/lib/bind-localhost.so"
     "$DOTFILES_DIR/lib/test-bind-localhost.sh" || true
 }
-install_bind_localhost
+build_bind_localhost
 
 # -------------------------------------------------------------------------
 # Application settings
 # -------------------------------------------------------------------------
-install_category "App: GNOME + pictures" \
+link_category "App: GNOME + pictures" \
     ".config/gnome"    "$HOME/.config/gnome" \
     ".config/pictures" "$HOME/.config/pictures"
 
 # -------------------------------------------------------------------------
 # AI tools
 # -------------------------------------------------------------------------
-install_category "AI: Claude Code (hooks + skills + instructions)" \
+link_category "AI: Claude Code (hooks + skills + instructions)" \
     ".claude/hooks"        "$HOME/.claude/hooks" \
     ".claude/skills"       "$HOME/.claude/skills" \
     ".claude/statusline.mjs" "$HOME/.claude/statusline.mjs" \
@@ -239,18 +298,14 @@ install_category "AI: Claude Code (hooks + skills + instructions)" \
 # such condition.
 #
 # Idempotent: rerunning prints "already current".
-install_claude_settings() {
+compose_claude_settings() {
     local shared="$DOTFILES_DIR/.claude/settings.json"
     local target="$HOME/.claude/settings.json"
 
     [ -f "$shared" ] || { echo "Skipped [AI: Claude Code settings]: $shared missing."; return; }
     command -v node >/dev/null || { echo "Skipped [AI: Claude Code settings]: no node."; return; }
 
-    read -rp "Install [AI: Claude Code settings (shared + linux + local)]? (y/n): " yn
-    case $yn in
-        [Yy]*) ;;
-        *) echo "Skipped [AI: Claude Code settings]."; return ;;
-    esac
+    ask "AI: Claude Code settings (shared + linux + local)" || return 0
 
     SHARED="$shared" \
     LINUX="$DOTFILES_DIR/.claude/settings.linux.json" \
@@ -320,9 +375,9 @@ fs.writeFileSync(target, after);
 console.log('  -> ' + target);
 NODE
 }
-install_claude_settings
+compose_claude_settings
 
-install_category "AI: Cursor Agent (status line)" \
+link_category "AI: Cursor Agent (status line)" \
     ".cursor/statusline.mjs" "$HOME/.cursor/statusline.mjs"
 
 # ~/.config/cursor/cli-config.json is composed for the same reason the Claude
@@ -345,7 +400,7 @@ install_category "AI: Cursor Agent (status line)" \
 # $XDG_CONFIG_HOME/cursor, else ~/.cursor. Guessing ~/.cursor unconditionally
 # -- which is what the published documentation says -- writes a file that
 # nothing reads on any machine that sets XDG_CONFIG_HOME.
-install_cursor_settings() {
+compose_cursor_settings() {
     local shared="$DOTFILES_DIR/.cursor/cli-config.json"
     local dir
 
@@ -360,11 +415,7 @@ install_cursor_settings() {
         dir="$HOME/.cursor"
     fi
 
-    read -rp "Install [AI: Cursor settings (layered onto $dir/cli-config.json)]? (y/n): " yn
-    case $yn in
-        [Yy]*) ;;
-        *) echo "Skipped [AI: Cursor settings]."; return ;;
-    esac
+    ask "AI: Cursor settings (layered onto $dir/cli-config.json)" || return 0
 
     SHARED="$shared" \
     LOCAL="$DOTFILES_DIR/.cursor/cli-config.local.json" \
@@ -427,7 +478,7 @@ fs.writeFileSync(target, after);
 console.log('  -> ' + target);
 NODE
 }
-install_cursor_settings
+compose_cursor_settings
 
 # ~/.codex/config.toml holds my settings and the CLI's bookkeeping in one file:
 # [projects.*] trust levels, [notice.model_migrations],
@@ -448,18 +499,14 @@ install_cursor_settings
 # does not mention survives untouched. Nothing re-serialises a TOML value,
 # which is where a hand-rolled merge would get the quoting of a key like
 # [projects."/home/me/x"] wrong.
-install_codex_settings() {
+compose_codex_settings() {
     local shared="$DOTFILES_DIR/.codex/config.toml"
     local target="${CODEX_HOME:-$HOME/.codex}/config.toml"
 
     [ -f "$shared" ] || { echo "Skipped [AI: Codex settings]: $shared missing."; return; }
     command -v node >/dev/null || { echo "Skipped [AI: Codex settings]: no node."; return; }
 
-    read -rp "Install [AI: Codex settings (spliced into $target)]? (y/n): " yn
-    case $yn in
-        [Yy]*) ;;
-        *) echo "Skipped [AI: Codex settings]."; return ;;
-    esac
+    ask "AI: Codex settings (spliced into $target)" || return 0
 
     SHARED="$shared" TARGET="$target" node <<'NODE'
 const fs = require('fs');
@@ -525,7 +572,7 @@ fs.writeFileSync(target, body);
 console.log('  -> ' + target);
 NODE
 }
-install_codex_settings
+compose_codex_settings
 
 
 # -------------------------------------------------------------------------
@@ -533,7 +580,9 @@ install_codex_settings
 # -------------------------------------------------------------------------
 # lefthook, not core.hooksPath: the global hooksPath already points at the
 # lefthook dispatcher, and a per-repo hooksPath would disable it here.
-if command -v lefthook > /dev/null; then
+if [ "$DRY_RUN" = 1 ]; then
+    echo "would install [gates: lefthook]"
+elif command -v lefthook > /dev/null; then
     (cd "$DOTFILES_DIR" && lefthook install)
 else
     echo "Skipped [gates]: lefthook not installed."
@@ -547,8 +596,9 @@ fi
 # -------------------------------------------------------------------------
 # Change default shell to zsh
 # -------------------------------------------------------------------------
-if [ "$(basename "$SHELL")" != "zsh" ]; then
-    read -rp "Change default shell to zsh? (y/n): " yn
+if [ "$DRY_RUN" = 0 ] && [ "$(basename "$SHELL")" != "zsh" ]; then
+    yn=y
+    [ "$ASSUME_YES" = 1 ] || read -rp "Change default shell to zsh? (y/n): " yn
     case $yn in
         [Yy]*)
             sudo chsh -s "$(command -v zsh)" "$USER"
@@ -560,15 +610,3 @@ else
     echo "Default shell is already zsh."
 fi
 
-# -------------------------------------------------------------------------
-# Starship prompt
-# -------------------------------------------------------------------------
-if ! command -v starship > /dev/null 2>&1; then
-    read -rp "Starship not found. Install it now? (y/n): " yn
-    case $yn in
-        [Yy]*)
-            curl -sS https://starship.rs/install.sh | sh ;;
-        *)
-            echo "Skipped. Install starship later: https://starship.rs" ;;
-    esac
-fi

@@ -27,7 +27,7 @@ jobs:
       - name: shellcheck
         run: |
           mapfile -t files < <(
-            git ls-files '*.sh' 'bin/*' \
+            git ls-files '*.sh' 'bin/*' 'packages/*' \
               | while read -r f; do
                   head -c 2 "$f" | grep -q '#!' && head -1 "$f" | grep -qE 'sh$|bash' && echo "$f"
                 done
@@ -35,13 +35,11 @@ jobs:
           printf '%s\n' "${files[@]}"
           shellcheck "${files[@]}"
       - name: shfmt
-        run: shfmt -i 2 -ci -s -d bin/dotfiles
+        run: shfmt -i 4 -ci -s -d bin/dotfiles bootstrap.sh
 
-  # setup.sh is answered `n` throughout, so this proves the script runs to
-  # completion and the composers no-op on a second pass -- not that the
-  # symlinks land. Installing for real needs a throwaway HOME, which is what
-  # the container gives us.
-  setup:
+  # A throwaway HOME in a bare container, so this is the fresh-machine path
+  # rather than a rehearsal of it.
+  bootstrap:
     runs-on: ubuntu-latest
     container: ubuntu:24.04
     steps:
@@ -57,14 +55,14 @@ jobs:
           cp -r "$GITHUB_WORKSPACE" "$HOME/dotfiles"
           cd "$HOME/dotfiles"
 
-          yes y | ./setup.sh >/tmp/first.log 2>&1 || true
+          ./install.sh --yes >/tmp/first.log 2>&1
           find "$HOME" -path "$HOME/dotfiles" -prune -o -print | sort >/tmp/first.state
 
-          yes y | ./setup.sh >/tmp/second.log 2>&1 || true
+          ./install.sh --yes >/tmp/second.log 2>&1
           find "$HOME" -path "$HOME/dotfiles" -prune -o -print | sort >/tmp/second.state
 
           if ! diff -u /tmp/first.state /tmp/second.state; then
-            echo "second run changed the filesystem: setup.sh is not idempotent"
+            echo "second run changed the filesystem: install.sh is not idempotent"
             exit 1
           fi
           grep -c 'already current' /tmp/second.log

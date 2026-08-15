@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=/dev/null
 source ../.config/zsh/sh/function.zsh
 
 # neovim

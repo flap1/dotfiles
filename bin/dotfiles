@@ -60,23 +60,23 @@ cmd_pull() {
         return 0
     }
 
-    # Only say it when the pull touched something setup.sh installs; a reminder
+    # Only say it when the pull touched something install.sh links; a reminder
     # on every pull stops being read.
     if git_ diff --name-only "$before" "$after" |
-        grep -qE '^(setup\.sh|install/|\.claude/|\.cursor/|\.codex/|\.config/)'; then
-        echo "${Y}installed files changed -- rerun ./setup.sh${X}"
+        grep -qE '^(install\.sh|packages/|\.claude/|\.cursor/|\.codex/|\.config/)'; then
+        echo "${Y}installed files changed -- rerun ./install.sh${X}"
     fi
 }
 
-# The manifest is written by setup.sh, so doctor checks what this machine
-# actually installed. Deriving the list from setup.sh instead would flag every
+# The manifest is written by install.sh, so doctor checks what this machine
+# actually installed. Deriving the list from install.sh instead would flag every
 # declined category and every mkdir target as broken.
 cmd_doctor() {
     local problems=0
 
     echo "${M}symlinks${X}"
     if [ ! -f "$MANIFEST" ]; then
-        echo "  ${Y}no manifest${X}  run ./setup.sh once to record what is installed"
+        echo "  ${Y}no manifest${X}  run ./install.sh once to record what is installed"
         problems=$((problems + 1))
     else
         local link
@@ -94,16 +94,23 @@ cmd_doctor() {
     fi
 
     echo "${M}composed files${X}"
-    doctor_composed "$HOME/.claude/settings.json" "$DOTFILES_DIR/.claude/settings.json" claude
+    doctor_composed "$HOME/.claude/settings.json" "$DOTFILES_DIR/.claude/settings.json" claude ||
+        problems=$((problems + 1))
     doctor_composed \
         "${CURSOR_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/cursor}/cli-config.json" \
-        "$DOTFILES_DIR/.cursor/cli-config.json" cursor
+        "$DOTFILES_DIR/.cursor/cli-config.json" cursor ||
+        problems=$((problems + 1))
 
     echo "${M}gates${X}"
-    if grep -q lefthook "$DOTFILES_DIR/.git/hooks/pre-commit" 2>/dev/null; then
-        echo "  ${G}ok${X}         lefthook installed"
+    # A global core.hooksPath wins over .git/hooks, so ask git where the hook
+    # it would actually run lives before looking for lefthook in it.
+    local hookdir
+    hookdir=$(git_ config --get core.hooksPath || echo "$DOTFILES_DIR/.git/hooks")
+    hookdir=${hookdir/#\~/$HOME}
+    if grep -q lefthook "$hookdir/pre-commit" 2>/dev/null; then
+        echo "  ${G}ok${X}         lefthook via $hookdir"
     else
-        echo "  ${Y}absent${X}     lefthook not installed here -- rerun ./setup.sh"
+        echo "  ${Y}absent${X}     no lefthook pre-commit in $hookdir -- rerun ./install.sh"
         problems=$((problems + 1))
     fi
     if command -v gitleaks >/dev/null; then
@@ -124,11 +131,11 @@ doctor_composed() {
     local live=$1 layer=$2 name=$3
     [ -f "$live" ] || {
         echo "  ${Y}absent${X}     $name"
-        return
+        return 1
     }
     command -v jq >/dev/null || {
         echo "  ${M}skipped${X}    $name (no jq)"
-        return
+        return 0
     }
     local drifted
     drifted=$(jq -r --slurpfile l "$layer" '
@@ -137,10 +144,10 @@ doctor_composed() {
     | select(.[$k] != $l[0][$k])
     | $k' "$live" 2>/dev/null | paste -sd, -)
     if [ -n "$drifted" ]; then
-        echo "  ${Y}drifted${X}    $name: $drifted -- rerun ./setup.sh"
-    else
-        echo "  ${G}ok${X}         $name"
+        echo "  ${Y}drifted${X}    $name: $drifted -- rerun ./install.sh"
+        return 1
     fi
+    echo "  ${G}ok${X}         $name"
 }
 
 cmd_check() {

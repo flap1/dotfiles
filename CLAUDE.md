@@ -5,10 +5,14 @@ leaked value as compromised rather than removable.
 
 ## Layout
 
-`setup.sh` installs. Everything it does takes one of two shapes, and picking
-the wrong one is the recurring mistake here:
+`bootstrap.sh` is the entry point on a bare machine: packages/system.sh, then
+`mise install`, then `install.sh`. `install.sh` alone is enough once a machine
+is set up -- it only links and composes, never installs software.
 
-- **symlink** — `install_category` -> `create_symlink`, for files only this
+What `install.sh` does takes one of two shapes, and picking the wrong one is
+the recurring mistake here:
+
+- **symlink** — `link_category` -> `create_symlink`, for files only this
   repository writes. Each link is appended to
   `$XDG_STATE_HOME/dotfiles/manifest`, which is what `dotfiles doctor` reads.
 - **compose** — `install_claude_settings`, `install_cursor_settings`,
@@ -30,18 +34,20 @@ belongs here at the root and nowhere else.
 ## Commands
 
 ```bash
-./setup.sh              # install; every category prompts
+./bootstrap.sh          # bare machine: packages, tools, links
+./install.sh -y         # links only, no prompts
 dotfiles status         # dirty / unpushed / unpulled
 dotfiles doctor         # manifest links, composed-file drift, gates
 gitleaks git --redact   # what CI runs
-shellcheck bin/dotfiles && shfmt -i 2 -ci -s -d bin/dotfiles
+npx skills update -g    # vendored third-party skills under .claude/skills
+shellcheck bin/dotfiles && shfmt -i 4 -ci -s -d bin/dotfiles
 ```
 
 ## Rules
 
-- Shell passes `shellcheck` and `shfmt -i 2 -ci -s`. A `disable=` needs a
+- Shell passes `shellcheck` and `shfmt -i 4 -ci -s`. A `disable=` needs a
   reason on the line above it.
-- `setup.sh` stays idempotent: a second run changes no file. CI asserts it.
+- `install.sh` stays idempotent: a second run changes no file. CI asserts it.
 - Comments say why, not what. No process history, no restating the code.
 - Code and comments in English.
 - A path that stops being used gets deleted, not commented out. Git keeps it.

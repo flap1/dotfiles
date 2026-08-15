@@ -26,7 +26,4 @@ return {
 
   -- vim-repeat: dot-repeat support
   { "tpope/vim-repeat", event = "VeryLazy" },
-
-  -- Dependency libraries (lazy-loaded)
-  { "nvim-lua/popup.nvim", lazy = true },
 }

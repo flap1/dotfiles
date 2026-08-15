@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p ~/.local/share/fonts; cd ~/.local/share/fonts
+mkdir -p ~/.local/share/fonts; cd ~/.local/share/fonts || exit 1
 
 if [ ! -f ~/.local/share/fonts/UDEVGothicNF-Regular.ttf ];then
   wget https://github.com/yuru7/udev-gothic/releases/download/v1.3.1/UDEVGothic_NF_v1.3.1.zip
