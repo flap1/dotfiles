@@ -70,3 +70,9 @@ type = "stdio"
 
 [mcp_servers.code-review-graph.tools.build_or_update_graph_tool]
 approval_mode = "approve"
+
+# Own [tui] for the status line only. Codex writes [tui.model_availability_nux]
+# separately, and compose keeps that block. Setting status_line replaces the
+# default (model-with-reasoning, current-dir), so those stay in the list.
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "weekly-limit"]
