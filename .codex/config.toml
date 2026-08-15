@@ -24,6 +24,10 @@
 model = "gpt-5.6-sol"
 model_reasoning_effort = "medium"
 approvals_reviewer = "auto_review"
+# Empty string turns off the Co-authored-by trailer. The key is inert unless
+# [features.codex_git_commit] is on; keep it here so turning that feature on
+# later does not restore the default Codex <noreply@openai.com> trailer.
+commit_attribution = ""
 # [features.multi_agent_v2] is still flagged unstable; we keep it for the
 # thread cap, so silence the startup banner rather than drop the feature.
 suppress_unstable_features_warning = true
