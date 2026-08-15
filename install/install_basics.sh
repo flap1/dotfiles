@@ -43,114 +43,14 @@ ask_and_install "wl-clipboard" wl-copy "sudo apt install -y wl-clipboard"
 ask_and_install "rustup/cargo" cargo "curl https://sh.rustup.rs -sSf | sh -s -- -y && source $HOME/.cargo/env"
 
 # -------------------------------------------------------------------------
-# CLI tools via cargo (all user-local, no sudo)
-# -------------------------------------------------------------------------
-ask_and_install "eza"    eza    "cargo install eza"
-ask_and_install "bat"    bat    "cargo install bat"
-ask_and_install "ripgrep (rg)" rg "cargo install ripgrep"
-ask_and_install "fd"     fd     "cargo install fd-find"
-ask_and_install "delta"  delta  "cargo install git-delta"
-ask_and_install "fzf"    fzf    "cargo install fzf-bin"
-ask_and_install "zoxide" zoxide "cargo install zoxide"
-ask_and_install "trashy" trash  "cargo install trashy"
-
-# -------------------------------------------------------------------------
-# More CLI tools via cargo (user-local, no sudo)
-# -------------------------------------------------------------------------
-ask_and_install "atuin"     atuin     "cargo install atuin"
-ask_and_install "dust"      dust      "cargo install du-dust"
-ask_and_install "bottom"    btm       "cargo install bottom"
-ask_and_install "procs"     procs     "cargo install procs"
-ask_and_install "tealdeer"  tldr      "cargo install tealdeer && tldr --update"
-ask_and_install "just"      just      "cargo install just"
-ask_and_install "hyperfine" hyperfine "cargo install hyperfine"
-ask_and_install "tokei"     tokei     "cargo install tokei"
-ask_and_install "xh"        xh        "cargo install xh"
-ask_and_install "hexyl"     hexyl     "cargo install hexyl"
-ask_and_install "ouch"      ouch      "cargo install ouch"
-ask_and_install "grex"      grex      "cargo install grex"
-ask_and_install "gping"     gping     "cargo install gping"
-ask_and_install "watchexec" watchexec "cargo install watchexec-cli"
-ask_and_install "yazi"      yazi      "cargo install --locked yazi-build && cargo install --locked yazi-fm yazi-cli"
-ask_and_install "bob (neovim manager)" bob "cargo install bob-nvim && bob use stable"
-
-# -------------------------------------------------------------------------
 # Version managers (user-local)
 # -------------------------------------------------------------------------
 ask_and_install "mise" mise "curl https://mise.run | sh"
-ask_and_install "uv"   uv   "curl -LsSf https://astral.sh/uv/install.sh | sh"
+
+# Everything mise declares, in one pass. The list lives in
+# .config/mise/config.toml with a lockfile beside it.
+mise install
 ask_and_install "pynvim (neovim python provider)" pynvim-python "uv tool install pynvim"
-
-# -------------------------------------------------------------------------
-# Shell linting/formatting tools (user-local via mise)
-# -------------------------------------------------------------------------
-ask_and_install "shfmt"      shfmt      "mise use --global shfmt"
-ask_and_install "shellcheck" shellcheck "mise use --global shellcheck"
-
-# -------------------------------------------------------------------------
-# Starship prompt (user-local via --bin-dir)
-# -------------------------------------------------------------------------
-ask_and_install "starship" starship "curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir $HOME/.local/bin -y"
-
-# -------------------------------------------------------------------------
-# GitHub CLI (user-local binary)
-# -------------------------------------------------------------------------
-ask_and_install "gh" gh "$(cat <<'EOF'
-  mkdir -p "$HOME/.local/bin"
-  VERSION=$(curl -s https://api.github.com/repos/cli/cli/releases/latest | grep tag_name | cut -d'"' -f4 | tr -d v)
-  curl -sL "https://github.com/cli/cli/releases/download/v${VERSION}/gh_${VERSION}_linux_amd64.tar.gz" | tar xz -C /tmp
-  cp "/tmp/gh_${VERSION}_linux_amd64/bin/gh" "$HOME/.local/bin/gh"
-  gh auth login
-EOF
-)"
-
-if command -v ghq > /dev/null 2>&1; then
-    echo "ghq: already installed, skipping."
-else
-    read -rp "Install ghq? (y/n): " yn
-    if [[ $yn == [Yy]* ]]; then
-        if ! command -v go > /dev/null 2>&1; then
-            echo "go not found. Installing via mise..."
-            mise use --global go@latest
-            eval "$(mise activate bash)"
-        fi
-        go install github.com/x-motemen/ghq@latest
-    else
-        echo "Skipped ghq."
-    fi
-fi
-
-if command -v lazygit > /dev/null 2>&1; then
-    echo "lazygit: already installed, skipping."
-else
-    read -rp "Install lazygit? (y/n): " yn
-    if [[ $yn == [Yy]* ]]; then
-        if ! command -v go > /dev/null 2>&1; then
-            echo "go not found. Installing via mise..."
-            mise use --global go@latest
-            eval "$(mise activate bash)"
-        fi
-        go install github.com/jesseduffield/lazygit@latest
-    else
-        echo "Skipped lazygit."
-    fi
-fi
-
-if command -v lazydocker > /dev/null 2>&1; then
-    echo "lazydocker: already installed, skipping."
-else
-    read -rp "Install lazydocker? (y/n): " yn
-    if [[ $yn == [Yy]* ]]; then
-        if ! command -v go > /dev/null 2>&1; then
-            echo "go not found. Installing via mise..."
-            mise use --global go@latest
-            eval "$(mise activate bash)"
-        fi
-        go install github.com/jesseduffield/lazydocker@latest
-    else
-        echo "Skipped lazydocker."
-    fi
-fi
 
 # -------------------------------------------------------------------------
 # Docker (sudo required for daemon install + usermod)
@@ -183,11 +83,6 @@ else
         echo "Skipped docker compose."
     fi
 fi
-
-# -------------------------------------------------------------------------
-# WezTerm (terminal emulator)
-# -------------------------------------------------------------------------
-bash "$(dirname "$0")/install_wezterm.sh"
 
 # -------------------------------------------------------------------------
 # tmux plugins (TPM + catppuccin + cpu + sensible + resurrect + continuum)
