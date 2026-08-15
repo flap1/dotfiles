@@ -120,8 +120,13 @@ return {
             layout = { preset = "sidebar", preview = false },
             auto_close = false,
             follow_file = true, -- reveal the current buffer as you move around
+            -- Gitignored entries stay visible in the sidebar and are filtered
+            -- out of search instead. The sidebar answers "what is in this
+            -- directory", and hiding target/ or .env from that answer hides
+            -- that they exist at all; search answers "where is the thing I am
+            -- editing", which build output only ever gets in the way of.
             hidden = true,
-            ignored = false,
+            ignored = true,
           },
         },
       },

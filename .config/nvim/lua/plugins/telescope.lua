@@ -17,7 +17,12 @@ return {
     -- lives here and nowhere else. Rare pickers (marks, registers, commands,
     -- snippets) are intentionally unbound — `:Telescope <name>` is enough.
     keys = {
-      { "<Leader>ff", "<Cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", desc = "Files" },
+      -- hidden but not no_ignore: dotfiles are things you edit, build output is
+      -- not. In a Rust worktree target/ alone is six figures of files, and every
+      -- one of them competes with the file you meant. The sidebar still shows
+      -- them, and `:Telescope find_files no_ignore=true` is there on the rare
+      -- day you want to search one.
+      { "<Leader>ff", "<Cmd>Telescope find_files follow=true hidden=true<CR>", desc = "Files" },
       { "<Leader>fg", "<Cmd>Telescope live_grep<CR>",   desc = "Grep" },
       { "<Leader>fw", "<Cmd>Telescope grep_string<CR>", desc = "Grep word under cursor" },
       { "<Leader>fb", "<Cmd>Telescope buffers<CR>",     desc = "Buffers" },
