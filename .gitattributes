@@ -16,3 +16,8 @@
 # rather than the line ending.
 *.py text eol=lf
 *.service text eol=lf
+
+# A vendored skill is a hundred-odd files of upstream markdown. Unmarked it
+# drowns a review diff and decides this repository's language stats. The list of
+# what is vendored, and why it must not be edited, is .claude/skills/VENDOR.
+.claude/skills/hallmark/** linguist-vendored

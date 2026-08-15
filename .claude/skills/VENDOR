@@ -1,0 +1,13 @@
+# Skills in this directory that an upstream writes, not this repository.
+#
+# The point of the file is the boundary, not the bookkeeping: anything listed
+# here is replaced wholesale by `npx skills update -g`, so a local edit is lost
+# on the next update without warning. Extend a vendored skill by writing a
+# separate skill beside it that references it. Never edit one in place.
+#
+# The commit is a record, not a lock -- `skills update` resolves the source by
+# name through skills.sh and does not write a lockfile for global installs. It
+# is here so a diff of this directory can be traced back to something.
+#
+# name<TAB>upstream<TAB>commit<TAB>version<TAB>license
+hallmark	https://github.com/Nutlope/hallmark	13ac0ec7e148655948100b6396439e481361d690	1.1.0	MIT
