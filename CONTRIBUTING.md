@@ -49,6 +49,7 @@ From the repository root, the same commands CI runs:
 ```bash
 bash scripts/policy.sh
 bash scripts/ci-shell.sh
+bash scripts/ci-secrets.sh
 bash scripts/ci-install.sh
 bash scripts/ci-compose.sh
 bash scripts/ci-dotfiles.sh
@@ -60,8 +61,9 @@ touch your home directory. `ci-shell.sh` needs `shellcheck`, `shfmt`,
 `actionlint`, and `zsh` (the versions in `.config/mise/config.toml`).
 `ci-pwsh.sh` needs `pwsh`.
 
-Secrets: `gitleaks detect --source . --verbose --redact` (full history).
-Lefthook runs `gitleaks git --staged` on commit.
+`ci-secrets.sh` is `gitleaks detect` over the checkout (full history when
+CI sets fetch-depth: 0). Lefthook runs `gitleaks git --staged` on commit.
+Both use the mise `gitleaks` pin.
 
 Origin is GitHub. CI is `.github/workflows/ci.yml` (pull requests, and
 pushes to `main` after merge).
