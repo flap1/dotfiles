@@ -15,7 +15,8 @@ compose_claude_settings() {
         return
     }
 
-    ask claude-settings || return 0
+    ask claude-settings \
+        "$HOME/.claude/hooks" "$HOME/.claude/skills" "$HOME/.claude/statusline.mjs" || return 0
 
     SHARED="$shared" \
         LINUX="$DOTFILES_DIR/.claude/settings.linux.json" \
@@ -51,7 +52,7 @@ compose_cursor_settings() {
         targets+=("$HOME/.cursor/cli-config.json")
     fi
 
-    ask cursor-settings || return 0
+    ask cursor-settings "$HOME/.cursor/statusline.mjs" || return 0
 
     local target
     for target in "${targets[@]}"; do
@@ -76,7 +77,7 @@ compose_codex_settings() {
         return
     }
 
-    ask codex-settings || return 0
+    ask codex-settings "${CODEX_HOME:-$HOME/.codex}/agents" || return 0
 
     SHARED="$shared" TARGET="$target" node "$DOTFILES_DIR/lib/compose-codex.js"
 }

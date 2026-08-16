@@ -25,9 +25,14 @@ Git identity is not in this repository: put `user.name` and `user.email` in
 
 ```bash
 ./install.sh --dry-run
-./install.sh --only zsh
 ./install.sh -y
+./install.sh --only yazi --yes
 ```
+
+`-y` on a machine that has nothing yet installs every category. The same
+flag later (including `dotfiles update`) only refreshes categories already
+in the manifest. A category is every path it names, or none. To take one
+you skipped, `--only` that id with `--yes`.
 
 Files only this repository writes are symlinked. Files a CLI also writes
 are composed into: a symlink there sends machine-local churn — and, for
@@ -47,7 +52,7 @@ A new interactive shell runs `dotfiles check` at most once a day. If
 `origin/main` is ahead it prints one line pointing at `dotfiles update`.
 That command fast-forwards, then applies: Linux runs `mise install` when
 the catalog moved and `install.sh --yes` when linked or composed files
-moved; Windows runs `install.ps1`. Neither side auto-runs bootstrap
+moved (only categories already on the machine); Windows runs `install.ps1`. Neither side auto-runs bootstrap
 (`bootstrap.sh` needs sudo; `bootstrap.ps1` installs software).
 
 On Linux, `C` / `Y` copy a pipeline to the clipboard (`wl-copy` or `pbcopy`).

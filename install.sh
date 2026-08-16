@@ -14,15 +14,16 @@ usage() {
     cat <<'EOF'
 usage: install.sh [options]
 
-  -y, --yes           every category
-      --only ID       one category id (zsh, nvim, bin, git, mise, tmux,
-                      tmux-runtime, yazi, lazygit, claude, cursor,
-                      claude-settings, cursor-settings, codex, codex-settings)
+  -y, --yes           categories already on this machine; all of them
+                      when the machine has none yet
+      --only ID       one category (adds it under --yes)
       --dry-run       print ids, change nothing
   -h, --help
 
-Bare machine: ./bootstrap.sh (software, including claude / codex / agent).
-This script only links and composes config.
+A new machine: ./bootstrap.sh, or ./install.sh -y after software exists.
+dotfiles update reruns --yes and only refreshes what this machine already
+took. To add a category later: ./install.sh --only yazi --yes.
+A category is all of its paths or none of them.
 EOF
 }
 
@@ -60,6 +61,7 @@ fi
 
 ask() {
     local id=$1
+    shift
     if [ -n "$ONLY" ] && [ "$id" != "$ONLY" ]; then
         return 1
     fi
@@ -68,8 +70,19 @@ ask() {
         return 1
     fi
     if [ "$ASSUME_YES" = 1 ]; then
-        echo "Installing [$id]..."
-        return 0
+        if [ -n "$ONLY" ] || [ "$FULL_YES" = 1 ]; then
+            echo "Installing [$id]..."
+            return 0
+        fi
+        local d
+        for d in "$@"; do
+            if grep -qxF "$d" "$MANIFEST" 2>/dev/null; then
+                echo "Installing [$id]..."
+                return 0
+            fi
+        done
+        echo "Skipping [$id] (not on this machine; ./install.sh --only $id --yes)"
+        return 1
     fi
     local yn
     read -rp "Install [$id]? (y/n): " yn
@@ -86,8 +99,9 @@ ask() {
 }
 
 mkdir -p "$(dirname "$MANIFEST")"
-if [ "$DRY_RUN" != 1 ] && [ "$ASSUME_YES" = 1 ] && [ -z "$ONLY" ]; then
-    : >"$MANIFEST"
+FULL_YES=0
+if [ "$ASSUME_YES" = 1 ] && [ -z "$ONLY" ] && [ ! -s "$MANIFEST" ]; then
+    FULL_YES=1
 fi
 
 create_symlink() {
@@ -101,52 +115,15 @@ create_symlink() {
     fi
 
     if [ -e "$dst" ] || [ -h "$dst" ]; then
-        if [ "$ASSUME_YES" = 1 ]; then
-            if [ -L "$dst" ]; then
-                unlink "$dst"
-            else
-                mv "$dst" "$dst.$(date +%Y%m%d%H%M%S)"
-            fi
+        if [ -L "$dst" ]; then
+            unlink "$dst"
         else
-            local yn
-            if [ -L "$dst" ]; then
-                read -rp "Remove existing symlink $dst? (y/n): " yn
-                case $yn in
-                    [Yy]*) unlink "$dst" ;;
-                    *)
-                        echo "Skipped."
-                        return 1
-                        ;;
-                esac
-            else
-                read -rp "Move $dst aside? (y/n): " yn
-                case $yn in
-                    [Yy]*) mv "$dst" "$dst.$(date +%Y%m%d%H%M%S)" ;;
-                    *)
-                        echo "Skipped."
-                        return 1
-                        ;;
-                esac
-            fi
+            mv "$dst" "$dst.$(date +%Y%m%d%H%M%S)"
         fi
     fi
 
     parent_dir=$(dirname "$dst")
-    if [ ! -d "$parent_dir" ]; then
-        if [ "$ASSUME_YES" = 1 ]; then
-            mkdir -p "$parent_dir"
-        else
-            local yn
-            read -rp "Create $parent_dir? (y/n): " yn
-            case $yn in
-                [Yy]*) mkdir -p "$parent_dir" ;;
-                *)
-                    echo "Skipped."
-                    return 1
-                    ;;
-            esac
-        fi
-    fi
+    mkdir -p "$parent_dir"
 
     ln -s "$src" "$dst"
     echo "$dst" >>"$MANIFEST"
@@ -156,15 +133,17 @@ create_symlink() {
 link_category() {
     local id=$1
     shift
-    ask "$id" || return 0
+    local -a pairs=("$@")
+    local dests=()
     while [ $# -gt 0 ]; do
-        local src=$1 dst=$2
+        dests+=("$2")
         shift 2
-        if [ "$ASSUME_YES" = 1 ]; then
-            create_symlink "$DOTFILES_DIR/$src" "$dst"
-        else
-            create_symlink "$DOTFILES_DIR/$src" "$dst" || true
-        fi
+    done
+    ask "$id" "${dests[@]}" || return 0
+    set -- "${pairs[@]}"
+    while [ $# -gt 0 ]; do
+        create_symlink "$DOTFILES_DIR/$1" "$2"
+        shift 2
     done
 }
 
@@ -200,7 +179,7 @@ link_category lazygit \
     ".config/lazygit" "$HOME/.config/lazygit"
 
 write_tmux_service() {
-    ask tmux-runtime || return 0
+    ask tmux-runtime "$HOME/.tmux.conf" "$HOME/.tmux-status.sh" || return 0
 
     if ! command -v mise >/dev/null; then
         echo "  (mise not installed; run ./bootstrap.sh)"
@@ -273,4 +252,10 @@ fi
 
 if [ "$DRY_RUN" = 0 ] && [ "$(basename "${SHELL:-}")" != "zsh" ]; then
     echo "Default shell is not zsh. Run: chsh -s $(command -v zsh)"
+fi
+
+if [ "$DRY_RUN" != 1 ] && [ -f "$MANIFEST" ]; then
+    tmp=$(mktemp)
+    awk 'NF && !seen[$0]++' "$MANIFEST" >"$tmp"
+    mv "$tmp" "$MANIFEST"
 fi
