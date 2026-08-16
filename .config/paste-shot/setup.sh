@@ -10,9 +10,18 @@ UNIT_DST="$HOME/.config/systemd/user/paste-shot.service"
 PORT=47291
 SOCKET="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/paste-shot.sock"
 
-command -v python3 >/dev/null || { echo "python3 is required."; exit 1; }
-command -v systemctl >/dev/null || { echo "systemd is required (this is a user service)."; exit 1; }
-[ -f "$UNIT_SRC" ] || { echo "not found: $UNIT_SRC"; exit 1; }
+command -v python3 >/dev/null || {
+    echo "python3 is required."
+    exit 1
+}
+command -v systemctl >/dev/null || {
+    echo "systemd is required (this is a user service)."
+    exit 1
+}
+[ -f "$UNIT_SRC" ] || {
+    echo "not found: $UNIT_SRC"
+    exit 1
+}
 
 mkdir -p "$(dirname "$UNIT_DST")"
 ln -sfn "$UNIT_SRC" "$UNIT_DST"

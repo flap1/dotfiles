@@ -10,7 +10,7 @@ pre-commit:
         - "*.cmd"
       run: shellcheck -x {staged_files}
     shfmt:
-      glob: "{bootstrap.sh,bin/*,packages/*.sh,lib/*.sh,scripts/*.sh,.git_template/hooks/*}"
+      glob: "{*.sh,bin/*,packages/*.sh,lib/*.sh,.git_template/hooks/*,scripts/*.sh}"
       exclude:
         - "*.ps1"
         - "*.cmd"

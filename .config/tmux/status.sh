@@ -10,27 +10,27 @@
 # page cache, which reported 120GB on an idle machine.
 cache="${TMPDIR:-/tmp}/.tmux-cpu-sample.$(id -u)"
 
-read -r _ u n s i rest < /proc/stat
+read -r _ u n s i rest </proc/stat
 busy=$((u + n + s))
 total=$((busy + i))
 
 cpu="--"
 if [ -r "$cache" ]; then
-  read -r pbusy ptotal < "$cache" 2>/dev/null || true
-  if [ -n "$ptotal" ] && [ "$total" -gt "$ptotal" ]; then
-    cpu=$(( (busy - pbusy) * 100 / (total - ptotal) ))
-  fi
+    read -r pbusy ptotal <"$cache" 2>/dev/null || true
+    if [ -n "$ptotal" ] && [ "$total" -gt "$ptotal" ]; then
+        cpu=$(((busy - pbusy) * 100 / (total - ptotal)))
+    fi
 fi
-printf '%s %s\n' "$busy" "$total" > "$cache"
+printf '%s %s\n' "$busy" "$total" >"$cache"
 
 # MemTotal/MemFree/MemAvailable are the first three lines, so this stays inside
 # the shell instead of forking awk, which was most of the runtime.
 {
-  read -r _ memtotal _
-  read -r _ _ _
-  read -r _ memavail _
-} < /proc/meminfo
-mem=$(( (memtotal - memavail) * 100 / memtotal ))
+    read -r _ memtotal _
+    read -r _ _ _
+    read -r _ memavail _
+} </proc/meminfo
+mem=$(((memtotal - memavail) * 100 / memtotal))
 
 # Labels, not icons: the Nerd Font CPU and RAM glyphs are both a chip outline,
 # so at status-bar size they were indistinguishable. Two letters carry the
@@ -56,16 +56,16 @@ attn_max_age=15
 now=$(date +%s)
 mtime=$(stat -c %Y "$attn" 2>/dev/null || echo 0)
 if [ $((now - mtime)) -ge "$attn_max_age" ]; then
-  # Claim the slot before forking, or every attached client kicks its own
-  # refresh during the ~0.45s the first one is still running.
-  touch "$attn" 2>/dev/null
-  {
-    "$HOME/bin/claude-ls" --counts 2>/dev/null |
-      awk '
+    # Claim the slot before forking, or every attached client kicks its own
+    # refresh during the ~0.45s the first one is still running.
+    touch "$attn" 2>/dev/null
+    {
+        "$HOME/bin/claude-ls" --counts 2>/dev/null |
+            awk '
         $1 == "ASK?"  { a = $2 }
         $1 == "WAIT?" { w = $2 }
         END { if (a) printf "  #[fg=#facc15,bold]ASK %d#[default]", a
               if (w) printf "  #[fg=#e879f9]WAIT %d#[default]", w }' \
-      > "$attn.new" && mv "$attn.new" "$attn"
-  } >/dev/null 2>&1 &
+                >"$attn.new" && mv "$attn.new" "$attn"
+    } >/dev/null 2>&1 &
 fi
