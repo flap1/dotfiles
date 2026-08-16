@@ -34,6 +34,10 @@ Types (and PR labels): `feat`, `fix`, `imprv`, `refactor`, `docs`,
 `test`, `chore`. No scope, no trailing period, English. Example:
 `feat: Add issue and pull request templates`.
 
+Dependabot opens weekly PRs for GitHub Actions pins. Retitle those to
+this format before merge (`chore: Bump actions/checkout to …`); the
+title check does not special-case the bot.
+
 Issue labels stay `bug`, `enhancement`, `documentation` — those name
 the report, not the commit.
 
