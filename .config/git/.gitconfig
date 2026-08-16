@@ -26,6 +26,8 @@
     line-numbers = true
 
 [merge]
+    # git 2.35. Unknown conflictstyle is fatal on clone, not only on merge.
+    # packages/system.sh will not leave an older git installed.
     conflictstyle = zdiff3
 
 [diff]

@@ -6,6 +6,10 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 MANIFEST="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/manifest"
 
+# shellcheck source=lib/user-path.sh
+. "$DOTFILES_DIR/lib/user-path.sh"
+prepend_user_path
+
 ASSUME_YES=0
 DRY_RUN=0
 ONLY=""

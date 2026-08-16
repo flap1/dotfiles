@@ -2,8 +2,8 @@
 #
 # One entry point for a machine with nothing on it. Order matters: packages
 # first because install.sh needs git, then mise for everything declared in
-# .config/mise/config.toml, then the symlinks. Compose needs node; without
-# it those categories skip.
+# .config/mise/config.toml, then the symlinks. install.sh puts mise shims on
+# PATH so compose can find node; this process does not.
 #
 # Idempotent. Re-running after a pull is the supported way to apply changes.
 
@@ -41,9 +41,4 @@ while [ $# -gt 0 ]; do
 done
 
 bash "$DOTFILES_DIR/packages/system.sh" "${ARGS[@]}"
-
-# mise is on PATH only after system.sh installs it, and not in this shell.
-# apt puts it in /usr/bin; an older curl install lived in ~/.local/bin.
-export PATH="$HOME/.local/bin:$PATH"
-
 bash "$DOTFILES_DIR/install.sh" "${ARGS[@]}"
