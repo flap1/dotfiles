@@ -36,3 +36,25 @@ if grep -E '^[[:space:]]*hooksPath' "$HOME/.gitconfig"; then
     echo "installed gitconfig still sets core.hooksPath"
     exit 1
 fi
+
+# --yes on a machine that only took zsh must not grow nvim.
+nvim=$HOME/.config/nvim
+[ -L "$nvim" ]
+unlink "$nvim"
+manifest=$HOME/.local/state/dotfiles/manifest
+grep -vxF "$nvim" "$manifest" >"$manifest.zsh"
+mv "$manifest.zsh" "$manifest"
+./install.sh --yes >/tmp/subset.log 2>&1 || {
+    cat /tmp/subset.log
+    exit 1
+}
+if [ -e "$nvim" ]; then
+    echo "--yes recreated nvim after it was removed from the manifest"
+    exit 1
+fi
+[ -L "$HOME/.config/zsh" ]
+./install.sh --only nvim --yes >/tmp/add-nvim.log 2>&1 || {
+    cat /tmp/add-nvim.log
+    exit 1
+}
+[ -L "$nvim" ]
