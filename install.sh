@@ -21,7 +21,8 @@ usage: install.sh [options]
       --dry-run       print ids, change nothing
   -h, --help
 
-Bare machine: ./bootstrap.sh
+Bare machine: ./bootstrap.sh (software, including claude / codex / agent).
+This script only links and composes config.
 EOF
 }
 
@@ -183,6 +184,7 @@ link_category git \
     ".config/git/.gitconfig" "$HOME/.gitconfig"
 
 # tmux.conf targets 3.7; an older distro client kills a newer server.
+# .config/powershell is Windows-only (install.ps1 writes the profile hook).
 link_category mise \
     ".config/mise" "$HOME/.config/mise"
 

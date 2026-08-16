@@ -7,7 +7,7 @@ return {
     cmd = "Telescope",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make", cond = function() return vim.fn.has("win32") == 0 end },
       "nvim-telescope/telescope-frecency.nvim",
     },
     keys = {

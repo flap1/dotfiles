@@ -1,7 +1,9 @@
 #!/bin/bash
 #
 # Software this machine needs before install.sh can do anything: the system
-# packages with no user-local equivalent, plus mise itself.
+# packages with no user-local equivalent, plus mise itself. Agent CLIs
+# (claude, codex, agent) come from mise / packages/cursor-agent.sh, not
+# from install.sh.
 
 set -euo pipefail
 
@@ -109,8 +111,10 @@ fi
 
 if [ "$ASSUME_YES" = 1 ]; then
     bash "$(dirname "$0")/tmux.sh" -y
+    bash "$(dirname "$0")/cursor-agent.sh" -y
 else
     bash "$(dirname "$0")/tmux.sh"
+    bash "$(dirname "$0")/cursor-agent.sh"
 fi
 
 yn=y

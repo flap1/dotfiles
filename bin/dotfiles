@@ -8,6 +8,19 @@ STATE="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles"
 STAMP="$STATE/last-update-check"
 MANIFEST="$STATE/manifest"
 
+# Git Bash / MSYS: the Windows CLI is the authority (junctions, PATH, profile).
+# Do not key off WINDIR: WSL exports it and is still Linux.
+case "$(uname -s 2>/dev/null)" in
+    MINGW* | MSYS* | CYGWIN*)
+        exe=$(command -v pwsh.exe 2>/dev/null || command -v powershell.exe 2>/dev/null || true)
+        if [ -z "$exe" ]; then
+            echo "Windows: install PowerShell and rerun, or call bin/dotfiles.ps1" >&2
+            exit 1
+        fi
+        exec "$exe" -NoProfile -File "$DOTFILES_DIR/bin/dotfiles.ps1" "$@"
+        ;;
+esac
+
 if [ -t 1 ]; then
     R=$'\033[31m' Y=$'\033[33m' G=$'\033[32m' M=$'\033[90m' X=$'\033[0m'
 else
@@ -85,17 +98,15 @@ cmd_apply() {
 
     if echo "$files" | grep -qE '^(install\.sh|install\.ps1|lib/|\.claude/|\.cursor/|\.codex/|\.config/|\.zshenv$)'; then
         echo "${M}installed files changed${X}"
-        case "${OSTYPE:-}" in
-            msys* | cygwin* | win*)
-                powershell.exe -NoProfile -File "$DOTFILES_DIR/install.ps1"
-                ;;
-            *)
-                bash "$DOTFILES_DIR/install.sh" --yes
-                ;;
-        esac
+        bash "$DOTFILES_DIR/install.sh" --yes
     fi
 
-    if echo "$files" | grep -qE '^(bootstrap\.sh|bootstrap\.ps1|packages/)'; then
+    if echo "$files" | grep -qE '^packages/cursor-agent\.sh$'; then
+        echo "${M}cursor-agent pin changed${X}"
+        bash "$DOTFILES_DIR/packages/cursor-agent.sh" -y
+    fi
+
+    if echo "$files" | grep -qE '^(bootstrap\.sh|bootstrap\.ps1|packages/(system|tmux|fonts)\.sh)'; then
         echo "${Y}bootstrap files changed -- rerun ./bootstrap.sh (needs sudo)${X}"
     fi
 }

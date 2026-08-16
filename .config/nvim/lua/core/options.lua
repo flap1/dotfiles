@@ -116,14 +116,20 @@ vim.o.sidescrolloff = 8
 vim.o.termguicolors = true
 
 -- Shell: login env is already in the parent; do not start an interactive zsh.
-vim.o.shellcmdflag = "-c"
+-- :! on Windows is cmd.exe, whose flag is /c. -c is a unix shell.
+if vim.fn.has("win32") == 0 then
+  vim.o.shellcmdflag = "-c"
+end
 
 -- Providers: disable unused ones to suppress warnings
 vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 -- Python provider: pynvim installed via `uv tool install pynvim`
-vim.g.python3_host_prog = vim.fn.exepath("pynvim-python")
+local pynvim = vim.fn.exepath("pynvim-python")
+if pynvim ~= "" then
+  vim.g.python3_host_prog = pynvim
+end
 
 -- Disable netrw (oil.nvim is the file explorer)
 vim.g.loaded_netrw = 1

@@ -17,7 +17,8 @@ cd ~/dotfiles
 ./bootstrap.sh
 ```
 
-`bootstrap.sh` is a bare machine: system packages, mise, then links.
+`bootstrap.sh` is a bare machine: system packages, mise (including
+`claude` and `codex`), the Cursor CLI (`agent`), then links.
 `./install.sh` is enough after that — links and composed config, no software.
 Git identity is not in this repository: put `user.name` and `user.email` in
 `~/.gitconfig.local` before the first commit.
@@ -42,11 +43,12 @@ dotfiles update
 dotfiles doctor
 ```
 
-A new interactive shell runs `dotfiles check` in the background at most
-once a day. If `origin/main` is ahead it prints one line pointing at
-`dotfiles update`. That command fast-forwards, runs `mise install` when
-the catalog moved, and reruns `install.sh --yes` when linked or composed
-files moved. `bootstrap.sh` still needs a person: it uses sudo.
+A new interactive shell runs `dotfiles check` at most once a day. If
+`origin/main` is ahead it prints one line pointing at `dotfiles update`.
+That command fast-forwards, then applies: Linux runs `mise install` when
+the catalog moved and `install.sh --yes` when linked or composed files
+moved; Windows runs `install.ps1`. Neither side auto-runs bootstrap
+(`bootstrap.sh` needs sudo; `bootstrap.ps1` installs software).
 
 On Linux, `C` / `Y` copy a pipeline to the clipboard (`wl-copy` or `pbcopy`).
 
@@ -62,8 +64,8 @@ the install steps, and they are yours to run.
 | `bootstrap.ps1` | bare Windows machine (scoop, then `install.ps1`) |
 | `install.sh` | Linux: symlinks and composed configuration |
 | `install.ps1` | Windows: junctions and composed configuration |
-| `packages/` | `system.sh`; `tmux.sh` and `fonts.sh` from there |
-| `bin/` | on PATH |
+| `packages/` | `system.sh`; `tmux.sh`, `fonts.sh`, `cursor-agent.sh` from there |
+| `bin/` | on PATH (`~\bin` on Windows too) |
 | `.config/` | linked into `~/.config` |
 | `.config/sheldon/plugins.toml` | zsh plugins, pinned by git revision |
 | `.claude/` `.cursor/` `.codex/` | AI CLI config. Upstream skills are gitignored; `npx skills update -g` |
@@ -82,12 +84,21 @@ cd $HOME\dotfiles
 ```
 
 Already set up? `.\install.ps1` is links and composed config, no scoop.
-There is no `dotfiles` CLI on Windows: that binary is bash.
+
+```powershell
+dotfiles status
+dotfiles update
+dotfiles doctor
+```
+
+`install.ps1` puts `~\bin` on the user PATH (junction to this repo's `bin`)
+and adds a one-line hook to the PowerShell profile so a new session runs
+`dotfiles check`. Git Bash `dotfiles` execs the same `bin/dotfiles.ps1`.
 
 Directories are junctions, not hardlinks (`mklink /d` needs elevation). Git
 replaces files on save; a hardlink silently becomes a copy.
 
-- `.config/nvim` → `~/.config/nvim`
+- Neovim: `%LOCALAPPDATA%\nvim` (what Neovim reads) and `~\.config\nvim`
 - `.config/yazi` → `%APPDATA%\yazi\config`
 - Windows Terminal LocalState is **not** linked. Close Terminal and rerun
   `install.ps1` once to unhook a leftover junction.
