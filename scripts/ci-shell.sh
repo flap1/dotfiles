@@ -17,7 +17,7 @@ mapfile -t files < <(
         done
 )
 printf '%s\n' "${files[@]}"
-shellcheck "${files[@]}"
+shellcheck -x "${files[@]}"
 
 shfmt -i 4 -ci -s -d \
     bootstrap.sh \
