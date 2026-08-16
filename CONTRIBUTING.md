@@ -5,7 +5,8 @@ install path stays honest. It is not a distribution and not a plugin
 framework.
 
 `main` accepts pull requests only. Direct pushes are refused by a
-repository ruleset. Issues go through the forms under
+repository ruleset. A merge waits for `secrets`, `shell`, `install`,
+`pr-title`, and `pwsh`. Issues go through the forms under
 `.github/ISSUE_TEMPLATE/` — blank issues are off.
 
 ## What to send
