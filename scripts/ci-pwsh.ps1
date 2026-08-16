@@ -98,6 +98,20 @@ try {
         Write-Host "README-only commit reran install.ps1:`n$out"
         exit 1
     }
+
+    $manifestDir = Join-Path $env:LOCALAPPDATA 'dotfiles'
+    New-Item -ItemType Directory -Path $manifestDir -Force | Out-Null
+    $manifest = Join-Path $manifestDir 'manifest'
+    Set-Content -LiteralPath $manifest -Value (Join-Path $tmp 'no-such-link')
+    $doctorOut = & pwsh -NoProfile -File $cli doctor 2>&1 | Out-String
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "doctor exited 0 with a missing junction:`n$doctorOut"
+        exit 1
+    }
+    if ($doctorOut -notmatch 'missing') {
+        Write-Host "doctor did not say missing:`n$doctorOut"
+        exit 1
+    }
 } finally {
     Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
 }

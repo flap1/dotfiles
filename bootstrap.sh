@@ -1,8 +1,9 @@
 #!/bin/bash
 #
 # One entry point for a machine with nothing on it. Order matters: packages
-# first because install.sh refuses to run without node and jq, then mise for
-# everything declared in .config/mise/config.toml, then the symlinks.
+# first because install.sh needs git, then mise for everything declared in
+# .config/mise/config.toml, then the symlinks. Compose needs node; without
+# it those categories skip.
 #
 # Idempotent. Re-running after a pull is the supported way to apply changes.
 

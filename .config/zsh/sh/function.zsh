@@ -1,9 +1,23 @@
 # Functions that must run in the calling shell (cd). Everything else is bin/.
 
 ghcr() {
+    local repo="" arg
+    for arg in "$@"; do
+        case $arg in
+            -*) ;;
+            *)
+                repo=$arg
+                break
+                ;;
+        esac
+    done
+    [ -n "$repo" ] || {
+        print -u2 "usage: ghcr <owner/name> [gh repo create flags]"
+        return 2
+    }
     gh repo create "$@"
-    ghq get -p "$1"
-    nvim "$(ghq list --full-path -e "$1")"
+    ghq get -p "$repo"
+    nvim "$(ghq list --full-path -e "$repo")"
 }
 
 gwc() {
