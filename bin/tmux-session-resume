@@ -57,7 +57,9 @@ pane_groups=$(
     tmux list-panes -a -F "#{pane_pid}$tab#{session_name}$tab#{window_index}$tab#{pane_index}" |
         while IFS="$tab" read -r pid session window index; do
             tpgid=$(stat_field "$pid" 6) || continue
-            [ -n "$tpgid" ] && [ "$tpgid" -gt 0 ] || continue
+            if [ -z "$tpgid" ] || [ "$tpgid" -le 0 ]; then
+                continue
+            fi
             printf '%s\t%s\t%s\t%s\n' "$tpgid" "$session" "$window" "$index"
         done
 )
@@ -295,7 +297,9 @@ claude_source_ok=0
 if [ -n "$claude_json" ]; then
     claude_source_ok=1
     while IFS="$tab" read -r pid sid; do
-        [ -n "$pid" ] && [ -n "$sid" ] || continue
+        if [ -z "$pid" ] || [ -z "$sid" ]; then
+            continue
+        fi
         pgid=$(stat_field "$pid" 3) || continue
         key=$(key_for_pgid "$pgid")
         [ -n "$key" ] || continue

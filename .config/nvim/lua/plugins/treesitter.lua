@@ -8,14 +8,9 @@ return {
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
     config = function()
-      require("nvim-treesitter").setup({
-        ensure_installed = {
-          "lua", "vim", "vimdoc", "bash", "html", "yaml", "python",
-          "toml", "c", "markdown", "markdown_inline", "javascript",
-          "typescript", "tsx", "json", "rust", "go", "css", "typst",
-        },
-        auto_install = true,
-      })
+      -- main branch: setup only takes install_dir. Parsers are :TSUpdate
+      -- (lazy build) and :TSInstall. Opening a file does not download one.
+      require("nvim-treesitter").setup()
 
       vim.api.nvim_create_autocmd("FileType", {
         callback = function()
@@ -30,37 +25,35 @@ return {
     branch = "main",
     event = { "BufReadPost", "BufNewFile" },
     config = function()
+      -- main-branch setup does not take keymaps; those are vim.keymap.set.
       require("nvim-treesitter-textobjects").setup({
-        select = {
-          enable = true,
-          lookahead = true,
-          keymaps = {
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
-            ["aa"] = "@parameter.outer",
-            ["ia"] = "@parameter.inner",
-          },
-        },
-        move = {
-          enable = true,
-          set_jumps = true,
-          goto_next_start = {
-            ["]f"] = "@function.outer",
-            ["]c"] = "@class.outer",
-          },
-          goto_previous_start = {
-            ["[f"] = "@function.outer",
-            ["[c"] = "@class.outer",
-          },
-        },
-        swap = {
-          enable = true,
-          swap_next = { ["<LocalLeader>a"] = "@parameter.inner" },
-          swap_previous = { ["<LocalLeader>A"] = "@parameter.inner" },
-        },
+        select = { lookahead = true },
+        move = { set_jumps = true },
       })
+
+      local select = require("nvim-treesitter-textobjects.select")
+      local move = require("nvim-treesitter-textobjects.move")
+      local function sel(capture)
+        return function()
+          select.select_textobject(capture, "textobjects")
+        end
+      end
+      vim.keymap.set({ "x", "o" }, "af", sel("@function.outer"))
+      vim.keymap.set({ "x", "o" }, "if", sel("@function.inner"))
+      vim.keymap.set({ "x", "o" }, "ac", sel("@class.outer"))
+      vim.keymap.set({ "x", "o" }, "ic", sel("@class.inner"))
+      vim.keymap.set({ "x", "o" }, "aa", sel("@parameter.outer"))
+      vim.keymap.set({ "x", "o" }, "ia", sel("@parameter.inner"))
+
+      local function go(fn, capture)
+        return function()
+          fn(capture, "textobjects")
+        end
+      end
+      vim.keymap.set({ "n", "x", "o" }, "]f", go(move.goto_next_start, "@function.outer"))
+      vim.keymap.set({ "n", "x", "o" }, "[f", go(move.goto_previous_start, "@function.outer"))
+      vim.keymap.set({ "n", "x", "o" }, "]c", go(move.goto_next_start, "@class.outer"))
+      vim.keymap.set({ "n", "x", "o" }, "[c", go(move.goto_previous_start, "@class.outer"))
     end,
   },
 }

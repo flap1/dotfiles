@@ -1,10 +1,21 @@
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
-  vim.fn.system({
+  local function git(args)
+    local out = vim.fn.system(args)
+    if vim.v.shell_error ~= 0 then
+      vim.api.nvim_echo({ { "lazy.nvim: " .. out, "ErrorMsg" } }, true, {})
+      error("lazy.nvim bootstrap failed")
+    end
+  end
+  git({
     "git", "clone", "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", lazypath,
+    lazypath,
+  })
+  git({
+    "git", "-C", lazypath, "checkout", "--quiet",
+    "306a05526ada86a7b30af95c5cc81ffba93fef97",
   })
 end
 vim.opt.rtp:prepend(lazypath)
@@ -34,7 +45,7 @@ require("lazy").setup("plugins", {
   ui = { border = "rounded" },
 })
 
-local local_init = vim.fn.expand("~/.nvim_local_init.lua")
+local local_init = vim.fn.stdpath("config") .. "/lua/local.lua"
 if vim.fn.filereadable(local_init) ~= 0 then
   dofile(local_init)
 end

@@ -66,7 +66,6 @@ return {
   {
     "L3MON4D3/LuaSnip",
     lazy = true,
-    build = "make install_jsregexp",
     config = function()
       local cfg = vim.fn.stdpath("config")
       require("luasnip.loaders.from_lua").lazy_load({

@@ -10,10 +10,10 @@ set -e
 
 repo=$1
 pr=$2
-[ -n "$repo" ] && [ -n "$pr" ] || {
+if [ -z "$repo" ] || [ -z "$pr" ]; then
     echo "usage: pr-why <owner/repo> <pr-number>" >&2
     exit 2
-}
+fi
 
 # Splitting is the point: @tsv emits one line of tab-separated fields and
 # set -- turns them into $1..$4. A branch name cannot contain whitespace.

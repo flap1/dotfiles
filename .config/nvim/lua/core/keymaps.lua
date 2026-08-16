@@ -124,7 +124,7 @@ vim.keymap.set("n", "<Leader>Q", "<Cmd>qall<CR>", opts)
 -- Save without leaving insert mode.
 vim.keymap.set("i", "<M-w>", "<Esc><Cmd>write<CR>", opts)
 
--- <Leader>b* buffer verbs are defined next to snacks.bufdelete in misc.lua.
+-- <Leader>b* buffer verbs are next to snacks.bufdelete in plugins/ai.lua.
 
 -- ───────────────────────────────────────── readline keys where they belong ──
 -- Insert and command line only. <C-n>/<C-p> are left alone in insert mode

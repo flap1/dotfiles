@@ -52,7 +52,9 @@ except Exception:
     pass
 PY
         ) || continue
-        [ -n "${sid:-}" ] && [ -n "${pid:-}" ] || continue
+        if [ -z "${sid:-}" ] || [ -z "${pid:-}" ]; then
+            continue
+        fi
         [ -r "/proc/$pid/stat" ] || continue
         now=$(awk '{print $22}' "/proc/$pid/stat" 2>/dev/null)
         # An empty procStart in the registry means we cannot rule out pid

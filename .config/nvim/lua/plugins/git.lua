@@ -13,11 +13,11 @@ return {
       },
       current_line_blame = false,
       on_attach = function(bufnr)
-        local gs = package.loaded.gitsigns
+        local gs = require("gitsigns")
         local opts = { buffer = bufnr, noremap = true, silent = true }
 
-        vim.keymap.set("n", "]h", gs.next_hunk, opts)
-        vim.keymap.set("n", "[h", gs.prev_hunk, opts)
+        vim.keymap.set("n", "]h", function() gs.nav_hunk("next") end, opts)
+        vim.keymap.set("n", "[h", function() gs.nav_hunk("prev") end, opts)
         vim.keymap.set({ "n", "v" }, "<Leader>gs", "<Cmd>Gitsigns stage_hunk<CR>", opts)
         vim.keymap.set({ "n", "v" }, "<Leader>gr", "<Cmd>Gitsigns reset_hunk<CR>", opts)
         vim.keymap.set("n", "<Leader>gS", gs.stage_buffer, opts)

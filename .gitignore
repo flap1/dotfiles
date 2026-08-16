@@ -5,6 +5,7 @@
 
 ## neovim
 /.config/nvim/plugin/**
+/.config/nvim/lua/local.lua
 
 ## zsh
 /.config/zsh/.zcompdump

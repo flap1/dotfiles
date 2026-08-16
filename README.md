@@ -50,6 +50,10 @@ files moved. `bootstrap.sh` still needs a person: it uses sudo.
 
 On Linux, `C` / `Y` copy a pipeline to the clipboard (`wl-copy` or `pbcopy`).
 
+Neovim does not download language servers or treesitter parsers when a
+file opens. `:Mason` / `:LspInstall` and `:TSInstall` / `:TSUpdate` are
+the install steps, and they are yours to run.
+
 ## Layout
 
 | path | what |
@@ -78,6 +82,7 @@ cd $HOME\dotfiles
 ```
 
 Already set up? `.\install.ps1` is links and composed config, no scoop.
+There is no `dotfiles` CLI on Windows: that binary is bash.
 
 Directories are junctions, not hardlinks (`mklink /d` needs elevation). Git
 replaces files on save; a hardlink silently becomes a copy.

@@ -2,48 +2,22 @@
 -- Uses Neovim 0.11+ native vim.lsp.config() / vim.lsp.enable() API
 
 return {
-  -- Mason: LSP/formatter/linter installer
+  -- Mason: :Mason / :LspInstall only. Opening a file does not load this
+  -- plugin and does not hit the network. Servers come from PATH (mise, or
+  -- whatever :Mason already put on it).
   {
     "mason-org/mason.nvim",
     cmd = "Mason",
-    event = { "BufReadPre", "BufNewFile" },
-    opts = {
-      ui = { border = "rounded" },
-      ensure_installed = {
-        -- formatters (ruff, shfmt and shellcheck all come from mise)
-        "stylua", "prettier",
-        -- linters
-        "markdownlint",
-      },
-    },
-    config = function(_, opts)
-      require("mason").setup(opts)
-      -- Auto-install ensure_installed tools
-      local registry = require("mason-registry")
-      registry.refresh(function()
-        for _, tool in ipairs(opts.ensure_installed or {}) do
-          local p = registry.get_package(tool)
-          if not p:is_installed() then
-            p:install()
-          end
-        end
-      end)
-    end,
+    opts = { ui = { border = "rounded" } },
   },
 
-  -- mason-lspconfig: install LSP servers via mason
-  -- automatic_enable = true lets Neovim 0.11+ auto-enable installed servers
   {
     "mason-org/mason-lspconfig.nvim",
-    event = { "BufReadPre", "BufNewFile" },
+    cmd = { "LspInstall", "LspUninstall" },
     dependencies = { "mason-org/mason.nvim" },
     opts = {
-      ensure_installed = {
-        "lua_ls", "clangd",
-        "pyright", "ts_ls", "jsonls", "yamlls",
-        "tinymist",
-      },
-      automatic_enable = false, -- we call vim.lsp.enable() manually below
+      ensure_installed = {},
+      automatic_enable = false,
     },
   },
 
@@ -52,7 +26,6 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "mason-org/mason-lspconfig.nvim",
       "saghen/blink.cmp",
       "folke/lazydev.nvim",
     },
