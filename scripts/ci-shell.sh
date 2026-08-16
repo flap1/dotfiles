@@ -8,6 +8,7 @@ root=$(git rev-parse --show-toplevel)
 cd "$root"
 
 bash scripts/policy.sh
+bash scripts/ci-pr-title.sh --self-test
 
 mapfile -t files < <(
     git ls-files '*.sh' 'bin/*' 'packages/*' 'lib/*' 'scripts/*' '.git_template/hooks/*' |

@@ -1,7 +1,8 @@
 <!--
-  Headings match the author's PR harness so an agent filling this file
-  and `gh pr create` agree. There is no release-note block: this tree
-  is applied with git.
+  Title: `<type>: <Uppercase description>`
+  Types: feat, fix, imprv, refactor, docs, test, chore
+  The title is the squash commit. No release-note block: this tree is
+  applied with git.
 -->
 
 ## Summary

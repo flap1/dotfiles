@@ -23,8 +23,19 @@ Not useful:
 
 Fork, delete what you do not use, keep what you do.
 
-A pull request uses `.github/PULL_REQUEST_TEMPLATE.md`. Conventional
-Commits, English. The title is the merge commit.
+A pull request uses `.github/pull_request_template.md`. The title is the
+squash commit, checked by `scripts/ci-pr-title.sh`:
+
+```
+<type>: <Uppercase description>
+```
+
+Types (and PR labels): `feat`, `fix`, `imprv`, `refactor`, `docs`,
+`test`, `chore`. No scope, no trailing period, English. Example:
+`feat: Add issue and pull request templates`.
+
+Issue labels stay `bug`, `enhancement`, `documentation` — those name
+the report, not the commit.
 
 ## Checks
 
