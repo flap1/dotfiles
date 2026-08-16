@@ -5,8 +5,8 @@
     One entry point for a Windows machine with nothing on it.
 
 .DESCRIPTION
-    Installs scoop if needed, then neovim, delta, yazi, and node, then
-    install.ps1. Already set up? .\install.ps1 alone.
+    Installs scoop if needed, then git, neovim, delta, yazi, node, ripgrep,
+    and fd, then install.ps1. Already set up? .\install.ps1 alone.
 
 .EXAMPLE
     .\bootstrap.ps1
@@ -18,6 +18,12 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+$policy = Get-ExecutionPolicy -Scope CurrentUser
+if ($policy -eq 'Restricted' -or $policy -eq 'Undefined') {
+    Write-Host 'ExecutionPolicy CurrentUser -> RemoteSigned'
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+}
 
 function Install-ScoopIfMissing {
     if (Get-Command scoop -ErrorAction SilentlyContinue) {
@@ -101,8 +107,41 @@ function Set-UserEditor {
 }
 
 Install-ScoopIfMissing
-Install-ScoopPackage -Name @('neovim', 'delta', 'yazi', 'nodejs') -Binary @{ neovim = 'nvim'; nodejs = 'node' }
+Install-ScoopPackage -Name @(
+    'git', 'neovim', 'delta', 'yazi', 'nodejs', 'ripgrep', 'fd'
+) -Binary @{ neovim = 'nvim'; nodejs = 'node'; ripgrep = 'rg' }
 Set-UserEditor -Editor 'nvim'
+
+function Install-AgentCli {
+    Write-Host 'Claude Code CLI'
+    if (Get-Command claude -ErrorAction SilentlyContinue) {
+        Write-Host '  already on PATH'
+    } elseif (Get-Command winget -ErrorAction SilentlyContinue) {
+        winget install --id Anthropic.ClaudeCode -e --accept-source-agreements --accept-package-agreements
+    } else {
+        Write-Host '  skipped: winget is not on PATH (https://code.claude.com/docs/en/install)'
+    }
+
+    Write-Host 'Codex CLI'
+    if (Get-Command codex -ErrorAction SilentlyContinue) {
+        Write-Host '  already on PATH'
+    } elseif (Get-Command npm -ErrorAction SilentlyContinue) {
+        npm install -g "@openai/codex@0.147.0"
+    } else {
+        Write-Host '  skipped: npm is not on PATH'
+    }
+
+    Write-Host 'Cursor CLI (agent)'
+    if (Get-Command agent -ErrorAction SilentlyContinue) {
+        Write-Host '  already on PATH'
+    } else {
+        # The Windows tarball is not a public hashed URL (403). The vendor
+        # path is irm | iex, which this repository does not run.
+        Write-Host '  skipped: no hashed Windows package; see https://cursor.com/docs/cli/installation'
+    }
+}
+
+Install-AgentCli
 
 $install = Join-Path $PSScriptRoot 'install.ps1'
 if ($Gitconfig) {

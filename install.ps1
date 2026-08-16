@@ -32,7 +32,12 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $repo = $PSScriptRoot
+$stateDir = Join-Path $env:LOCALAPPDATA 'dotfiles'
+$manifest = Join-Path $stateDir 'manifest'
 $wtLocalState = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState'
+
+New-Item -ItemType Directory -Path $stateDir -Force | Out-Null
+Set-Content -LiteralPath $manifest -Value ''
 
 function New-TimestampedCopy {
     param([Parameter(Mandatory)][string]$Path)
@@ -63,6 +68,7 @@ function Set-DirectoryJunction {
             if ($current -and (Test-Path -LiteralPath $current) -and
                 (Resolve-Path -LiteralPath $current).Path -eq (Resolve-Path -LiteralPath $Target).Path) {
                 Write-Host '  already linked'
+                Add-Content -LiteralPath $manifest -Value $Link
                 return
             }
             [IO.Directory]::Delete($Link)
@@ -80,7 +86,61 @@ function Set-DirectoryJunction {
     }
 
     New-Item -ItemType Junction -Path $Link -Target $Target | Out-Null
+    Add-Content -LiteralPath $manifest -Value $Link
     Write-Host '  linked'
+}
+
+function Add-UserPathEntry {
+    param([Parameter(Mandatory)][string]$Dir)
+
+    $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+    if (-not $userPath) { $userPath = '' }
+    $have = $userPath -split ';' | Where-Object { $_ } | ForEach-Object { $_.TrimEnd('\') }
+    if ($have -contains $Dir.TrimEnd('\')) {
+        Write-Host "user PATH already has $Dir"
+        return
+    }
+    $next = if ($userPath.Trim()) { $userPath.TrimEnd(';') + ';' + $Dir } else { $Dir }
+    [Environment]::SetEnvironmentVariable('Path', $next, 'User')
+    if ($env:PATH -notlike "*$Dir*") {
+        $env:PATH = "$Dir;$env:PATH"
+    }
+    Write-Host "added $Dir to the user PATH (new terminals pick it up)"
+}
+
+function Install-ProfileHook {
+    $hook = Join-Path $repo '.config\powershell\profile.ps1'
+    if (-not (Test-Path -LiteralPath $hook)) { return }
+
+    $line = ". '$($hook.Replace("'","''"))'"
+    $docs = [Environment]::GetFolderPath('MyDocuments')
+    $profiles = @(
+        (Join-Path $docs 'WindowsPowerShell\profile.ps1'),
+        (Join-Path $docs 'PowerShell\profile.ps1')
+    )
+    foreach ($profilePath in $profiles) {
+        Write-Host "PowerShell profile $profilePath"
+        $parent = Split-Path $profilePath -Parent
+        if (-not (Test-Path -LiteralPath $parent)) {
+            New-Item -ItemType Directory -Path $parent -Force | Out-Null
+        }
+        $existing = ''
+        if (Test-Path -LiteralPath $profilePath) {
+            $existing = [IO.File]::ReadAllText($profilePath)
+            if ($existing.Contains($line)) {
+                Write-Host '  already hooked'
+                continue
+            }
+        }
+        $block = @"
+# >>> dotfiles
+$line
+# <<< dotfiles
+
+"@
+        [IO.File]::WriteAllText($profilePath, $block + $existing, (New-Object Text.UTF8Encoding($false)))
+        Write-Host '  hook added'
+    }
 }
 
 function Add-GitconfigInclude {
@@ -213,6 +273,13 @@ function Invoke-Compose {
     }
 }
 
+$homeBin = Join-Path $env:USERPROFILE 'bin'
+Set-DirectoryJunction -Target (Join-Path $repo 'bin') -Link $homeBin
+Add-UserPathEntry -Dir $homeBin
+Install-ProfileHook
+
+# Neovim on Windows reads %LOCALAPPDATA%\nvim unless XDG_CONFIG_HOME is set.
+Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path $env:LOCALAPPDATA 'nvim')
 Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path $env:USERPROFILE '.config\nvim')
 Set-DirectoryJunction -Target (Join-Path $repo '.config\yazi') -Link (Join-Path $env:APPDATA 'yazi\config')
 
