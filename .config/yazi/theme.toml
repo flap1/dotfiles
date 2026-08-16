@@ -1,161 +1,50 @@
 #:schema https://yazi-rs.github.io/schemas/theme.json
-# vim:fileencoding=utf-8
-#
-# The same palette the rest of this repo runs on, expressed for yazi.
-#
-# The role split is the one .tmux.conf states: slate for structure, emerald for
-# "this one", amber for "look here". Nothing gets a second cue when the colour
-# already says it, which is why there are no extra bolds or reverses below that
-# are not carrying information.
-#
-# Applied to a file manager that becomes a division of labour between the two
-# columns of a row. The name carries role and state -- where you are, what you
-# marked, what is broken -- in the palette above. The icon carries type, in the
-# preset's own devicon colours, because hue is preattentive and a one-cell glyph
-# is not: finding the yaml among two hundred files should be a glance.
-#
-# Each column answers one question, so no hue is ever asked to mean two things
-# at once. That, rather than the number of colours on screen, is what makes a
-# palette readable. See [filetype] and [icon] at the bottom, which are the two
-# places this costs something.
-#
-#   slate    #0f172a base   #1e293b surface  #334155 selection
-#            #64748b subtle #94a3b8 muted    #e2e8f0 body      #ffffff on-primary
-#   emerald  #047857 brand (filled surfaces; white on it is 5.3:1)
-#            #059669 success (accents on dark, ~4.4:1)
-#            #10b981 primary lifted (7.0:1 on base -- fg accent)
-#            #a7f3d0 receded label on the brand fill (4.1:1)
-#   amber    #f59e0b attention      #fbbf24 lightened
-#   other    #ef4444 error  #0ea5e9 info  #a855f7 inactive  #d8c3a8 special
-#
-# Contrast is measured against #0f172a unless a bg is named. The brand #047857
-# is never used as a foreground here: it is 3.0:1 on the base, right on the
-# WCAG non-text floor, which is the same reason .tmux.conf keeps it as a fill
-# and puts #059669 on dark instead.
+# Same palette as nvim and tmux. Colour is role; icons are type.
 
-# : App {{{
-
-# yazi paints its own surface rather than inheriting the terminal's. The
-# terminal ground is a near-neutral #0B0D12 precisely so that surfaces can sit
-# on top of it and read as surfaces; #0f172a is what the design system calls an
-# app surface, and this is an app. Without this the yazi pane and the bare shell
-# next to it are the same colour and the pane boundary carries no information.
-#
-# bg only. `overall` is the base style for the whole frame and a fg set here
-# wins over the per-item foregrounds underneath it -- with one, every row came
-# out the same light grey and the palette below this line did nothing.
 [app]
 overall = { bg = "#0f172a" }
 
-# : }}}
-
-
-# : Manager {{{
-
 [mgr]
-# The cwd is identity, the same role status-left plays in tmux. There it is
-# #a7f3d0 because it sits on the green fill; here the row is the base colour,
-# so the brand reads as #10b981 instead.
 cwd = { fg = "#10b981", bold = true }
-
-# Find. Identical to copy-mode-current-match-style: the match is the one thing
-# on screen you asked for, so it takes the amber fill rather than a tint.
 find_keyword  = { fg = "#0f172a", bg = "#f59e0b", bold = true }
 find_position = { fg = "#f59e0b" }
-
-# Symlink target is annotation, not content.
 symlink_target = { fg = "#64748b", italic = true }
-
-# Markers are a one-cell bar in the gutter, so fg and bg are the same colour.
-# Cut is red because it is the only one of the four that destroys something.
 marker_copied   = { fg = "#059669", bg = "#059669" }
 marker_cut      = { fg = "#ef4444", bg = "#ef4444" }
 marker_marked   = { fg = "#0ea5e9", bg = "#0ea5e9" }
 marker_selected = { fg = "#f59e0b", bg = "#f59e0b" }
-
 count_copied   = { fg = "#ffffff", bg = "#059669" }
 count_cut      = { fg = "#ffffff", bg = "#ef4444" }
 count_selected = { fg = "#0f172a", bg = "#f59e0b" }
-
-# Same value as pane-border-style, so a yazi pane's internal dividers line up
-# with the tmux borders drawn around it.
 border_style = { fg = "#64748b" }
 
-# : }}}
-
-
-# : Tabs {{{
-
-# The tab strip is the one place yazi gets the filled brand surface, and the
-# active tab is the inverted white chip -- the shape window-status-current-format
-# uses. Reading the two bars is then the same act.
 [tabs]
 active   = { fg = "#047857", bg = "#ffffff", bold = true }
 inactive = { fg = "#a7f3d0", bg = "#047857" }
 
-# : }}}
-
-
-# : Mode {{{
-
-# normal is the brand fill; select borrows the amber chip the prefix indicator
-# uses; unset is the only red, because it is the only one that can lose a
-# selection you made.
 [mode]
 normal_main = { fg = "#ffffff", bg = "#047857", bold = true }
 normal_alt  = { fg = "#047857", bg = "#1e293b" }
-
 select_main = { fg = "#0f172a", bg = "#f59e0b", bold = true }
 select_alt  = { fg = "#f59e0b", bg = "#1e293b" }
-
 unset_main = { fg = "#ffffff", bg = "#ef4444", bold = true }
 unset_alt  = { fg = "#ef4444", bg = "#1e293b" }
 
-# : }}}
-
-
-# : Indicator of hovered file {{{
-
-# The preset reverses the row, which paints the file's own colour as a fill --
-# so on a directory the cursor became a full-width #10b981 block with dark text
-# on it. At that chroma and that size the edges vibrate, and the cursor moves on
-# every keypress, which is the worst place to put the loudest thing on screen.
-#
-# The brand fill with white on it is what tmux uses for the same job in the
-# status bar, at 5.3:1, and it does not change hue as it moves down the list.
-# The parent column's cursor is context rather than position, so it gets the
-# selection slate and no hue at all.
 [indicator]
 current = { fg = "#ffffff", bg = "#047857", bold = true }
 parent  = { fg = "#e2e8f0", bg = "#334155" }
 preview = { underline = true }
 
-# : }}}
-
-
-# : Status bar {{{
-
-# One step up from the base rather than the brand fill. tmux already owns a
-# filled green bar at the bottom of the screen; a second one an inch above it
-# would read as the same object split in two. Surface keeps yazi's bar legible
-# as yazi's, and the mode chip still carries the green.
 [status]
 overall = { fg = "#e2e8f0", bg = "#1e293b" }
-
 perm_sep   = { fg = "#64748b" }
 perm_type  = { fg = "#94a3b8" }
 perm_read  = { fg = "#fbbf24" }
 perm_write = { fg = "#ef4444" }
 perm_exec  = { fg = "#10b981" }
-
 progress_label  = { fg = "#ffffff", bold = true }
 progress_normal = { fg = "#10b981", bg = "#334155" }
 progress_error  = { fg = "#0f172a", bg = "#ef4444" }
-
-# : }}}
-
-
-# : Which {{{
 
 [which]
 mask            = { bg = "#0f172a" }
@@ -163,15 +52,6 @@ cand            = { fg = "#10b981" }
 rest            = { fg = "#64748b" }
 desc            = { fg = "#e2e8f0" }
 separator_style = { fg = "#334155" }
-
-# : }}}
-
-
-# : Overlays {{{
-
-# Every transient surface -- confirm, input, picker, completion, tasks, spot --
-# is bordered in #059669, the same value pane-active-border-style uses. The
-# border says "this is the pane you are in" in both places.
 
 [confirm]
 border  = { fg = "#059669" }
@@ -215,102 +95,25 @@ desc    = { fg = "#94a3b8" }
 hovered = { fg = "#e2e8f0", bg = "#334155", bold = true }
 footer  = { fg = "#ffffff", bg = "#047857" }
 
-# : }}}
-
-
-# : Notification {{{
-
 [notify]
 title_info  = { fg = "#059669" }
 title_warn  = { fg = "#f59e0b" }
 title_error = { fg = "#ef4444" }
 
-# : }}}
-
-
-# : File-specific styles {{{
-
-# This is the section that removes the blue: the preset ends with
-# `{ url = "*/", fg = "blue" }`, so every directory name -- the majority of what
-# is on screen in a file manager -- came out blue, against a palette that has no
-# blue in it.
-#
-# The rule the whole file follows is stated here, because this is where it costs
-# something: colour carries role and state, shape carries type. Nothing below is
-# a category of file. Everything below is either "this is the structure you move
-# through" or "something is true about this entry that you cannot see".
-#
-# An earlier draft also gave images, media, archives and documents a hue each,
-# taken from the palette's remaining slots. That reads as disciplined and is not:
-# #a855f7 is defined as "inactive" and #0ea5e9 as "info", so spending them on
-# "png" and "pdf" means the same two hues mean one thing in nvim and the tmux bar
-# and another thing here. Four more legend entries to learn, in exchange for a
-# distinction the icon glyph and the extension both already make. They are gone.
-#
-# What survives is the four things the glyph genuinely cannot say: it is a
-# directory, it is broken, it can be run, it could not be read.
-#
-# First match wins, so the fallbacks stay last.
 [filetype]
 rules = [
-	# Could not be read at all -- neither the name nor the icon tells you this.
 	{ mime = "vfs/{absent,stale}", fg = "#64748b" },
-
-	# A broken symlink is an error, so it is the error colour -- as a
-	# foreground, not the preset's red fill, which shouts louder than a dead
-	# link deserves.
 	{ url = "*", is = "orphan", fg = "#ef4444" },
-
-	# Runnable. The pale green keeps it inside the structural family without
-	# competing with a directory at full chroma.
 	{ url = "*", is = "exec", fg = "#a7f3d0" },
-
-	# Dummy entries are a real failure state and do get the fill.
 	{ url = "*", is = "dummy", fg = "#0f172a", bg = "#ef4444" },
 	{ url = "*/", is = "dummy", fg = "#0f172a", bg = "#ef4444" },
-
-	# Fallback: directories carry the brand -- the same value base0D carries in
-	# nvim, on the thing you navigate -- and files are body text. Not bold: in a
-	# file manager most rows are directories, and weight on top of a 7:1 hue is
-	# the second cue this palette says not to add.
 	{ url = "*/", fg = "#10b981" },
 	{ url = "*", fg = "#e2e8f0" },
 ]
 
-# : }}}
-
-
-# : Icons {{{
-
-# The icon is where type lives, in the preset's own nvim-web-devicons colours.
-# Hue is preattentive and a one-cell glyph is not: picking the yaml out of two
-# hundred files is a glance if the icons are coloured and a scan if they are not.
-# That is worth more than the tidiness of a single palette, so `files` and `exts`
-# are left exactly as they ship -- 600 language icons, in their own colours.
-#
-# What makes that safe to do is the division of labour with the row's own colour.
-# The name carries role: green for a directory, body text for a file, red for
-# broken. The icon carries type. They are in different columns and each answers
-# one question, so no hue is ever asked to mean two things at once -- which was
-# the actual problem with the first draft, not the presence of colour.
-#
-# The exception is directories, and it is the same exception for the same reason.
-# A folder's type is already its role; colouring the glyph differently from the
-# name says nothing extra and disagrees with the one hue in this palette that
-# does mean something. So `dirs` is emptied and the directory rules in `conds`
-# drop their `fg`, which makes those glyphs inherit the row and come out exactly
-# as green as the name. The special-folder glyphs -- screen for Desktop,
-# headphones for Music -- survive through `exts` and `conds`.
-#
-# `conds` is restated in full because it is one array. Generated, do not
-# hand-edit: the glyphs are private-use codepoints and do not survive retyping.
-#   curl -sfL https://raw.githubusercontent.com/sxyazi/yazi/v<VER>/yazi-config/preset/theme-dark.toml \
-#     | sed -n '/^conds = \[/,/^\]/p' \
-#     | sed -E '/if = "(dir & hovered|dir|!dir)"/ s/, fg = "#[0-9a-fA-F]{6}"//'
 [icon]
 dirs = []
 conds = [
-	# Special files
 	{ if = "orphan", text = "", fg = "#ffffff" },
 	{ if = "link", text = "", fg = "#9e9e9e" },
 	{ if = "block", text = "", fg = "#cddc39" },
@@ -319,12 +122,8 @@ conds = [
 	{ if = "sock", text = "", fg = "#cddc39" },
 	{ if = "sticky", text = "", fg = "#cddc39" },
 	{ if = "dummy", text = "", fg = "#f44336" },
-
-	# Fallback
 	{ if = "dir & hovered", text = "" },
 	{ if = "dir", text = "" },
 	{ if = "exec", text = "", fg = "#8bc34a" },
 	{ if = "!dir", text = "" },
 ]
-
-# : }}}

@@ -14,7 +14,7 @@ the cloudflared ProxyJump that is 1.2-2.5s measured. The usual fix, connection
 multiplexing, does not exist on Windows -- Win32-OpenSSH ignores ControlMaster
 and the MSYS build fails to create the socket. So instead of opening a
 connection per paste, this listens on the connection that is already open: the
-`ssh syntopic` session forwards a local port to this socket, and an upload
+ssh session forwards a local port to this socket, and an upload
 costs one round trip.
 
 Why a unix socket and not 127.0.0.1: this is a shared machine, and loopback is

@@ -58,6 +58,34 @@ if git grep -qE '\bgdrive\b' -- ':!.claude/skills/**' ':!scripts/policy.sh'; the
     fail=1
 fi
 
+if git grep -q 'mise.run' -- ':!scripts/policy.sh'; then
+    echo "mise must not be installed by piping mise.run to a shell"
+    fail=1
+fi
+
+if git grep -qiE '\bsyntopic\b' -- ':!scripts/policy.sh' ':!scripts/retired-paths.txt'; then
+    echo "employer/project host names must not be in tracked files"
+    fail=1
+fi
+
+# Every tracked .config/<name> is either linked by install.sh or an optional
+# add-on with its own setup script.
+python3 - <<'PY' || fail=1
+import pathlib, subprocess, sys
+root = pathlib.Path(".")
+install = (root / "install.sh").read_text()
+allow = {"paste-shot"}
+dirs = set()
+for f in subprocess.check_output(["git", "ls-files", ".config"], text=True).splitlines():
+    parts = pathlib.Path(f).parts
+    if len(parts) >= 2:
+        dirs.add(parts[1])
+missing = sorted(d for d in dirs if d not in allow and d not in install)
+if missing:
+    print("tracked .config dirs not named in install.sh:", ", ".join(missing))
+    sys.exit(1)
+PY
+
 cjk=$(
     python3 - <<'PY'
 import pathlib, re, subprocess

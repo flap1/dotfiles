@@ -1,5 +1,0 @@
-evdev:input:b*v03f0p054a*
- KEYBOARD_KEY_70088=grave # KEY_KATAKANAHIRAGANA -> grave
- KEYBOARD_KEY_70039=leftctrl # CapsLock -> Left Ctrl
- KEYBOARD_KEY_7008a=backspace # KEY_HENKAN -> Backspace
- KEYBOARD_KEY_7008b=esc # KEY_MUHENKAN -> Esc

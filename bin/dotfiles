@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 # State of this repository on this machine.
-#
-# Replaces bin/check-update and bin/check-update-dotfiles: those only looked
-# outbound, iterated an array without [@] so only the first entry was checked,
-# ran `git add -A` from a checking command, and were called from nowhere.
 
 set -uo pipefail
 

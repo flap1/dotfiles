@@ -24,10 +24,7 @@ return {
     ft = "typst",
     version = "1.*",
     opts = {
-      host = (function()
-        local ip = vim.fn.systemlist("tailscale ip -4")[1]
-        return (vim.v.shell_error == 0 and ip and ip:match("^%d+%.")) and ip or "127.0.0.1"
-      end)(),
+      host = "127.0.0.1",
       port = 23625,
       dependencies_bin = { tinymist = "tinymist" },
       open_cmd = "echo 'typst preview: %s' >/dev/null",

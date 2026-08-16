@@ -4,26 +4,11 @@
 .SYNOPSIS
     Install the paste-shot hotkey on this machine.
 
-.DESCRIPTION
-    The Windows half of paste-shot: Ctrl+V in a terminal hands a screenshot to a
-    Claude Code session running on a remote machine over ssh.
-
-    Split out of setup_windows.ps1 on purpose. This is an optional add-on for
-    one specific problem, not part of wiring up a machine, and the two halves
-    of it -- this and setup_paste_shot.sh on the remote box -- read better as a
-    pair with the same name than as two clauses buried in two larger scripts.
-
-    Idempotent. Rerunning it updates the shortcut only if it points somewhere
-    else.
-
-    See .config/paste-shot/README.md for why any of this is needed, and for the
-    remote half.
-
 .PARAMETER Start
     Also launch the hotkey now, rather than waiting for the next login.
 
 .EXAMPLE
-    powershell -File setup_paste_shot.ps1 -Start
+    .\setup.ps1 -Start
 #>
 
 [CmdletBinding()]
@@ -33,7 +18,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$scriptDir = Join-Path $PSScriptRoot '.config\paste-shot'
+$scriptDir = $PSScriptRoot
 $hotkey = Join-Path $scriptDir 'paste-shot.ahk'
 $link = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Startup\paste-shot.lnk'
 
@@ -42,8 +27,6 @@ if (-not (Test-Path -LiteralPath $hotkey)) {
     exit 1
 }
 
-# The winget package installs per-user; the Program Files paths are there for a
-# machine-wide install done by hand.
 $ahk = @(
     "$env:LOCALAPPDATA\Programs\AutoHotkey\v2\AutoHotkey64.exe",
     "$env:ProgramFiles\AutoHotkey\v2\AutoHotkey64.exe",
@@ -60,10 +43,6 @@ if (-not $ahk) {
 Write-Host "hotkey   -> $hotkey"
 Write-Host "runtime  -> $ahk"
 
-# The shortcut runs the interpreter with the script as an argument rather than
-# the .ahk directly. Launching the .ahk relies on the file association, which
-# points at the UX launcher and picks an interpreter version at run time -- this
-# script is v2-only and says so, so pin it here instead of finding out at boot.
 $shell = New-Object -ComObject WScript.Shell
 $needsWrite = $true
 if (Test-Path -LiteralPath $link) {
@@ -99,9 +78,7 @@ Write-Host @'
 
 The remote half has to be running too. On the machine you ssh into:
 
-    ./setup_paste_shot.sh
+    .config/paste-shot/setup.sh
 
-That prints the LocalForward line for ~/.ssh/config. Add it under the Host you
-already use, then reconnect -- a session opened before that line existed does
-not carry the forward.
+That prints the LocalForward line for ~/.ssh/config.
 '@

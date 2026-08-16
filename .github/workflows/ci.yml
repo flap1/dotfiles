@@ -24,40 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: sudo apt-get update && sudo apt-get install -y shellcheck zsh
       - uses: mfinelli/setup-shfmt@v3
-      - name: policy
-        run: bash scripts/policy.sh
-      - name: shellcheck
-        run: |
-          mapfile -t files < <(
-            git ls-files '*.sh' 'bin/*' 'packages/*' 'lib/*' 'scripts/*' '.git_template/hooks/*' \
-              | while read -r f; do
-                  head -c 2 "$f" | grep -q '#!' && head -1 "$f" | grep -qE 'sh$|bash' && echo "$f"
-                done
-          )
-          printf '%s\n' "${files[@]}"
-          shellcheck "${files[@]}"
-      - name: shfmt
-        run: |
-          shfmt -i 4 -ci -s -d \
-            bootstrap.sh \
-            bin \
-            packages \
-            lib \
-            scripts \
-            .git_template/hooks
-      - name: zshenv does not require cargo or bob
-        run: |
-          tmp=$(mktemp -d)
-          mkdir -p "$tmp/.config"
-          cp .zshenv "$tmp/.zshenv"
-          cp -a .config/zsh "$tmp/.config/zsh"
-          out=$(HOME="$tmp" zsh -f -c "source $tmp/.zshenv; echo ok" 2>&1)
-          echo "$out"
-          if echo "$out" | grep -q 'no such file or directory'; then
-            echo "zshenv sourced a missing file"
-            exit 1
-          fi
-          echo "$out" | grep -qx 'ok'
+      - run: bash scripts/ci-shell.sh
 
   # Throwaway HOME: the path a machine takes after tools exist.
   # bootstrap.sh itself needs sudo apt and is not this job.
@@ -69,30 +36,12 @@ jobs:
           apt-get update
           apt-get install -y git nodejs jq gettext-base curl ca-certificates
       - uses: actions/checkout@v4
-      - name: run twice, second must not change anything
-        run: |
-          set -euo pipefail
-          export HOME=/tmp/fakehome
-          mkdir -p "$HOME"
-          cp -r "$GITHUB_WORKSPACE" "$HOME/dotfiles"
-          cd "$HOME/dotfiles"
+      - run: bash scripts/ci-install.sh
 
-          ./install.sh --yes >/tmp/first.log 2>&1 || { cat /tmp/first.log; exit 1; }
-          find "$HOME" -path "$HOME/dotfiles" -prune -o -print | sort >/tmp/first.state
-
-          ./install.sh --yes >/tmp/second.log 2>&1 || { cat /tmp/second.log; exit 1; }
-          find "$HOME" -path "$HOME/dotfiles" -prune -o -print | sort >/tmp/second.state
-
-          if ! diff -u /tmp/first.state /tmp/second.state; then
-            echo "second run changed the filesystem: install.sh is not idempotent"
-            exit 1
-          fi
-          if ! grep -q 'already current' /tmp/second.log; then
-            echo "second run did not report composed files already current"
-            cat /tmp/second.log
-            exit 1
-          fi
-          if grep -E '^[[:space:]]*hooksPath' "$HOME/.gitconfig"; then
-            echo "installed gitconfig still sets core.hooksPath"
-            exit 1
-          fi
+  pwsh:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/powershell:7.4-ubuntu-24.04
+    steps:
+      - run: apt-get update && apt-get install -y git
+      - uses: actions/checkout@v4
+      - run: pwsh -NoProfile -File scripts/ci-pwsh.ps1

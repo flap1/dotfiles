@@ -51,14 +51,23 @@ ensure "clang" clang "clang libclang-dev"
 ensure "fcitx5-mozc" fcitx5 "fcitx5 fcitx5-mozc"
 ensure "wl-clipboard" wl-copy "wl-clipboard"
 
-# mise's official installer. rust is a mise tool, not a second toolchain.
+# mise: signed apt package via extrepo, not curl | sh.
 if command -v mise >/dev/null 2>&1; then
     echo "mise: already installed, skipping."
 else
     yn=y
     [ "$ASSUME_YES" = 1 ] || read -rp "Install mise? (y/n): " yn
     case $yn in
-        [Yy]*) curl https://mise.run | sh ;;
+        [Yy]*)
+            if [ "$need_apt" = 0 ]; then
+                sudo apt-get update
+                need_apt=1
+            fi
+            sudo apt-get install -y extrepo
+            sudo extrepo enable mise
+            sudo apt-get update
+            sudo apt-get install -y mise
+            ;;
         *) echo "Skipped mise." ;;
     esac
 fi

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# st Session Start Hook
-# Injects CLAUDE_SESSION_ID into CLAUDE_ENV_FILE so subsequent Bash calls can use it.
+# SessionStart: CLAUDE_SESSION_ID into CLAUDE_ENV_FILE for later Bash calls.
 set -euo pipefail
 
 # fail open without jq

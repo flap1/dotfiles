@@ -16,8 +16,8 @@ usage: install.sh [options]
 
   -y, --yes           every category
       --only ID       one category id (zsh, nvim, bin, git, mise, tmux,
-                      tmux-runtime, bind-localhost, claude, cursor, claude-settings,
-                      cursor-settings, codex, codex-settings)
+                      tmux-runtime, yazi, lazygit, claude, cursor,
+                      claude-settings, cursor-settings, codex, codex-settings)
       --dry-run       print ids, change nothing
   -h, --help
 
@@ -190,6 +190,12 @@ link_category tmux \
     ".config/tmux/.tmux.conf" "$HOME/.tmux.conf" \
     ".config/tmux/status.sh" "$HOME/.tmux-status.sh"
 
+link_category yazi \
+    ".config/yazi" "$HOME/.config/yazi"
+
+link_category lazygit \
+    ".config/lazygit" "$HOME/.config/lazygit"
+
 write_tmux_service() {
     ask tmux-runtime || return 0
 
@@ -236,26 +242,10 @@ EOF
 }
 write_tmux_service
 
-build_bind_localhost() {
-    command -v gcc >/dev/null || {
-        echo "Skipped [bind-localhost]: no gcc."
-        return
-    }
-    ask bind-localhost || return 0
-    mkdir -p "$HOME/.local/lib"
-    gcc -shared -fPIC -O2 -Wall -Wextra \
-        -o "$HOME/.local/lib/bind-localhost.so" "$DOTFILES_DIR/lib/bind-localhost.c" -ldl
-    echo "  -> $HOME/.local/lib/bind-localhost.so"
-    "$DOTFILES_DIR/lib/test-bind-localhost.sh"
-}
-build_bind_localhost
-
 link_category claude \
     ".claude/hooks" "$HOME/.claude/hooks" \
     ".claude/skills" "$HOME/.claude/skills" \
-    ".claude/statusline.mjs" "$HOME/.claude/statusline.mjs" \
-    ".claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md" \
-    ".claude/RTK.md" "$HOME/.claude/RTK.md"
+    ".claude/statusline.mjs" "$HOME/.claude/statusline.mjs"
 
 link_category cursor \
     ".cursor/statusline.mjs" "$HOME/.cursor/statusline.mjs"

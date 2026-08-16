@@ -1,30 +1,6 @@
 #!/usr/bin/env node
-// Claude Code status line. One process.
-//
-// This replaces statusline-command.sh, which was correct but cost 2.2s per
-// render on Windows against 0.1s on Linux. The difference was not the shell:
-// the script shelled out about twenty times per render -- fourteen jq calls,
-// five git calls, plus tr, awk, sed, date -- and every process launched through
-// the MSYS2 runtime pays roughly 100ms because POSIX fork() has to be emulated.
-// Measured there: jq 84ms, git 131ms, node 84ms, bash 144ms. No other POSIX
-// layer on Windows avoids that; BusyBox-w32 lowers the per-process cost but
-// twenty launches is still twenty launches.
-//
-// So the fix is to stop spawning. This is one node process plus one git, and
-// the git call is `status --porcelain=v2 --branch`, which answers in a single
-// invocation what took five before.
-//
-// Rewriting it in JS also deletes a whole class of bug rather than the four
-// instances of it that were actually found. Every Windows-only failure in that
-// script came from shelling out: /bin/sh under Git Bash is bash in POSIX mode,
-// where `echo` expands backslash escapes, so a Windows path reached jq with
-// C:\Users turned into C:Users; `printf '%b'` did the same to the finished
-// line; `rev` does not exist there at all; and ${cwd#$HOME} never matched
-// because current_dir is C:\Users\name while $HOME is /c/Users/name. None of
-// those can happen here.
-//
-// The display is unchanged. Output was compared byte for byte against the shell
-// version on both platforms before the switch.
+// Claude Code status line. One node process plus one git call.
+// A shell pipeline of jq/git was too slow on Windows and mishandled paths.
 
 import { readFileSync, writeFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'

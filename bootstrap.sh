@@ -42,6 +42,7 @@ done
 bash "$DOTFILES_DIR/packages/system.sh" "${ARGS[@]}"
 
 # mise is on PATH only after system.sh installs it, and not in this shell.
+# apt puts it in /usr/bin; an older curl install lived in ~/.local/bin.
 export PATH="$HOME/.local/bin:$PATH"
 
 bash "$DOTFILES_DIR/install.sh" "${ARGS[@]}"

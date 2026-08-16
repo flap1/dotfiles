@@ -69,9 +69,6 @@ return {
     build = "make install_jsregexp",
     config = function()
       local cfg = vim.fn.stdpath("config")
-      require("luasnip.loaders.from_vscode").lazy_load({
-        paths = cfg .. "/snippets/vscode",
-      })
       require("luasnip.loaders.from_lua").lazy_load({
         paths = cfg .. "/snippets/lua",
       })

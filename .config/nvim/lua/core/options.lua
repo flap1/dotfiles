@@ -29,7 +29,6 @@ vim.o.listchars = "tab:» "
 
 -- Insert
 vim.o.backspace = "indent,eol,start"
-vim.o.formatoptions = vim.o.formatoptions .. "m"
 vim.o.fixendofline = true
 
 -- Search
@@ -59,7 +58,6 @@ vim.o.pumblend = 30
 
 -- File
 vim.o.autoread = true
-vim.o.swapfile = false
 vim.o.hidden = true
 vim.o.modeline = false
 

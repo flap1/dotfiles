@@ -1,0 +1,46 @@
+# Contributing
+
+This is personal configuration, published so it can be cloned and so the
+install path stays honest. It is not a distribution and not a plugin
+framework.
+
+## What to send
+
+Welcome:
+
+- Bugs in `bootstrap.sh`, `install.sh`, `bootstrap.ps1`, `install.ps1`, or compose
+- False positives or missed cases in `scripts/policy.sh`
+- Documentation that is wrong or missing for a stranger cloning the repo
+
+Not useful:
+
+- Your aliases, theme, or editor plugins
+- A request to make the tree a framework (chezmoi, stow profiles, Nix)
+
+Fork, delete what you do not use, keep what you do.
+
+## Checks
+
+From the repository root, the same commands CI runs:
+
+```bash
+bash scripts/policy.sh
+bash scripts/ci-shell.sh
+bash scripts/ci-install.sh
+bash scripts/ci-pwsh.sh
+```
+
+`ci-install.sh` needs `node` and `jq`. It writes under `/tmp` and does not
+touch your home directory. `ci-pwsh.sh` needs `pwsh`.
+
+Secrets: `gitleaks detect --source . --verbose --redact` (full history).
+Lefthook runs `gitleaks git --staged` on commit.
+
+Origin is GitLab (`.gitlab-ci.yml`). `.github/workflows/ci.yml` is for a
+GitHub fork; keep the two in step by calling these scripts, not by copying
+job bodies.
+
+## Language
+
+Tracked files are English. `scripts/policy.sh` rejects CJK except the nvim
+IME maps.

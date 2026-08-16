@@ -8,8 +8,8 @@ software.
 
 - **symlink** — files only this repository writes. Each link is appended to
   `$XDG_STATE_HOME/dotfiles/manifest`.
-- **compose** — files a CLI also writes (`install_claude_settings`,
-  `install_cursor_settings`, `install_codex_settings`). A symlink there sends
+- **compose** — files a CLI also writes (`compose_claude_settings`,
+  `compose_cursor_settings`, `compose_codex_settings`). A symlink there sends
   machine-local churn, and in Cursor's case an email address and user id,
   into this repository.
 
@@ -21,7 +21,10 @@ hand-rolled TOML writer.
 A skill under `.claude/skills/` that an upstream owns is gitignored and listed
 in `.claude/skills/VENDOR`. `npx skills update -g` installs them.
 
-`.claude/CLAUDE.md` is not this file. It is the machine-wide session file.
+Machine-wide Claude session files are gitignored (`.claude/CLAUDE.md`,
+`.claude/RTK.md`). This file is the agent brief for work *on this repository*.
+Compose of Claude / Cursor / Codex settings is `lib/compose-*.js`, called
+from both `install.sh` and `install.ps1`.
 
 ## Rules
 

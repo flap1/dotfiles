@@ -32,9 +32,17 @@ out
 # credential lives in these instead, and they are never tracked.
 /.claude/settings.local.json
 /.claude/PROMPT.md
+/.claude/CLAUDE.md
+/.claude/RTK.md
 /.claude/hooks/st-backpressure.sh
 /.config/git/.gitconfig.local
 /.cursor/cli-config.local.json
+
+## this machine only — not part of a clone
+/bin/ci-cache-reap.sh
+/bin/pr-conflicts
+/lib/bind-localhost.c
+/lib/test-bind-localhost.sh
 
 ## VSCode: retired in favour of the terminal stack, and its remote-SSH host
 ## map names the employer.

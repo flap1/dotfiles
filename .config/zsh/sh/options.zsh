@@ -28,12 +28,9 @@ unsetopt menu_complete       # list the candidates, do not insert the first
 setopt auto_list
 setopt auto_menu
 setopt auto_param_keys
-setopt auto_resume           # a bare command name resumes its suspended job
-setopt correct
 setopt complete_in_word
 setopt magic_equal_subst     # complete after the = in --prefix=/usr
 setopt always_last_prompt
-setopt nolistambiguous
 
 # Navigation
 setopt auto_cd
@@ -42,7 +39,6 @@ setopt pushd_ignore_dups
 setopt pushd_to_home
 setopt pushd_silent
 setopt pushdminus            # swap the meaning of + and -
-setopt auto_name_dirs
 
 # Globbing and expansion
 setopt equals                # =command expands to its path
@@ -56,16 +52,12 @@ unsetopt sh_word_split
 # Shell behaviour
 setopt no_beep
 setopt no_flow_control       # C-s and C-q are not flow control here
-setopt hash_cmds
 setopt no_hup                # background jobs survive logout
 setopt ignore_eof            # C-d does not end the session
 setopt long_list_jobs
-setopt mail_warning
 setopt multios
 setopt print_eight_bit
-setopt short_loops
 setopt rm_star_wait          # pause before `rm *`
 setopt notify                # report a finished job without waiting for a prompt
-setopt clobber
+unsetopt clobber
 setopt interactive_comments
-setopt chase_links           # resolve symlinks before running

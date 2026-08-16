@@ -3,7 +3,7 @@ local s = ls.snippet
 local t = ls.text_node
 
 return {
-  s("setupLogger", {
-    t({ "from myutils import setup_logger", "logger = setup_logger(__name__)" }),
+  s("logger", {
+    t({ "from logging import getLogger", "logger = getLogger(name=__name__)" }),
   }),
 }

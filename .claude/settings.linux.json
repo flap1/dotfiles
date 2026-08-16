@@ -1,76 +1,16 @@
 {
   "$comment": [
-    "Linux-only layer, merged over settings.json into ~/.claude/settings.json by",
-    "setup.sh. The mirror image of settings.windows.json.",
-    "",
-    "Everything in here names a binary or a script that only exists on the Linux",
-    "dev box: rtk, code-review-graph, two shell hooks and an .mjs with a shebang.",
-    "They used to live in settings.json, which is symlinked into ~/.claude on",
-    "Linux and generated on Windows -- so Windows had to strip them back out",
-    "again, and the shared file was only shared in name. settings.json is now",
-    "genuinely cross-platform and each side adds its own layer.",
-    "",
-    "Anything true of one machine rather than of Linux goes in the gitignored",
-    "settings.local.json, which is applied after this file. permissions lists are",
-    "unioned across all three layers so this one cannot drop rtk; every other key",
-    "is replaced outright, which is what makes rerunning setup.sh a no-op.",
-    "",
-    "statusLine runs node rather than the file directly: no exec bit to lose on a",
-    "Windows checkout, and no dependence on how the shebang resolves under mise."
+    "Linux overlay, merged by compose_claude_settings. Machine-only hooks",
+    "(rtk, code-review-graph) belong in the gitignored settings.local.json;",
+    "hooks concatenate per event so local can add without replacing these."
   ],
-  "permissions": {
-    "allow": [
-      "Bash(rtk read *)"
-    ]
-  },
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "code-review-graph update --skip-flows",
-            "timeout": 30
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/st-session-start.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "code-review-graph status",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$HOME/.claude/hooks/context-mode-cache-heal.mjs\""
+            "command": "bash ~/.claude/hooks/session-start.sh"
           }
         ]
       }
