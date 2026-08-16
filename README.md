@@ -1,23 +1,26 @@
 # dotfiles
 
-[![pipeline](https://gitlab.com/flap1/dotfiles/badges/main/pipeline.svg)](https://gitlab.com/flap1/dotfiles/-/pipelines)
+[![CI](https://github.com/flap1/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/flap1/dotfiles/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Personal Linux and Windows configuration. Not a framework: fork it and
 delete what you do not use.
 
 There is no coverage badge and no release badge. Neither job exists.
+This repository is applied with `git`, not installed from a GitHub Release.
 
 ## Install
 
 ```bash
-git clone https://gitlab.com/flap1/dotfiles.git ~/dotfiles
+git clone https://github.com/flap1/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./bootstrap.sh
 ```
 
 `bootstrap.sh` is a bare machine: system packages, mise, then links.
 `./install.sh` is enough after that — links and composed config, no software.
+Git identity is not in this repository: put `user.name` and `user.email` in
+`~/.gitconfig.local` before the first commit.
 
 ```bash
 ./install.sh --dry-run
@@ -35,9 +38,15 @@ no `core.hooksPath`.
 
 ```bash
 dotfiles status
-dotfiles pull
+dotfiles update
 dotfiles doctor
 ```
+
+A new interactive shell runs `dotfiles check` in the background at most
+once a day. If `origin/main` is ahead it prints one line pointing at
+`dotfiles update`. That command fast-forwards, runs `mise install` when
+the catalog moved, and reruns `install.sh --yes` when linked or composed
+files moved. `bootstrap.sh` still needs a person: it uses sudo.
 
 On Linux, `C` / `Y` copy a pipeline to the clipboard (`wl-copy` or `pbcopy`).
 

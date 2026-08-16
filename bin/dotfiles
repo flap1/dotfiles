@@ -21,10 +21,23 @@ usage() {
 usage: dotfiles <command>
 
   status   what is out of sync, in both directions
-  pull     fast-forward to origin, then say whether install.sh needs rerunning
+  pull     fast-forward to origin/main (git only)
+  update   pull, then apply (mise install and/or install.sh --yes)
   doctor   check that this machine still matches what install.sh installed
   check    quiet; prints one line if origin is ahead. For shell startup.
 EOF
+}
+
+stamp_now() {
+    mkdir -p "$STATE" 2>/dev/null && date +%s >"$STAMP"
+}
+
+# Sets BEFORE and AFTER. Does not print. 1 if not a fast-forward.
+ff_pull() {
+    BEFORE=$(git_ rev-parse HEAD)
+    git_ pull --ff-only --quiet origin main || return 1
+    AFTER=$(git_ rev-parse HEAD)
+    stamp_now
 }
 
 cmd_status() {
@@ -35,7 +48,7 @@ cmd_status() {
 
     [ "$dirty" -gt 0 ] && echo "${Y}$dirty uncommitted file(s)${X}"
     [ "$ahead" -gt 0 ] && echo "${Y}$ahead commit(s) not pushed${X}"
-    [ "$behind" -gt 0 ] && echo "${R}$behind commit(s) on origin not pulled${X}  -> dotfiles pull"
+    [ "$behind" -gt 0 ] && echo "${R}$behind commit(s) on origin not pulled${X}  -> dotfiles update"
     if [ "$dirty" -eq 0 ] && [ "$ahead" -eq 0 ] && [ "$behind" -eq 0 ]; then
         echo "${G}in sync with origin${X}"
     fi
@@ -43,25 +56,61 @@ cmd_status() {
 }
 
 cmd_pull() {
-    local before after
-    before=$(git_ rev-parse HEAD)
-    git_ pull --ff-only origin main || {
+    ff_pull || {
         echo "${R}not a fast-forward; resolve by hand${X}" >&2
         return 1
     }
-    after=$(git_ rev-parse HEAD)
-    mkdir -p "$STATE" 2>/dev/null && date +%s >"$STAMP"
-    [ "$before" = "$after" ] && {
+    if [ "$BEFORE" = "$AFTER" ]; then
         echo "${G}already up to date${X}"
         return 0
-    }
-
-    # Only say it when the pull touched something install.sh links; a reminder
-    # on every pull stops being read.
-    if git_ diff --name-only "$before" "$after" |
-        grep -qE '^(install\.sh|packages/|\.claude/|\.cursor/|\.codex/|\.config/)'; then
-        echo "${Y}installed files changed -- rerun ./install.sh${X}"
     fi
+    echo "${G}pulled $(git_ rev-list --count "$BEFORE".."$AFTER") commit(s)${X}"
+}
+
+# Apply what a pull just landed. bootstrap.sh is never run from here: it
+# needs sudo. mise install and install.sh do not.
+cmd_apply() {
+    local before=$1 after=$2
+    local files
+    files=$(git_ diff --name-only "$before" "$after")
+
+    if echo "$files" | grep -qE '^\.config/mise/'; then
+        if command -v mise >/dev/null 2>&1; then
+            echo "${M}mise catalog changed${X}"
+            mise -C "$DOTFILES_DIR/.config/mise" install
+        else
+            echo "${Y}mise catalog changed -- mise is not on PATH${X}"
+        fi
+    fi
+
+    if echo "$files" | grep -qE '^(install\.sh|install\.ps1|lib/|\.claude/|\.cursor/|\.codex/|\.config/|\.zshenv$)'; then
+        echo "${M}installed files changed${X}"
+        case "${OSTYPE:-}" in
+            msys* | cygwin* | win*)
+                powershell.exe -NoProfile -File "$DOTFILES_DIR/install.ps1"
+                ;;
+            *)
+                bash "$DOTFILES_DIR/install.sh" --yes
+                ;;
+        esac
+    fi
+
+    if echo "$files" | grep -qE '^(bootstrap\.sh|bootstrap\.ps1|packages/)'; then
+        echo "${Y}bootstrap files changed -- rerun ./bootstrap.sh (needs sudo)${X}"
+    fi
+}
+
+cmd_update() {
+    ff_pull || {
+        echo "${R}not a fast-forward; resolve by hand${X}" >&2
+        return 1
+    }
+    if [ "$BEFORE" = "$AFTER" ]; then
+        echo "${G}already up to date${X}"
+        return 0
+    fi
+    echo "${G}pulled $(git_ rev-list --count "$BEFORE".."$AFTER") commit(s)${X}"
+    cmd_apply "$BEFORE" "$AFTER"
 }
 
 # The manifest is written by install.sh, so doctor checks what this machine
@@ -92,9 +141,7 @@ cmd_doctor() {
     echo "${M}composed files${X}"
     doctor_composed "$HOME/.claude/settings.json" "$DOTFILES_DIR/.claude/settings.json" claude ||
         problems=$((problems + 1))
-    doctor_composed \
-        "${CURSOR_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/cursor}/cli-config.json" \
-        "$DOTFILES_DIR/.cursor/cli-config.json" cursor ||
+    doctor_composed "$(cursor_cli_config)" "$DOTFILES_DIR/.cursor/cli-config.json" cursor ||
         problems=$((problems + 1))
 
     echo "${M}vendored skills${X}"
@@ -126,6 +173,18 @@ cmd_doctor() {
     echo
     [ "$problems" -eq 0 ] && echo "${G}no problems found${X}" || echo "${Y}$problems problem(s)${X}"
     return 0
+}
+
+# Same default as lib/compose.sh: ~/.cursor unless CURSOR_CONFIG_DIR or
+# XDG_CONFIG_HOME says otherwise. ~/.config/cursor is not the default.
+cursor_cli_config() {
+    if [ -n "${CURSOR_CONFIG_DIR:-}" ]; then
+        echo "$CURSOR_CONFIG_DIR/cli-config.json"
+    elif [ -n "${XDG_CONFIG_HOME:-}" ]; then
+        echo "$XDG_CONFIG_HOME/cursor/cli-config.json"
+    else
+        echo "$HOME/.cursor/cli-config.json"
+    fi
 }
 
 # Most of a composed file belongs to the CLI, so compare only the keys the
@@ -184,18 +243,17 @@ cmd_check() {
     last=$(cat "$STAMP" 2>/dev/null || echo 0)
     [ $((now - last)) -lt 86400 ] && return 0
 
-    mkdir -p "$STATE" 2>/dev/null || return 0
-    echo "$now" >"$STAMP"
-
     git_ fetch --quiet origin 2>/dev/null || return 0
+    stamp_now
     behind=$(git_ rev-list --count HEAD..origin/main 2>/dev/null || echo 0)
-    [ "$behind" -gt 0 ] && echo "${Y}dotfiles: $behind commit(s) on origin${X}  -> dotfiles pull"
+    [ "$behind" -gt 0 ] && echo "${Y}dotfiles: $behind commit(s) on origin${X}  -> dotfiles update"
     return 0
 }
 
 case "${1:-}" in
     status) cmd_status ;;
     pull) cmd_pull ;;
+    update) cmd_update ;;
     doctor) cmd_doctor ;;
     check) cmd_check ;;
     -h | --help | help | "") usage ;;

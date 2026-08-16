@@ -87,7 +87,7 @@ if command -v mise >/dev/null 2>&1; then
     fi
 fi
 
-# Docker is opt-in even with -y: CI must not curl get.docker.com.
+# Docker is opt-in even with -y: a clone used as CI must not install a daemon.
 if command -v docker >/dev/null 2>&1; then
     echo "docker: already installed, skipping."
 elif [ "$ASSUME_YES" = 1 ]; then
@@ -95,7 +95,11 @@ elif [ "$ASSUME_YES" = 1 ]; then
 else
     read -rp "Install Docker? (y/n): " yn
     if [[ $yn == [Yy]* ]]; then
-        curl -fsSL https://get.docker.com | sh
+        if [ "$need_apt" = 0 ]; then
+            sudo apt-get update
+            need_apt=1
+        fi
+        sudo apt-get install -y docker.io
         sudo usermod -aG docker "$USER"
         echo "Docker installed. Re-login to use without sudo."
     else

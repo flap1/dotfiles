@@ -61,10 +61,12 @@ vim.o.autoread = true
 vim.o.hidden = true
 vim.o.modeline = false
 
--- Undo
+-- Undo / swap live under state, not next to the file (NFS, sync folders).
 vim.o.undofile = true
 vim.o.undodir = vim.fn.stdpath("state") .. "/undo/"
 vim.fn.mkdir(vim.o.undodir, "p")
+vim.o.directory = vim.fn.stdpath("state") .. "/swap//"
+vim.fn.mkdir(vim.o.directory, "p")
 
 -- Clipboard
 -- Windows Terminal over SSH: write through OSC52, read from the unnamed

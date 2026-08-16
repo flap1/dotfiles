@@ -7,8 +7,10 @@ else
     autoload -Uz compinit && compinit -C
 fi
 
-export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --color=always --exclude .git'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+if (( $+commands[fd] )); then
+    export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --color=always --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
 export FZF_DEFAULT_OPTS="--ansi"
 
 command -v gh >/dev/null && eval "$(gh completion -s zsh)"

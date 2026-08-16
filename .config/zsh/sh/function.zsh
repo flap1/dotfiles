@@ -32,6 +32,8 @@ mkcd() {
 
 tsx() {
     [ -z "$1" ] && { echo "usage: tsx PORT [LOCAL_PORT]" >&2; return 1; }
+    (( $+commands[tailscale] )) || { echo "tsx: tailscale is not on PATH" >&2; return 1; }
+    (( $+commands[socat] )) || { echo "tsx: socat is not on PATH" >&2; return 1; }
     local tsip ts_port local_port
     tsip=$(tailscale ip -4 2>/dev/null) || tsip=""
     [ -z "$tsip" ] && { echo "tsx: no tailscale IPv4 address" >&2; return 1; }
@@ -42,6 +44,7 @@ tsx() {
 }
 
 yy() {
+    (( $+commands[yazi] )) || { print -u2 "yy: yazi is not on PATH"; return 1; }
     local tmp cwd
     tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
     yazi "$@" --cwd-file="$tmp"

@@ -15,11 +15,6 @@
 ## background
 /.config/pictures/**
 
-out
-
-## gitkeep
-!.gitkeep
-
 ## claude
 /.claude/skills/st-plan/.cache
 /.claude/skills/st/.cache
@@ -52,3 +47,6 @@ out
 /.config/lazygit/state.yml
 ## superseded hook backup
 /.git_template/hooks/*.old
+
+## local index from the code-review-graph MCP; not configuration
+/.code-review-graph/

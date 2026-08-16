@@ -63,8 +63,8 @@ if git grep -q 'mise.run' -- ':!scripts/policy.sh'; then
     fail=1
 fi
 
-if git grep -qiE '\bsyntopic\b' -- ':!scripts/policy.sh' ':!scripts/retired-paths.txt'; then
-    echo "employer/project host names must not be in tracked files"
+if git grep -qE 'gitlab\.com/flap1/dotfiles' -- ':!scripts/policy.sh' ':!scripts/retired-paths.txt'; then
+    echo "clone URL must be GitHub; gitlab.com/flap1/dotfiles is retired"
     fail=1
 fi
 

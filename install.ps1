@@ -140,7 +140,7 @@ function Set-GitSshCommand {
 
 function Restore-WindowsTerminalOwnership {
     param(
-        [Parameter(Mandatory)][string]$RepoLocalState,
+        [Parameter(Mandatory)][string]$RepoRoot,
         [Parameter(Mandatory)][string]$LocalState
     )
 
@@ -155,12 +155,11 @@ function Restore-WindowsTerminalOwnership {
 
     $current = $null
     if ($existing.Target) { $current = $existing.Target[0] }
-    $pointsAtRepo = $false
-    if ($current) {
-        $a = $current.TrimEnd('\')
-        $b = $RepoLocalState.TrimEnd('\')
-        $pointsAtRepo = [string]::Equals($a, $b, [StringComparison]::OrdinalIgnoreCase)
-    }
+    $repoPrefix = $RepoRoot.TrimEnd('\') + '\'
+    $pointsAtRepo = $current -and (
+        $current.StartsWith($repoPrefix, [StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($current.TrimEnd('\'), $RepoRoot.TrimEnd('\'), [StringComparison]::OrdinalIgnoreCase)
+    )
     if (-not $pointsAtRepo) {
         Write-Host '  linked, but not to this repo; leaving it'
         return
@@ -173,12 +172,9 @@ function Restore-WindowsTerminalOwnership {
     }
 
     $backup = Join-Path $env:TEMP ('wt-settings-' + (Get-Date -Format 'yyyyMMddHHmmss') + '.json')
-    $fromRepo = Join-Path $RepoLocalState 'settings.json'
     $fromLive = Join-Path $LocalState 'settings.json'
     if (Test-Path -LiteralPath $fromLive) {
         Copy-Item -LiteralPath $fromLive -Destination $backup -Force
-    } elseif (Test-Path -LiteralPath $fromRepo) {
-        Copy-Item -LiteralPath $fromRepo -Destination $backup -Force
     }
 
     [IO.Directory]::Delete($LocalState)
@@ -221,7 +217,7 @@ Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path 
 Set-DirectoryJunction -Target (Join-Path $repo '.config\yazi') -Link (Join-Path $env:APPDATA 'yazi\config')
 
 Set-GitSshCommand
-Restore-WindowsTerminalOwnership -RepoLocalState (Join-Path $repo '.config\windows-terminal\LocalState') -LocalState $wtLocalState
+Restore-WindowsTerminalOwnership -RepoRoot $repo -LocalState $wtLocalState
 
 Set-DirectoryJunction -Target (Join-Path $repo '.claude\skills') -Link (Join-Path $env:USERPROFILE '.claude\skills')
 Set-DirectoryJunction -Target (Join-Path $repo '.claude\hooks') -Link (Join-Path $env:USERPROFILE '.claude\hooks')

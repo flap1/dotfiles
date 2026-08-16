@@ -12,5 +12,5 @@ input="$(cat)"
 session_id="$(echo "$input" | jq -r '.session_id // ""')"
 
 if [[ -n $session_id ]] && [[ -n ${CLAUDE_ENV_FILE:-} ]]; then
-    echo "export CLAUDE_SESSION_ID='${session_id}'" >>"$CLAUDE_ENV_FILE"
+    printf 'export CLAUDE_SESSION_ID=%s\n' "$(printf '%s' "$session_id" | jq -Rsr '@sh')" >>"$CLAUDE_ENV_FILE"
 fi

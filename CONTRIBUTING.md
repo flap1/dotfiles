@@ -27,6 +27,8 @@ From the repository root, the same commands CI runs:
 bash scripts/policy.sh
 bash scripts/ci-shell.sh
 bash scripts/ci-install.sh
+bash scripts/ci-compose.sh
+bash scripts/ci-dotfiles.sh
 bash scripts/ci-pwsh.sh
 ```
 
@@ -36,9 +38,7 @@ touch your home directory. `ci-pwsh.sh` needs `pwsh`.
 Secrets: `gitleaks detect --source . --verbose --redact` (full history).
 Lefthook runs `gitleaks git --staged` on commit.
 
-Origin is GitLab (`.gitlab-ci.yml`). `.github/workflows/ci.yml` is for a
-GitHub fork; keep the two in step by calling these scripts, not by copying
-job bodies.
+Origin is GitHub. CI is `.github/workflows/ci.yml`.
 
 ## Language
 

@@ -59,3 +59,4 @@ bin/pr-conflicts
 lib/bind-localhost.c
 lib/test-bind-localhost.sh
 .config/nvim/snippets/vscode/package.json
+.gitlab-ci.yml
