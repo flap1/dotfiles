@@ -1,18 +1,15 @@
 <!--
-  main accepts pull requests only. Description shape follows Google's
-  eng-practices (why, what, how you tested) plus Kubernetes' user-facing
-  note. There is no release-note block: this tree is applied with git.
+  main accepts pull requests only. Headings match the local harness
+  (`## Summary`, `## Test plan`). The Summary is Google's why+what;
+  Test plan is the checks in CONTRIBUTING.md. There is no release-note
+  block: this tree is applied with git.
 -->
 
-## Why
+## Summary
 
-<!-- The problem this PR exists to close. Link the issue if there is one. -->
+<!-- Why this exists, then what a reviewer should look at. Link the issue if there is one. -->
 
-## What
-
-<!-- What a reviewer should look at. Files and behaviour, not a commit list. -->
-
-## How you tested
+## Test plan
 
 - [ ] `bash scripts/policy.sh`
 - [ ] `bash scripts/ci-shell.sh`
