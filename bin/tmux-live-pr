@@ -1,0 +1,14 @@
+#!/bin/sh
+# Open live-pr at the project root pinned to this tmux window.
+
+set -eu
+
+source_pane=${1:?usage: tmux-live-pr PANE_ID}
+window=$(tmux display-message -p -t "$source_pane" '#{window_id}')
+root=$(tmux show-options -wqv -t "$window" @project_root 2>/dev/null || true)
+if [ -z "$root" ] || [ ! -d "$root" ]; then
+    root=$(tmux display-message -p -t "$source_pane" '#{pane_current_path}')
+    tmux set-option -w -t "$window" @project_root "$root"
+fi
+
+tmux display-popup -E -w 95% -h 90% -d "$root" live-pr

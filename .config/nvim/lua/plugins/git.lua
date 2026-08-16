@@ -31,14 +31,21 @@ return {
   },
 
   {
-    "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+    "esmuellert/codediff.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    cmd = { "CodeDiff" },
     keys = {
-      { "<Leader>gd", "<Cmd>DiffviewOpen<CR>",                    desc = "Diffview open" },
-      { "<Leader>gD", "<Cmd>DiffviewClose<CR>",                   desc = "Diffview close" },
-      { "<Leader>gh", "<Cmd>DiffviewFileHistory %<CR>",           desc = "File history" },
-      { "<Leader>gm", "<Cmd>DiffviewOpen origin/main...HEAD<CR>", desc = "Review branch vs main" },
+      { "<Leader>gd", "<Cmd>CodeDiff<CR>",                   desc = "Working tree diff" },
+      { "<Leader>gh", "<Cmd>CodeDiff history %<CR>",         desc = "File history" },
+      { "<Leader>gH", "<Cmd>CodeDiff history<CR>",           desc = "Repository history" },
+      { "<Leader>gm", "<Cmd>CodeDiff origin/main...HEAD<CR>", desc = "Review branch vs main" },
     },
-    opts = {},
+    opts = {
+      explorer = {
+        view_mode = "tree",
+        indent_markers = true,
+        width = 32,
+      },
+    },
   },
 }

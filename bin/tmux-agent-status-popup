@@ -1,0 +1,14 @@
+#!/bin/sh
+# Run shonenm's agent picker with a steady cursor and restore it on exit.
+
+set -eu
+
+restore_cursor() {
+    printf '\033[0 q'
+}
+trap restore_cursor EXIT HUP INT TERM
+
+# DECSCUSR 2: steady block. fzf keeps its input cursor visible even while the
+# picker is in navigation mode; making it steady avoids localized flicker.
+printf '\033[2 q'
+"$HOME/.local/share/shonenm-dotfiles/scripts/tmux-agent-status.sh" popup

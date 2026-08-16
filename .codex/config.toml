@@ -32,6 +32,14 @@ commit_attribution = ""
 # thread cap, so silence the startup banner rather than drop the feature.
 suppress_unstable_features_warning = true
 
+[hooks]
+SessionStart = [{ hooks = [{ type = "command", command = "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh set idle codex" }] }]
+UserPromptSubmit = [{ hooks = [{ type = "command", command = "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh start codex event" }] }]
+PreToolUse = [{ hooks = [{ type = "command", command = "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh heartbeat codex event" }] }]
+PostToolUse = [{ hooks = [{ type = "command", command = "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh heartbeat codex event" }] }]
+PermissionRequest = [{ hooks = [{ type = "command", command = "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh set permission codex" }] }]
+Stop = [{ hooks = [{ type = "command", command = "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh set idle codex" }] }]
+
 [agents]
 
 [agents.default]

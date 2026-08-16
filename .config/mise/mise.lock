@@ -759,6 +759,65 @@ checksum = "sha256:a526da44d5f67250598fa95e5654815e9f672b2c05d1d98c28bce0e60d3cf
 url = "https://github.com/x-motemen/ghq/releases/download/v1.10.1/ghq_windows_amd64.zip"
 url_api = "https://api.github.com/repos/x-motemen/ghq/releases/assets/394135809"
 
+[[tools."github:shonenm/live-pr"]]
+version = "0.6.2"
+backend = "github:shonenm/live-pr"
+
+[tools."github:shonenm/live-pr"."platforms.linux-arm64"]
+checksum = "sha256:00a3174a081005b353711a98e8012aa2a7f8063a7b58392341c35f90e6d9b410"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506871"
+
+[tools."github:shonenm/live-pr"."platforms.linux-arm64-musl"]
+checksum = "sha256:00a3174a081005b353711a98e8012aa2a7f8063a7b58392341c35f90e6d9b410"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506871"
+
+[tools."github:shonenm/live-pr"."platforms.linux-x64"]
+checksum = "sha256:f4b9cdbf58b90957cecdc53acadb70ad71cf02bf036f5e02d02d479251ee27fc"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506872"
+
+[tools."github:shonenm/live-pr"."platforms.linux-x64-baseline"]
+checksum = "sha256:f4b9cdbf58b90957cecdc53acadb70ad71cf02bf036f5e02d02d479251ee27fc"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506872"
+
+[tools."github:shonenm/live-pr"."platforms.linux-x64-musl"]
+checksum = "sha256:f4b9cdbf58b90957cecdc53acadb70ad71cf02bf036f5e02d02d479251ee27fc"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506872"
+
+[tools."github:shonenm/live-pr"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:f4b9cdbf58b90957cecdc53acadb70ad71cf02bf036f5e02d02d479251ee27fc"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506872"
+
+[tools."github:shonenm/live-pr"."platforms.macos-arm64"]
+checksum = "sha256:6cfd44024c2aa630523da80b417504a15299a1bb5dd42088d72b3603926d304b"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506873"
+
+[tools."github:shonenm/live-pr"."platforms.macos-x64"]
+checksum = "sha256:01f1640a5d28ef6ecad2f32030667741e22b37f18f8ea98cc4e4f627f1479a40"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506870"
+
+[tools."github:shonenm/live-pr"."platforms.macos-x64-baseline"]
+checksum = "sha256:01f1640a5d28ef6ecad2f32030667741e22b37f18f8ea98cc4e4f627f1479a40"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506870"
+
+[tools."github:shonenm/live-pr"."platforms.windows-x64"]
+checksum = "sha256:c89c0f06824220aa8b9b47e8b0bce74d18050afc04a23ca14d79d3dbdf7ef7a1"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Windows_amd64.zip"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506886"
+
+[tools."github:shonenm/live-pr"."platforms.windows-x64-baseline"]
+checksum = "sha256:c89c0f06824220aa8b9b47e8b0bce74d18050afc04a23ca14d79d3dbdf7ef7a1"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Windows_amd64.zip"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506886"
+
 [[tools.gitleaks]]
 version = "8.30.1"
 backend = "aqua:gitleaks/gitleaks"
@@ -1101,65 +1160,6 @@ url = "https://nodejs.org/dist/v24.14.0/node-v24.14.0-win-x64.zip"
 [tools.node."platforms.windows-x64-baseline"]
 checksum = "sha256:313fa40c0d7b18575821de8cb17483031fe07d95de5994f6f435f3b345f85c66"
 url = "https://nodejs.org/dist/v24.14.0/node-v24.14.0-win-x64.zip"
-
-[[tools.pnpm]]
-version = "10.32.1"
-backend = "aqua:pnpm/pnpm"
-
-[tools.pnpm."platforms.linux-arm64"]
-checksum = "sha256:c0db0b837971fde6f9781af8914e54eb163721193a36d35cbcf1794b3474a407"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-linux-arm64"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216282"
-
-[tools.pnpm."platforms.linux-arm64-musl"]
-checksum = "sha256:c0db0b837971fde6f9781af8914e54eb163721193a36d35cbcf1794b3474a407"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-linux-arm64"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216282"
-
-[tools.pnpm."platforms.linux-x64"]
-checksum = "sha256:c5607a86bfb948297e96b393a53c90107766fe56329e62967b1f239d861d4363"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-linux-x64"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216286"
-
-[tools.pnpm."platforms.linux-x64-baseline"]
-checksum = "sha256:c5607a86bfb948297e96b393a53c90107766fe56329e62967b1f239d861d4363"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-linux-x64"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216286"
-
-[tools.pnpm."platforms.linux-x64-musl"]
-checksum = "sha256:c5607a86bfb948297e96b393a53c90107766fe56329e62967b1f239d861d4363"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-linux-x64"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216286"
-
-[tools.pnpm."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:c5607a86bfb948297e96b393a53c90107766fe56329e62967b1f239d861d4363"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-linux-x64"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216286"
-
-[tools.pnpm."platforms.macos-arm64"]
-checksum = "sha256:b0904b4e0cf36704fcdc24bcdb5f03388799a631510d1fb0d459ea69c7b1e2d9"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-macos-arm64"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216291"
-
-[tools.pnpm."platforms.macos-x64"]
-checksum = "sha256:8b83277343bbc400fdb90608bd51b4f56e380e6624ac5fd0e11d6c08815e3f04"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-macos-x64"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216287"
-
-[tools.pnpm."platforms.macos-x64-baseline"]
-checksum = "sha256:8b83277343bbc400fdb90608bd51b4f56e380e6624ac5fd0e11d6c08815e3f04"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-macos-x64"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216287"
-
-[tools.pnpm."platforms.windows-x64"]
-checksum = "sha256:849141504c83bcd08a3d84dc20d43cff2584d672138d28c33ad62bdac809e7f2"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-win-x64.exe"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216281"
-
-[tools.pnpm."platforms.windows-x64-baseline"]
-checksum = "sha256:849141504c83bcd08a3d84dc20d43cff2584d672138d28c33ad62bdac809e7f2"
-url = "https://github.com/pnpm/pnpm/releases/download/v10.32.1/pnpm-win-x64.exe"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/371216281"
 
 [[tools.ripgrep]]
 version = "15.2.0"

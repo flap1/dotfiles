@@ -182,6 +182,9 @@ link_category yazi \
 link_category lazygit \
     ".config/lazygit" "$HOME/.config/lazygit"
 
+link_category live-pr \
+    ".config/live-pr" "$HOME/.config/live-pr"
+
 write_tmux_service() {
     ask tmux-runtime "$HOME/.tmux.conf" "$HOME/.tmux-status.sh" || return 0
 

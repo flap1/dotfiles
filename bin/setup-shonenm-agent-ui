@@ -1,0 +1,44 @@
+#!/bin/sh
+# Install the pinned shonenm agent UI and apply this dotfiles' English UI layer.
+
+set -eu
+
+repo=${XDG_DATA_HOME:-"$HOME/.local/share"}/shonenm-dotfiles
+commit=c8dcfd27681a0cb34918cb722b1b68f22d487296
+
+if [ ! -d "$repo/.git" ]; then
+    git clone https://github.com/shonenm/dotfiles.git "$repo"
+fi
+
+git -C "$repo" fetch origin "$commit"
+git -C "$repo" checkout --detach "$commit"
+
+status=$repo/scripts/tmux-agent-status.sh
+sidebar=$repo/scripts/tmux-agent-sidebar.sh
+
+# These replacements target the pinned commit above. Keeping the overlay here
+# makes the external UI reproducible without vendoring the full upstream tree.
+# shellcheck disable=SC1003,SC2016 # The replacement program must preserve shell expressions literally.
+sed -i \
+    -e '59c\    line2=$(printf '\''%s%s%s · %s · %s · %s · %s%s'\'' "$g2" "$C_DIM" "$sess" "$branch" "$loc" "$tool" "${elapsed} ago" "$C_RST")' \
+    -e '89c\    line2=$(printf '\''   %s%s · %s · %s · %s%s'\'' "$C_DIM" "$host" "$disp_loc" "${provider:-agent}" "${elapsed} ago" "$C_RST")' \
+    -e '108c\        stash) printf '\''%s\\tdivider\\t%s\\n \\0'\'' "-" "${C_DIM}--- STASHED ---${C_RST}" ;;' \
+    -e '109c\        running) printf '\''%s\\tdivider\\t%s\\n \\0'\'' "-" "${C_DIM}--- RUNNING ---${C_RST}" ;;' \
+    -e '121c\  case "$status" in permission) echo "Awaiting approval: $line";; idle) echo "Last output: $line";; *) echo "$line";; esac' \
+    -e '126c\  [[ "$status" == divider ]] && { printf '\''%sRunning agents (no action needed)%s\\n'\'' "$C_DIM" "$C_RST"; return; }' \
+    -e '136c\    printf '\''%sTask%s %s\\n'\'' "$C_BOLD" "$C_RST" "$title"' \
+    -e '142c\    printf '\''%sRemote/container: live pane unavailable%s\\njump: %s\\n'\'' "$C_DIM" "$C_RST" "$target"' \
+    -e '169c\    if [[ -z "$rows" ]]; then tmux display-message "No agents"; exit 0; fi' \
+    -e '173c\      | fzf --read0 --ansi --delimiter=$'\''\\t'\'' --with-nth=3 --no-sort --reverse --height=100% --gap --cycle --no-input --disabled \\' \
+    -e "175c\\            --prompt 'agent> ' --header 'j/k: move  g/G: first/last  r: rescan  s: stash  Enter: jump  /: search  q: close' \\\\" \
+    -e "187c\\            --bind '/:show-input+enable-search+unbind(change)+unbind(j,k,g,G,r,q,s)+change-prompt(search> )' \\\\" \
+    -e '188c\            --bind '\''enter:transform:[ "$FZF_PROMPT" = "search> " ] && echo "hide-input+disable-search+rebind(j,k,g,G,r,q,s)+change-prompt(agent> )" || echo accept'\'' \\' \
+    -e '189c\            --bind '\''esc:transform:[ "$FZF_PROMPT" = "search> " ] && echo "hide-input+disable-search+rebind(change,j,k,g,G,r,q,s)+clear-query+change-prompt(agent> )" || echo abort'\'' \\' \
+    "$status"
+# shellcheck disable=SC2016 # Preserve the upstream shell expression literally.
+sed -i '209c\    top+=("$(printf '\''%s(no sessions)%s'\'' "$C_DIM" "$C_RST")")' "$sidebar"
+
+cargo build --release --manifest-path "$repo/tools/Cargo.toml" -p ai-usage
+install -m 0755 "$repo/tools/target/release/ai-usage" "$HOME/.local/bin/ai-usage"
+
+printf 'Installed shonenm agent UI at %s\n' "$commit"
