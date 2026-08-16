@@ -1,17 +1,12 @@
-<!--
-  main accepts pull requests only. Headings are the local harness
-  (`## Summary`, `## Changes`, `## Test plan`). Summary is why;
-  Changes is what a reviewer should look at. There is no release-note
-  block: this tree is applied with git.
--->
+<!-- main accepts pull requests only. No release-note block: this tree is applied with git. -->
 
 ## Summary
 
-<!-- Why this exists. Link the issue if there is one. -->
+Why this pull request exists. Link the issue if there is one.
 
 ## Changes
 
-<!-- Files and behaviour a reviewer should look at. Not a commit list. -->
+Files and behaviour a reviewer should look at. Not a commit list.
 
 ## Test plan
 
@@ -21,8 +16,7 @@
 - [ ] `bash scripts/ci-compose.sh`
 - [ ] `bash scripts/ci-dotfiles.sh`
 - [ ] `bash scripts/ci-pwsh.sh` (needs `pwsh`)
-- [ ] <!-- the actual command you ran that is not the list above -->
 
 ## User-facing
 
-<!-- What a clone does differently after merge. "None" is a valid answer. -->
+What a clone does differently after merge. Write "None" if nothing.
