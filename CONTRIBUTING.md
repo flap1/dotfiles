@@ -4,11 +4,15 @@ This is personal configuration, published so it can be cloned and so the
 install path stays honest. It is not a distribution and not a plugin
 framework.
 
+`main` accepts pull requests only. Direct pushes are refused by a
+repository ruleset. Issues go through the forms under
+`.github/ISSUE_TEMPLATE/` — blank issues are off.
+
 ## What to send
 
 Welcome:
 
-- Bugs in `bootstrap.sh`, `install.sh`, `bootstrap.ps1`, `install.ps1`, or compose
+- Bugs in `bootstrap.sh`, `install.sh`, `bootstrap.ps1`, `install.ps1`, `bin/dotfiles`, `bin/dotfiles.ps1`, or compose
 - False positives or missed cases in `scripts/policy.sh`
 - Documentation that is wrong or missing for a stranger cloning the repo
 
@@ -18,6 +22,20 @@ Not useful:
 - A request to make the tree a framework (chezmoi, stow profiles, Nix)
 
 Fork, delete what you do not use, keep what you do.
+
+A pull request uses `.github/pull_request_template.md`. The title is the
+squash commit, checked by `scripts/ci-pr-title.sh`:
+
+```
+<type>: <Uppercase description>
+```
+
+Types (and PR labels): `feat`, `fix`, `imprv`, `refactor`, `docs`,
+`test`, `chore`. No scope, no trailing period, English. Example:
+`feat: Add issue and pull request templates`.
+
+Issue labels stay `bug`, `enhancement`, `documentation` — those name
+the report, not the commit.
 
 ## Checks
 
@@ -38,7 +56,8 @@ touch your home directory. `ci-pwsh.sh` needs `pwsh`.
 Secrets: `gitleaks detect --source . --verbose --redact` (full history).
 Lefthook runs `gitleaks git --staged` on commit.
 
-Origin is GitHub. CI is `.github/workflows/ci.yml`.
+Origin is GitHub. CI is `.github/workflows/ci.yml` (pull requests, and
+pushes to `main` after merge).
 
 ## Language
 

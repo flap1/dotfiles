@@ -1,8 +1,9 @@
 name: ci
 
 on:
-  push:
   pull_request:
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -40,6 +41,23 @@ jobs:
       - run: bash scripts/ci-install.sh
       - run: bash scripts/ci-compose.sh
       - run: bash scripts/ci-dotfiles.sh
+
+  pr-title:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          bash scripts/ci-pr-title.sh
+          type=${PR_TITLE%%:*}
+          gh pr edit "$PR_NUMBER" --add-label "$type"
 
   pwsh:
     runs-on: windows-latest

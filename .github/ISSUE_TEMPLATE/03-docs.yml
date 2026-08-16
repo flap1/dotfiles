@@ -1,0 +1,47 @@
+name: Docs
+description: README or CONTRIBUTING is wrong, missing, or out of date
+title: "[DOCS] "
+labels: [documentation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        File this when a stranger cloning the repo would be misled. Typos
+        that do not change meaning can wait for another change.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - Missing (the step exists, the doc does not)
+        - Incorrect or out of date
+        - Unclear
+        - Broken link
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Where
+      description: Path or heading, and a URL if it is rendered on GitHub
+      placeholder: README.md → Install
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: What it says
+      description: Quote the sentence that is wrong or the gap next to it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: should
+    attributes:
+      label: What it should say
+      description: The replacement, or the missing paragraph.
+    validations:
+      required: true
