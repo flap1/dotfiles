@@ -6,6 +6,7 @@ return {
     priority = 1000,
     lazy = false,
     keys = {
+      { "<Leader>e", function() Snacks.explorer() end,         desc = "File explorer" },
       { "<Leader>gl", function() Snacks.lazygit() end,          desc = "Lazygit" },
       { "<Leader>gL", function() Snacks.lazygit.log() end,      desc = "Lazygit log (cwd)" },
       { "<Leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit file history" },
@@ -19,7 +20,38 @@ return {
       notifier = { enabled = true, timeout = 3000 },
       lazygit = { enabled = true },
       dashboard = { enabled = false },
-      explorer = { enabled = false },
+      explorer = { enabled = true },
+      picker = {
+        enabled = true,
+        sources = {
+          explorer = {
+            hidden = true,
+            ignored = true,
+            layout = {
+              layout = {
+                backdrop = false,
+                position = "left",
+                width = 32,
+                min_width = 24,
+                height = 0,
+                border = "single",
+                box = "vertical",
+                { win = "input", height = 1, border = "bottom" },
+                { win = "list", border = "none" },
+              },
+            },
+            exclude = {
+              "node_modules",
+              ".cache",
+              "__pycache__",
+              ".venv",
+              "target",
+              ".next",
+              ".turbo",
+            },
+          },
+        },
+      },
     },
     init = function()
       vim.notify = function(msg, level, opts)

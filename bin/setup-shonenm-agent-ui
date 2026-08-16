@@ -1,0 +1,61 @@
+#!/bin/sh
+# Install the pinned shonenm agent UI and apply this dotfiles' English UI layer.
+
+set -eu
+
+repo=${XDG_DATA_HOME:-"$HOME/.local/share"}/shonenm-dotfiles
+commit=c8dcfd27681a0cb34918cb722b1b68f22d487296
+
+if [ ! -d "$repo/.git" ]; then
+    git clone https://github.com/shonenm/dotfiles.git "$repo"
+fi
+
+git -C "$repo" fetch origin "$commit"
+git -C "$repo" checkout --detach "$commit"
+git -C "$repo" restore --source "$commit" -- scripts/tmux-agent-status.sh scripts/tmux-agent-sidebar.sh
+
+status=$repo/scripts/tmux-agent-status.sh
+sidebar=$repo/scripts/tmux-agent-sidebar.sh
+
+# These replacements target the pinned commit above. Keeping the overlay here
+# makes the external UI reproducible without vendoring the full upstream tree.
+# shellcheck disable=SC1003,SC2016 # The replacement program must preserve shell expressions literally.
+sed -i \
+    -e '59c\    line2=$(printf '\''%s%s%s · %s · %s · %s · %s%s'\'' "$g2" "$C_DIM" "$sess" "$branch" "$loc" "$tool" "${elapsed} ago" "$C_RST")' \
+    -e '89c\    line2=$(printf '\''   %s%s · %s · %s · %s%s'\'' "$C_DIM" "$host" "$disp_loc" "${provider:-agent}" "${elapsed} ago" "$C_RST")' \
+    -e '108c\        stash) printf '\''%s\\tdivider\\t%s\\n \\0'\'' "-" "${C_DIM}--- STASHED ---${C_RST}" ;;' \
+    -e '109c\        running) printf '\''%s\\tdivider\\t%s\\n \\0'\'' "-" "${C_DIM}--- RUNNING ---${C_RST}" ;;' \
+    -e '121c\  case "$status" in permission) echo "Awaiting approval: $line";; idle) echo "Last output: $line";; *) echo "$line";; esac' \
+    -e '126c\  [[ "$status" == divider ]] && { printf '\''%sRunning agents (no action needed)%s\\n'\'' "$C_DIM" "$C_RST"; return; }' \
+    -e '136c\    printf '\''%sTask%s %s\\n'\'' "$C_BOLD" "$C_RST" "$title"' \
+    -e '142c\    printf '\''%sRemote/container: live pane unavailable%s\\njump: %s\\n'\'' "$C_DIM" "$C_RST" "$target"' \
+    -e '169c\    if [[ -z "$rows" ]]; then tmux display-message "No agents"; exit 0; fi' \
+    -e '173c\      | fzf --read0 --ansi --delimiter=$'\''\\t'\'' --with-nth=3 --no-sort --reverse --height=100% --gap --cycle --no-input --disabled \\' \
+    -e "175c\\            --prompt 'agent> ' --header 'j/k: move  g/G: first/last  r: rescan  s: stash  Enter: jump  /: search  q: close' \\\\" \
+    -e "187c\\            --bind '/:show-input+enable-search+unbind(change)+unbind(j,k,g,G,r,q,s)+change-prompt(search> )' \\\\" \
+    -e '188c\            --bind '\''enter:transform:[ "$FZF_PROMPT" = "search> " ] && echo "hide-input+disable-search+rebind(j,k,g,G,r,q,s)+change-prompt(agent> )" || echo accept'\'' \\' \
+    -e '189c\            --bind '\''esc:transform:[ "$FZF_PROMPT" = "search> " ] && echo "hide-input+disable-search+rebind(change,j,k,g,G,r,q,s)+clear-query+change-prompt(agent> )" || echo abort'\'' \\' \
+    "$status"
+# shellcheck disable=SC2016 # Preserve upstream shell expressions literally.
+sed -i \
+    -e '145c\    local sc out col name icon label gauge pct rem' \
+    -e '149c\        claude) col=$'\''\\033[38;2;255;102;0m'\''; name=Claude ;;' \
+    -e '150c\        codex)  col=$'\''\\033[38;2;125;211;252m'\''; name=Codex ;;' \
+    -e '151c\        gemini) col=$'\''\\033[38;2;66;133;244m'\''; name=Gemini ;;' \
+    -e '152c\        cursor) col=$'\''\\033[38;2;255;255;255m'\''; name=Cursor ;;' \
+    -e '153c\        grok)   col=$'\''\\033[38;2;94;234;212m'\''; name=Grok ;;' \
+    -e '158,174c\      [[ "$out" == *$'\''\\x1f--'\''* ]] && continue\n      printf '\''%s%s%s\\n'\'' "$col" "$name" "$C_RST"\n      while IFS=$'\''\\x1f'\'' read -r icon label gauge pct rem; do\n        [[ -z "$icon" ]] && continue\n        case "$sc:$label" in\n          claude:current) label="5h" ;;\n          claude:weekly|codex:weekly) label="Weekly" ;;\n          cursor:cursor) label="Plan" ;;\n          cursor:other) label="Other" ;;\n        esac\n        [[ -z "$rem" ]] && rem="now"\n        printf '\''  %s%-7s %s%s %4s%s %s%s%s\\n'\'' "$C_DIM" "$label" "$col" "$gauge" "$pct" "$C_RST" "$C_DIM" "$rem" "$C_RST"\n      done <<< "$out"' \
+    -e '209c\    top+=("$(printf '\''%s(no sessions)%s'\'' "$C_DIM" "$C_RST")")' \
+    -e '373i\    printf '\''\\033[2J\\033[H\\033[1m AGENTS\\033[0m\\n\\033[2m----------------------------\\033[0m\\n Loading agent status...'\''\n    height=$(tmux display-message -p -t "${TMUX_PANE:-}" '\''#{pane_height}'\'' 2>/dev/null || echo 24)\n    usage_lines=1\n    [[ -s "$USAGE_CACHE" ]] && usage_lines=$(wc -l < "$USAGE_CACHE")\n    usage_row=$((height - usage_lines - 2))\n    ((usage_row < 6)) && usage_row=6\n    printf '\''\\033[%d;1H\\033[1m USAGE\\033[0m\\n\\033[2m----------------------------\\033[0m\\n'\'' "$usage_row"\n    if [[ -s "$USAGE_CACHE" ]]; then cat "$USAGE_CACHE"; else printf '\'' Loading usage...'\''; fi' \
+    -e '384c\      saved_layout=$(tmux show-options -w -t "$win" -qv @agent_sidebar_saved_layout 2>/dev/null || echo "")' \
+    -e '385c\      tmux set-hook -w -t "$win" -u window-layout-changed 2>/dev/null || true' \
+    -e '386c\      tmux set-option -w -t "$win" -u @agent_sidebar_pane 2>/dev/null || true' \
+    -e '387i\      tmux kill-pane -t "$existing" 2>/dev/null || true\n      [[ -n "$saved_layout" ]] && tmux select-layout -t "$win" "$saved_layout" >/dev/null 2>&1 || true\n      tmux set-option -w -t "$win" -u @agent_sidebar_saved_layout 2>/dev/null || true' \
+    -e '388i\      tmux set-option -w -t "$win" @agent_sidebar_saved_layout "$(tmux display-message -p -t "$win" '\''#{window_layout}'\'')" 2>/dev/null || true' \
+    "$sidebar"
+
+(cd "$repo/tools" && cargo build --release -p ai-usage)
+mkdir -p "$HOME/.local/bin"
+install -m 0755 "$repo/tools/target/release/ai-usage" "$HOME/.local/bin/ai-usage"
+
+printf 'Installed shonenm agent UI at %s\n' "$commit"
