@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Policy, shellcheck, shfmt, and a zshenv smoke test. No network.
+# Policy, shellcheck, shfmt, actionlint, and a zshenv smoke test. No network.
 # Run from the repository root.
 
 set -euo pipefail
@@ -34,3 +34,5 @@ if echo "$out" | grep -q 'no such file or directory'; then
     exit 1
 fi
 echo "$out" | grep -qx 'ok'
+
+actionlint

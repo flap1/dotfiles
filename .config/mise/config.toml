@@ -5,6 +5,7 @@
 lockfile = true
 
 [tools]
+actionlint = "1.7.12"
 atuin = "18.19.0"
 bat = "0.26.1"
 bob = "4.1.7"
