@@ -17,12 +17,12 @@
 # Do not put scalar keys under [agents] (default_subagent_model and friends).
 # 0.147's TUI reloads [agents] through toml::Value + serde flatten, so a string
 # there is parsed as a role and thread/start dies with AgentRoleToml. Pin
-# Terra on the built-in roles via [agents.<name>] tables + agents/*.toml
+# Sol on the built-in roles via [agents.<name>] tables + agents/*.toml
 # instead. compose_codex_settings() rewrites those config_file paths to
 # absolute, because 0.147 also rejects a relative AgentRoleToml.config_file.
 
 model = "gpt-5.6-sol"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "low"
 approvals_reviewer = "auto_review"
 # Empty string turns off the Co-authored-by trailer. The key is inert unless
 # [features.codex_git_commit] is on; keep it here so turning that feature on
