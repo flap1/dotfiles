@@ -3,17 +3,10 @@ pre-commit:
   commands:
     secrets:
       run: gitleaks git --staged --redact --no-banner
-    shellcheck:
-      glob: "{*.sh,bin/*,packages/*.sh,lib/*.sh,.git_template/hooks/*,scripts/*.sh}"
-      exclude:
-        - "*.ps1"
-        - "*.cmd"
-      run: shellcheck -x {staged_files}
-    shfmt:
-      glob: "{*.sh,bin/*,packages/*.sh,lib/*.sh,.git_template/hooks/*,scripts/*.sh}"
-      exclude:
-        - "*.ps1"
-        - "*.cmd"
-      run: shfmt -i 4 -ci -s -d {staged_files}
+    shell:
+      run: bash scripts/hook-shell.sh
+    actionlint:
+      glob: ".github/workflows/*"
+      run: actionlint
     policy:
       run: bash scripts/policy.sh
