@@ -211,6 +211,7 @@ function Invoke-Doctor {
     Write-Host ''
     if ($problems -eq 0) { Write-Tinted Green 'no problems found' }
     else { Write-Tinted Yellow "$problems problem(s)" }
+    $script:DoctorProblems = $problems
 }
 
 function Invoke-Check {
@@ -232,6 +233,7 @@ function Invoke-Check {
     }
 }
 
+$script:DoctorProblems = 0
 $cmd = $args[0]
 switch ($cmd) {
     'status' { Invoke-Status }
@@ -246,3 +248,4 @@ switch ($cmd) {
         exit 1
     }
 }
+if ($script:DoctorProblems -gt 0) { exit 1 }

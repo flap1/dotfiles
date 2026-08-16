@@ -53,3 +53,11 @@ echo "$msg" | grep -q 'dotfiles update'
 out=$("$dot" update)
 echo "$out" | grep -q 'pulled 1 commit'
 echo "$out" | grep -qv 'installed files changed'
+
+echo "$tmp/no-such-link" >"$XDG_STATE_HOME/dotfiles/manifest"
+if "$dot" doctor >/tmp/doctor.out; then
+    echo "doctor exited 0 with a missing link"
+    cat /tmp/doctor.out
+    exit 1
+fi
+grep -q missing /tmp/doctor.out

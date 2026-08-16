@@ -3,7 +3,11 @@
 
 set -uo pipefail
 
-DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+# Follow the symlink on PATH (~/bin/dotfiles) back to this checkout.
+# $HOME/dotfiles is the clone the README names, not an identity.
+if [ -z "${DOTFILES_DIR:-}" ]; then
+    DOTFILES_DIR=$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)
+fi
 STATE="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles"
 STAMP="$STATE/last-update-check"
 MANIFEST="$STATE/manifest"
@@ -135,18 +139,22 @@ cmd_doctor() {
         echo "  ${Y}no manifest${X}  run ./install.sh once to record what is installed"
         problems=$((problems + 1))
     else
-        local link
+        local link section=0
         while read -r link; do
             [ -z "$link" ] && continue
-            if [ ! -L "$link" ]; then
+            if [ ! -e "$link" ] && [ ! -L "$link" ]; then
+                echo "  ${Y}missing${X}    $link"
+                section=$((section + 1))
+            elif [ ! -L "$link" ]; then
                 echo "  ${Y}replaced${X}   $link"
-                problems=$((problems + 1))
+                section=$((section + 1))
             elif [ ! -e "$link" ]; then
                 echo "  ${R}dangling${X}   $link -> $(readlink "$link")"
-                problems=$((problems + 1))
+                section=$((section + 1))
             fi
         done <"$MANIFEST"
-        [ "$problems" -eq 0 ] && echo "  ${G}ok${X}         $(wc -l <"$MANIFEST" | tr -d ' ') link(s)"
+        problems=$((problems + section))
+        [ "$section" -eq 0 ] && echo "  ${G}ok${X}         $(wc -l <"$MANIFEST" | tr -d ' ') link(s)"
     fi
 
     echo "${M}composed files${X}"
@@ -182,8 +190,12 @@ cmd_doctor() {
     fi
 
     echo
-    [ "$problems" -eq 0 ] && echo "${G}no problems found${X}" || echo "${Y}$problems problem(s)${X}"
-    return 0
+    if [ "$problems" -eq 0 ]; then
+        echo "${G}no problems found${X}"
+        return 0
+    fi
+    echo "${Y}$problems problem(s)${X}"
+    return 1
 }
 
 # Same default as lib/compose.sh: ~/.cursor unless CURSOR_CONFIG_DIR or

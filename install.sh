@@ -30,6 +30,11 @@ while [ $# -gt 0 ]; do
     case $1 in
         -y | --yes) ASSUME_YES=1 ;;
         --only)
+            if [ $# -lt 2 ] || [ -z "$2" ] || [ "$2" != "${2#-}" ]; then
+                echo "install.sh: --only needs a category id" >&2
+                usage >&2
+                exit 1
+            fi
             ONLY=$2
             shift
             ;;
@@ -47,12 +52,8 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-missing=""
-for c in git node jq; do
-    command -v "$c" >/dev/null || missing="$missing $c"
-done
-if [ -n "$missing" ]; then
-    echo "install.sh needs:$missing" >&2
+if ! command -v git >/dev/null; then
+    echo "install.sh needs git" >&2
     echo "Run ./bootstrap.sh first." >&2
     exit 1
 fi
