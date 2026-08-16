@@ -20,7 +20,7 @@ function Write-Tinted {
         [Parameter(Mandatory)][string]$Text
     )
     if ([Console]::IsOutputRedirected) {
-        Write-Host $Text
+        Write-Output $Text
     } else {
         Write-Host $Text -ForegroundColor $Color
     }
