@@ -12,6 +12,7 @@ fi
 
 git -C "$repo" fetch origin "$commit"
 git -C "$repo" checkout --detach "$commit"
+git -C "$repo" restore --source "$commit" -- scripts/tmux-agent-status.sh scripts/tmux-agent-sidebar.sh
 
 status=$repo/scripts/tmux-agent-status.sh
 sidebar=$repo/scripts/tmux-agent-sidebar.sh
@@ -45,7 +46,7 @@ sed -i \
     -e '153c\        grok)   col=$'\''\\033[38;2;94;234;212m'\''; name=Grok ;;' \
     -e '158,174c\      [[ "$out" == *$'\''\\x1f--'\''* ]] && continue\n      printf '\''%s%s%s\\n'\'' "$col" "$name" "$C_RST"\n      while IFS=$'\''\\x1f'\'' read -r icon label gauge pct rem; do\n        [[ -z "$icon" ]] && continue\n        case "$sc:$label" in\n          claude:current) label="5h" ;;\n          claude:weekly|codex:weekly) label="Weekly" ;;\n          cursor:cursor) label="Plan" ;;\n          cursor:other) label="Other" ;;\n        esac\n        [[ -z "$rem" ]] && rem="now"\n        printf '\''  %s%-7s %s%s %4s%s %s%s%s\\n'\'' "$C_DIM" "$label" "$col" "$gauge" "$pct" "$C_RST" "$C_DIM" "$rem" "$C_RST"\n      done <<< "$out"' \
     -e '209c\    top+=("$(printf '\''%s(no sessions)%s'\'' "$C_DIM" "$C_RST")")' \
-    -e '373i\    printf '\''\\033[H\\033[1m AGENTS\\033[0m\\n\\033[2m----------------------------\\033[0m\\n Loading agent status...\\n\\n\\033[1m USAGE\\033[0m\\n\\033[2m----------------------------\\033[0m\\n'\''\n    if [[ -s "$USAGE_CACHE" ]]; then cat "$USAGE_CACHE"; else printf '\'' Loading usage...'\''; fi' \
+    -e '373i\    printf '\''\\033[2J\\033[H\\033[1m AGENTS\\033[0m\\n\\033[2m----------------------------\\033[0m\\n Loading agent status...'\''\n    height=$(tmux display-message -p -t "${TMUX_PANE:-}" '\''#{pane_height}'\'' 2>/dev/null || echo 24)\n    usage_lines=1\n    [[ -s "$USAGE_CACHE" ]] && usage_lines=$(wc -l < "$USAGE_CACHE")\n    usage_row=$((height - usage_lines - 2))\n    ((usage_row < 6)) && usage_row=6\n    printf '\''\\033[%d;1H\\033[1m USAGE\\033[0m\\n\\033[2m----------------------------\\033[0m\\n'\'' "$usage_row"\n    if [[ -s "$USAGE_CACHE" ]]; then cat "$USAGE_CACHE"; else printf '\'' Loading usage...'\''; fi' \
     -e '384c\      saved_layout=$(tmux show-options -w -t "$win" -qv @agent_sidebar_saved_layout 2>/dev/null || echo "")' \
     -e '385c\      tmux set-hook -w -t "$win" -u window-layout-changed 2>/dev/null || true' \
     -e '386c\      tmux set-option -w -t "$win" -u @agent_sidebar_pane 2>/dev/null || true' \
