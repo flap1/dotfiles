@@ -11,6 +11,16 @@ mkdir -p "$HOME"
 cp -r "$src" "$HOME/dotfiles"
 cd "$HOME/dotfiles"
 
+mkdir -p "$HOME/dotfiles/.claude/skills/ci-probe"
+printf '%s\n' '---' 'name: ci-probe' 'description: probe' '---' >"$HOME/dotfiles/.claude/skills/ci-probe/SKILL.md"
+plugin=$HOME/.claude/plugins/cache/ci-plug/ci-plug/1.0.0/skills/natural-japanese
+mkdir -p "$plugin"
+printf '%s\n' '---' 'name: natural-japanese' 'description: probe plugin' '---' >"$plugin/SKILL.md"
+mkdir -p "$HOME/.claude/plugins"
+cat >"$HOME/.claude/plugins/installed_plugins.json" <<EOF
+{"version":2,"plugins":{"ci-plug@ci":[{"installPath":"$HOME/.claude/plugins/cache/ci-plug/ci-plug/1.0.0"}]}}
+EOF
+
 ./install.sh --yes >/tmp/first.log 2>&1 || {
     cat /tmp/first.log
     exit 1
@@ -58,3 +68,8 @@ fi
     exit 1
 }
 [ -L "$nvim" ]
+
+[ -L "$HOME/.cursor/skills/ci-probe" ]
+[ -L "$HOME/.cursor/skills/natural-japanese" ]
+[ -f "$HOME/.cursor/skills/memo-ja/SKILL.md" ]
+[ -f "$HOME/.cursor/skills/humanize-ja/SKILL.md" ]
