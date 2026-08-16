@@ -1,0 +1,56 @@
+name: Change
+description: A problem this tree should solve, not a patch already written
+title: "[CHANGE] "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        State the problem. A proposed patch is optional and is not the
+        decision. Requests to turn this into a framework (chezmoi, stow
+        profiles, Nix) are declined — fork instead.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched existing issues and this is not already filed
+          required: true
+        - label: This is one change (file another issue for a second one)
+          required: true
+        - label: I read CONTRIBUTING.md and this is in scope
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is true today that should not be. Not the patch.
+      placeholder: A clone on Windows has no `dotfiles update`, so the machine drifts from origin/main with no check.
+    validations:
+      required: true
+
+  - type: textarea
+    id: today
+    attributes:
+      label: What happens today
+      description: The current path, including any workaround.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed change
+      description: Optional. One way this could work. The problem stands without it.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What you tried or rejected, and why.
+    validations:
+      required: false

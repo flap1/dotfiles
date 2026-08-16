@@ -1,0 +1,10 @@
+# Template chooser. Shape follows Anthropic's Claude Code harness
+# (blank issues off, contact links instead of a free-form box).
+blank_issues_enabled: false
+contact_links:
+  - name: Contributing guide
+    url: https://github.com/flap1/dotfiles/blob/main/CONTRIBUTING.md
+    about: What this repository accepts, and the checks CI runs
+  - name: README
+    url: https://github.com/flap1/dotfiles/blob/main/README.md
+    about: Clone, bootstrap, and how this tree is applied

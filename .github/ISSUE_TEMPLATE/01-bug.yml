@@ -1,0 +1,100 @@
+name: Bug
+description: Something in bootstrap, install, compose, or the CLI is wrong
+title: "[BUG] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is personal configuration, not a framework. File a bug only if a
+        stranger cloning the repo hits it. Search existing issues first.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched existing issues and this is not already filed
+          required: true
+        - label: This is one bug (file another issue for a second one)
+          required: true
+        - label: I ran `dotfiles doctor` (or `./install.sh --dry-run`) and the output is below if it is relevant
+          required: false
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: What you saw. Not what you think the fix is.
+      placeholder: install.sh --only zsh exited 1 after composing settings.json…
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps a stranger can follow from a clone.
+      placeholder: |
+        1. Clone into a throwaway HOME
+        2. Run `./install.sh --yes --only zsh`
+        3. …
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Command output
+      description: Paste the failing command and its stderr. Rendered as a shell block.
+      render: shell
+    validations:
+      required: false
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: OS
+      options:
+        - Linux
+        - Windows
+        - macOS
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      description: The binary or script that failed
+      placeholder: install.sh, bootstrap.ps1, bin/dotfiles, …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: regression
+    attributes:
+      label: Did this work before?
+      options:
+        - "Yes, on an earlier commit"
+        - "No, I have never seen it work"
+        - "I do not know"
+    validations:
+      required: true
+
+  - type: input
+    id: last-good
+    attributes:
+      label: Last good commit
+      description: If it is a regression, the SHA or `git describe` that last worked
+      placeholder: 6a2b3f4
+    validations:
+      required: false
