@@ -2,6 +2,9 @@ name: ci
 
 on:
   pull_request:
+    # edited: a title-only fix must re-run pr-title. Default types omit it,
+    # so Dependabot stays red after a retitle.
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [main]
 
