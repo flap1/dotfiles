@@ -166,6 +166,9 @@ cmd_doctor() {
     echo "${M}vendored skills${X}"
     doctor_vendored || problems=$((problems + 1))
 
+    echo "${M}cursor skill mirrors${X}"
+    doctor_cursor_skills || problems=$((problems + 1))
+
     echo "${M}gates${X}"
     # Gates belong to this repository. A leftover global core.hooksPath is a
     # defect (lefthook 2.x will refuse to install anywhere else).
@@ -233,6 +236,36 @@ doctor_composed() {
         return 1
     fi
     echo "  ${G}ok${X}         $name"
+}
+
+doctor_cursor_skills() {
+    local dest="$HOME/.cursor/skills" name target missing=0
+    if [ ! -L "$HOME/.cursor/statusline.mjs" ]; then
+        echo "  ${M}skip${X}       cursor category not on this machine"
+        return 0
+    fi
+    # shellcheck source=lib/sync-cursor-skills.sh
+    . "$DOTFILES_DIR/lib/sync-cursor-skills.sh"
+    while IFS=$'\t' read -r name target; do
+        [ -n "$name" ] || continue
+        if [ ! -L "$dest/$name" ]; then
+            echo "  ${Y}missing${X}    $dest/$name"
+            missing=1
+        fi
+    done < <(cursor_skills_wanted)
+    if [ -L "$dest/natural-japanese" ]; then
+        for name in memo-ja humanize-ja minutes-ja report-ja guide-ja slide-ja; do
+            if [ ! -f "$dest/$name/SKILL.md" ]; then
+                echo "  ${Y}missing${X}    $dest/$name (alias)"
+                missing=1
+            fi
+        done
+    fi
+    if [ "$missing" -eq 1 ]; then
+        echo "  rerun ./install.sh --only cursor --yes"
+        return 1
+    fi
+    echo "  ${G}ok${X}         $dest"
 }
 
 # A vendored skill is installed, not committed. git cannot see it. The

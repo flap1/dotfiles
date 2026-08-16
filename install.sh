@@ -229,11 +229,18 @@ link_category claude \
     ".claude/skills" "$HOME/.claude/skills" \
     ".claude/statusline.mjs" "$HOME/.claude/statusline.mjs"
 
-link_category cursor \
-    ".cursor/statusline.mjs" "$HOME/.cursor/statusline.mjs"
-
 # shellcheck source=lib/compose.sh
 . "$DOTFILES_DIR/lib/compose.sh"
+# shellcheck source=lib/sync-cursor-skills.sh
+. "$DOTFILES_DIR/lib/sync-cursor-skills.sh"
+
+link_cursor() {
+    ask cursor "$HOME/.cursor/statusline.mjs" || return 0
+    create_symlink "$DOTFILES_DIR/.cursor/statusline.mjs" "$HOME/.cursor/statusline.mjs"
+    sync_cursor_skills
+}
+link_cursor
+
 compose_claude_settings
 compose_cursor_settings
 link_category codex \

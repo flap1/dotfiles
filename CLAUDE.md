@@ -17,7 +17,10 @@ a day. `dotfiles update` fast-forwards and applies; it never runs
 `bootstrap.sh` (sudo).
 
 A skill under `.claude/skills/` that an upstream owns is gitignored and listed
-in `.claude/skills/VENDOR`. `npx skills update -g` installs them.
+in `.claude/skills/VENDOR`. `npx skills update -g` installs them. Cursor Agent
+does not read Claude plugins; `install.sh` mirrors those trees into
+`~/.cursor/skills` and writes `/memo-ja` `/humanize-ja` aliases when
+`natural-japanese` is installed.
 
 Machine-wide Claude session files are gitignored (`.claude/CLAUDE.md`,
 `.claude/RTK.md`). This file is the agent brief for work *on this repository*.

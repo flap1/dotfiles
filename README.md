@@ -73,7 +73,7 @@ the install steps, and they are yours to run.
 | `bin/` | on PATH (`~\bin` on Windows too) |
 | `.config/` | linked into `~/.config` |
 | `.config/sheldon/plugins.toml` | zsh plugins, pinned by git revision |
-| `.claude/` `.cursor/` `.codex/` | AI CLI config. Upstream skills are gitignored; `npx skills update -g` |
+| `.claude/` `.cursor/` `.codex/` | AI CLI config. Upstream skills are gitignored; `npx skills update -g`. `install.sh` mirrors Claude skills into `~/.cursor/skills` and adds `/memo-ja` `/humanize-ja` (and the other natural-japanese doctypes) as aliases |
 | `lefthook.yml` | hooks for *this* repository only |
 | `scripts/policy.sh` | ratchet: retired paths stay gone; no CJK in tracked files |
 | `.config/paste-shot/` | optional screenshot path; `setup.sh` / `setup.ps1` |
