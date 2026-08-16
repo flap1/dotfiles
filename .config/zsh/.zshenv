@@ -7,6 +7,10 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 export ZDOTDIR=$HOME/.config/zsh
 export ZHOMEDIR=$HOME/.config/zsh
+# sheldon flock()s its config directory. Resolve through ZDOTDIR so a missing
+# ~/.config/sheldon symlink (install can skip one dest in a category) is not
+# a login-shell failure. Lockfile and clones stay in SHELDON_DATA_DIR.
+export SHELDON_CONFIG_DIR="${ZDOTDIR:A:h}/sheldon"
 export ZSHDIR=$ZHOMEDIR/sh
 export ZDATADIR=$XDG_DATA_HOME/zsh
 export ZCACHEDIR=$XDG_CACHE_HOME/zsh

@@ -33,7 +33,7 @@ diverged = "⇕⇡${ahead_count}⇣${behind_count}"
 modified = "!${count}"
 untracked = "?${count}"
 staged = "+${count}"
-stashed = "$${count}"
+stashed = "\\$${count}"
 deleted = "✘${count}"
 
 [cmd_duration]
