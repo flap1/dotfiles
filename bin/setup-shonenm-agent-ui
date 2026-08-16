@@ -35,8 +35,16 @@ sed -i \
     -e '188c\            --bind '\''enter:transform:[ "$FZF_PROMPT" = "search> " ] && echo "hide-input+disable-search+rebind(j,k,g,G,r,q,s)+change-prompt(agent> )" || echo accept'\'' \\' \
     -e '189c\            --bind '\''esc:transform:[ "$FZF_PROMPT" = "search> " ] && echo "hide-input+disable-search+rebind(change,j,k,g,G,r,q,s)+clear-query+change-prompt(agent> )" || echo abort'\'' \\' \
     "$status"
-# shellcheck disable=SC2016 # Preserve the upstream shell expression literally.
-sed -i '209c\    top+=("$(printf '\''%s(no sessions)%s'\'' "$C_DIM" "$C_RST")")' "$sidebar"
+# shellcheck disable=SC2016 # Preserve upstream shell expressions literally.
+sed -i \
+    -e '209c\    top+=("$(printf '\''%s(no sessions)%s'\'' "$C_DIM" "$C_RST")")' \
+    -e '373i\    printf '\''\\033[H\\033[1m AGENTS\\033[0m\\n\\033[2m----------------------------\\033[0m\\n Loading agent status...\\n\\n\\033[1m USAGE\\033[0m\\n\\033[2m----------------------------\\033[0m'\''' \
+    -e '384c\      saved_layout=$(tmux show-options -w -t "$win" -qv @agent_sidebar_saved_layout 2>/dev/null || echo "")' \
+    -e '385c\      tmux set-hook -w -t "$win" -u window-layout-changed 2>/dev/null || true' \
+    -e '386c\      tmux set-option -w -t "$win" -u @agent_sidebar_pane 2>/dev/null || true' \
+    -e '387i\      tmux kill-pane -t "$existing" 2>/dev/null || true\n      [[ -n "$saved_layout" ]] && tmux select-layout -t "$win" "$saved_layout" >/dev/null 2>&1 || true\n      tmux set-option -w -t "$win" -u @agent_sidebar_saved_layout 2>/dev/null || true' \
+    -e '388i\      tmux set-option -w -t "$win" @agent_sidebar_saved_layout "$(tmux display-message -p -t "$win" '\''#{window_layout}'\'')" 2>/dev/null || true' \
+    "$sidebar"
 
 cargo build --release --manifest-path "$repo/tools/Cargo.toml" -p ai-usage
 install -m 0755 "$repo/tools/target/release/ai-usage" "$HOME/.local/bin/ai-usage"
