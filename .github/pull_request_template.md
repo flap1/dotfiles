@@ -1,13 +1,17 @@
 <!--
-  main accepts pull requests only. Headings match the local harness
-  (`## Summary`, `## Test plan`). The Summary is Google's why+what;
-  Test plan is the checks in CONTRIBUTING.md. There is no release-note
+  main accepts pull requests only. Headings are the local harness
+  (`## Summary`, `## Changes`, `## Test plan`). Summary is why;
+  Changes is what a reviewer should look at. There is no release-note
   block: this tree is applied with git.
 -->
 
 ## Summary
 
-<!-- Why this exists, then what a reviewer should look at. Link the issue if there is one. -->
+<!-- Why this exists. Link the issue if there is one. -->
+
+## Changes
+
+<!-- Files and behaviour a reviewer should look at. Not a commit list. -->
 
 ## Test plan
 
@@ -22,7 +26,3 @@
 ## User-facing
 
 <!-- What a clone does differently after merge. "None" is a valid answer. -->
-
-## Notes
-
-<!-- Risk, follow-ups, what was cut. Delete this section if empty. -->
