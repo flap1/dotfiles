@@ -7,6 +7,10 @@
 
 set -euo pipefail
 
+DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=lib/user-path.sh
+. "$DOTFILES_DIR/lib/user-path.sh"
+
 ASSUME_YES=0
 while [ $# -gt 0 ]; do
     case $1 in
@@ -45,13 +49,73 @@ ensure() {
     esac
 }
 
+# True if $1 (dotted) >= $2. sort -V is coreutils; this script is apt/Linux.
+# Read the last line so sort finishes; head would SIGPIPE under pipefail.
+version_ge() {
+    [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | tail -n1)" = "$1" ]
+}
+
+# Shared gitconfig uses zdiff3 (git 2.35). Presence is not enough: Ubuntu
+# 22.04's 2.34 treats an unknown conflictstyle as fatal on clone.
+ensure_git() {
+    local need=2.35 have yn=y id
+
+    if ! command -v git >/dev/null 2>&1; then
+        ensure "git" git "git"
+        command -v git >/dev/null 2>&1 || return 0
+    fi
+
+    have=$(git version | awk '{print $3}')
+    if version_ge "$have" "$need"; then
+        echo "git: $have"
+        return 0
+    fi
+
+    echo "git $have is older than $need; gitconfig names merge.conflictstyle=zdiff3."
+    [ "$ASSUME_YES" = 1 ] || read -rp "Install git from the Ubuntu git-core PPA? (y/n): " yn
+    case $yn in
+        [Yy]*) ;;
+        *)
+            echo "git $have cannot apply this repository's gitconfig." >&2
+            exit 1
+            ;;
+    esac
+
+    id=
+    if [ -r /etc/os-release ]; then
+        id=$(. /etc/os-release && printf '%s' "$ID")
+    fi
+    if [ "$id" != ubuntu ]; then
+        echo "Need git $need+ (this machine has $have). ${id:-unknown} has no git-core PPA." >&2
+        exit 1
+    fi
+
+    if [ "$need_apt" = 0 ]; then
+        sudo apt-get update
+        need_apt=1
+    fi
+    sudo apt-get install -y software-properties-common
+    sudo add-apt-repository -y ppa:git-core/ppa
+    sudo apt-get update
+    sudo apt-get install -y git
+    hash -r
+    have=$(git version | awk '{print $3}')
+    if ! version_ge "$have" "$need"; then
+        echo "git is still $have after the PPA; need $need+" >&2
+        exit 1
+    fi
+    echo "git: $have"
+}
+
 ensure "zsh" zsh "zsh"
-ensure "git" git "git"
+ensure_git
 ensure "curl" curl "curl"
 ensure "unzip" unzip "unzip"
 ensure "clang" clang "clang libclang-dev"
 ensure "fcitx5-mozc" fcitx5 "fcitx5 fcitx5-mozc"
 ensure "wl-clipboard" wl-copy "wl-clipboard"
+
+prepend_user_path
 
 # mise: signed apt package via extrepo, not curl | sh.
 if command -v mise >/dev/null 2>&1; then
@@ -74,11 +138,10 @@ else
     esac
 fi
 
-export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
 if command -v mise >/dev/null 2>&1; then
     # This script runs before install.sh links ~/.config/mise. Without an
     # explicit file, `mise install` would use an empty or leftover catalog.
-    mise -C "$(dirname "$0")/../.config/mise" install
+    mise -C "$DOTFILES_DIR/.config/mise" install
     if ! command -v pynvim-python >/dev/null 2>&1; then
         yn=y
         [ "$ASSUME_YES" = 1 ] || read -rp "Install pynvim (neovim python provider)? (y/n): " yn
