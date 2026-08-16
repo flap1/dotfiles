@@ -2,6 +2,8 @@
 # Windows checkout a CRLF copy. A heredoc in a CRLF script breaks inside the
 # heredoc rather than at the shebang.
 *.sh text eol=lf
+*.ps1 text eol=lf
+*.cmd text eol=lf
 bin/* text eol=lf
 
 # Same for anything that only runs on the Linux side. A systemd unit with CRLF
