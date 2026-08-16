@@ -56,7 +56,9 @@ bash scripts/ci-pwsh.sh
 ```
 
 `ci-install.sh` needs `node` and `jq`. It writes under `/tmp` and does not
-touch your home directory. `ci-pwsh.sh` needs `pwsh`.
+touch your home directory. `ci-shell.sh` needs `shellcheck`, `shfmt`,
+`actionlint`, and `zsh` (the versions in `.config/mise/config.toml`).
+`ci-pwsh.sh` needs `pwsh`.
 
 Secrets: `gitleaks detect --source . --verbose --redact` (full history).
 Lefthook runs `gitleaks git --staged` on commit.
