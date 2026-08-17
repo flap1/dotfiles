@@ -14,29 +14,29 @@
   },
   "hooks": {
     "SessionStart": [{ "hooks": [
-      { "type": "command", "command": "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh track claude" },
-      { "type": "command", "command": "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh set idle claude" }
+      { "type": "command", "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh track claude" },
+      { "type": "command", "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh set idle claude" }
     ] }],
     "UserPromptSubmit": [{ "hooks": [
-      { "type": "command", "command": "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh start claude event" }
+      { "type": "command", "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh start claude event" }
     ] }],
     "PreToolUse": [{ "hooks": [
-      { "type": "command", "command": "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh heartbeat claude event" }
+      { "type": "command", "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh heartbeat claude event" }
     ] }],
     "PostToolUse": [{ "hooks": [
-      { "type": "command", "command": "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh heartbeat claude event" }
+      { "type": "command", "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh heartbeat claude event" }
     ] }],
     "PostToolUseFailure": [{ "hooks": [
-      { "type": "command", "command": "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh heartbeat claude event" }
+      { "type": "command", "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh heartbeat claude event" }
     ] }],
     "PermissionRequest": [{ "hooks": [
-      { "type": "command", "command": "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh set permission claude" }
+      { "type": "command", "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh set permission claude" }
     ] }],
     "Stop": [{ "hooks": [
-      { "type": "command", "command": "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh set idle claude" }
+      { "type": "command", "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh set idle claude" }
     ] }],
     "SessionEnd": [{ "hooks": [
-      { "type": "command", "command": "$HOME/.local/share/shonenm-dotfiles/scripts/tmux-claude-pane.sh clear" }
+      { "type": "command", "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh clear" }
     ] }]
   }
 }

@@ -1,9 +1,9 @@
 #!/bin/sh
-# Install the pinned shonenm agent UI and apply this dotfiles' English UI layer.
+# Install the pinned agent UI and apply this dotfiles' English UI layer.
 
 set -eu
 
-repo=${XDG_DATA_HOME:-"$HOME/.local/share"}/shonenm-dotfiles
+repo=${XDG_DATA_HOME:-"$HOME/.local/share"}/agent-ui
 commit=c8dcfd27681a0cb34918cb722b1b68f22d487296
 
 if [ ! -d "$repo/.git" ]; then
@@ -53,9 +53,8 @@ sed -i \
     -e '387i\      tmux kill-pane -t "$existing" 2>/dev/null || true\n      [[ -n "$saved_layout" ]] && tmux select-layout -t "$win" "$saved_layout" >/dev/null 2>&1 || true\n      tmux set-option -w -t "$win" -u @agent_sidebar_saved_layout 2>/dev/null || true' \
     -e '388i\      tmux set-option -w -t "$win" @agent_sidebar_saved_layout "$(tmux display-message -p -t "$win" '\''#{window_layout}'\'')" 2>/dev/null || true' \
     "$sidebar"
-
 (cd "$repo/tools" && cargo build --release -p ai-usage)
 mkdir -p "$HOME/.local/bin"
 install -m 0755 "$repo/tools/target/release/ai-usage" "$HOME/.local/bin/ai-usage"
 
-printf 'Installed shonenm agent UI at %s\n' "$commit"
+printf 'Installed agent UI at %s\n' "$commit"
