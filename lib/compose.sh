@@ -79,5 +79,8 @@ compose_codex_settings() {
 
     ask codex-settings "${CODEX_HOME:-$HOME/.codex}/agents" || return 0
 
-    SHARED="$shared" TARGET="$target" node "$DOTFILES_DIR/lib/compose-codex.js"
+    SHARED="$shared" \
+        RETIRED="$DOTFILES_DIR/.codex/retired-tables" \
+        TARGET="$target" \
+        node "$DOTFILES_DIR/lib/compose-codex.js"
 }

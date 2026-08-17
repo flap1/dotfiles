@@ -57,10 +57,19 @@ model = "old"
 [table.a]
 x = 0
 
+[hooks]
+legacy = true
+
 [projects."/abs/path"]
 trust = true
 TOML
-SHARED="$tmp/shared.toml" TARGET="$tmp/live.toml" node "$root/lib/compose-codex.js" >/dev/null
+printf '%s\n' hooks >"$tmp/retired-tables"
+SHARED="$tmp/shared.toml" RETIRED="$tmp/retired-tables" TARGET="$tmp/live.toml" \
+    node "$root/lib/compose-codex.js" >/dev/null
 grep -q 'model = "gpt-5"' "$tmp/live.toml"
 grep -q 'x = 1' "$tmp/live.toml"
 grep -q 'projects."/abs/path"' "$tmp/live.toml"
+if grep -q '^\[hooks\]' "$tmp/live.toml"; then
+    echo "retired Codex table survived composition"
+    exit 1
+fi
