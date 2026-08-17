@@ -315,6 +315,7 @@ Set-DirectoryJunction -Target (Join-Path $repo '.codex\agents') -Link (Join-Path
 Write-Host 'Codex settings'
 Invoke-Compose -Script 'compose-codex.js' -EnvVars @{
     SHARED = (Join-Path $repo '.codex\config.toml')
+    RETIRED = (Join-Path $repo '.codex\retired-tables')
     TARGET = (Join-Path $codexHome 'config.toml')
 }
 
