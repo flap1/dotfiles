@@ -759,64 +759,64 @@ checksum = "sha256:a526da44d5f67250598fa95e5654815e9f672b2c05d1d98c28bce0e60d3cf
 url = "https://github.com/x-motemen/ghq/releases/download/v1.10.1/ghq_windows_amd64.zip"
 url_api = "https://api.github.com/repos/x-motemen/ghq/releases/assets/394135809"
 
-[[tools."github:flap1/live-pr"]]
+[[tools."github:shonenm/live-pr"]]
 version = "0.6.2"
-backend = "github:flap1/live-pr"
+backend = "github:shonenm/live-pr"
 
-[tools."github:flap1/live-pr"."platforms.linux-arm64"]
+[tools."github:shonenm/live-pr"."platforms.linux-arm64"]
 checksum = "sha256:00a3174a081005b353711a98e8012aa2a7f8063a7b58392341c35f90e6d9b410"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489377"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506871"
 
-[tools."github:flap1/live-pr"."platforms.linux-arm64-musl"]
+[tools."github:shonenm/live-pr"."platforms.linux-arm64-musl"]
 checksum = "sha256:00a3174a081005b353711a98e8012aa2a7f8063a7b58392341c35f90e6d9b410"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489377"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506871"
 
-[tools."github:flap1/live-pr"."platforms.linux-x64"]
+[tools."github:shonenm/live-pr"."platforms.linux-x64"]
 checksum = "sha256:f4b9cdbf58b90957cecdc53acadb70ad71cf02bf036f5e02d02d479251ee27fc"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489378"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506872"
 
-[tools."github:flap1/live-pr"."platforms.linux-x64-baseline"]
+[tools."github:shonenm/live-pr"."platforms.linux-x64-baseline"]
 checksum = "sha256:f4b9cdbf58b90957cecdc53acadb70ad71cf02bf036f5e02d02d479251ee27fc"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489378"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506872"
 
-[tools."github:flap1/live-pr"."platforms.linux-x64-musl"]
+[tools."github:shonenm/live-pr"."platforms.linux-x64-musl"]
 checksum = "sha256:f4b9cdbf58b90957cecdc53acadb70ad71cf02bf036f5e02d02d479251ee27fc"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489378"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506872"
 
-[tools."github:flap1/live-pr"."platforms.linux-x64-musl-baseline"]
+[tools."github:shonenm/live-pr"."platforms.linux-x64-musl-baseline"]
 checksum = "sha256:f4b9cdbf58b90957cecdc53acadb70ad71cf02bf036f5e02d02d479251ee27fc"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489378"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506872"
 
-[tools."github:flap1/live-pr"."platforms.macos-arm64"]
+[tools."github:shonenm/live-pr"."platforms.macos-arm64"]
 checksum = "sha256:6cfd44024c2aa630523da80b417504a15299a1bb5dd42088d72b3603926d304b"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489376"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506873"
 
-[tools."github:flap1/live-pr"."platforms.macos-x64"]
+[tools."github:shonenm/live-pr"."platforms.macos-x64"]
 checksum = "sha256:01f1640a5d28ef6ecad2f32030667741e22b37f18f8ea98cc4e4f627f1479a40"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489379"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506870"
 
-[tools."github:flap1/live-pr"."platforms.macos-x64-baseline"]
+[tools."github:shonenm/live-pr"."platforms.macos-x64-baseline"]
 checksum = "sha256:01f1640a5d28ef6ecad2f32030667741e22b37f18f8ea98cc4e4f627f1479a40"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489379"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506870"
 
-[tools."github:flap1/live-pr"."platforms.windows-x64"]
+[tools."github:shonenm/live-pr"."platforms.windows-x64"]
 checksum = "sha256:c89c0f06824220aa8b9b47e8b0bce74d18050afc04a23ca14d79d3dbdf7ef7a1"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Windows_amd64.zip"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489398"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Windows_amd64.zip"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506886"
 
-[tools."github:flap1/live-pr"."platforms.windows-x64-baseline"]
+[tools."github:shonenm/live-pr"."platforms.windows-x64-baseline"]
 checksum = "sha256:c89c0f06824220aa8b9b47e8b0bce74d18050afc04a23ca14d79d3dbdf7ef7a1"
-url = "https://github.com/flap1/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Windows_amd64.zip"
-url_api = "https://api.github.com/repos/flap1/live-pr/releases/assets/517489398"
+url = "https://github.com/shonenm/live-pr/releases/download/v0.6.2/live-pr_0.6.2_Windows_amd64.zip"
+url_api = "https://api.github.com/repos/shonenm/live-pr/releases/assets/516506886"
 
 [[tools.gitleaks]]
 version = "8.30.1"

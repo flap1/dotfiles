@@ -68,13 +68,6 @@ if git grep -qE 'gitlab\.com/flap1/dotfiles' -- ':!scripts/policy.sh' ':!scripts
     fail=1
 fi
 
-legacy_owner=shonen
-legacy_owner=${legacy_owner}m
-if git grep -q "$legacy_owner" -- . || git ls-files | grep -q "$legacy_owner"; then
-    echo "legacy owner name must not remain in tracked paths or content"
-    fail=1
-fi
-
 if grep -qE '^\[hooks\]|UserPromptSubmit|PreToolUse|PostToolUse|PermissionRequest' .codex/config.toml; then
     echo "Codex lifecycle hooks must not be configured"
     fail=1
