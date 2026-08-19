@@ -96,7 +96,12 @@ cjk=$(
 import pathlib, re, subprocess
 root = pathlib.Path(".")
 pat = re.compile(r"[\u3040-\u30ff\u3400-\u9fff]")
-allow = {".config/nvim/lua/core/keymaps.lua"}
+allow = {
+    ".config/nvim/lua/core/keymaps.lua",
+    ".claude/skills/academic-ja/SKILL.md",
+    ".claude/skills/humanize-ja/SKILL.md",
+    ".claude/skills/memo-ja/SKILL.md",
+}
 files = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
 hits = []
 for f in files:
@@ -113,7 +118,7 @@ print("\n".join(hits))
 PY
 )
 if [ -n "$cjk" ]; then
-    echo "CJK in tracked files (not allowed except nvim IME maps):"
+    echo "CJK in tracked files (not allowed except approved Japanese-language files):"
     echo "$cjk"
     fail=1
 fi
