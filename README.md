@@ -75,7 +75,7 @@ the install steps, and they are yours to run.
 | `.config/sheldon/plugins.toml` | zsh plugins, pinned by git revision |
 | `.claude/` `.cursor/` `.codex/` | AI CLI config. Upstream skills are gitignored; `npx skills update -g`. `install.sh` mirrors Claude skills into `~/.cursor/skills` and adds `/memo-ja` `/humanize-ja` (and the other natural-japanese doctypes) as aliases |
 | `lefthook.yml` | hooks for *this* repository only |
-| `scripts/policy.sh` | ratchet: retired paths stay gone; no CJK in tracked files |
+| `scripts/policy.sh` | ratchet: retired paths stay gone; CJK stays limited to approved Japanese-language files |
 | `.config/paste-shot/` | optional screenshot path; `setup.sh` / `setup.ps1` |
 
 Machine-wide Claude session files (`.claude/CLAUDE.md`, `.claude/RTK.md`)

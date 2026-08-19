@@ -30,7 +30,7 @@ Machine-wide Claude session files are gitignored (`.claude/CLAUDE.md`,
 - Shell passes `shellcheck` and `shfmt -i 4 -ci -s`.
 - `install.sh` stays idempotent. CI asserts it.
 - Comments say why, not what.
-- Code and comments in English. Tracked files carry no CJK.
+- Code and comments are in English. CJK is limited to the approved Japanese-language skills and Neovim IME mappings enforced by `scripts/policy.sh`.
 - A path that stops being used is deleted.
 - Agent write permissions (`git push`, Cursor `approvalMode`) live in the
   gitignored `settings.local.json` / `cli-config.local.json`, never here.

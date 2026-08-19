@@ -42,7 +42,6 @@ bin/pdf_unlock
 .config/systemd/user/xkeysnail.service
 .config/xkeysnail/config.py
 .claude/skills/autoplan/SKILL.md
-.claude/skills/humanize-ja/SKILL.md
 .claude/skills/genshijin/SKILL.md
 .claude/skills/tab-triage/SKILL.md
 .claude/hooks/st-session-start.sh
