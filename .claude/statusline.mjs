@@ -228,6 +228,11 @@ const R = `${E}[38;2;239;68;68m` // error, lifted #ef4444 -- #dc2626 measures
 //                                  as nvim and lazygit use.
 const M = `${E}[38;2;148;163;184m` // muted    #94a3b8
 const S = `${E}[38;2;100;116;139m` // subtle   #64748b
+// Fable breaks the 3-level palette on purpose: it's easy to switch to by
+// accident (advisorModel or a stray /model) and easy not to notice, so it
+// gets a colour none of the other segments use, bold, so it stands out even
+// at the front of the line.
+const F = `${E}[1;38;2;236;72;153m` // fable, bold #ec4899
 const X = `${E}[0m`
 
 // One gauge renderer for all three meters. They answer the same question --
@@ -262,7 +267,14 @@ function gauge(label, pct, text) {
 }
 
 let out = ''
-if (shortPath) out += `${G}${shortPath}${X}`
+// Model leads the line: which model is running is the one fact that changes
+// the answer to everything else here, so it reads before where you are.
+if (model) {
+  const modelColor = model.startsWith('Fable') ? F : S
+  out += `${modelColor}${model}${X}`
+}
+
+if (shortPath) out += `${out ? ' ' : ''}${G}${shortPath}${X}`
 
 if (gitPart) {
   const [branchName, ...rest] = gitPart.split(' ')
@@ -270,7 +282,6 @@ if (gitPart) {
   if (rest.length) out += ` ${A}${rest.join(' ')}${X}`
 }
 
-if (model) out += ` ${S}${model}${X}`
 if (account) out += ` ${S}${account}${X}`
 
 if (usedPct != null) {
