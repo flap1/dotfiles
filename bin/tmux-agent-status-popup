@@ -4,7 +4,9 @@
 set -eu
 
 restore_cursor() {
-    printf '\033[0 q'
+    # Ps=0 falls back to the terminal's own default, which is blinking on
+    # most emulators — not "restore", a silent switch to blink on exit.
+    printf '\033[2 q'
 }
 trap restore_cursor EXIT HUP INT TERM
 
