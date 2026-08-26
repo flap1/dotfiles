@@ -5,8 +5,8 @@
     One entry point for a Windows machine with nothing on it.
 
 .DESCRIPTION
-    Installs scoop if needed, then git, neovim, delta, yazi, node, ripgrep,
-    and fd, then install.ps1. Already set up? .\install.ps1 alone.
+    Installs Git and mise with winget, installs the pinned mise toolset, then
+    runs install.ps1. Already set up? .\install.ps1 alone.
 
 .EXAMPLE
     .\bootstrap.ps1
@@ -25,60 +25,16 @@ if ($policy -eq 'Restricted' -or $policy -eq 'Undefined') {
     Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 }
 
-function Install-ScoopIfMissing {
-    if (Get-Command scoop -ErrorAction SilentlyContinue) {
-        Write-Host 'scoop: already on PATH'
+function Install-WingetPackage {
+    param([Parameter(Mandatory)][string]$Id)
+
+    winget list --id $Id -e --accept-source-agreements | Out-Null
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "winget package ${Id}: already installed"
         return
     }
-
-    Write-Host 'scoop: installing'
-    # winget is the installer that does not pipe a remote script into iex.
-    if (Get-Command winget -ErrorAction SilentlyContinue) {
-        winget install --id ScoopInstaller.Scoop -e --accept-source-agreements --accept-package-agreements
-    } else {
-        Write-Host 'winget is not on PATH; install scoop from https://scoop.sh and rerun.'
-        exit 1
-    }
-
-    $shims = Join-Path $env:USERPROFILE 'scoop\shims'
-    if ((Test-Path -LiteralPath $shims) -and ($env:PATH -notlike "*$shims*")) {
-        $env:PATH = "$shims;$env:PATH"
-    }
-    if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-        Write-Host 'scoop: installed but not on PATH in this process; open a new terminal and rerun.'
-        exit 1
-    }
-}
-
-function Install-ScoopPackage {
-    param(
-        [Parameter(Mandatory)][string[]]$Name,
-        [hashtable]$Binary = @{}
-    )
-
-    foreach ($pkg in $Name) {
-        $exe = $pkg
-        if ($Binary.ContainsKey($pkg)) { $exe = $Binary[$pkg] }
-
-        Write-Host "scoop package $pkg (provides $exe)"
-
-        if (Get-Command $exe -ErrorAction SilentlyContinue) {
-            Write-Host '  already on PATH'
-            continue
-        }
-
-        scoop install $pkg
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "  install failed (exit $LASTEXITCODE); continuing"
-            continue
-        }
-        Write-Host '  installed'
-    }
-
-    $shims = Join-Path $env:USERPROFILE 'scoop\shims'
-    if ((Test-Path -LiteralPath $shims) -and ($env:PATH -notlike "*$shims*")) {
-        $env:PATH = "$shims;$env:PATH"
-    }
+    winget install --id $Id -e --accept-source-agreements --accept-package-agreements
+    if ($LASTEXITCODE -ne 0) { throw "winget install failed: $Id" }
 }
 
 function Set-UserEditor {
@@ -106,31 +62,34 @@ function Set-UserEditor {
     $env:EDITOR = $Editor
 }
 
-Install-ScoopIfMissing
-Install-ScoopPackage -Name @(
-    'git', 'neovim', 'delta', 'yazi', 'nodejs', 'ripgrep', 'fd'
-) -Binary @{ neovim = 'nvim'; nodejs = 'node'; ripgrep = 'rg' }
+if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+    throw 'winget is required (install App Installer from Microsoft Store)'
+}
+
+Install-WingetPackage -Id 'Git.Git'
+Install-WingetPackage -Id 'jdx.mise'
+
+# winget changes the persistent PATH, not this process.
+$userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+$machinePath = [Environment]::GetEnvironmentVariable('Path', 'Machine')
+$env:PATH = "$userPath;$machinePath"
+if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
+    throw 'mise was installed but is not on PATH; open a new terminal and rerun'
+}
+
+$miseConfig = Join-Path $PSScriptRoot '.config\mise'
+mise trust $miseConfig
+mise -C $miseConfig install
+if ($LASTEXITCODE -ne 0) { throw 'mise install failed' }
+
+$miseShims = Join-Path $env:LOCALAPPDATA 'mise\shims'
+if (($userPath -split ';') -notcontains $miseShims) {
+    [Environment]::SetEnvironmentVariable('Path', "$miseShims;$userPath", 'User')
+}
+$env:PATH = "$miseShims;$env:PATH"
 Set-UserEditor -Editor 'nvim'
 
 function Install-AgentCli {
-    Write-Host 'Claude Code CLI'
-    if (Get-Command claude -ErrorAction SilentlyContinue) {
-        Write-Host '  already on PATH'
-    } elseif (Get-Command winget -ErrorAction SilentlyContinue) {
-        winget install --id Anthropic.ClaudeCode -e --accept-source-agreements --accept-package-agreements
-    } else {
-        Write-Host '  skipped: winget is not on PATH (https://code.claude.com/docs/en/install)'
-    }
-
-    Write-Host 'Codex CLI'
-    if (Get-Command codex -ErrorAction SilentlyContinue) {
-        Write-Host '  already on PATH'
-    } elseif (Get-Command npm -ErrorAction SilentlyContinue) {
-        npm install -g "@openai/codex@0.147.0"
-    } else {
-        Write-Host '  skipped: npm is not on PATH'
-    }
-
     Write-Host 'Cursor CLI (agent)'
     if (Get-Command agent -ErrorAction SilentlyContinue) {
         Write-Host '  already on PATH'

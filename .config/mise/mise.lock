@@ -84,6 +84,7 @@ url = "https://github.com/oberblastmeister/trashy/releases/download/v2.0.0/trash
 url_api = "https://api.github.com/repos/oberblastmeister/trashy/releases/assets/79571153"
 
 [tools."aqua:oberblastmeister/trashy"."platforms.windows-x64"]
+checksum = "blake3:cd597ae466049545d2aad0a6052d1ebc668e1dd7e351d4099f934b5649f9eeab"
 url = "https://github.com/oberblastmeister/trashy/releases/download/v2.0.0/trash-x86_64-pc-windows-msvc.exe"
 url_api = "https://api.github.com/repos/oberblastmeister/trashy/releases/assets/79571150"
 
@@ -207,65 +208,6 @@ url_api = "https://api.github.com/repos/sharkdp/bat/releases/assets/323549116"
 checksum = "sha256:0f729b4b6f5f28d395c641eacc2e9ff68d0096b85aa0eec344aa62425144b69b"
 url = "https://github.com/sharkdp/bat/releases/download/v0.26.1/bat-v0.26.1-x86_64-pc-windows-msvc.zip"
 url_api = "https://api.github.com/repos/sharkdp/bat/releases/assets/323549116"
-
-[[tools.bob]]
-version = "4.1.7"
-backend = "aqua:MordechaiHadad/bob"
-
-[tools.bob."platforms.linux-arm64"]
-checksum = "sha256:dc9286bc169f25c3eda633e44ea12b2bc6e18d8f2d096c670fd34929bc4e4ec9"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-linux-arm.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598150"
-
-[tools.bob."platforms.linux-arm64-musl"]
-checksum = "sha256:dc9286bc169f25c3eda633e44ea12b2bc6e18d8f2d096c670fd34929bc4e4ec9"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-linux-arm.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598150"
-
-[tools.bob."platforms.linux-x64"]
-checksum = "sha256:a3e125379a99e4a82faf2c335c6fb85de694a112cf32ab085c10dd59dffd0a78"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-linux-x86_64.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598155"
-
-[tools.bob."platforms.linux-x64-baseline"]
-checksum = "sha256:a3e125379a99e4a82faf2c335c6fb85de694a112cf32ab085c10dd59dffd0a78"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-linux-x86_64.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598155"
-
-[tools.bob."platforms.linux-x64-musl"]
-checksum = "sha256:a3e125379a99e4a82faf2c335c6fb85de694a112cf32ab085c10dd59dffd0a78"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-linux-x86_64.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598155"
-
-[tools.bob."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:a3e125379a99e4a82faf2c335c6fb85de694a112cf32ab085c10dd59dffd0a78"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-linux-x86_64.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598155"
-
-[tools.bob."platforms.macos-arm64"]
-checksum = "sha256:0c4e375c6cdab6ca9f2de2e8c30d0621ab7f577f7316e4d1cc0a25cf138df810"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-macos-arm.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598160"
-
-[tools.bob."platforms.macos-x64"]
-checksum = "sha256:eb6093dbcb452f81c578abccf96fa1ec75ad7ac3f653b55ac735960d03a89418"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-macos-x86_64.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598158"
-
-[tools.bob."platforms.macos-x64-baseline"]
-checksum = "sha256:eb6093dbcb452f81c578abccf96fa1ec75ad7ac3f653b55ac735960d03a89418"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-macos-x86_64.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598158"
-
-[tools.bob."platforms.windows-x64"]
-checksum = "sha256:1614e5630b17b919f1edae7f22e2b3b79fde5b98b7963c77b1c9702f078317e3"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-windows-x86_64.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598159"
-
-[tools.bob."platforms.windows-x64-baseline"]
-checksum = "sha256:1614e5630b17b919f1edae7f22e2b3b79fde5b98b7963c77b1c9702f078317e3"
-url = "https://github.com/MordechaiHadad/bob/releases/download/v4.1.7/bob-windows-x86_64.zip"
-url_api = "https://api.github.com/repos/MordechaiHadad/bob/releases/assets/406598159"
 
 [[tools.btop]]
 version = "1.4.7"
@@ -1018,6 +960,16 @@ url = "https://dl.google.com/go/go1.26.0.windows-amd64.zip"
 checksum = "sha256:9bbe0fc64236b2b51f6255c05c4232532b8ecc0e6d2e00950bd3021d8a4d07d4"
 url = "https://dl.google.com/go/go1.26.0.windows-amd64.zip"
 
+[[tools.jq]]
+version = "1.8.2"
+backend = "aqua:jqlang/jq"
+
+[tools.jq."platforms.windows-x64"]
+checksum = "sha256:a6fc67fedaf9128a3309a1e2ebb8b986aeccf70122ee46d2cb4849e423f0c627"
+url = "https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-windows-amd64.exe"
+url_api = "https://api.github.com/repos/jqlang/jq/releases/assets/453012788"
+provenance = "github-attestations"
+
 [[tools.lazygit]]
 version = "0.64.1"
 backend = "aqua:jesseduffield/lazygit"
@@ -1146,6 +1098,43 @@ checksum = "sha256:beabbce824641ae71229ed11dd8634f47148921cb649d25c90441b7374814
 url = "https://github.com/evilmartians/lefthook/releases/download/v2.1.10/lefthook_2.1.10_Windows_x86_64.gz"
 url_api = "https://api.github.com/repos/evilmartians/lefthook/releases/assets/470227505"
 provenance = "github-attestations"
+
+[[tools.neovim]]
+version = "0.12.4"
+backend = "vfox:mise-plugins/vfox-neovim"
+
+[tools.neovim."platforms.linux-arm64"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-linux-arm64.tar.gz"
+
+[tools.neovim."platforms.linux-arm64-musl"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-linux-arm64.tar.gz"
+
+[tools.neovim."platforms.linux-x64"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-linux-x86_64.tar.gz"
+
+[tools.neovim."platforms.linux-x64-baseline"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-linux-x86_64.tar.gz"
+
+[tools.neovim."platforms.linux-x64-musl"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-linux-x86_64.tar.gz"
+
+[tools.neovim."platforms.linux-x64-musl-baseline"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-linux-x86_64.tar.gz"
+
+[tools.neovim."platforms.macos-arm64"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-macos-arm64.tar.gz"
+
+[tools.neovim."platforms.macos-x64"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-macos-x86_64.tar.gz"
+
+[tools.neovim."platforms.macos-x64-baseline"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-macos-x86_64.tar.gz"
+
+[tools.neovim."platforms.windows-x64"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-win64.zip"
+
+[tools.neovim."platforms.windows-x64-baseline"]
+url = "https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-win64.zip"
 
 [[tools.node]]
 version = "24.14.0"
