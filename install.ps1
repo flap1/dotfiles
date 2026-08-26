@@ -5,7 +5,7 @@
     Wire this checkout into Windows. No software.
 
 .DESCRIPTION
-    Junctions and composed config. Software comes from bootstrap.ps1 (scoop).
+    Junctions and composed config. Software comes from bootstrap.ps1 (winget + mise).
     Already set up? this script alone is enough.
 
     Directories are junctions: a symlink needs elevation or Developer Mode, and
@@ -181,7 +181,7 @@ function Add-GitconfigInclude {
 function Set-GitSshCommand {
     Write-Host 'git core.sshCommand -> Windows OpenSSH'
 
-    $sshExe = Join-Path $env:WINDIR 'System32\OpenSSH\ssh.exe'
+    $sshExe = Join-Path ([Environment]::GetFolderPath('Windows')) 'System32\OpenSSH\ssh.exe'
     if (-not (Test-Path -LiteralPath $sshExe)) {
         Write-Host "  skipped: $sshExe not found"
         return
@@ -282,6 +282,7 @@ Install-ProfileHook
 Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path $env:LOCALAPPDATA 'nvim')
 Set-DirectoryJunction -Target (Join-Path $repo '.config\nvim') -Link (Join-Path $env:USERPROFILE '.config\nvim')
 Set-DirectoryJunction -Target (Join-Path $repo '.config\yazi') -Link (Join-Path $env:APPDATA 'yazi\config')
+Set-DirectoryJunction -Target (Join-Path $repo '.config\mise') -Link (Join-Path $env:USERPROFILE '.config\mise')
 
 Set-GitSshCommand
 Restore-WindowsTerminalOwnership -RepoRoot $repo -LocalState $wtLocalState

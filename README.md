@@ -66,7 +66,7 @@ the install steps, and they are yours to run.
 | path | what |
 | --- | --- |
 | `bootstrap.sh` | bare Linux machine |
-| `bootstrap.ps1` | bare Windows machine (scoop, then `install.ps1`) |
+| `bootstrap.ps1` | bare Windows machine (winget + mise, then `install.ps1`) |
 | `install.sh` | Linux: symlinks and composed configuration |
 | `install.ps1` | Windows: junctions and composed configuration |
 | `packages/` | `system.sh`; `tmux.sh`, `fonts.sh`, `cursor-agent.sh` from there |
@@ -88,7 +88,7 @@ cd $HOME\dotfiles
 .\bootstrap.ps1
 ```
 
-Already set up? `.\install.ps1` is links and composed config, no scoop.
+Already set up? `.\install.ps1` is links and composed config, no software installs.
 
 ```powershell
 dotfiles status
@@ -104,6 +104,7 @@ Directories are junctions, not hardlinks (`mklink /d` needs elevation). Git
 replaces files on save; a hardlink silently becomes a copy.
 
 - Neovim: `%LOCALAPPDATA%\nvim` (what Neovim reads) and `~\.config\nvim`
+- Git and mise come from winget; runtimes and development CLIs come from mise.
 - `.config/yazi` → `%APPDATA%\yazi\config`
 - Windows Terminal LocalState is **not** linked. Close Terminal and rerun
   `install.ps1` once to unhook a leftover junction.
