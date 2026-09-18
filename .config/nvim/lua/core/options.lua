@@ -1,6 +1,7 @@
 -- https://neovim.io/doc/user/options.html
 
-vim.opt.guifont = { "UDEV Gothic 35NFLG" }
+-- Half:full = 1:2. "UDEV Gothic 35*" is 3:5, so Latin is wider than two columns.
+vim.opt.guifont = { "UDEV Gothic NFLG" }
 
 -- Encoding
 vim.o.encoding = "utf-8"

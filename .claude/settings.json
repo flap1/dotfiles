@@ -8,6 +8,10 @@
   },
   "model": "opus[1m]",
   "effortLevel": "medium",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "editorMode": "vim",
   "vimInsertModeRemaps": {
     "jk": "<Esc>"

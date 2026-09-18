@@ -1,20 +1,21 @@
 #!/bin/bash
-# The font nvim names (UDEV Gothic). No Windows core fonts: that installer
-# is an EULA prompt and not what the terminal uses.
+# nvim names UDEV Gothic NFLG (Nerd Font, ligatures, half:full = 1:2).
+# The "35" cut is 3:5. Latin is wider than two columns. Do not install it.
+# No Windows core fonts: that installer is an EULA prompt and not this face.
 
 set -euo pipefail
 
 dir="$HOME/.local/share/fonts"
 mkdir -p "$dir"
 
-if [ ! -f "$dir/UDEVGothicNF-Regular.ttf" ]; then
+if [ ! -f "$dir/UDEVGothicNFLG-Regular.ttf" ]; then
     tmp=$(mktemp -d)
     curl -fsSL -o "$tmp/udev.zip" \
-        https://github.com/yuru7/udev-gothic/releases/download/v1.3.1/UDEVGothic_NF_v1.3.1.zip
-    echo "84004a3038bdf528286a113b4db076d8412bb4ca6771d02a240318473f9b9fce  $tmp/udev.zip" |
+        https://github.com/yuru7/udev-gothic/releases/download/v2.2.0/UDEVGothic_NF_v2.2.0.zip
+    echo "45faeef7b5d8bc591bcc5887a2ca0c5fb9028066f18a5a52cd6f10b7d655ba37  $tmp/udev.zip" |
         sha256sum -c --strict
     unzip -q "$tmp/udev.zip" -d "$tmp"
-    find "$tmp" -name 'UDEVGothicNF-*.ttf' -exec mv {} "$dir/" \;
+    find "$tmp" -name 'UDEVGothicNFLG-*.ttf' -exec mv {} "$dir/" \;
     rm -r "$tmp"
 fi
 

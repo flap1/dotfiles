@@ -104,7 +104,7 @@ Directories are junctions, not hardlinks (`mklink /d` needs elevation). Git
 replaces files on save; a hardlink silently becomes a copy.
 
 - Neovim: `%LOCALAPPDATA%\nvim` (what Neovim reads) and `~\.config\nvim`
-- Git and mise come from winget; runtimes and development CLIs come from mise.
+- Git, mise and Google Drive come from winget; runtimes and development CLIs come from mise.
 - `.config/yazi` → `%APPDATA%\yazi\config`
 - Windows Terminal LocalState is **not** linked. Close Terminal and rerun
   `install.ps1` once to unhook a leftover junction.

@@ -51,3 +51,6 @@
 
 ## local index from the code-review-graph MCP; not configuration
 /.code-review-graph/
+
+# Synced from claude.ai per account; owned by that service, not this repo.
+/.claude/skills/synced/
