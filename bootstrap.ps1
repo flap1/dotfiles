@@ -68,6 +68,8 @@ if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
 
 Install-WingetPackage -Id 'Git.Git'
 Install-WingetPackage -Id 'jdx.mise'
+# Desktop apps have no mise backend, so winget is the source.
+Install-WingetPackage -Id 'Google.GoogleDrive'
 
 # winget changes the persistent PATH, not this process.
 $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
@@ -89,6 +91,12 @@ if (($userPath -split ';') -notcontains $miseShims) {
 $env:PATH = "$miseShims;$env:PATH"
 Set-UserEditor -Editor 'nvim'
 
+# install.ps1 composes ~/.claude/settings.json (statusline, usage gauges) with
+# node and skips quietly without it, so a missing node has to stop here.
+if (-not (Get-Command node.exe -ErrorAction SilentlyContinue)) {
+    throw 'node is not on PATH after mise install; the Claude settings would be skipped'
+}
+
 function Install-AgentCli {
     Write-Host 'Cursor CLI (agent)'
     if (Get-Command agent -ErrorAction SilentlyContinue) {
@@ -102,9 +110,17 @@ function Install-AgentCli {
 
 Install-AgentCli
 
+& (Join-Path $PSScriptRoot 'packages\fonts.ps1')
+
 $install = Join-Path $PSScriptRoot 'install.ps1'
 if ($Gitconfig) {
     & $install -Gitconfig
 } else {
     & $install
 }
+
+$claudeSettings = Join-Path $env:USERPROFILE '.claude\settings.json'
+$wired = (Test-Path -LiteralPath $claudeSettings) -and
+    ((Get-Content -LiteralPath $claudeSettings -Raw) -match '"statusLine"')
+if (-not $wired) { throw "statusLine is missing from $claudeSettings; rerun .\install.ps1" }
+Write-Host 'Claude statusline: wired'
