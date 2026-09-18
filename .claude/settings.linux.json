@@ -2,7 +2,9 @@
   "$comment": [
     "Linux overlay, merged by compose_claude_settings. Machine-only hooks",
     "(rtk, code-review-graph) belong in the gitignored settings.local.json;",
-    "hooks concatenate per event so local can add without replacing these."
+    "hooks concatenate per event so local can add without replacing these.",
+    "The tmux-claude-pane.sh hooks live here, not in the shared file: agent-ui",
+    "is tmux-only and Windows has neither, so there they fail on every tool call."
   ],
   "hooks": {
     "SessionStart": [
@@ -10,7 +12,89 @@
         "hooks": [
           {
             "type": "command",
+            "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh track claude"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh set idle claude"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "bash ~/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh start claude event"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh heartbeat claude event"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh heartbeat claude event"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh heartbeat claude event"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh set permission claude"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh set idle claude"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/share/agent-ui/scripts/tmux-claude-pane.sh clear"
           }
         ]
       }
