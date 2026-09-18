@@ -108,6 +108,9 @@ replaces files on save; a hardlink silently becomes a copy.
 - `.config/yazi` → `%APPDATA%\yazi\config`
 - Windows Terminal LocalState is **not** linked. Close Terminal and rerun
   `install.ps1` once to unhook a leftover junction.
+- Windows Terminal sends Shift+Enter as plain Enter. `install.ps1` adds one
+  binding (Shift+Enter → ESC+CR) so Claude Code inserts a newline; the rest of
+  `settings.json` stays Terminal's own.
 - `git core.sshCommand` is the Windows OpenSSH.
 - Shared gitconfig is included once nvim and delta are on PATH (`-Gitconfig`
   forces it).

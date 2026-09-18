@@ -247,6 +247,49 @@ function Restore-WindowsTerminalOwnership {
     }
 }
 
+function Add-WindowsTerminalNewline {
+    param([Parameter(Mandatory)][string]$LocalState)
+
+    Write-Host 'Windows Terminal Shift+Enter'
+
+    $path = Join-Path $LocalState 'settings.json'
+    if (-not (Test-Path -LiteralPath $path)) {
+        Write-Host '  skipped: no settings.json yet (launch Windows Terminal once)'
+        return
+    }
+
+    # Terminal sends Shift+Enter as plain Enter, so Claude Code submits instead
+    # of breaking the line. ESC+CR is Alt+Enter, which Claude Code reads as a
+    # newline. Only this one binding is added; the file stays Terminal's own.
+    try {
+        $json = Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+    } catch {
+        Write-Host '  skipped: settings.json has comments or is not plain JSON'
+        return
+    }
+
+    $id = 'User.ClaudeNewline'
+    $bindings = @()
+    if ($json.PSObject.Properties['keybindings']) { $bindings = @($json.keybindings) }
+    if ($bindings | Where-Object { $_.keys -eq 'shift+enter' }) {
+        Write-Host '  already bound'
+        return
+    }
+
+    $backup = New-TimestampedCopy -Path $path
+    $esc = [string][char]27 + [string][char]13
+    $action = [pscustomobject]@{
+        command = [pscustomobject]@{ action = 'sendInput'; input = $esc }
+        id      = $id
+    }
+    $actions = @()
+    if ($json.PSObject.Properties['actions']) { $actions = @($json.actions) }
+    $json | Add-Member -NotePropertyName actions -NotePropertyValue (@($actions) + $action) -Force
+    $json | Add-Member -NotePropertyName keybindings -NotePropertyValue (@($bindings) + [pscustomobject]@{ id = $id; keys = 'shift+enter' }) -Force
+    [IO.File]::WriteAllText($path, ($json | ConvertTo-Json -Depth 20), (New-Object Text.UTF8Encoding($false)))
+    Write-Host "  bound (backup: $backup)"
+}
+
 function Invoke-Compose {
     param(
         [Parameter(Mandatory)][string]$Script,
@@ -286,6 +329,7 @@ Set-DirectoryJunction -Target (Join-Path $repo '.config\mise') -Link (Join-Path 
 
 Set-GitSshCommand
 Restore-WindowsTerminalOwnership -RepoRoot $repo -LocalState $wtLocalState
+Add-WindowsTerminalNewline -LocalState $wtLocalState
 
 Set-DirectoryJunction -Target (Join-Path $repo '.claude\skills') -Link (Join-Path $env:USERPROFILE '.claude\skills')
 Set-DirectoryJunction -Target (Join-Path $repo '.claude\hooks') -Link (Join-Path $env:USERPROFILE '.claude\hooks')
