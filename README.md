@@ -17,8 +17,9 @@ cd ~/dotfiles
 ./bootstrap.sh
 ```
 
-`bootstrap.sh` is a bare machine: system packages, mise (including
-`claude` and `codex`), the Cursor CLI (`agent`), then links.
+`bootstrap.sh` is a bare machine: system packages, mise, the agent CLIs
+(`claude`, `codex`, `agent`; each vendor's own installer, so each updates
+itself), then links.
 `./install.sh` is enough after that — links and composed config, no software.
 Git identity is not in this repository: put `user.name` and `user.email` in
 `~/.gitconfig.local` before the first commit.

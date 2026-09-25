@@ -10,8 +10,6 @@ atuin = "18.19.0"
 bat = "0.26.1"
 neovim = "0.12.4"
 btop = { version = "1.4.7", os = ["linux", "macos"] }
-claude-code = "2.1.274"
-codex = "0.147.0"
 delta = "0.19.2"
 difftastic = "0.70.0"
 eza = "0.23.5"
