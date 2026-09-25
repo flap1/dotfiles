@@ -26,6 +26,7 @@ FORCE=0
 # legitimate suite that is merely slow under host contention. It is the
 # unsupervised bare-`cargo test` driver, and the test binaries it spawns
 # directly, that have no such net.
+# `|| true`: no matches makes pgrep exit 1; with pipefail that would abort.
 pgrep -f '(^|/)cargo test( |$)' |
     while read -r pid; do
         ps -o pid=,etime=,cmd= -p "$pid" 2>/dev/null
@@ -50,4 +51,4 @@ pgrep -f '(^|/)cargo test( |$)' |
                 echo "would kill pid=$pid etime=$etime $rest"
             fi
         fi
-    done
+    done || true
