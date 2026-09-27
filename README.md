@@ -70,7 +70,7 @@ the install steps, and they are yours to run.
 | `bootstrap.ps1` | bare Windows machine (winget + mise, then `install.ps1`) |
 | `install.sh` | Linux: symlinks and composed configuration |
 | `install.ps1` | Windows: junctions and composed configuration |
-| `packages/` | `system.sh`; `tmux.sh`, `fonts.sh`, `cursor-agent.sh` from there |
+| `packages/` | `system.sh`; `tmux.sh`, `fonts.sh`, `agent-clis.sh` from there |
 | `bin/` | on PATH (`~\bin` on Windows too) |
 | `.config/` | linked into `~/.config` |
 | `.config/sheldon/plugins.toml` | zsh plugins, pinned by git revision |
@@ -105,7 +105,9 @@ Directories are junctions, not hardlinks (`mklink /d` needs elevation). Git
 replaces files on save; a hardlink silently becomes a copy.
 
 - Neovim: `%LOCALAPPDATA%\nvim` (what Neovim reads) and `~\.config\nvim`
-- Git, mise and Google Drive come from winget; runtimes and development CLIs come from mise.
+- Git, mise and Google Drive come from winget; runtimes and development CLIs
+  come from mise; `claude`, `codex` and `agent` (Cursor) come from each
+  vendor's own installer, so each updates itself.
 - `.config/yazi` → `%APPDATA%\yazi\config`
 - Windows Terminal LocalState is **not** linked. Close Terminal and rerun
   `install.ps1` once to unhook a leftover junction.
