@@ -10,3 +10,8 @@ bin/* text eol=lf
 # fails to parse, and the failure names the directive rather than the line ending.
 *.py text eol=lf
 *.service text eol=lf
+
+# mise reads these on both platforms, but core.autocrlf=true otherwise turns
+# every Windows checkout into a same-content CRLF diff against the lockfile.
+.config/mise/*.toml text eol=lf
+.config/mise/*.lock text eol=lf

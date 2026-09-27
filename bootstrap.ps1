@@ -6,7 +6,8 @@
 
 .DESCRIPTION
     Installs Git and mise with winget, installs the pinned mise toolset, then
-    runs install.ps1. Already set up? .\install.ps1 alone.
+    claude/codex/agent through each vendor's own installer, then runs
+    install.ps1. Already set up? .\install.ps1 alone.
 
 .EXAMPLE
     .\bootstrap.ps1
@@ -97,18 +98,49 @@ if (-not (Get-Command node.exe -ErrorAction SilentlyContinue)) {
     throw 'node is not on PATH after mise install; the Claude settings would be skipped'
 }
 
+function Update-SessionPath {
+    $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+    $machinePath = [Environment]::GetEnvironmentVariable('Path', 'Machine')
+    $env:PATH = "$userPath;$machinePath"
+}
+
 function Install-AgentCli {
-    Write-Host 'Cursor CLI (agent)'
-    if (Get-Command agent -ErrorAction SilentlyContinue) {
-        Write-Host '  already on PATH'
+    param(
+        [Parameter(Mandatory)][string]$Cmd,
+        [Parameter(Mandatory)][string]$Url
+    )
+
+    Write-Host "$Cmd CLI"
+    if (Get-Command $Cmd -ErrorAction SilentlyContinue) {
+        Write-Host '  already installed (it updates itself)'
+        return
+    }
+
+    # Saved to a file before it runs so a failed download never reaches the
+    # interpreter half-read.
+    $tmp = Join-Path ([IO.Path]::GetTempPath()) "$Cmd-install-$([guid]::NewGuid()).ps1"
+    try {
+        Invoke-WebRequest -Uri $Url -OutFile $tmp -UseBasicParsing
+        & $tmp
+    } finally {
+        Remove-Item -LiteralPath $tmp -ErrorAction SilentlyContinue
+    }
+    Update-SessionPath
+    if (Get-Command $Cmd -ErrorAction SilentlyContinue) {
+        Write-Host "  installed"
     } else {
-        # The Windows tarball is not a public hashed URL (403). The vendor
-        # path is irm | iex, which this repository does not run.
-        Write-Host '  skipped: no hashed Windows package; see https://cursor.com/docs/cli/installation'
+        Write-Host "  installed, but not yet on PATH; open a new terminal"
     }
 }
 
-Install-AgentCli
+# claude, codex and agent (Cursor) through each vendor's own installer. They
+# update themselves; mise or a pinned tarball would be a second updater on
+# the same binary. Mirrors packages/agent-clis.sh.
+Install-AgentCli -Cmd 'claude' -Url 'https://claude.ai/install.ps1'
+$env:CODEX_NON_INTERACTIVE = 'true'
+Install-AgentCli -Cmd 'codex' -Url 'https://chatgpt.com/codex/install.ps1'
+Remove-Item Env:\CODEX_NON_INTERACTIVE -ErrorAction SilentlyContinue
+Install-AgentCli -Cmd 'agent' -Url 'https://cursor.com/install?win32=true'
 
 & (Join-Path $PSScriptRoot 'packages\fonts.ps1')
 
